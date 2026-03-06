@@ -50,12 +50,14 @@
 import Splash from './pages/Splash';
 import Lobby from './pages/Lobby';
 import Info from './pages/Info';
+import Game from './pages/Game';
 
 
 export const PAGES = {
     "Splash": Splash,
     "Lobby": Lobby,
     "Info": Info,
+    "Game": Game,
 }
 
 export const pagesConfig = {
