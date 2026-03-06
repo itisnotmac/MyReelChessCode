@@ -163,21 +163,34 @@ export default function Game() {
     }
   }, [board, selectedSquare, legalMoves, isWhiteTurn, gameOver, battleInfo, isThinking, enPassant, castling, mode, executeMove]);
 
-  // AI move
+  // AI move — only depend on isWhiteTurn/gameOver/battleInfo to avoid re-firing on board state changes
   useEffect(() => {
     if (mode !== 'ai' || isWhiteTurn || gameOver || battleInfo) return;
+    if (aiRunningRef.current) return;
 
+    aiRunningRef.current = true;
     setIsThinking(true);
+
+    // Capture current state values in local variables so the timeout closure is stable
+    const currentBoard = board;
+    const currentEnPassant = enPassant;
+    const currentCastling = castling;
+
     const timer = setTimeout(() => {
-      const aiMove = getAIMove(board, enPassant, castling, 2);
+      const aiMove = getAIMove(currentBoard, currentEnPassant, currentCastling, 2);
       setIsThinking(false);
+      aiRunningRef.current = false;
       if (aiMove) {
-        executeMove(aiMove.from[0], aiMove.from[1], aiMove.to[0], aiMove.to[1], board, enPassant, castling);
+        executeMove(aiMove.from[0], aiMove.from[1], aiMove.to[0], aiMove.to[1], currentBoard, currentEnPassant, currentCastling);
       }
     }, 600);
 
-    return () => clearTimeout(timer);
-  }, [isWhiteTurn, mode, gameOver, battleInfo, board, enPassant, castling, executeMove]);
+    return () => {
+      clearTimeout(timer);
+      aiRunningRef.current = false;
+      setIsThinking(false);
+    };
+  }, [isWhiteTurn, gameOver, battleInfo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const resetGame = () => {
     setBoard(createInitialBoard());
