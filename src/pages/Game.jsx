@@ -206,6 +206,7 @@ export default function Game() {
     setIsThinking(false);
     setBattleInfo(null);
     pendingMoveRef.current = null;
+    aiRunningRef.current = false;
     setMoveCount(0);
   };
 
