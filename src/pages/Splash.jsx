@@ -5,15 +5,16 @@ import { createPageUrl } from '@/utils';
 
 export default function Splash() {
   const navigate = useNavigate();
+  const navigateRef = useRef(navigate);
   const [phase, setPhase] = useState(0);
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 500);
     const t2 = setTimeout(() => setPhase(2), 1500);
     const t3 = setTimeout(() => setPhase(3), 2800);
-    const t4 = setTimeout(() => navigate(createPageUrl('Lobby')), 3600);
+    const t4 = setTimeout(() => navigateRef.current(createPageUrl('Lobby')), 3600);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
-  }, [navigate]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center overflow-hidden relative">
