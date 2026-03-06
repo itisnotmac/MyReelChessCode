@@ -51,6 +51,7 @@ import Splash from './pages/Splash';
 import Lobby from './pages/Lobby';
 import Info from './pages/Info';
 import Game from './pages/Game';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -63,4 +64,5 @@ export const PAGES = {
 export const pagesConfig = {
     mainPage: "Splash",
     Pages: PAGES,
+    Layout: __Layout,
 };
