@@ -48,10 +48,12 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Splash from './pages/Splash';
+import Lobby from './pages/Lobby';
 
 
 export const PAGES = {
     "Splash": Splash,
+    "Lobby": Lobby,
 }
 
 export const pagesConfig = {
