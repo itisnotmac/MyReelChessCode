@@ -81,6 +81,10 @@ export default function Game() {
   }, []);
 
   const finishMove = useCallback((fromR, fromC, toR, toC, currentBoard, currentEnPassant, currentCastling, captured) => {
+    const movingPiece = currentBoard[fromR][fromC];
+    const movedByWhite = isWhitePiece(movingPiece);
+    const nextWhite = !movedByWhite;
+
     const result = makeMove(currentBoard, fromR, fromC, toR, toC, currentEnPassant, currentCastling);
     
     if (captured) {
@@ -98,8 +102,6 @@ export default function Game() {
     setSelectedSquare(null);
     setLegalMoves([]);
     setMoveCount(prev => prev + 1);
-
-    const nextWhite = !isWhiteTurn;
     setIsWhiteTurn(nextWhite);
 
     // Check game end
@@ -108,7 +110,7 @@ export default function Game() {
     } else if (isStalemate(result.board, nextWhite, result.enPassant, result.castling)) {
       setGameOver('draw');
     }
-  }, [isWhiteTurn]);
+  }, []);
 
   const handleBattleComplete = useCallback(() => {
     const pending = pendingMoveRef.current;
