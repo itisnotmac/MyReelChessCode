@@ -49,11 +49,13 @@
  */
 import Splash from './pages/Splash';
 import Lobby from './pages/Lobby';
+import Info from './pages/Info';
 
 
 export const PAGES = {
     "Splash": Splash,
     "Lobby": Lobby,
+    "Info": Info,
 }
 
 export const pagesConfig = {
