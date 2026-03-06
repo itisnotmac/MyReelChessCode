@@ -23,8 +23,9 @@ import {
 
 export default function Game() {
   const navigate = useNavigate();
-  const urlParams = new URLSearchParams(window.location.search);
-  const mode = urlParams.get('mode') || 'ai';
+  // Store mode in a ref so screen rotation / re-renders don't re-read it
+  const modeRef = useRef(new URLSearchParams(window.location.search).get('mode') || 'ai');
+  const mode = modeRef.current;
 
   const [board, setBoard] = useState(createInitialBoard());
   const [isWhiteTurn, setIsWhiteTurn] = useState(true);
