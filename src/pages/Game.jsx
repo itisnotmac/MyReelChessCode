@@ -43,6 +43,8 @@ export default function Game() {
   // Battle cutscene state
   const [battleInfo, setBattleInfo] = useState(null);
   const pendingMoveRef = useRef(null);
+  // Guard to prevent AI from firing multiple times
+  const aiRunningRef = useRef(false);
 
   const findKingPosition = useCallback((boardState, white) => {
     const king = white ? 'K' : 'k';
