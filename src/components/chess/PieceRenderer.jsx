@@ -6,13 +6,13 @@ import React from 'react';
 function King({ isWhite }) {
   const id = isWhite ? 'wk' : 'bk';
   const g = isWhite ? {
-    skin:'#F2C98A', skinD:'#D4A574', hair:'#8B6914', robe:'#C8A96E', robeD:'#8B6914',
-    throne:'#B8860B', throneH:'#FFD700', gem:'#E74C3C', crown:'#FFD700', crownH:'#FFF8DC',
-    metal:'#D4AF37', outline:'#3D2B00', shadow:'rgba(0,0,0,0.4)'
+    skin:'#F2C98A', skinD:'#D4A574', hair:'#8B6914', robe:'#FFFFFF', robeD:'#C8C8C8',
+    throne:'#E0E0E0', throneH:'#FFFFFF', gem:'#AAAAAA', crown:'#F0F0F0', crownH:'#FFFFFF',
+    metal:'#D0D0D0', outline:'#333333', shadow:'rgba(0,0,0,0.4)'
   } : {
-    skin:'#C68642', skinD:'#8B5E2A', hair:'#1a0a00', robe:'#2C1A4E', robeD:'#1a0a2e',
-    throne:'#4A2080', throneH:'#7B3FBE', gem:'#F06292', crown:'#6A0DAD', crownH:'#CE93D8',
-    metal:'#7B3FBE', outline:'#0a0010', shadow:'rgba(100,0,200,0.4)'
+    skin:'#C68642', skinD:'#8B5E2A', hair:'#111111', robe:'#111111', robeD:'#000000',
+    throne:'#1A1A1A', throneH:'#333333', gem:'#444444', crown:'#222222', crownH:'#444444',
+    metal:'#2A2A2A', outline:'#000000', shadow:'rgba(0,0,0,0.8)'
   };
   return (
     <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
