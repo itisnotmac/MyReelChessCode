@@ -431,18 +431,18 @@ function Rook({ isWhite }) {
   const id = isWhite ? 'wr' : 'br';
   const g = isWhite ? {
     skin:'#F2C98A', skinD:'#D4A574', skinShadow:'rgba(0,0,0,0.2)',
-    armor:'#C0C8D0', armorD:'#808890', armorH:'#E8F0F8',
-    fur:'#A08060', furD:'#6B5040',
-    accent:'#D4AF37', blood:'#C0392B',
-    beard:'#A08060', beardD:'#7B6040',
-    outline:'#2A3040', cloth:'#5C6878'
+    armor:'#F0F0F0', armorD:'#C8C8C8', armorH:'#FFFFFF',
+    fur:'#DDDDDD', furD:'#BBBBBB',
+    accent:'#E0E0E0', blood:'#CCCCCC',
+    beard:'#DDDDDD', beardD:'#BBBBBB',
+    outline:'#333333', cloth:'#D0D0D0'
   } : {
-    skin:'#C68642', skinD:'#8B5E2A', skinShadow:'rgba(0,0,0,0.4)',
-    armor:'#5C3A1E', armorD:'#3D2510', armorH:'#8B5A30',
-    fur:'#2C1A0A', furD:'#1a0a00',
-    accent:'#C0392B', blood:'#8B0000',
-    beard:'#3D2510', beardD:'#2A1A08',
-    outline:'#0a0800', cloth:'#3D2510'
+    skin:'#C68642', skinD:'#8B5E2A', skinShadow:'rgba(0,0,0,0.6)',
+    armor:'#111111', armorD:'#000000', armorH:'#222222',
+    fur:'#0A0A0A', furD:'#000000',
+    accent:'#1A1A1A', blood:'#0A0A0A',
+    beard:'#111111', beardD:'#080808',
+    outline:'#000000', cloth:'#0A0A0A'
   };
   return (
     <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
