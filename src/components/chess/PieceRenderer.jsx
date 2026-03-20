@@ -570,16 +570,16 @@ function Pawn({ isWhite }) {
   const id = isWhite ? 'wp' : 'bp';
   const g = isWhite ? {
     skin:'#F2C98A', skinD:'#D4A574',
-    armor:'#C0C8D0', armorD:'#808890', armorH:'#E8F0F8',
-    cloth:'#5C6878', clothD:'#3C4858',
-    accent:'#D4AF37',
-    outline:'#2A3040'
+    armor:'#F0F0F0', armorD:'#C8C8C8', armorH:'#FFFFFF',
+    cloth:'#E8E8E8', clothD:'#C8C8C8',
+    accent:'#D8D8D8',
+    outline:'#333333'
   } : {
     skin:'#C68642', skinD:'#8B5E2A',
-    armor:'#3A3A4A', armorD:'#1E1E2E', armorH:'#5A5A6A',
-    cloth:'#2A1A0A', clothD:'#1A0A00',
-    accent:'#8B3A3A',
-    outline:'#0a0808'
+    armor:'#111111', armorD:'#000000', armorH:'#222222',
+    cloth:'#0A0A0A', clothD:'#000000',
+    accent:'#1A1A1A',
+    outline:'#000000'
   };
   return (
     <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
