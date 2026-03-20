@@ -112,13 +112,13 @@ function King({ isWhite }) {
 function Queen({ isWhite }) {
   const id = isWhite ? 'wq' : 'bq';
   const g = isWhite ? {
-    skin:'#F2C98A', skinD:'#D4A574', hair:'#6B3A2A', robe:'#8B2252', robeD:'#5C1535',
-    throne:'#B8860B', throneH:'#FFD700', gem:'#E74C3C', crown:'#FFD700', crownH:'#FFF8DC',
-    metal:'#D4AF37', gown:'#C8396E', outline:'#2D0010', shadow:'rgba(0,0,0,0.4)'
+    skin:'#F2C98A', skinD:'#D4A574', hair:'#8B6914', robe:'#FFFFFF', robeD:'#DDDDDD',
+    throne:'#E8E8E8', throneH:'#FFFFFF', gem:'#BBBBBB', crown:'#F0F0F0', crownH:'#FFFFFF',
+    metal:'#D0D0D0', gown:'#F5F5F5', outline:'#333333', shadow:'rgba(0,0,0,0.4)'
   } : {
-    skin:'#C68642', skinD:'#8B5E2A', hair:'#0a0010', robe:'#1a0a2e', robeD:'#0a0018',
-    throne:'#4A2080', throneH:'#7B3FBE', gem:'#F06292', crown:'#6A0DAD', crownH:'#CE93D8',
-    metal:'#7B3FBE', gown:'#4A0080', outline:'#0a0010', shadow:'rgba(100,0,200,0.4)'
+    skin:'#C68642', skinD:'#8B5E2A', hair:'#111111', robe:'#111111', robeD:'#000000',
+    throne:'#1A1A1A', throneH:'#333333', gem:'#333333', crown:'#1A1A1A', crownH:'#333333',
+    metal:'#222222', gown:'#0A0A0A', outline:'#000000', shadow:'rgba(0,0,0,0.8)'
   };
   return (
     <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
