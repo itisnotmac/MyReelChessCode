@@ -13,7 +13,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
     if (isCheckSq) return 'bg-red-500/60';
     if (isSelected) return isLight ? 'bg-amber-300' : 'bg-amber-600';
     if (isLastMove) return isLight ? 'bg-yellow-200/60' : 'bg-yellow-700/40';
-    return isLight ? 'bg-[#E8D5B5]' : 'bg-[#B58863]';
+    return isLight ? 'bg-[#F0EAD6]' : 'bg-[#355E3B]';
   };
 
   const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
