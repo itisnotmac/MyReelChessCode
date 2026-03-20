@@ -326,18 +326,18 @@ function Bishop({ isWhite }) {
   const id = isWhite ? 'wb' : 'bb';
   const g = isWhite ? {
     skin:'#F2C98A', skinD:'#D4A574',
-    robe:'#C8D0E8', robeD:'#8090B0', robeH:'#E8EEF8',
-    hood:'#8090B0', hoodD:'#505878',
-    accent:'#D4AF37', staff:'#8B6914',
-    gem:'#7B3FBE', eye:'#D4AF37',
-    outline:'#2A3050'
+    robe:'#F5F5F5', robeD:'#D0D0D0', robeH:'#FFFFFF',
+    hood:'#E0E0E0', hoodD:'#BBBBBB',
+    accent:'#D0D0D0', staff:'#B8B8B8',
+    gem:'#CCCCCC', eye:'#E8E8E8',
+    outline:'#333333'
   } : {
     skin:'#C68642', skinD:'#8B5E2A',
-    robe:'#0D0D1E', robeD:'#050510', robeH:'#1A1A32',
-    hood:'#0a0a18', hoodD:'#050510',
-    accent:'#6A0DAD', staff:'#3D0060',
-    gem:'#E040FB', eye:'#9B59B6',
-    outline:'#000008'
+    robe:'#0A0A0A', robeD:'#000000', robeH:'#1A1A1A',
+    hood:'#080808', hoodD:'#000000',
+    accent:'#222222', staff:'#111111',
+    gem:'#1A1A1A', eye:'#888888',
+    outline:'#000000'
   };
   return (
     <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
