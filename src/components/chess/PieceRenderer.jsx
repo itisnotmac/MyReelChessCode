@@ -222,16 +222,16 @@ function Knight({ isWhite }) {
   const id = isWhite ? 'wn' : 'bn';
   const g = isWhite ? {
     skin:'#F2C98A', skinD:'#D4A574',
-    armor:'#C8D0D8', armorD:'#8090A0', armorH:'#E8F0F8',
-    horse:'#A08060', horseD:'#6B5040', horseMane:'#3D2810',
-    accent:'#D4AF37', plume:'#C0392B',
-    outline:'#2A3040', cloth:'#4A5568'
+    armor:'#F0F0F0', armorD:'#C0C0C0', armorH:'#FFFFFF',
+    horse:'#C8BEB0', horseD:'#A09080', horseMane:'#888080',
+    accent:'#D8D8D8', plume:'#E0E0E0',
+    outline:'#333333', cloth:'#C0C0C0'
   } : {
     skin:'#C68642', skinD:'#8B5E2A',
-    armor:'#4A3728', armorD:'#2D2218', armorH:'#6B5040',
-    horse:'#2C1A0A', horseD:'#1a0a00', horseMane:'#0a0500',
-    accent:'#8B3A3A', plume:'#6A0DAD',
-    outline:'#0a0800', cloth:'#1a1428'
+    armor:'#111111', armorD:'#000000', armorH:'#2A2A2A',
+    horse:'#1A1410', horseD:'#0A0A08', horseMane:'#050505',
+    accent:'#222222', plume:'#1A1A1A',
+    outline:'#000000', cloth:'#111111'
   };
   return (
     <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
