@@ -715,8 +715,8 @@ export default function PieceRenderer({ piece, size = 'normal' }) {
         width:  px,
         height: px,
         filter: isWhite
-          ? 'drop-shadow(0 3px 8px rgba(212,175,55,0.4)) drop-shadow(0 1px 3px rgba(0,0,0,0.5))'
-          : 'drop-shadow(0 3px 8px rgba(0,0,0,0.8)) drop-shadow(0 1px 3px rgba(100,0,200,0.3))',
+          ? 'drop-shadow(0 3px 8px rgba(255,255,255,0.5)) drop-shadow(0 1px 3px rgba(0,0,0,0.6))'
+          : 'drop-shadow(0 3px 8px rgba(0,0,0,0.9)) drop-shadow(0 1px 3px rgba(0,0,0,0.8))',
       }}
     >
       <Component isWhite={isWhite} />
