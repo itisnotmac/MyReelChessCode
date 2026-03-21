@@ -67,8 +67,8 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
 
                   {/* Piece */}
                   {piece && (
-                    <div className="relative z-10">
-                      <PieceRenderer piece={piece} />
+                    <div className="relative z-10 w-[88%] h-[88%]">
+                      <PieceRenderer piece={piece} size="fill" />
                     </div>
                   )}
                 </div>
