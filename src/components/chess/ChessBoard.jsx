@@ -25,7 +25,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
     <div className="relative">
       {/* Board shadow and border */}
       <div className="rounded-lg overflow-hidden shadow-2xl border-2 border-[#8B6914]/30">
-        <div className="grid grid-cols-8 aspect-square" style={{ width: '100%', maxWidth: '400px' }}>
+        <div className="grid grid-cols-8" style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gridTemplateRows: 'repeat(8, 1fr)', width: '100%', aspectRatio: '1 / 1' }}>
           {displayRows.map((row) =>
             displayCols.map((col) => {
               const piece = board[row][col];
