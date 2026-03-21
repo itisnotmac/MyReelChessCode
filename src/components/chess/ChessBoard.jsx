@@ -22,9 +22,9 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
   const displayCols = flipped ? [...Array(8).keys()].reverse() : [...Array(8).keys()];
 
   return (
-    <div className="relative">
+    <div className="relative w-full h-full">
       {/* Board shadow and border */}
-      <div className="rounded-lg overflow-hidden shadow-2xl border-2 border-[#8B6914]/30">
+      <div className="rounded-lg overflow-hidden shadow-2xl border-2 border-[#8B6914]/30 w-full h-full">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gridTemplateRows: 'repeat(8, 1fr)', width: '100%', height: '100%' }}>
           {displayRows.map((row) =>
             displayCols.map((col) => {
