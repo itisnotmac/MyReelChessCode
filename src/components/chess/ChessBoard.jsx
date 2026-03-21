@@ -25,7 +25,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
     <div className="relative">
       {/* Board shadow and border */}
       <div className="rounded-lg overflow-hidden shadow-2xl border-2 border-[#8B6914]/30">
-        <div className="grid grid-cols-8" style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gridTemplateRows: 'repeat(8, 1fr)', width: '100%', aspectRatio: '1 / 1' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gridTemplateRows: 'repeat(8, 1fr)', width: '100%', height: '100%' }}>
           {displayRows.map((row) =>
             displayCols.map((col) => {
               const piece = board[row][col];
@@ -36,6 +36,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                 <div
                   key={`${row}-${col}`}
                   className={`relative flex items-center justify-center cursor-pointer transition-colors duration-150 ${getSquareColor(row, col)}`}
+                  style={{ aspectRatio: '1 / 1' }}
                   onClick={() => onSquareClick(row, col)}
                 >
                   {/* Coordinates */}
