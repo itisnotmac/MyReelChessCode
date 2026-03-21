@@ -706,12 +706,13 @@ export default function PieceRenderer({ piece, size = 'normal' }) {
   const Component = PIECE_COMPONENTS[type];
   if (!Component) return null;
 
-  const px = SIZE_PX[size] ?? 62;
+  const isFill = size === 'fill';
+  const px = isFill ? null : (SIZE_PX[size] ?? 62);
 
   return (
     <span
       className="inline-flex items-center justify-center select-none"
-      style={{ width: px, height: px }}
+      style={isFill ? { width: '100%', height: '100%', display: 'block' } : { width: px, height: px }}
     >
       <Component isWhite={isWhite} />
     </span>
