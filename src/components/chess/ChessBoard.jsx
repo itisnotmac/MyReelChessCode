@@ -35,7 +35,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
               return (
                 <div
                   key={`${row}-${col}`}
-                  className={`relative aspect-square flex items-center justify-center cursor-pointer transition-colors duration-150 ${getSquareColor(row, col)}`}
+                  className={`relative flex items-center justify-center cursor-pointer transition-colors duration-150 ${getSquareColor(row, col)}`}
                   onClick={() => onSquareClick(row, col)}
                 >
                   {/* Coordinates */}
