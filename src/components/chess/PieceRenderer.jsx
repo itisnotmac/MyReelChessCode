@@ -711,13 +711,7 @@ export default function PieceRenderer({ piece, size = 'normal' }) {
   return (
     <span
       className="inline-flex items-center justify-center select-none"
-      style={{
-        width:  px,
-        height: px,
-        filter: isWhite
-          ? 'drop-shadow(0 3px 8px rgba(255,255,255,0.5)) drop-shadow(0 1px 3px rgba(0,0,0,0.6))'
-          : 'drop-shadow(0 3px 8px rgba(0,0,0,0.9)) drop-shadow(0 1px 3px rgba(0,0,0,0.8))',
-      }}
+      style={{ width: px, height: px }}
     >
       <Component isWhite={isWhite} />
     </span>
