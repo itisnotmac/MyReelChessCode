@@ -255,7 +255,7 @@ export default function Game() {
 
       {/* Chess Board */}
       <div className="flex-1 flex items-center justify-center px-4 py-2">
-        <div className="w-full max-w-[400px]">
+        <div style={{ width: 'min(92vw, 92vh, 420px)', height: 'min(92vw, 92vh, 420px)' }}>
           <ChessBoard
             board={board}
             selectedSquare={selectedSquare}
