@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import PieceRenderer from './PieceRenderer';
 
 export default function ChessBoard({ board, selectedSquare, legalMoves, onSquareClick, lastMove, isCheck, checkSquare, flipped = false }) {
