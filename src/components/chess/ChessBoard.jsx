@@ -67,14 +67,9 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
 
                   {/* Piece */}
                   {piece && (
-                    <motion.div
-                      initial={false}
-                      animate={{ scale: 1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="relative z-10"
-                    >
+                    <div className="relative z-10">
                       <PieceRenderer piece={piece} />
-                    </motion.div>
+                    </div>
                   )}
                 </div>
               );
