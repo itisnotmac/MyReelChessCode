@@ -4,129 +4,219 @@ function getCtx() {
   if (!window._battleAudioCtx) {
     window._battleAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
+  // Resume if suspended (browser autoplay policy)
+  if (window._battleAudioCtx.state === 'suspended') {
+    window._battleAudioCtx.resume();
+  }
   return window._battleAudioCtx;
 }
 
-// Metallic sword clang: sharp noise burst + high-pitched metallic ring
+// Sharp metallic sword clang: hard transient + sustained ringing harmonics
 export function playSwordClang(delay = 0) {
   try {
     const ctx = getCtx();
     const t = ctx.currentTime + delay;
 
-    // Noise burst (impact body)
-    const bufSize = ctx.sampleRate * 0.15;
-    const buffer = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufSize, 2);
+    // --- Hard impact transient (very short noise burst) ---
+    const impactBuf = ctx.createBuffer(1, ctx.sampleRate * 0.04, ctx.sampleRate);
+    const impactData = impactBuf.getChannelData(0);
+    for (let i = 0; i < impactData.length; i++) {
+      impactData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / impactData.length, 1.5);
     }
-    const noiseSource = ctx.createBufferSource();
-    noiseSource.buffer = buffer;
+    const impactSrc = ctx.createBufferSource();
+    impactSrc.buffer = impactBuf;
 
-    const noiseFilter = ctx.createBiquadFilter();
-    noiseFilter.type = 'bandpass';
-    noiseFilter.frequency.value = 3200;
-    noiseFilter.Q.value = 0.8;
+    const impactHPF = ctx.createBiquadFilter();
+    impactHPF.type = 'highpass';
+    impactHPF.frequency.value = 4000;
 
-    const noiseGain = ctx.createGain();
-    noiseGain.gain.setValueAtTime(0.55, t);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+    const impactGain = ctx.createGain();
+    impactGain.gain.setValueAtTime(1.8, t);
+    impactGain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
 
-    noiseSource.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
-    noiseGain.connect(ctx.destination);
-    noiseSource.start(t);
+    impactSrc.connect(impactHPF);
+    impactHPF.connect(impactGain);
+    impactGain.connect(ctx.destination);
+    impactSrc.start(t);
 
-    // Metallic ring (oscillator)
-    const ringFreq = 1800 + Math.random() * 600;
-    const osc = ctx.createOscillator();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(ringFreq, t);
-    osc.frequency.exponentialRampToValueAtTime(ringFreq * 0.6, t + 0.4);
+    // --- Metallic scrape (mid noise, slightly longer) ---
+    const scrapeBuf = ctx.createBuffer(1, ctx.sampleRate * 0.12, ctx.sampleRate);
+    const scrapeData = scrapeBuf.getChannelData(0);
+    for (let i = 0; i < scrapeData.length; i++) {
+      scrapeData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / scrapeData.length, 0.8);
+    }
+    const scrapeSrc = ctx.createBufferSource();
+    scrapeSrc.buffer = scrapeBuf;
 
-    const ringFilter = ctx.createBiquadFilter();
-    ringFilter.type = 'bandpass';
-    ringFilter.frequency.value = ringFreq;
-    ringFilter.Q.value = 12;
+    const scrapeBPF = ctx.createBiquadFilter();
+    scrapeBPF.type = 'bandpass';
+    scrapeBPF.frequency.value = 2200;
+    scrapeBPF.Q.value = 3;
 
-    const ringGain = ctx.createGain();
-    ringGain.gain.setValueAtTime(0.3, t);
-    ringGain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+    const scrapeGain = ctx.createGain();
+    scrapeGain.gain.setValueAtTime(0.6, t);
+    scrapeGain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
 
-    osc.connect(ringFilter);
-    ringFilter.connect(ringGain);
-    ringGain.connect(ctx.destination);
-    osc.start(t);
-    osc.stop(t + 0.5);
-  } catch (e) {
-    // Audio not available, silently skip
-  }
+    scrapeSrc.connect(scrapeBPF);
+    scrapeBPF.connect(scrapeGain);
+    scrapeGain.connect(ctx.destination);
+    scrapeSrc.start(t);
+
+    // --- Ringing steel harmonics (multiple detuned oscillators) ---
+    const ringFreqs = [
+      900 + Math.random() * 200,
+      1400 + Math.random() * 300,
+      2100 + Math.random() * 400,
+      3300 + Math.random() * 500,
+    ];
+    ringFreqs.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+      // Slight pitch drop as metal vibration settles
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.85, t + 0.7);
+
+      const oscGain = ctx.createGain();
+      const vol = 0.18 / (i + 1);
+      oscGain.gain.setValueAtTime(vol, t);
+      oscGain.gain.setValueAtTime(vol, t + 0.01);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.5 + i * 0.1);
+
+      osc.connect(oscGain);
+      oscGain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.7);
+    });
+
+    // --- Low body thud (the weight of the blow) ---
+    const thudOsc = ctx.createOscillator();
+    thudOsc.type = 'sine';
+    thudOsc.frequency.setValueAtTime(120, t);
+    thudOsc.frequency.exponentialRampToValueAtTime(40, t + 0.08);
+
+    const thudGain = ctx.createGain();
+    thudGain.gain.setValueAtTime(0.7, t);
+    thudGain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+
+    thudOsc.connect(thudGain);
+    thudGain.connect(ctx.destination);
+    thudOsc.start(t);
+    thudOsc.stop(t + 0.12);
+
+  } catch (e) {}
 }
 
-// Death sigh: breathy exhale — filtered noise that slowly fades
+// Human death groan: voiced exhale with pitch-dropping formants
 export function playDeathSigh(delay = 0) {
   try {
     const ctx = getCtx();
     const t = ctx.currentTime + delay;
-    const duration = 1.6;
+    const duration = 2.0;
 
-    const bufSize = ctx.sampleRate * duration;
-    const buffer = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufSize; i++) {
-      data[i] = Math.random() * 2 - 1;
+    // --- Voiced groan: sawtooth through formant filters (like a vocal tract) ---
+    // Sawtooth as the "voice source"
+    const voiceSrc = ctx.createOscillator();
+    voiceSrc.type = 'sawtooth';
+    // Pitch starts mid-low and drops — like someone losing energy
+    voiceSrc.frequency.setValueAtTime(160, t);
+    voiceSrc.frequency.setValueAtTime(155, t + 0.1);
+    voiceSrc.frequency.linearRampToValueAtTime(90, t + 0.7);
+    voiceSrc.frequency.linearRampToValueAtTime(60, t + 1.4);
+    voiceSrc.frequency.linearRampToValueAtTime(40, t + duration);
+
+    // Formant 1 — "ah" vowel low formant ~700 Hz
+    const f1 = ctx.createBiquadFilter();
+    f1.type = 'bandpass';
+    f1.frequency.setValueAtTime(700, t);
+    f1.frequency.linearRampToValueAtTime(400, t + duration);
+    f1.Q.value = 4;
+
+    // Formant 2 — "ah" vowel high formant ~1100 Hz
+    const f2 = ctx.createBiquadFilter();
+    f2.type = 'bandpass';
+    f2.frequency.setValueAtTime(1100, t);
+    f2.frequency.linearRampToValueAtTime(600, t + duration);
+    f2.Q.value = 5;
+
+    // Mix formants
+    const groanGain = ctx.createGain();
+    groanGain.gain.setValueAtTime(0.001, t);
+    groanGain.gain.linearRampToValueAtTime(0.55, t + 0.08);  // fast attack
+    groanGain.gain.setValueAtTime(0.55, t + 0.3);
+    groanGain.gain.linearRampToValueAtTime(0.3, t + 1.0);
+    groanGain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+
+    // Route: voiceSrc -> f1 -> groanGain -> destination
+    //                 -> f2 -> groanGain
+    voiceSrc.connect(f1);
+    voiceSrc.connect(f2);
+    f1.connect(groanGain);
+    f2.connect(groanGain);
+    groanGain.connect(ctx.destination);
+
+    voiceSrc.start(t);
+    voiceSrc.stop(t + duration);
+
+    // --- Breathy turbulence mixed in (adds human air/rasp) ---
+    const breathBuf = ctx.createBuffer(1, ctx.sampleRate * duration, ctx.sampleRate);
+    const breathData = breathBuf.getChannelData(0);
+    for (let i = 0; i < breathData.length; i++) {
+      breathData[i] = Math.random() * 2 - 1;
     }
+    const breathSrc = ctx.createBufferSource();
+    breathSrc.buffer = breathBuf;
 
-    const source = ctx.createBufferSource();
-    source.buffer = buffer;
+    const breathLPF = ctx.createBiquadFilter();
+    breathLPF.type = 'lowpass';
+    breathLPF.frequency.setValueAtTime(1800, t);
+    breathLPF.frequency.exponentialRampToValueAtTime(300, t + duration);
 
-    // Low-pass for breath warmth
-    const lpf = ctx.createBiquadFilter();
-    lpf.type = 'lowpass';
-    lpf.frequency.setValueAtTime(900, t);
-    lpf.frequency.exponentialRampToValueAtTime(200, t + duration);
+    const breathGain = ctx.createGain();
+    breathGain.gain.setValueAtTime(0.001, t);
+    breathGain.gain.linearRampToValueAtTime(0.08, t + 0.1);
+    breathGain.gain.exponentialRampToValueAtTime(0.001, t + duration);
 
-    // Bandpass to shape it like a vocal exhale
-    const bpf = ctx.createBiquadFilter();
-    bpf.type = 'bandpass';
-    bpf.frequency.setValueAtTime(400, t);
-    bpf.Q.value = 1.2;
+    breathSrc.connect(breathLPF);
+    breathLPF.connect(breathGain);
+    breathGain.connect(ctx.destination);
+    breathSrc.start(t);
 
-    // Gain envelope: quick rise, slow fade
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.001, t);
-    gain.gain.linearRampToValueAtTime(0.22, t + 0.18);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+    // --- Final thud (body hitting the ground) ---
+    const thudOsc = ctx.createOscillator();
+    thudOsc.type = 'sine';
+    thudOsc.frequency.setValueAtTime(80, t + 1.5);
+    thudOsc.frequency.exponentialRampToValueAtTime(25, t + 1.65);
 
-    source.connect(lpf);
-    lpf.connect(bpf);
-    bpf.connect(gain);
-    gain.connect(ctx.destination);
-    source.start(t);
+    const thudNoiseBuf = ctx.createBuffer(1, ctx.sampleRate * 0.15, ctx.sampleRate);
+    const thudNoiseData = thudNoiseBuf.getChannelData(0);
+    for (let i = 0; i < thudNoiseData.length; i++) {
+      thudNoiseData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / thudNoiseData.length, 1.2);
+    }
+    const thudNoiseSrc = ctx.createBufferSource();
+    thudNoiseSrc.buffer = thudNoiseBuf;
 
-    // Low groan undertone
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(180, t);
-    osc.frequency.exponentialRampToValueAtTime(80, t + duration);
+    const thudNoiseFilter = ctx.createBiquadFilter();
+    thudNoiseFilter.type = 'lowpass';
+    thudNoiseFilter.frequency.value = 300;
 
-    const oscGain = ctx.createGain();
-    oscGain.gain.setValueAtTime(0.001, t);
-    oscGain.gain.linearRampToValueAtTime(0.12, t + 0.2);
-    oscGain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+    const thudGain = ctx.createGain();
+    thudGain.gain.setValueAtTime(0.9, t + 1.5);
+    thudGain.gain.exponentialRampToValueAtTime(0.001, t + 1.7);
 
-    osc.connect(oscGain);
-    oscGain.connect(ctx.destination);
-    osc.start(t);
-    osc.stop(t + duration);
-  } catch (e) {
-    // Audio not available, silently skip
-  }
+    thudOsc.connect(thudGain);
+    thudNoiseSrc.connect(thudNoiseFilter);
+    thudNoiseFilter.connect(thudGain);
+    thudGain.connect(ctx.destination);
+    thudOsc.start(t + 1.5);
+    thudOsc.stop(t + 1.75);
+    thudNoiseSrc.start(t + 1.5);
+
+  } catch (e) {}
 }
 
 // Play 3 staggered sword clangs
 export function playClangs() {
   playSwordClang(0);
-  playSwordClang(0.28);
-  playSwordClang(0.52);
+  playSwordClang(0.32);
+  playSwordClang(0.58);
 }
