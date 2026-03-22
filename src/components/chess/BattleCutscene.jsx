@@ -64,8 +64,8 @@ export default function BattleCutscene({ attacker, defender, onComplete }) {
   const quote = BATTLE_QUOTES[defenderName]?.[Math.floor(Math.random() * 3)] || "A piece falls!";
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase('clash'), 1200);
-    const t2 = setTimeout(() => setPhase('victory'), 2200);
+    const t1 = setTimeout(() => { setPhase('clash'); playClangs(); }, 1200);
+    const t2 = setTimeout(() => { setPhase('victory'); playDeathSigh(0.1); }, 2200);
     const t3 = setTimeout(() => onComplete(), 3800);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [onComplete]);
