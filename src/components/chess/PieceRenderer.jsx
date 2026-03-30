@@ -1,687 +1,628 @@
 import React from 'react';
 
-// ─── SHARED GRADIENT DEFS ─────────────────────────────────────────────────────
-// Each SVG inlines its own <defs> so gradients are self-contained.
+// Dark bronze / aged metal figurine aesthetic
+// White = polished bright bronze/gold
+// Black = dark oxidized bronze/iron
 
 function King({ isWhite }) {
   const id = isWhite ? 'wk' : 'bk';
-  const g = isWhite ? {
-    skin:'#F2C98A', skinD:'#D4A574', hair:'#8B6914', robe:'#FFFFFF', robeD:'#C8C8C8',
-    throne:'#E0E0E0', throneH:'#FFFFFF', gem:'#AAAAAA', crown:'#F0F0F0', crownH:'#FFFFFF',
-    metal:'#D0D0D0', outline:'#333333', shadow:'rgba(0,0,0,0.4)'
+  const b = isWhite ? {
+    base: '#C8960C', baseH: '#F0C040', baseSh: '#7A5A00',
+    metal: '#D4A820', metalH: '#FFE066', metalSh: '#8B6500',
+    skin: '#E8B87A', skinSh: '#A07040',
+    dark: '#5A3A00', outline: '#2A1A00', hi: '#FFF0A0'
   } : {
-    skin:'#C68642', skinD:'#8B5E2A', hair:'#111111', robe:'#111111', robeD:'#000000',
-    throne:'#1A1A1A', throneH:'#333333', gem:'#444444', crown:'#222222', crownH:'#444444',
-    metal:'#2A2A2A', outline:'#000000', shadow:'rgba(0,0,0,0.8)'
+    base: '#2A2018', baseH: '#4A3828', baseSh: '#0A0806',
+    metal: '#1E1A14', metalH: '#3A3028', metalSh: '#080604',
+    skin: '#8A6040', skinSh: '#4A2A10',
+    dark: '#080604', outline: '#000000', hi: '#5A4830'
   };
+
   return (
-    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id={`${id}skin`} cx="50%" cy="40%" r="55%">
-          <stop offset="0%" stopColor={g.skin}/>
-          <stop offset="100%" stopColor={g.skinD}/>
+        <linearGradient id={`${id}mg`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={b.baseH}/>
+          <stop offset="40%" stopColor={b.base}/>
+          <stop offset="100%" stopColor={b.baseSh}/>
+        </linearGradient>
+        <linearGradient id={`${id}mg2`} x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0%" stopColor={b.metalH}/>
+          <stop offset="50%" stopColor={b.metal}/>
+          <stop offset="100%" stopColor={b.metalSh}/>
+        </linearGradient>
+        <radialGradient id={`${id}sg`} cx="40%" cy="30%" r="60%">
+          <stop offset="0%" stopColor={b.skin}/>
+          <stop offset="100%" stopColor={b.skinSh}/>
         </radialGradient>
-        <linearGradient id={`${id}robe`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={g.robe}/>
-          <stop offset="100%" stopColor={g.robeD}/>
-        </linearGradient>
-        <linearGradient id={`${id}throne`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor={g.throneH}/>
-          <stop offset="100%" stopColor={g.throne}/>
-        </linearGradient>
-        <linearGradient id={`${id}crown`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={g.crownH}/>
-          <stop offset="100%" stopColor={g.crown}/>
-        </linearGradient>
-        <filter id={`${id}glow`}><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id={`${id}sh`} x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="1" dy="2" stdDeviation="2" floodColor={b.dark} floodOpacity="0.7"/>
+        </filter>
       </defs>
 
-      {/* Throne back panel */}
-      <rect x="10" y="18" width="60" height="52" rx="5" fill={`url(#${id}throne)`} stroke={g.outline} strokeWidth="1.5"/>
-      <rect x="13" y="21" width="54" height="46" rx="3" fill={`url(#${id}robe)`} stroke={g.outline} strokeWidth="0.8" opacity="0.7"/>
-      {/* Throne side pillars */}
-      <rect x="10" y="18" width="10" height="52" rx="3" fill={`url(#${id}throne)`} stroke={g.outline} strokeWidth="1.2"/>
-      <rect x="60" y="18" width="10" height="52" rx="3" fill={`url(#${id}throne)`} stroke={g.outline} strokeWidth="1.2"/>
-      {/* Throne top arch */}
-      <path d="M10 22 Q40 8 70 22" fill={`url(#${id}throne)`} stroke={g.outline} strokeWidth="1.5"/>
-      {/* Jewels on throne */}
-      <circle cx="40" cy="14" r="3" fill={g.gem} stroke={g.outline} strokeWidth="0.8"/>
-      <ellipse cx="20" cy="22" rx="2" ry="2" fill={g.gem} stroke={g.outline} strokeWidth="0.6"/>
-      <ellipse cx="60" cy="22" rx="2" ry="2" fill={g.gem} stroke={g.outline} strokeWidth="0.6"/>
+      {/* Plinth base */}
+      <ellipse cx="40" cy="94" rx="26" ry="5" fill={b.baseSh} opacity="0.5"/>
+      <rect x="14" y="86" width="52" height="10" rx="3" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <rect x="17" y="84" width="46" height="6" rx="2" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
 
-      {/* Body / robes */}
-      <path d="M24 68 Q25 48 40 46 Q55 48 56 68 Z" fill={`url(#${id}robe)`} stroke={g.outline} strokeWidth="1"/>
+      {/* Robe / figure base flowing down */}
+      <path d="M20 86 Q18 68 22 54 Q26 44 40 42 Q54 44 58 54 Q62 68 60 86 Z"
+        fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2" filter={`url(#${id}sh)`}/>
       {/* Robe folds */}
-      <path d="M30 55 L27 68" stroke={g.outline} strokeWidth="0.6" opacity="0.4"/>
-      <path d="M40 52 L40 68" stroke={g.outline} strokeWidth="0.6" opacity="0.4"/>
-      <path d="M50 55 L53 68" stroke={g.outline} strokeWidth="0.6" opacity="0.4"/>
+      <path d="M26 56 Q27 70 26 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.5"/>
+      <path d="M33 52 Q34 68 33 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.4"/>
+      <path d="M40 50 L40 85" stroke={b.metalH} strokeWidth="0.7" fill="none" opacity="0.4"/>
+      <path d="M47 52 Q46 68 47 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.4"/>
+      <path d="M54 56 Q53 70 54 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.5"/>
       {/* Belt / sash */}
-      <path d="M27 54 Q40 52 53 54" stroke={g.metal} strokeWidth="2" fill="none" strokeLinecap="round"/>
+      <path d="M22 60 Q40 57 58 60" stroke={b.metalH} strokeWidth="2" fill="none" strokeLinecap="round"/>
+      <path d="M22 60 Q40 62 58 60" stroke={b.baseSh} strokeWidth="1" fill="none" strokeLinecap="round"/>
 
-      {/* Arms resting on throne arms */}
-      <path d="M20 46 Q18 52 19 58" stroke={g.outline} strokeWidth="5" strokeLinecap="round" fill="none" strokeOpacity="0.15"/>
-      <path d="M20 46 Q18 52 19 58" stroke={g.robe} strokeWidth="4" strokeLinecap="round" fill="none"/>
-      <path d="M60 46 Q62 52 61 58" stroke={g.outline} strokeWidth="5" strokeLinecap="round" fill="none" strokeOpacity="0.15"/>
-      <path d="M60 46 Q62 52 61 58" stroke={g.robe} strokeWidth="4" strokeLinecap="round" fill="none"/>
+      {/* Arms outstretched regally */}
+      <path d="M22 54 Q12 52 8 56 Q8 62 12 62 Q16 60 20 58" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
+      <path d="M58 54 Q68 52 72 56 Q72 62 68 62 Q64 60 60 58" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
       {/* Hands */}
-      <ellipse cx="19" cy="59" rx="3" ry="2" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
-      <ellipse cx="61" cy="59" rx="3" ry="2" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
+      <ellipse cx="8" cy="59" rx="4" ry="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
+      <ellipse cx="72" cy="59" rx="4" ry="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
+
+      {/* Orb in left hand */}
+      <circle cx="8" cy="59" r="4" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.7"/>
+      <circle cx="7" cy="58" r="1.5" fill={b.hi} opacity="0.7"/>
+
+      {/* Scepter in right hand */}
+      <line x1="72" y1="59" x2="74" y2="30" stroke={`url(#${id}mg)`} strokeWidth="2.5" strokeLinecap="round"/>
+      <path d="M74 30 L71 25 L74 22 L77 25 Z" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
+      <circle cx="74" cy="22" r="3" fill={b.metalH} stroke={b.outline} strokeWidth="0.7"/>
 
       {/* Neck */}
-      <rect x="36" y="38" width="8" height="9" rx="2" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
+      <rect x="36" y="36" width="8" height="8" rx="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
 
       {/* Head */}
-      <ellipse cx="40" cy="33" rx="12" ry="13" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="1"/>
-      {/* Ear */}
-      <ellipse cx="28.5" cy="33" rx="2.5" ry="3" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
-      <ellipse cx="51.5" cy="33" rx="2.5" ry="3" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
-      {/* Hair / beard */}
-      <path d="M29 28 Q31 22 40 21 Q49 22 51 28" fill={g.hair} stroke={g.outline} strokeWidth="0.7"/>
-      <path d="M30 38 Q33 45 40 46 Q47 45 50 38" fill={g.hair} stroke={g.outline} strokeWidth="0.7"/>
-      <path d="M30 40 Q35 48 40 48 Q45 48 50 40" fill={g.hair} opacity="0.5"/>
-      {/* Eyes */}
-      <ellipse cx="35.5" cy="32" rx="3" ry="2.5" fill="white" stroke={g.outline} strokeWidth="0.6"/>
-      <ellipse cx="44.5" cy="32" rx="3" ry="2.5" fill="white" stroke={g.outline} strokeWidth="0.6"/>
-      <circle cx="36" cy="32.5" r="1.8" fill={isWhite ? '#4A3020' : '#5C0A8C'}/>
-      <circle cx="45" cy="32.5" r="1.8" fill={isWhite ? '#4A3020' : '#5C0A8C'}/>
-      <circle cx="36.7" cy="31.8" r="0.6" fill="white"/>
-      <circle cx="45.7" cy="31.8" r="0.6" fill="white"/>
-      {/* Eyebrows */}
-      <path d="M33 29.5 Q35.5 28.5 38 29.5" stroke={g.hair} strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-      <path d="M42 29.5 Q44.5 28.5 47 29.5" stroke={g.hair} strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <ellipse cx="40" cy="28" rx="12" ry="13" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="1.2"/>
+      {/* Cheekbones / face structure */}
+      <path d="M29 30 Q31 38 40 40 Q49 38 51 30" fill={b.skinSh} opacity="0.3"/>
+      {/* Regal beard */}
+      <path d="M30 36 Q32 46 40 48 Q48 46 50 36" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8"/>
+      <path d="M32 38 L31 46" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
+      <path d="M36 38 L35 46" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
+      <path d="M40 38 L40 48" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
+      <path d="M44 38 L45 46" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
+      <path d="M48 38 L49 46" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
+      {/* Eyes - commanding */}
+      <ellipse cx="35" cy="27" rx="3.5" ry="2.5" fill={b.dark}/>
+      <ellipse cx="45" cy="27" rx="3.5" ry="2.5" fill={b.dark}/>
+      <circle cx="35.8" cy="26.5" r="1" fill={b.hi} opacity="0.6"/>
+      <circle cx="45.8" cy="26.5" r="1" fill={b.hi} opacity="0.6"/>
       {/* Nose */}
-      <path d="M39 33 Q38.5 36 40 37 Q41.5 36 41 33" stroke={g.skinD} strokeWidth="0.7" fill="none" strokeLinecap="round"/>
-      {/* Mouth / stern expression */}
-      <path d="M36 39 Q40 40.5 44 39" stroke={g.outline} strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M38.5 28 Q38 31 40 32 Q42 31 41.5 28" stroke={b.skinSh} strokeWidth="0.8" fill="none"/>
+      {/* Stern mouth */}
+      <path d="M35.5 34 Q40 35.5 44.5 34" stroke={b.outline} strokeWidth="1" fill="none" strokeLinecap="round"/>
 
-      {/* Crown */}
-      <path d="M29 26 L32 18 L37 23 L40 15 L43 23 L48 18 L51 26 Z" fill={`url(#${id}crown)`} stroke={g.outline} strokeWidth="1.2" filter={`url(#${id}glow)`}/>
-      <rect x="29" y="24" width="22" height="4" rx="1.5" fill={`url(#${id}crown)`} stroke={g.outline} strokeWidth="0.8"/>
+      {/* Imperial Crown */}
+      <path d="M29 24 L31 14 L35 20 L40 10 L45 20 L49 14 L51 24 Z"
+        fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="1.2"/>
+      <rect x="29" y="22" width="22" height="4" rx="2" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8"/>
       {/* Crown gems */}
-      <circle cx="40" cy="16" r="2.2" fill={g.gem} stroke={g.outline} strokeWidth="0.7"/>
-      <circle cx="32" cy="19" r="1.5" fill={isWhite ? '#3498DB' : '#FFD700'} stroke={g.outline} strokeWidth="0.6"/>
-      <circle cx="48" cy="19" r="1.5" fill={isWhite ? '#3498DB' : '#FFD700'} stroke={g.outline} strokeWidth="0.6"/>
-
-      {/* Base */}
-      <rect x="8" y="68" width="64" height="8" rx="3" fill={`url(#${id}throne)`} stroke={g.outline} strokeWidth="1.2"/>
-      <rect x="12" y="70" width="56" height="4" rx="2" fill={g.metal} opacity="0.3"/>
+      <circle cx="40" cy="11" r="2.5" fill={isWhite ? '#FF4444' : '#884400'} stroke={b.outline} strokeWidth="0.6"/>
+      <circle cx="32" cy="15" r="1.8" fill={isWhite ? '#4488FF' : '#664400'} stroke={b.outline} strokeWidth="0.5"/>
+      <circle cx="48" cy="15" r="1.8" fill={isWhite ? '#4488FF' : '#664400'} stroke={b.outline} strokeWidth="0.5"/>
+      {/* Crown highlight */}
+      <path d="M31 23 Q40 21 49 23" stroke={b.hi} strokeWidth="0.8" opacity="0.6" fill="none"/>
     </svg>
   );
 }
 
 function Queen({ isWhite }) {
   const id = isWhite ? 'wq' : 'bq';
-  const g = isWhite ? {
-    skin:'#F2C98A', skinD:'#D4A574', hair:'#8B6914', robe:'#FFFFFF', robeD:'#DDDDDD',
-    throne:'#E8E8E8', throneH:'#FFFFFF', gem:'#BBBBBB', crown:'#F0F0F0', crownH:'#FFFFFF',
-    metal:'#D0D0D0', gown:'#F5F5F5', outline:'#333333', shadow:'rgba(0,0,0,0.4)'
+  const b = isWhite ? {
+    base: '#C8960C', baseH: '#F0C040', baseSh: '#7A5A00',
+    metal: '#D4A820', metalH: '#FFE066', metalSh: '#8B6500',
+    skin: '#E8B87A', skinSh: '#A07040',
+    hair: '#6A3A10', dark: '#5A3A00', outline: '#2A1A00', hi: '#FFF0A0'
   } : {
-    skin:'#C68642', skinD:'#8B5E2A', hair:'#111111', robe:'#111111', robeD:'#000000',
-    throne:'#1A1A1A', throneH:'#333333', gem:'#333333', crown:'#1A1A1A', crownH:'#333333',
-    metal:'#222222', gown:'#0A0A0A', outline:'#000000', shadow:'rgba(0,0,0,0.8)'
+    base: '#2A2018', baseH: '#4A3828', baseSh: '#0A0806',
+    metal: '#1E1A14', metalH: '#3A3028', metalSh: '#080604',
+    skin: '#8A6040', skinSh: '#4A2A10',
+    hair: '#1A1010', dark: '#080604', outline: '#000000', hi: '#5A4830'
   };
+
   return (
-    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id={`${id}skin`} cx="50%" cy="35%" r="55%">
-          <stop offset="0%" stopColor={g.skin}/>
-          <stop offset="100%" stopColor={g.skinD}/>
-        </radialGradient>
-        <linearGradient id={`${id}gown`} x1="0" y1="0" x2="0.3" y2="1">
-          <stop offset="0%" stopColor={g.gown}/>
-          <stop offset="100%" stopColor={g.robe}/>
+        <linearGradient id={`${id}mg`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={b.baseH}/><stop offset="40%" stopColor={b.base}/><stop offset="100%" stopColor={b.baseSh}/>
         </linearGradient>
-        <linearGradient id={`${id}throne`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor={g.throneH}/>
-          <stop offset="100%" stopColor={g.throne}/>
+        <linearGradient id={`${id}mg2`} x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0%" stopColor={b.metalH}/><stop offset="50%" stopColor={b.metal}/><stop offset="100%" stopColor={b.metalSh}/>
         </linearGradient>
-        <radialGradient id={`${id}hair`} cx="50%" cy="0%" r="80%">
-          <stop offset="0%" stopColor={isWhite ? '#C87941' : '#3D0050'}/>
-          <stop offset="100%" stopColor={g.hair}/>
+        <radialGradient id={`${id}sg`} cx="40%" cy="30%" r="60%">
+          <stop offset="0%" stopColor={b.skin}/><stop offset="100%" stopColor={b.skinSh}/>
         </radialGradient>
-        <filter id={`${id}glow`}><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id={`${id}sh`} x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="1" dy="2" stdDeviation="2" floodColor={b.dark} floodOpacity="0.7"/>
+        </filter>
       </defs>
 
-      {/* Throne */}
-      <rect x="10" y="18" width="60" height="52" rx="5" fill={`url(#${id}throne)`} stroke={g.outline} strokeWidth="1.5"/>
-      <rect x="10" y="18" width="10" height="52" rx="3" fill={`url(#${id}throne)`} stroke={g.outline} strokeWidth="1.2"/>
-      <rect x="60" y="18" width="10" height="52" rx="3" fill={`url(#${id}throne)`} stroke={g.outline} strokeWidth="1.2"/>
-      <path d="M10 22 Q40 8 70 22" fill={`url(#${id}throne)`} stroke={g.outline} strokeWidth="1.5"/>
-      <circle cx="40" cy="13" r="3.5" fill={g.gem} stroke={g.outline} strokeWidth="0.8"/>
-      <circle cx="20" cy="21" r="2" fill={isWhite ? '#9B59B6' : '#FFD700'} stroke={g.outline} strokeWidth="0.6"/>
-      <circle cx="60" cy="21" r="2" fill={isWhite ? '#9B59B6' : '#FFD700'} stroke={g.outline} strokeWidth="0.6"/>
+      {/* Plinth */}
+      <ellipse cx="40" cy="94" rx="26" ry="5" fill={b.baseSh} opacity="0.5"/>
+      <rect x="14" y="86" width="52" height="10" rx="3" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <rect x="17" y="84" width="46" height="6" rx="2" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
 
       {/* Wide elegant gown */}
-      <path d="M20 70 Q18 52 40 48 Q62 52 60 70 Z" fill={`url(#${id}gown)`} stroke={g.outline} strokeWidth="1"/>
-      {/* Gown layers / folds */}
-      <path d="M25 58 Q40 55 55 58 Q54 64 40 66 Q26 64 25 58 Z" fill={g.robe} stroke={g.outline} strokeWidth="0.6" opacity="0.6"/>
-      <path d="M22 65 Q40 62 58 65" stroke={g.metal} strokeWidth="1" fill="none" opacity="0.7"/>
-      <path d="M22 68 Q40 65 58 68" stroke={g.metal} strokeWidth="1" fill="none" opacity="0.5"/>
-      {/* Bodice */}
-      <path d="M29 48 Q40 46 51 48 L51 55 Q40 53 29 55 Z" fill={g.robe} stroke={g.outline} strokeWidth="0.8"/>
-      <path d="M34 49 L34 55" stroke={g.metal} strokeWidth="0.7" opacity="0.6"/>
-      <path d="M40 48 L40 55" stroke={g.metal} strokeWidth="0.7" opacity="0.6"/>
-      <path d="M46 49 L46 55" stroke={g.metal} strokeWidth="0.7" opacity="0.6"/>
+      <path d="M16 86 Q14 66 20 52 Q26 42 40 40 Q54 42 60 52 Q66 66 64 86 Z"
+        fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2" filter={`url(#${id}sh)`}/>
+      {/* Gown layers */}
+      <path d="M20 68 Q40 64 60 68 Q58 78 40 80 Q22 78 20 68 Z" fill={b.baseH} stroke={b.outline} strokeWidth="0.5" opacity="0.35"/>
+      <path d="M18 78 Q40 74 62 78" stroke={b.metalH} strokeWidth="1" fill="none" opacity="0.5"/>
+      {/* Bodice detail */}
+      <path d="M27 50 Q40 47 53 50 L52 60 Q40 58 28 60 Z" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
+      <path d="M32 52 L32 58" stroke={b.hi} strokeWidth="0.6" opacity="0.5"/>
+      <path d="M40 50 L40 58" stroke={b.hi} strokeWidth="0.6" opacity="0.5"/>
+      <path d="M48 52 L48 58" stroke={b.hi} strokeWidth="0.6" opacity="0.5"/>
+      {/* Necklace */}
+      <path d="M32 44 Q40 48 48 44" stroke={b.metalH} strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+      <circle cx="40" cy="47" r="2" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.5"/>
 
-      {/* Arms - graceful pose */}
-      <path d="M29 49 Q22 52 20 58" stroke={g.gown} strokeWidth="5" strokeLinecap="round" fill="none"/>
-      <path d="M51 49 Q58 52 60 58" stroke={g.gown} strokeWidth="5" strokeLinecap="round" fill="none"/>
-      <ellipse cx="19.5" cy="59" rx="3.5" ry="2" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
-      <ellipse cx="60.5" cy="59" rx="3.5" ry="2" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
+      {/* Arms - graceful */}
+      <path d="M27 50 Q18 54 14 62" fill="none" stroke={`url(#${id}mg)`} strokeWidth="6" strokeLinecap="round"/>
+      <path d="M53 50 Q62 54 66 62" fill="none" stroke={`url(#${id}mg)`} strokeWidth="6" strokeLinecap="round"/>
+      <ellipse cx="13" cy="63" rx="4" ry="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
+      <ellipse cx="67" cy="63" rx="4" ry="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
 
       {/* Neck */}
-      <path d="M36 40 Q40 38 44 40 L44 48 Q40 46 36 48 Z" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
-      {/* Necklace */}
-      <path d="M36 42 Q40 45 44 42" stroke={g.metal} strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-      <circle cx="40" cy="44.5" r="1.5" fill={g.gem} stroke={g.outline} strokeWidth="0.5"/>
+      <rect x="36" y="33" width="8" height="9" rx="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
 
       {/* Head */}
-      <ellipse cx="40" cy="33" rx="11.5" ry="12.5" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="1"/>
-      <ellipse cx="29" cy="33" rx="2" ry="3" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
-      <ellipse cx="51" cy="33" rx="2" ry="3" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
+      <ellipse cx="40" cy="25" rx="11.5" ry="12.5" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="1.2"/>
+      {/* Flowing hair */}
+      <path d="M29 22 Q27 32 28 42" fill={b.hair} stroke={b.outline} strokeWidth="0.7" opacity="0.9"/>
+      <path d="M51 22 Q53 32 52 42" fill={b.hair} stroke={b.outline} strokeWidth="0.7" opacity="0.9"/>
+      <path d="M29 20 Q31 14 40 12 Q49 14 51 20" fill={b.hair} stroke={b.outline} strokeWidth="0.7"/>
+      {/* Hair strands */}
+      <path d="M29 24 Q26 34 27 44" stroke={b.dark} strokeWidth="0.5" fill="none" opacity="0.5"/>
+      <path d="M51 24 Q54 34 53 44" stroke={b.dark} strokeWidth="0.5" fill="none" opacity="0.5"/>
+      {/* Face details */}
+      <ellipse cx="35" cy="24" rx="3" ry="2.5" fill={b.dark}/>
+      <ellipse cx="45" cy="24" rx="3" ry="2.5" fill={b.dark}/>
+      <circle cx="35.8" cy="23.5" r="1" fill={b.hi} opacity="0.5"/>
+      <circle cx="45.8" cy="23.5" r="1" fill={b.hi} opacity="0.5"/>
+      <path d="M38 27 Q38.5 29.5 40 30.5 Q41.5 29.5 42 27" stroke={b.skinSh} strokeWidth="0.7" fill="none"/>
+      <path d="M36 32 Q40 34 44 32" stroke={b.outline} strokeWidth="0.9" fill="none" strokeLinecap="round"/>
 
-      {/* Hair - flowing */}
-      <path d="M29 28 Q31 20 40 19 Q49 20 51 28" fill={`url(#${id}hair)`} stroke={g.outline} strokeWidth="0.8"/>
-      <path d="M29 30 Q26 40 27 48" stroke={`url(#${id}hair)`} strokeWidth="5" strokeLinecap="round" fill="none"/>
-      <path d="M51 30 Q54 40 53 48" stroke={`url(#${id}hair)`} strokeWidth="5" strokeLinecap="round" fill="none"/>
-      <path d="M29 30 Q27 38 28 46" fill={g.hair} stroke={g.outline} strokeWidth="0.5" opacity="0.7"/>
-
-      {/* Eyes */}
-      <ellipse cx="36" cy="31.5" rx="3.2" ry="2.5" fill="white" stroke={g.outline} strokeWidth="0.6"/>
-      <ellipse cx="44" cy="31.5" rx="3.2" ry="2.5" fill="white" stroke={g.outline} strokeWidth="0.6"/>
-      {/* Lashes */}
-      <path d="M33 30 Q34 28.5 36 29.5" stroke={g.outline} strokeWidth="0.8" fill="none"/>
-      <path d="M47 30 Q46 28.5 44 29.5" stroke={g.outline} strokeWidth="0.8" fill="none"/>
-      <circle cx="36.5" cy="32" r="1.8" fill={isWhite ? '#6B3A2A' : '#6A0DAD'}/>
-      <circle cx="44.5" cy="32" r="1.8" fill={isWhite ? '#6B3A2A' : '#6A0DAD'}/>
-      <circle cx="37.2" cy="31.3" r="0.6" fill="white"/>
-      <circle cx="45.2" cy="31.3" r="0.6" fill="white"/>
-      {/* Eyebrows - arched */}
-      <path d="M33.5 29 Q36 27.5 38.5 29" stroke={g.hair} strokeWidth="1" fill="none" strokeLinecap="round"/>
-      <path d="M41.5 29 Q44 27.5 46.5 29" stroke={g.hair} strokeWidth="1" fill="none" strokeLinecap="round"/>
-      {/* Nose */}
-      <path d="M39 33 Q38.5 35.5 40 36.5 Q41.5 35.5 41 33" stroke={g.skinD} strokeWidth="0.7" fill="none"/>
-      {/* Lips */}
-      <path d="M36.5 38.5 Q40 40.5 43.5 38.5" fill={isWhite ? '#C0392B' : '#E91E8C'} stroke={g.outline} strokeWidth="0.5"/>
-      <path d="M36.5 38.5 Q40 37 43.5 38.5" fill={isWhite ? '#E8998D' : '#F48FB1'} stroke={g.outline} strokeWidth="0.5"/>
-
-      {/* Tiara / crown */}
-      <path d="M29 26 L31 19 L34.5 23 L37 17 L40 14 L43 17 L45.5 23 L49 19 L51 26 Z" fill={`url(#${id}throne)`} stroke={g.outline} strokeWidth="1" filter={`url(#${id}glow)`}/>
-      <rect x="29" y="24" width="22" height="3.5" rx="1.5" fill={g.metal} stroke={g.outline} strokeWidth="0.7"/>
-      <circle cx="40" cy="14.5" r="2.5" fill={g.gem} stroke={g.outline} strokeWidth="0.7"/>
-      <circle cx="34.5" cy="18" r="1.5" fill={isWhite ? '#2980B9' : '#FFD700'} stroke={g.outline} strokeWidth="0.5"/>
-      <circle cx="45.5" cy="18" r="1.5" fill={isWhite ? '#2980B9' : '#FFD700'} stroke={g.outline} strokeWidth="0.5"/>
-
-      {/* Base */}
-      <rect x="8" y="68" width="64" height="8" rx="3" fill={`url(#${id}throne)`} stroke={g.outline} strokeWidth="1.2"/>
+      {/* Tall queen crown with points */}
+      <path d="M29 20 L30 9 L33 16 L36.5 8 L40 4 L43.5 8 L47 16 L50 9 L51 20 Z"
+        fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="1.2"/>
+      <rect x="29" y="18" width="22" height="4" rx="2" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8"/>
+      <circle cx="40" cy="5" r="2.5" fill={isWhite ? '#FF88AA' : '#884422'} stroke={b.outline} strokeWidth="0.6"/>
+      <circle cx="33" cy="9" r="1.8" fill={isWhite ? '#AADDFF' : '#446622'} stroke={b.outline} strokeWidth="0.5"/>
+      <circle cx="47" cy="9" r="1.8" fill={isWhite ? '#AADDFF' : '#446622'} stroke={b.outline} strokeWidth="0.5"/>
+      <path d="M31 19 Q40 17 49 19" stroke={b.hi} strokeWidth="0.7" opacity="0.6" fill="none"/>
     </svg>
   );
 }
 
 function Knight({ isWhite }) {
   const id = isWhite ? 'wn' : 'bn';
-  const g = isWhite ? {
-    skin:'#F2C98A', skinD:'#D4A574',
-    armor:'#F0F0F0', armorD:'#C0C0C0', armorH:'#FFFFFF',
-    horse:'#C8BEB0', horseD:'#A09080', horseMane:'#888080',
-    accent:'#D8D8D8', plume:'#E0E0E0',
-    outline:'#333333', cloth:'#C0C0C0'
+  const b = isWhite ? {
+    base: '#C8960C', baseH: '#F0C040', baseSh: '#7A5A00',
+    metal: '#D4A820', metalH: '#FFE066', metalSh: '#8B6500',
+    horse: '#B8A070', horseH: '#D8C090', horseSh: '#685030',
+    dark: '#5A3A00', outline: '#2A1A00', hi: '#FFF0A0'
   } : {
-    skin:'#C68642', skinD:'#8B5E2A',
-    armor:'#111111', armorD:'#000000', armorH:'#2A2A2A',
-    horse:'#1A1410', horseD:'#0A0A08', horseMane:'#050505',
-    accent:'#222222', plume:'#1A1A1A',
-    outline:'#000000', cloth:'#111111'
+    base: '#2A2018', baseH: '#4A3828', baseSh: '#0A0806',
+    metal: '#1E1A14', metalH: '#3A3028', metalSh: '#080604',
+    horse: '#181410', horseH: '#282018', horseSh: '#080604',
+    dark: '#080604', outline: '#000000', hi: '#5A4830'
   };
+
   return (
-    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id={`${id}skin`} cx="45%" cy="35%" r="60%">
-          <stop offset="0%" stopColor={g.skin}/><stop offset="100%" stopColor={g.skinD}/>
-        </radialGradient>
-        <linearGradient id={`${id}armor`} x1="0" y1="0" x2="0.4" y2="1">
-          <stop offset="0%" stopColor={g.armorH}/><stop offset="60%" stopColor={g.armor}/><stop offset="100%" stopColor={g.armorD}/>
+        <linearGradient id={`${id}mg`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={b.baseH}/><stop offset="40%" stopColor={b.base}/><stop offset="100%" stopColor={b.baseSh}/>
         </linearGradient>
-        <radialGradient id={`${id}horse`} cx="40%" cy="30%" r="65%">
-          <stop offset="0%" stopColor={g.horse}/><stop offset="100%" stopColor={g.horseD}/>
+        <linearGradient id={`${id}mg2`} x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0%" stopColor={b.metalH}/><stop offset="50%" stopColor={b.metal}/><stop offset="100%" stopColor={b.metalSh}/>
+        </linearGradient>
+        <radialGradient id={`${id}hg`} cx="35%" cy="25%" r="65%">
+          <stop offset="0%" stopColor={b.horseH}/><stop offset="100%" stopColor={b.horseSh}/>
         </radialGradient>
+        <filter id={`${id}sh`} x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="1" dy="2" stdDeviation="2" floodColor={b.dark} floodOpacity="0.7"/>
+        </filter>
       </defs>
 
-      {/* Horse body (rearing pose) */}
-      <path d="M12 72 Q14 58 18 50 Q20 44 18 38 Q17 30 22 24 Q26 20 28 26 Q30 22 34 22 Q38 20 40 24 Q44 20 46 26 Q50 28 48 36 Q46 44 48 54 Q52 62 54 72 Z"
-        fill={`url(#${id}horse)`} stroke={g.outline} strokeWidth="1.2"/>
-      {/* Horse head */}
-      <path d="M18 38 Q14 30 16 22 Q18 16 22 14 Q26 12 28 16 Q32 14 34 18 Q38 16 38 22 Q36 26 32 28 Q28 32 28 36 Q24 40 20 40 Z"
-        fill={`url(#${id}horse)`} stroke={g.outline} strokeWidth="1.2"/>
-      {/* Horse nostril */}
-      <ellipse cx="22" cy="22" rx="1.5" ry="1" fill={g.horseD} stroke={g.outline} strokeWidth="0.5"/>
-      {/* Horse eye */}
-      <circle cx="30" cy="19" r="2" fill={g.horseMane} stroke={g.outline} strokeWidth="0.7"/>
-      <circle cx="30.6" cy="18.4" r="0.7" fill="white" opacity="0.8"/>
-      {/* Horse mouth */}
-      <path d="M18 24 Q20 26 22 24" stroke={g.outline} strokeWidth="0.8" fill="none" strokeLinecap="round"/>
-      {/* Mane */}
-      <path d="M28 16 Q26 10 24 8 Q28 9 30 12 Q32 8 34 7 Q35 12 34 16 Q32 14 30 16 Q29 13 28 16"
-        fill={g.horseMane} stroke={g.outline} strokeWidth="0.7"/>
-      {/* Horse forelegs raised */}
-      <path d="M22 50 Q18 58 16 66 Q18 68 20 66 Q22 60 25 54" fill={g.horse} stroke={g.outline} strokeWidth="1" strokeLinejoin="round"/>
-      <path d="M36 52 Q32 60 30 68 Q32 70 34 68 Q36 62 38 56" fill={g.horse} stroke={g.outline} strokeWidth="1" strokeLinejoin="round"/>
-      {/* Hind legs */}
-      <rect x="40" y="58" width="7" height="14" rx="2" fill={g.horse} stroke={g.outline} strokeWidth="1"/>
-      <rect x="50" y="58" width="7" height="14" rx="2" fill={g.horse} stroke={g.outline} strokeWidth="1"/>
-      {/* Hooves */}
-      <rect x="14" y="64" width="8" height="5" rx="2" fill={g.horseD} stroke={g.outline} strokeWidth="0.8"/>
-      <rect x="28" y="66" width="8" height="5" rx="2" fill={g.horseD} stroke={g.outline} strokeWidth="0.8"/>
-      <rect x="39" y="70" width="9" height="5" rx="2" fill={g.horseD} stroke={g.outline} strokeWidth="0.8"/>
-      <rect x="49" y="70" width="9" height="5" rx="2" fill={g.horseD} stroke={g.outline} strokeWidth="0.8"/>
-      {/* Tail */}
-      <path d="M54 60 Q62 55 64 48 Q66 42 62 38" stroke={g.horseMane} strokeWidth="4" fill="none" strokeLinecap="round"/>
-      <path d="M54 60 Q64 58 66 52 Q68 46 64 40" stroke={g.horseMane} strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.6"/>
+      {/* Plinth */}
+      <ellipse cx="40" cy="94" rx="26" ry="5" fill={b.baseSh} opacity="0.5"/>
+      <rect x="14" y="86" width="52" height="10" rx="3" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <rect x="17" y="84" width="46" height="6" rx="2" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
 
-      {/* Rider - sitting astride */}
-      {/* Rider legs */}
-      <path d="M30 48 Q24 52 22 60" stroke={g.armor} strokeWidth="6" strokeLinecap="round" fill="none"/>
-      <path d="M46 48 Q52 52 54 60" stroke={g.armor} strokeWidth="6" strokeLinecap="round" fill="none"/>
-      {/* Knee guards */}
-      <circle cx="23" cy="58" r="3.5" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="0.8"/>
-      <circle cx="53" cy="58" r="3.5" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="0.8"/>
-      {/* Torso armor - breastplate */}
-      <path d="M28 30 Q28 24 38 22 Q48 24 48 30 L46 46 Q40 44 34 46 Z"
-        fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1.2"/>
-      {/* Breastplate detail */}
-      <path d="M33 26 Q38 24.5 43 26 L42 40 Q38 38.5 34 40 Z" fill={g.armorH} stroke={g.outline} strokeWidth="0.5" opacity="0.5"/>
-      <line x1="38" y1="24" x2="38" y2="42" stroke={g.outline} strokeWidth="0.8" opacity="0.4"/>
+      {/* Horse body rearing */}
+      <path d="M14 84 Q16 68 20 58 Q22 50 20 40 Q18 30 24 22 Q28 16 32 20 Q34 15 38 14 Q44 14 46 20 Q52 18 54 26 Q58 32 54 44 Q52 54 56 68 Q58 76 60 84 Z"
+        fill={`url(#${id}hg)`} stroke={b.outline} strokeWidth="1.2" filter={`url(#${id}sh)`}/>
+
+      {/* Armor barding on horse */}
+      <path d="M28 50 Q40 47 52 50 Q52 58 40 60 Q28 58 28 50 Z"
+        fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8" opacity="0.8"/>
+
+      {/* Horse neck & head */}
+      <path d="M20 40 Q16 28 18 18 Q20 10 26 8 Q32 6 36 12 Q40 10 44 14"
+        fill={`url(#${id}hg)`} stroke={b.outline} strokeWidth="1.2"/>
+      {/* Muzzle */}
+      <path d="M18 18 Q14 20 14 26 Q16 30 20 28" fill={`url(#${id}hg)`} stroke={b.outline} strokeWidth="1"/>
+      <ellipse cx="15" cy="24" rx="2" ry="1.5" fill={b.horseSh}/>
+      {/* Horse eye */}
+      <circle cx="26" cy="14" r="2.5" fill={b.dark} stroke={b.outline} strokeWidth="0.7"/>
+      <circle cx="26.8" cy="13.2" r="0.8" fill={b.hi} opacity="0.7"/>
+      {/* Mane */}
+      <path d="M26 8 Q22 2 20 0 Q24 4 26 6 Q28 2 30 0 Q30 5 28 8 Q30 4 32 4 Q30 8 28 10"
+        fill={b.dark} stroke={b.outline} strokeWidth="0.6"/>
+      {/* Bridle */}
+      <path d="M18 18 Q22 16 28 14" stroke={`url(#${id}mg)`} strokeWidth="1.5" fill="none"/>
+      <path d="M18 22 Q22 22 26 20" stroke={`url(#${id}mg)`} strokeWidth="1.5" fill="none"/>
+
+      {/* Front raised legs */}
+      <path d="M22 62 Q16 70 14 80 Q16 82 18 80 Q20 74 24 66" fill={`url(#${id}hg)`} stroke={b.outline} strokeWidth="1"/>
+      <rect x="13" y="78" width="7" height="6" rx="2" fill={b.horseSh} stroke={b.outline} strokeWidth="0.8"/>
+      <path d="M36 58 Q30 66 28 78 Q30 80 33 78 Q34 72 38 64" fill={`url(#${id}hg)`} stroke={b.outline} strokeWidth="1"/>
+      <rect x="27" y="76" width="7" height="6" rx="2" fill={b.horseSh} stroke={b.outline} strokeWidth="0.8"/>
+      {/* Back legs */}
+      <rect x="44" y="62" width="8" height="24" rx="3" fill={`url(#${id}hg)`} stroke={b.outline} strokeWidth="1"/>
+      <rect x="54" y="62" width="8" height="24" rx="3" fill={`url(#${id}hg)`} stroke={b.outline} strokeWidth="1"/>
+      <rect x="43" y="82" width="10" height="6" rx="2" fill={b.horseSh} stroke={b.outline} strokeWidth="0.8"/>
+      <rect x="53" y="82" width="10" height="6" rx="2" fill={b.horseSh} stroke={b.outline} strokeWidth="0.8"/>
+      {/* Tail */}
+      <path d="M58 68 Q68 60 70 52 Q72 44 68 38" stroke={b.dark} strokeWidth="4" fill="none" strokeLinecap="round"/>
+      <path d="M58 68 Q70 65 72 56 Q74 48 70 42" stroke={b.horseSh} strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.5"/>
+
+      {/* Rider torso - armored */}
+      <path d="M28 32 Q28 24 40 22 Q52 24 52 32 L50 50 Q40 48 30 50 Z"
+        fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <path d="M34 26 Q40 24 46 26 L45 44 Q40 42 35 44 Z" fill={b.metalH} stroke="none" opacity="0.25"/>
       {/* Pauldrons */}
-      <ellipse cx="27" cy="28" rx="5" ry="3.5" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1" transform="rotate(-20 27 28)"/>
-      <ellipse cx="49" cy="28" rx="5" ry="3.5" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1" transform="rotate(20 49 28)"/>
+      <ellipse cx="26" cy="28" rx="6" ry="4" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8" transform="rotate(-20 26 28)"/>
+      <ellipse cx="54" cy="28" rx="6" ry="4" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8" transform="rotate(20 54 28)"/>
       {/* Sword arm */}
-      <path d="M48 30 Q54 26 58 20" stroke={`url(#${id}armor)`} strokeWidth="5" strokeLinecap="round" fill="none"/>
-      {/* Sword */}
-      <line x1="56" y1="22" x2="68" y2="6" stroke={g.armorH} strokeWidth="2" strokeLinecap="round"/>
-      <path d="M56 22 L52 20 L54 24 Z" fill={g.accent} stroke={g.outline} strokeWidth="0.7"/>
-      <rect x="57" y="19" width="6" height="1.5" rx="0.5" fill={g.accent} stroke={g.outline} strokeWidth="0.5" transform="rotate(-45 60 20)"/>
+      <path d="M52 30 Q60 24 64 16" stroke={`url(#${id}mg)`} strokeWidth="6" strokeLinecap="round" fill="none"/>
+      <line x1="63" y1="18" x2="74" y2="2" stroke={b.metalH} strokeWidth="2.5" strokeLinecap="round"/>
+      <path d="M62 20 L59 16 L65 16 Z" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.7"/>
       {/* Shield arm */}
-      <path d="M28 30 Q22 34 20 40" stroke={`url(#${id}armor)`} strokeWidth="5" strokeLinecap="round" fill="none"/>
-      <path d="M16 36 Q13 42 16 48 Q22 50 26 46 Q28 40 26 36 Z" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1"/>
-      <path d="M19 38 Q16 42 19 46 Q22 47 24 44 Q25 41 24 38 Z" fill={g.accent} stroke={g.outline} strokeWidth="0.5" opacity="0.6"/>
+      <path d="M28 30 Q20 34 16 42" stroke={`url(#${id}mg)`} strokeWidth="6" strokeLinecap="round" fill="none"/>
+      <path d="M12 38 Q8 46 12 54 Q18 56 24 50 Q26 44 24 38 Z" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
+      <path d="M14 42 Q12 46 14 50 Q18 51 21 48 Q22 45 21 42 Z" fill={b.metalH} stroke="none" opacity="0.3"/>
 
       {/* Helmet */}
-      <ellipse cx="38" cy="20" rx="10" ry="9" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1.2"/>
-      {/* Visor */}
-      <rect x="30" y="20" width="16" height="4" rx="1.5" fill={g.armorD} stroke={g.outline} strokeWidth="0.8"/>
-      <line x1="30.5" y1="22" x2="45.5" y2="22" stroke={g.armorH} strokeWidth="0.5" opacity="0.5"/>
-      {/* Cheek guards */}
-      <path d="M30 20 Q27 24 28 30" stroke={g.armorD} strokeWidth="4" strokeLinecap="round" fill="none"/>
-      <path d="M46 20 Q49 24 48 30" stroke={g.armorD} strokeWidth="4" strokeLinecap="round" fill="none"/>
+      <ellipse cx="40" cy="18" rx="11" ry="10" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <rect x="31" y="18" width="18" height="4" rx="1.5" fill={b.metalSh} stroke={b.outline} strokeWidth="0.8"/>
+      <rect x="38" y="19" width="4" height="8" rx="1.5" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.7"/>
       {/* Plume */}
-      <path d="M38 12 Q34 6 30 4 Q33 8 34 12" fill={g.plume} stroke={g.outline} strokeWidth="0.8"/>
-      <path d="M38 12 Q38 5 36 2 Q39 6 40 12" fill={isWhite ? '#E74C3C' : '#9B59B6'} stroke={g.outline} strokeWidth="0.8" opacity="0.8"/>
-      {/* Helmet ridge */}
-      <path d="M30 16 Q38 14 46 16" stroke={g.accent} strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <path d="M40 10 Q36 4 32 2 Q35 6 36 10" fill={isWhite ? '#DD2222' : '#222244'} stroke={b.outline} strokeWidth="0.7"/>
+      <path d="M40 10 Q40 3 38 1 Q41 5 42 10" fill={isWhite ? '#FF4444' : '#444488'} stroke={b.outline} strokeWidth="0.7" opacity="0.8"/>
+      <path d="M32 10 Q40 8 48 10" stroke={b.metalH} strokeWidth="1" fill="none"/>
     </svg>
   );
 }
 
 function Bishop({ isWhite }) {
   const id = isWhite ? 'wb' : 'bb';
-  const g = isWhite ? {
-    skin:'#F2C98A', skinD:'#D4A574',
-    robe:'#F5F5F5', robeD:'#D0D0D0', robeH:'#FFFFFF',
-    hood:'#E0E0E0', hoodD:'#BBBBBB',
-    accent:'#D0D0D0', staff:'#B8B8B8',
-    gem:'#CCCCCC', eye:'#E8E8E8',
-    outline:'#333333'
+  const b = isWhite ? {
+    base: '#C8960C', baseH: '#F0C040', baseSh: '#7A5A00',
+    metal: '#D4A820', metalH: '#FFE066', metalSh: '#8B6500',
+    skin: '#E8B87A', skinSh: '#A07040',
+    dark: '#5A3A00', outline: '#2A1A00', hi: '#FFF0A0'
   } : {
-    skin:'#C68642', skinD:'#8B5E2A',
-    robe:'#0A0A0A', robeD:'#000000', robeH:'#1A1A1A',
-    hood:'#080808', hoodD:'#000000',
-    accent:'#222222', staff:'#111111',
-    gem:'#1A1A1A', eye:'#888888',
-    outline:'#000000'
+    base: '#2A2018', baseH: '#4A3828', baseSh: '#0A0806',
+    metal: '#1E1A14', metalH: '#3A3028', metalSh: '#080604',
+    skin: '#8A6040', skinSh: '#4A2A10',
+    dark: '#080604', outline: '#000000', hi: '#5A4830'
   };
+
   return (
-    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id={`${id}skin`} cx="50%" cy="40%" r="55%">
-          <stop offset="0%" stopColor={g.skin}/><stop offset="100%" stopColor={g.skinD}/>
+        <linearGradient id={`${id}mg`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={b.baseH}/><stop offset="40%" stopColor={b.base}/><stop offset="100%" stopColor={b.baseSh}/>
+        </linearGradient>
+        <linearGradient id={`${id}mg2`} x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0%" stopColor={b.metalH}/><stop offset="50%" stopColor={b.metal}/><stop offset="100%" stopColor={b.metalSh}/>
+        </linearGradient>
+        <radialGradient id={`${id}sg`} cx="40%" cy="30%" r="60%">
+          <stop offset="0%" stopColor={b.skin}/><stop offset="100%" stopColor={b.skinSh}/>
         </radialGradient>
-        <linearGradient id={`${id}robe`} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%" stopColor={g.robeH}/><stop offset="50%" stopColor={g.robe}/><stop offset="100%" stopColor={g.robeD}/>
-        </linearGradient>
-        <linearGradient id={`${id}hood`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={g.hoodD}/><stop offset="100%" stopColor={g.hood}/>
-        </linearGradient>
-        <filter id={`${id}glow`}><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        <filter id={`${id}eyeGlow`}><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id={`${id}sh`} x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="1" dy="2" stdDeviation="2" floodColor={b.dark} floodOpacity="0.7"/>
+        </filter>
       </defs>
 
-      {/* Wide flowing robe base */}
-      <path d="M8 76 Q10 52 40 48 Q70 52 72 76 Z" fill={`url(#${id}robe)`} stroke={g.outline} strokeWidth="1.2"/>
-      {/* Robe folds / depth */}
-      <path d="M16 65 Q40 60 64 65 Q62 72 40 74 Q18 72 16 65 Z" fill={g.robeD} stroke={g.outline} strokeWidth="0.5" opacity="0.5"/>
-      <path d="M20 70 L18 76" stroke={g.robe} strokeWidth="1" opacity="0.4"/>
-      <path d="M32 62 L30 76" stroke={g.robe} strokeWidth="1" opacity="0.3"/>
-      <path d="M40 60 L40 76" stroke={g.robe} strokeWidth="1" opacity="0.3"/>
-      <path d="M48 62 L50 76" stroke={g.robe} strokeWidth="1" opacity="0.3"/>
-      <path d="M60 70 L62 76" stroke={g.robe} strokeWidth="1" opacity="0.4"/>
-      {/* Upper robe */}
-      <path d="M22 48 Q22 40 40 38 Q58 40 58 48 L56 60 Q40 57 24 60 Z" fill={`url(#${id}robe)`} stroke={g.outline} strokeWidth="1"/>
-      {/* Robe trim / border */}
-      <path d="M22 48 Q40 44 58 48" stroke={g.accent} strokeWidth="1.5" fill="none"/>
-      <path d="M24 55 Q40 51 56 55" stroke={g.accent} strokeWidth="1" fill="none" opacity="0.7"/>
-      {/* Cross / holy symbol */}
-      <line x1="40" y1="44" x2="40" y2="56" stroke={g.accent} strokeWidth="2" strokeLinecap="round"/>
-      <line x1="35" y1="48" x2="45" y2="48" stroke={g.accent} strokeWidth="2" strokeLinecap="round"/>
-      <circle cx="40" cy="48" r="1.5" fill={g.gem} filter={`url(#${id}glow)`}/>
+      {/* Plinth */}
+      <ellipse cx="40" cy="94" rx="26" ry="5" fill={b.baseSh} opacity="0.5"/>
+      <rect x="14" y="86" width="52" height="10" rx="3" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <rect x="17" y="84" width="46" height="6" rx="2" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
 
-      {/* Arms beneath robe - hands clasped */}
-      <path d="M22 48 Q16 52 14 58" stroke={g.robe} strokeWidth="6" strokeLinecap="round" fill="none"/>
-      <path d="M58 48 Q64 52 66 58" stroke={g.robe} strokeWidth="6" strokeLinecap="round" fill="none"/>
-      {/* Hands */}
-      <ellipse cx="14" cy="59" rx="3.5" ry="2.5" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
-      <ellipse cx="66" cy="59" rx="3.5" ry="2.5" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
+      {/* Wide flowing robes */}
+      <path d="M10 86 Q8 64 18 50 Q24 42 40 40 Q56 42 62 50 Q72 64 70 86 Z"
+        fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2" filter={`url(#${id}sh)`}/>
+      {/* Robe folds */}
+      <path d="M16 54 Q18 70 16 84" stroke={b.metalH} strokeWidth="0.7" fill="none" opacity="0.4"/>
+      <path d="M26 48 Q28 66 26 84" stroke={b.metalH} strokeWidth="0.7" fill="none" opacity="0.4"/>
+      <path d="M40 46 L40 85" stroke={b.metalH} strokeWidth="0.7" fill="none" opacity="0.4"/>
+      <path d="M54 48 Q52 66 54 84" stroke={b.metalH} strokeWidth="0.7" fill="none" opacity="0.4"/>
+      <path d="M64 54 Q62 70 64 84" stroke={b.metalH} strokeWidth="0.7" fill="none" opacity="0.4"/>
+      {/* Ornamental hem border */}
+      <path d="M10 80 Q40 76 70 80" stroke={b.metalH} strokeWidth="1.5" fill="none"/>
+      {/* Cross on chest */}
+      <line x1="40" y1="48" x2="40" y2="60" stroke={b.metalH} strokeWidth="2.5" strokeLinecap="round"/>
+      <line x1="34" y1="53" x2="46" y2="53" stroke={b.metalH} strokeWidth="2.5" strokeLinecap="round"/>
+      <circle cx="40" cy="53" r="2" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.6"/>
 
-      {/* Staff */}
-      <line x1="66" y1="12" x2="70" y2="76" stroke={g.staff} strokeWidth="3" strokeLinecap="round"/>
-      <line x1="66" y1="12" x2="70" y2="76" stroke={g.accent} strokeWidth="1" strokeLinecap="round" opacity="0.5"/>
-      {/* Staff top orb */}
-      <circle cx="66" cy="12" r="6" fill={g.accent} stroke={g.outline} strokeWidth="1"/>
-      <circle cx="66" cy="12" r="3.5" fill={g.gem} stroke={g.outline} strokeWidth="0.7" filter={`url(#${id}glow)`}/>
-      <circle cx="64.5" cy="10.5" r="1.2" fill="white" opacity="0.6"/>
+      {/* Arms with staff */}
+      <path d="M22 50 Q14 55 12 64" stroke={`url(#${id}mg)`} strokeWidth="6" strokeLinecap="round" fill="none"/>
+      <path d="M58 50 Q66 55 68 64" stroke={`url(#${id}mg)`} strokeWidth="6" strokeLinecap="round" fill="none"/>
+      <ellipse cx="11" cy="65" rx="4" ry="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.7"/>
+      <ellipse cx="69" cy="65" rx="4" ry="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.7"/>
 
-      {/* Deep hood - the defining feature */}
-      <path d="M20 42 Q20 20 40 12 Q60 20 60 42 Q60 50 40 52 Q20 50 20 42 Z"
-        fill={`url(#${id}hood)`} stroke={g.outline} strokeWidth="1.5"/>
-      {/* Hood shadow interior */}
-      <path d="M25 40 Q25 24 40 18 Q55 24 55 40 Q55 47 40 49 Q25 47 25 40 Z"
-        fill={g.robeD} opacity="0.8"/>
-      {/* Hood drape folds */}
-      <path d="M20 42 Q16 50 18 60" stroke={g.hood} strokeWidth="5" strokeLinecap="round" fill="none"/>
-      <path d="M60 42 Q64 50 62 60" stroke={g.hood} strokeWidth="5" strokeLinecap="round" fill="none"/>
-      {/* Hood peak */}
-      <path d="M34 16 Q40 4 46 16" fill={g.hoodD} stroke={g.outline} strokeWidth="1"/>
+      {/* Crozier staff */}
+      <line x1="69" y1="65" x2="72" y2="20" stroke={`url(#${id}mg)`} strokeWidth="3" strokeLinecap="round"/>
+      {/* Staff crook */}
+      <path d="M72 20 Q72 10 66 8 Q60 8 60 14 Q60 20 66 20 Q70 20 72 20" fill="none" stroke={`url(#${id}mg2)`} strokeWidth="3" strokeLinecap="round"/>
+      <circle cx="66" cy="10" r="3" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.7"/>
 
-      {/* Face peering from hood shadow */}
-      <ellipse cx="40" cy="36" rx="10" ry="11" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.8"/>
-      {/* Deep shadow above eyes from hood */}
-      <path d="M30 30 Q40 26 50 30 Q50 28 40 27 Q30 28 30 30 Z" fill="rgba(0,0,0,0.5)"/>
-      {/* Nose */}
-      <path d="M38.5 34 Q38 37 40 38 Q42 37 41.5 34" stroke={g.skinD} strokeWidth="0.8" fill="none"/>
-      {/* Mouth - thin, serious */}
-      <path d="M35.5 41 Q40 42 44.5 41" stroke={g.outline} strokeWidth="0.9" fill="none" strokeLinecap="round"/>
-      {/* Glowing eyes */}
-      <ellipse cx="35.5" cy="33" rx="3.5" ry="2.5" fill="black"/>
-      <ellipse cx="44.5" cy="33" rx="3.5" ry="2.5" fill="black"/>
-      <circle cx="35.5" cy="33" r="2.2" fill={g.eye} opacity="0.9" filter={`url(#${id}eyeGlow)`}/>
-      <circle cx="44.5" cy="33" r="2.2" fill={g.eye} opacity="0.9" filter={`url(#${id}eyeGlow)`}/>
-      <circle cx="36.2" cy="32.2" r="0.8" fill="white" opacity="0.8"/>
-      <circle cx="45.2" cy="32.2" r="0.8" fill="white" opacity="0.8"/>
-      {/* Eyebrows - furrowed */}
-      <path d="M32 30.5 Q35.5 29 38 30.5" stroke={g.hoodD} strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-      <path d="M42 30.5 Q44.5 29 48 30.5" stroke={g.hoodD} strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      {/* Neck */}
+      <rect x="36" y="32" width="8" height="9" rx="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
 
-      {/* Base */}
-      <rect x="8" y="74" width="64" height="6" rx="3" fill={g.hoodD} stroke={g.outline} strokeWidth="1"/>
-      <rect x="12" y="75" width="56" height="3" rx="1.5" fill={g.accent} opacity="0.3"/>
+      {/* Head */}
+      <ellipse cx="40" cy="25" rx="11" ry="12" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="1.2"/>
+      {/* Beard */}
+      <path d="M30 34 Q32 44 40 46 Q48 44 50 34" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8" opacity="0.9"/>
+      <path d="M32 36 Q31 44 32 44" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
+      <path d="M40 36 L40 46" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
+      <path d="M48 36 Q49 44 48 44" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
+      {/* Eyes */}
+      <ellipse cx="35" cy="24" rx="3.2" ry="2.5" fill={b.dark}/>
+      <ellipse cx="45" cy="24" rx="3.2" ry="2.5" fill={b.dark}/>
+      <circle cx="35.8" cy="23.3" r="1" fill={b.hi} opacity="0.5"/>
+      <circle cx="45.8" cy="23.3" r="1" fill={b.hi} opacity="0.5"/>
+      <path d="M38 28 Q38.5 30 40 31 Q41.5 30 42 28" stroke={b.skinSh} strokeWidth="0.8" fill="none"/>
+      <path d="M36 32 Q40 33.5 44 32" stroke={b.outline} strokeWidth="0.9" fill="none" strokeLinecap="round"/>
+
+      {/* Tall mitre hat */}
+      <path d="M30 20 Q28 8 40 2 Q52 8 50 20 Z" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="1.2"/>
+      <rect x="29" y="18" width="22" height="4" rx="2" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8"/>
+      {/* Mitre cross */}
+      <line x1="40" y1="6" x2="40" y2="16" stroke={b.metalH} strokeWidth="1.2" strokeLinecap="round" opacity="0.7"/>
+      <line x1="36" y1="10" x2="44" y2="10" stroke={b.metalH} strokeWidth="1.2" strokeLinecap="round" opacity="0.7"/>
+      <path d="M31 19 Q40 17 49 19" stroke={b.hi} strokeWidth="0.7" opacity="0.6" fill="none"/>
     </svg>
   );
 }
 
 function Rook({ isWhite }) {
   const id = isWhite ? 'wr' : 'br';
-  const g = isWhite ? {
-    skin:'#F2C98A', skinD:'#D4A574', skinShadow:'rgba(0,0,0,0.2)',
-    armor:'#F0F0F0', armorD:'#C8C8C8', armorH:'#FFFFFF',
-    fur:'#DDDDDD', furD:'#BBBBBB',
-    accent:'#E0E0E0', blood:'#CCCCCC',
-    beard:'#DDDDDD', beardD:'#BBBBBB',
-    outline:'#333333', cloth:'#D0D0D0'
+  const b = isWhite ? {
+    base: '#C8960C', baseH: '#F0C040', baseSh: '#7A5A00',
+    metal: '#D4A820', metalH: '#FFE066', metalSh: '#8B6500',
+    skin: '#E8B87A', skinSh: '#A07040',
+    fur: '#C8A060', furSh: '#886030',
+    dark: '#5A3A00', outline: '#2A1A00', hi: '#FFF0A0'
   } : {
-    skin:'#C68642', skinD:'#8B5E2A', skinShadow:'rgba(0,0,0,0.6)',
-    armor:'#111111', armorD:'#000000', armorH:'#222222',
-    fur:'#0A0A0A', furD:'#000000',
-    accent:'#1A1A1A', blood:'#0A0A0A',
-    beard:'#111111', beardD:'#080808',
-    outline:'#000000', cloth:'#0A0A0A'
+    base: '#2A2018', baseH: '#4A3828', baseSh: '#0A0806',
+    metal: '#1E1A14', metalH: '#3A3028', metalSh: '#080604',
+    skin: '#8A6040', skinSh: '#4A2A10',
+    fur: '#1A1410', furSh: '#0A0808',
+    dark: '#080604', outline: '#000000', hi: '#5A4830'
   };
+
   return (
-    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id={`${id}skin`} cx="50%" cy="35%" r="60%">
-          <stop offset="0%" stopColor={g.skin}/><stop offset="100%" stopColor={g.skinD}/>
+        <linearGradient id={`${id}mg`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={b.baseH}/><stop offset="40%" stopColor={b.base}/><stop offset="100%" stopColor={b.baseSh}/>
+        </linearGradient>
+        <linearGradient id={`${id}mg2`} x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0%" stopColor={b.metalH}/><stop offset="50%" stopColor={b.metal}/><stop offset="100%" stopColor={b.metalSh}/>
+        </linearGradient>
+        <radialGradient id={`${id}sg`} cx="40%" cy="30%" r="60%">
+          <stop offset="0%" stopColor={b.skin}/><stop offset="100%" stopColor={b.skinSh}/>
         </radialGradient>
-        <linearGradient id={`${id}armor`} x1="0.1" y1="0" x2="0.9" y2="1">
-          <stop offset="0%" stopColor={g.armorH}/><stop offset="50%" stopColor={g.armor}/><stop offset="100%" stopColor={g.armorD}/>
+        <linearGradient id={`${id}fg`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={b.fur}/><stop offset="100%" stopColor={b.furSh}/>
         </linearGradient>
-        <linearGradient id={`${id}fur`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={g.fur}/><stop offset="100%" stopColor={g.furD}/>
-        </linearGradient>
+        <filter id={`${id}sh`} x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="1" dy="2" stdDeviation="2" floodColor={b.dark} floodOpacity="0.7"/>
+        </filter>
       </defs>
 
-      {/* Legs - powerful, wide stance */}
-      <path d="M20 56 Q18 64 16 76 Q20 78 24 76 Q24 68 26 58 Z" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1"/>
-      <path d="M60 56 Q62 64 64 76 Q60 78 56 76 Q56 68 54 58 Z" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1"/>
-      {/* Boots / fur boots */}
-      <path d="M14 70 Q14 76 20 78 Q28 78 28 72 Q26 68 20 68 Z" fill={`url(#${id}fur)`} stroke={g.outline} strokeWidth="1"/>
-      <path d="M66 70 Q66 76 60 78 Q52 78 52 72 Q54 68 60 68 Z" fill={`url(#${id}fur)`} stroke={g.outline} strokeWidth="1"/>
-      {/* Knee armor */}
-      <ellipse cx="22" cy="60" rx="5" ry="4" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1"/>
-      <ellipse cx="58" cy="60" rx="5" ry="4" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1"/>
+      {/* Plinth */}
+      <ellipse cx="40" cy="94" rx="26" ry="5" fill={b.baseSh} opacity="0.5"/>
+      <rect x="14" y="86" width="52" height="10" rx="3" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <rect x="17" y="84" width="46" height="6" rx="2" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
 
-      {/* Huge barrel chest */}
-      <ellipse cx="40" cy="46" rx="20" ry="17" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1.5"/>
-      {/* Chest fur collar */}
-      <path d="M20 40 Q40 34 60 40 Q58 46 40 48 Q22 46 20 40 Z" fill={`url(#${id}fur)`} stroke={g.outline} strokeWidth="0.8"/>
-      {/* Chest hair texture */}
-      <path d="M26 40 Q28 36 32 38" stroke={g.furD} strokeWidth="0.7" fill="none"/>
-      <path d="M34 37 Q36 33 40 35" stroke={g.furD} strokeWidth="0.7" fill="none"/>
-      <path d="M42 37 Q44 33 48 35" stroke={g.furD} strokeWidth="0.7" fill="none"/>
-      <path d="M50 40 Q52 36 56 38" stroke={g.furD} strokeWidth="0.7" fill="none"/>
-      {/* Battle scars */}
-      <path d="M44 38 Q46 42 44 46" stroke={g.accent} strokeWidth="0.8" fill="none" opacity="0.6"/>
+      {/* Legs - wide powerful stance */}
+      <path d="M22 60 Q20 70 18 86 Q22 88 26 86 Q26 76 28 62 Z" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
+      <path d="M58 60 Q60 70 62 86 Q58 88 54 86 Q54 76 52 62 Z" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
+      {/* Fur boots */}
+      <path d="M16 76 Q14 84 20 88 Q28 88 28 82 Q26 76 20 74 Z" fill={`url(#${id}fg)`} stroke={b.outline} strokeWidth="0.8"/>
+      <path d="M64 76 Q66 84 60 88 Q52 88 52 82 Q54 76 60 74 Z" fill={`url(#${id}fg)`} stroke={b.outline} strokeWidth="0.8"/>
+      {/* Fur texture */}
+      <path d="M17 78 Q19 76 21 78" stroke={b.furSh} strokeWidth="0.6" fill="none"/>
+      <path d="M17 81 Q19 79 21 81" stroke={b.furSh} strokeWidth="0.6" fill="none"/>
+      <path d="M63 78 Q61 76 59 78" stroke={b.furSh} strokeWidth="0.6" fill="none"/>
+      {/* Knee guards */}
+      <ellipse cx="24" cy="64" rx="6" ry="5" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
+      <ellipse cx="56" cy="64" rx="6" ry="5" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
+
+      {/* Massive barrel torso */}
+      <ellipse cx="40" cy="48" rx="22" ry="18" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.5" filter={`url(#${id}sh)`}/>
+      {/* Fur cloak collar */}
+      <path d="M18 42 Q40 36 62 42 Q60 50 40 52 Q20 50 18 42 Z" fill={`url(#${id}fg)`} stroke={b.outline} strokeWidth="0.8"/>
+      {/* Fur texture */}
+      <path d="M24 42 Q26 38 30 40" stroke={b.furSh} strokeWidth="0.6" fill="none"/>
+      <path d="M34 38 Q36 34 40 36" stroke={b.furSh} strokeWidth="0.6" fill="none"/>
+      <path d="M44 38 Q46 34 50 36" stroke={b.furSh} strokeWidth="0.6" fill="none"/>
+      <path d="M52 42 Q54 38 58 40" stroke={b.furSh} strokeWidth="0.6" fill="none"/>
       {/* Belt */}
-      <rect x="22" y="56" width="36" height="5" rx="1.5" fill={g.fur} stroke={g.outline} strokeWidth="1"/>
-      <rect x="37" y="56" width="6" height="5" rx="1" fill={g.accent} stroke={g.outline} strokeWidth="0.8"/>
-      <circle cx="40" cy="58.5" r="1.5" fill={isWhite ? '#FFD700' : '#C0392B'}/>
+      <rect x="20" y="58" width="40" height="5" rx="2" fill={`url(#${id}fg)`} stroke={b.outline} strokeWidth="0.8"/>
+      <rect x="37" y="58" width="6" height="5" rx="1.5" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.7"/>
+      <circle cx="40" cy="60.5" r="1.5" fill={isWhite ? '#FFD700' : '#AA2200'} stroke={b.outline} strokeWidth="0.4"/>
 
-      {/* Right arm - holding axe HIGH */}
-      <path d="M20 38 Q12 30 8 22" stroke={`url(#${id}armor)`} strokeWidth="9" strokeLinecap="round" fill="none"/>
-      <path d="M20 38 Q12 30 8 22" stroke={g.outline} strokeWidth="9.5" strokeLinecap="round" fill="none" opacity="0.2"/>
-      {/* Axe handle */}
-      <line x1="8" y1="22" x2="4" y2="6" stroke={g.cloth} strokeWidth="3" strokeLinecap="round"/>
-      {/* Axe head - massive */}
-      <path d="M4 6 Q-2 2 0 10 Q2 14 6 14 Z" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1"/>
-      <path d="M4 6 Q10 0 10 6 Q10 12 6 14 Z" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1"/>
-      {/* Axe highlight */}
-      <path d="M2 8 Q0 6 2 10" stroke={g.armorH} strokeWidth="0.8" fill="none" opacity="0.8"/>
-      {/* Blood on axe */}
-      <path d="M0 8 Q-1 10 1 12" stroke={g.blood} strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      {/* Right arm — battle axe raised high */}
+      <path d="M20 42 Q10 34 6 24" stroke={`url(#${id}mg)`} strokeWidth="9" strokeLinecap="round" fill="none"/>
+      {/* Axe shaft */}
+      <line x1="6" y1="24" x2="2" y2="6" stroke={b.furSh} strokeWidth="3.5" strokeLinecap="round"/>
+      {/* Massive axe head */}
+      <path d="M2 6 Q-4 0 -2 10 Q0 16 4 16 Z" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <path d="M2 6 Q10 0 10 8 Q10 14 4 16 Z" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <path d="M-1 8 Q-2 6 0 10" stroke={b.hi} strokeWidth="1" fill="none" opacity="0.7"/>
+      {/* Left arm — round shield */}
+      <path d="M60 42 Q70 38 74 44" stroke={`url(#${id}mg)`} strokeWidth="9" strokeLinecap="round" fill="none"/>
+      <circle cx="76" cy="44" r="10" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <circle cx="76" cy="44" r="7" fill="none" stroke={b.metalH} strokeWidth="1"/>
+      <circle cx="76" cy="44" r="2.5" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.7"/>
+      <circle cx="74.5" cy="42.5" r="1.5" fill={b.hi} opacity="0.5"/>
 
-      {/* Left arm - shield arm */}
-      <path d="M60 38 Q68 34 72 40" stroke={`url(#${id}armor)`} strokeWidth="9" strokeLinecap="round" fill="none"/>
-      {/* Round shield */}
-      <circle cx="74" cy="40" r="9" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1.2"/>
-      <circle cx="74" cy="40" r="6" fill="none" stroke={g.accent} strokeWidth="1"/>
-      <circle cx="74" cy="40" r="2" fill={g.accent} stroke={g.outline} strokeWidth="0.7"/>
-      {/* Shield battle dents */}
-      <path d="M68 34 Q70 36 69 38" stroke={g.armorD} strokeWidth="1" fill="none" opacity="0.6"/>
-      <path d="M78 38 Q76 40 77 42" stroke={g.armorD} strokeWidth="1" fill="none" opacity="0.6"/>
+      {/* Neck */}
+      <rect x="34" y="28" width="12" height="10" rx="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="1"/>
 
-      {/* Neck - thick */}
-      <rect x="34" y="27" width="12" height="10" rx="3" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="1"/>
-
-      {/* Head - massive, square jawed */}
-      <rect x="26" y="14" width="28" height="26" rx="6" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="1.2"/>
-      {/* Jaw definition */}
-      <path d="M26 30 Q28 40 40 42 Q52 40 54 30" fill={g.skinD} stroke={g.outline} strokeWidth="0.6" opacity="0.5"/>
+      {/* Big square head */}
+      <rect x="26" y="14" width="28" height="26" rx="6" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <path d="M26 30 Q28 40 40 42 Q52 40 54 30" fill={b.skinSh} opacity="0.25"/>
 
       {/* Viking helmet */}
-      <path d="M26 20 Q26 8 40 6 Q54 8 54 20" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1.5"/>
-      {/* Helmet brim */}
-      <rect x="23" y="19" width="34" height="4" rx="2" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1.2"/>
-      {/* Nose guard */}
-      <rect x="38" y="21" width="4" height="9" rx="1.5" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="0.8"/>
-      {/* Horns */}
-      <path d="M26 16 Q18 8 14 12 Q16 18 22 20 Z" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1"/>
-      <path d="M54 16 Q62 8 66 12 Q64 18 58 20 Z" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1"/>
-      {/* Horn tips */}
-      <ellipse cx="14" cy="11.5" rx="2" ry="3" fill={g.armorH} stroke={g.outline} strokeWidth="0.7" transform="rotate(-20 14 12)"/>
-      <ellipse cx="66" cy="11.5" rx="2" ry="3" fill={g.armorH} stroke={g.outline} strokeWidth="0.7" transform="rotate(20 66 12)"/>
-      {/* Helmet ridge */}
-      <line x1="28" y1="12" x2="52" y2="12" stroke={g.accent} strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M26 20 Q26 8 40 6 Q54 8 54 20" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.5"/>
+      <rect x="23" y="19" width="34" height="4" rx="2" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="1"/>
+      <rect x="38" y="21" width="4" height="8" rx="1.5" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.7"/>
+      {/* Viking horns */}
+      <path d="M26 16 Q16 6 12 10 Q14 18 22 20 Z" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
+      <path d="M54 16 Q64 6 68 10 Q66 18 58 20 Z" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
+      <ellipse cx="12" cy="10" rx="2.5" ry="3" fill={b.metalH} stroke={b.outline} strokeWidth="0.7" transform="rotate(-20 12 10)"/>
+      <ellipse cx="68" cy="10" rx="2.5" ry="3" fill={b.metalH} stroke={b.outline} strokeWidth="0.7" transform="rotate(20 68 10)"/>
+      <line x1="28" y1="12" x2="52" y2="12" stroke={b.metalH} strokeWidth="1.5" strokeLinecap="round"/>
 
-      {/* Eyes - furious */}
-      <ellipse cx="33" cy="26" rx="4" ry="3" fill="white" stroke={g.outline} strokeWidth="0.7"/>
-      <ellipse cx="47" cy="26" rx="4" ry="3" fill="white" stroke={g.outline} strokeWidth="0.7"/>
-      <circle cx="34" cy="26.5" r="2.5" fill={isWhite ? '#3D2B1A' : '#8B0000'}/>
-      <circle cx="48" cy="26.5" r="2.5" fill={isWhite ? '#3D2B1A' : '#8B0000'}/>
-      <circle cx="35" cy="25.5" r="0.8" fill="white"/>
-      <circle cx="49" cy="25.5" r="0.8" fill="white"/>
-      {/* Angry brows */}
-      <path d="M29 23 Q33 21 37 23" stroke={g.outline} strokeWidth="2" fill="none" strokeLinecap="round"/>
-      <path d="M43 23 Q47 21 51 23" stroke={g.outline} strokeWidth="2" fill="none" strokeLinecap="round"/>
-      {/* Nose */}
-      <path d="M38 28 Q38 31 40 32 Q42 31 42 28" stroke={g.skinD} strokeWidth="0.9" fill="none"/>
-      {/* Snarling mouth */}
-      <path d="M33 35 Q40 38 47 35" fill={g.skinD} stroke={g.outline} strokeWidth="0.8"/>
-      <path d="M35 35 Q40 36.5 45 35" fill="white" stroke={g.outline} strokeWidth="0.5"/>
-      {/* Teeth */}
-      <line x1="37" y1="35" x2="37" y2="37" stroke={g.outline} strokeWidth="0.5"/>
-      <line x1="40" y1="35" x2="40" y2="37" stroke={g.outline} strokeWidth="0.5"/>
-      <line x1="43" y1="35" x2="43" y2="37" stroke={g.outline} strokeWidth="0.5"/>
+      {/* Eyes — fierce */}
+      <ellipse cx="33" cy="26" rx="4" ry="3" fill="white" stroke={b.outline} strokeWidth="0.7"/>
+      <ellipse cx="47" cy="26" rx="4" ry="3" fill="white" stroke={b.outline} strokeWidth="0.7"/>
+      <circle cx="34" cy="26.5" r="2.5" fill={isWhite ? '#4A2000' : '#880000'}/>
+      <circle cx="48" cy="26.5" r="2.5" fill={isWhite ? '#4A2000' : '#880000'}/>
+      <circle cx="35" cy="25.7" r="0.8" fill="white"/>
+      <circle cx="49" cy="25.7" r="0.8" fill="white"/>
+      <path d="M29 23 Q33 21 37 23" stroke={b.outline} strokeWidth="2" fill="none" strokeLinecap="round"/>
+      <path d="M43 23 Q47 21 51 23" stroke={b.outline} strokeWidth="2" fill="none" strokeLinecap="round"/>
+      <path d="M38 28 Q38 31 40 32 Q42 31 42 28" stroke={b.skinSh} strokeWidth="0.9" fill="none"/>
+      <path d="M33 35 Q40 38 47 35" fill={b.skinSh} stroke={b.outline} strokeWidth="0.8" opacity="0.6"/>
+      <path d="M35 35 Q40 36.5 45 35" fill="white" stroke={b.outline} strokeWidth="0.5" opacity="0.4"/>
 
       {/* Massive beard */}
-      <path d="M26 34 Q28 44 30 50 Q35 55 40 55 Q45 55 50 50 Q52 44 54 34"
-        fill={g.beard} stroke={g.outline} strokeWidth="1"/>
-      {/* Beard texture */}
-      <path d="M30 38 Q32 46 30 52" stroke={g.beardD} strokeWidth="1" fill="none" strokeLinecap="round"/>
-      <path d="M35 36 Q36 44 35 52" stroke={g.beardD} strokeWidth="1" fill="none" strokeLinecap="round"/>
-      <path d="M40 36 L40 54" stroke={g.beardD} strokeWidth="1" fill="none" strokeLinecap="round"/>
-      <path d="M45 36 Q44 44 45 52" stroke={g.beardD} strokeWidth="1" fill="none" strokeLinecap="round"/>
-      <path d="M50 38 Q48 46 50 52" stroke={g.beardD} strokeWidth="1" fill="none" strokeLinecap="round"/>
-      {/* Braids */}
-      <path d="M28 42 Q26 48 28 54" stroke={g.furD} strokeWidth="2" fill="none" strokeLinecap="round"/>
-      <path d="M52 42 Q54 48 52 54" stroke={g.furD} strokeWidth="2" fill="none" strokeLinecap="round"/>
+      <path d="M26 34 Q28 46 30 52 Q35 58 40 58 Q45 58 50 52 Q52 46 54 34"
+        fill={`url(#${id}fg)`} stroke={b.outline} strokeWidth="1"/>
+      <path d="M30 38 Q32 48 30 54" stroke={b.furSh} strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.6"/>
+      <path d="M40 36 L40 56" stroke={b.furSh} strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.6"/>
+      <path d="M50 38 Q48 48 50 54" stroke={b.furSh} strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.6"/>
     </svg>
   );
 }
 
 function Pawn({ isWhite }) {
   const id = isWhite ? 'wp' : 'bp';
-  const g = isWhite ? {
-    skin:'#F2C98A', skinD:'#D4A574',
-    armor:'#F0F0F0', armorD:'#C8C8C8', armorH:'#FFFFFF',
-    cloth:'#E8E8E8', clothD:'#C8C8C8',
-    accent:'#D8D8D8',
-    outline:'#333333'
+  const b = isWhite ? {
+    base: '#C8960C', baseH: '#F0C040', baseSh: '#7A5A00',
+    metal: '#D4A820', metalH: '#FFE066', metalSh: '#8B6500',
+    skin: '#E8B87A', skinSh: '#A07040',
+    dark: '#5A3A00', outline: '#2A1A00', hi: '#FFF0A0'
   } : {
-    skin:'#C68642', skinD:'#8B5E2A',
-    armor:'#111111', armorD:'#000000', armorH:'#222222',
-    cloth:'#0A0A0A', clothD:'#000000',
-    accent:'#1A1A1A',
-    outline:'#000000'
+    base: '#2A2018', baseH: '#4A3828', baseSh: '#0A0806',
+    metal: '#1E1A14', metalH: '#3A3028', metalSh: '#080604',
+    skin: '#8A6040', skinSh: '#4A2A10',
+    dark: '#080604', outline: '#000000', hi: '#5A4830'
   };
+
   return (
-    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id={`${id}skin`} cx="50%" cy="35%" r="60%">
-          <stop offset="0%" stopColor={g.skin}/><stop offset="100%" stopColor={g.skinD}/>
+        <linearGradient id={`${id}mg`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={b.baseH}/><stop offset="40%" stopColor={b.base}/><stop offset="100%" stopColor={b.baseSh}/>
+        </linearGradient>
+        <linearGradient id={`${id}mg2`} x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0%" stopColor={b.metalH}/><stop offset="50%" stopColor={b.metal}/><stop offset="100%" stopColor={b.metalSh}/>
+        </linearGradient>
+        <radialGradient id={`${id}sg`} cx="40%" cy="30%" r="60%">
+          <stop offset="0%" stopColor={b.skin}/><stop offset="100%" stopColor={b.skinSh}/>
         </radialGradient>
-        <linearGradient id={`${id}armor`} x1="0.1" y1="0" x2="0.9" y2="1">
-          <stop offset="0%" stopColor={g.armorH}/><stop offset="55%" stopColor={g.armor}/><stop offset="100%" stopColor={g.armorD}/>
-        </linearGradient>
-        <linearGradient id={`${id}cloth`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={g.cloth}/><stop offset="100%" stopColor={g.clothD}/>
-        </linearGradient>
+        <filter id={`${id}sh`} x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="1" dy="2" stdDeviation="2" floodColor={b.dark} floodOpacity="0.7"/>
+        </filter>
       </defs>
 
+      {/* Plinth */}
+      <ellipse cx="40" cy="94" rx="22" ry="4.5" fill={b.baseSh} opacity="0.5"/>
+      <rect x="18" y="86" width="44" height="9" rx="3" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <rect x="21" y="84" width="38" height="6" rx="2" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
+
       {/* Legs */}
-      <path d="M24 58 Q22 66 20 76 Q24 78 28 76 Q28 68 30 60 Z" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1"/>
-      <path d="M56 58 Q58 66 60 76 Q56 78 52 76 Q52 68 50 60 Z" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1"/>
-      {/* Greaves (lower leg armor) */}
-      <rect x="19" y="65" width="10" height="12" rx="2" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="0.8"/>
-      <rect x="51" y="65" width="10" height="12" rx="2" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="0.8"/>
+      <path d="M26 60 Q24 70 22 86 Q26 88 30 86 Q30 76 32 62 Z" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
+      <path d="M54 60 Q56 70 58 86 Q54 88 50 86 Q50 76 48 62 Z" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
+      {/* Greaves */}
+      <rect x="21" y="68" width="11" height="16" rx="2.5" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8"/>
+      <rect x="48" y="68" width="11" height="16" rx="2.5" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8"/>
+      <path d="M22 70 Q26 68 31 70" stroke={b.metalH} strokeWidth="0.5" opacity="0.5" fill="none"/>
       {/* Boot toes */}
-      <ellipse cx="23" cy="77" rx="6" ry="2.5" fill={g.armorD} stroke={g.outline} strokeWidth="0.8"/>
-      <ellipse cx="57" cy="77" rx="6" ry="2.5" fill={g.armorD} stroke={g.outline} strokeWidth="0.8"/>
+      <ellipse cx="26" cy="84" rx="7" ry="3" fill={b.metalSh} stroke={b.outline} strokeWidth="0.8"/>
+      <ellipse cx="54" cy="84" rx="7" ry="3" fill={b.metalSh} stroke={b.outline} strokeWidth="0.8"/>
       {/* Knee cops */}
-      <circle cx="25" cy="61" r="4" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="0.8"/>
-      <circle cx="55" cy="61" r="4" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="0.8"/>
+      <circle cx="28" cy="64" rx="5" ry="5" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8"/>
+      <circle cx="52" cy="64" rx="5" ry="5" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8"/>
 
-      {/* Cloth undershirt / tabard */}
-      <path d="M22 56 Q22 44 40 42 Q58 44 58 56 L56 70 Q40 67 24 70 Z" fill={`url(#${id}cloth)`} stroke={g.outline} strokeWidth="0.8"/>
-      {/* Tabard cross / emblem */}
-      <line x1="40" y1="46" x2="40" y2="60" stroke={g.accent} strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="34" y1="52" x2="46" y2="52" stroke={g.accent} strokeWidth="1.5" strokeLinecap="round"/>
-      {/* Breastplate over tabard */}
-      <path d="M26 44 Q26 38 40 36 Q54 38 54 44 L52 56 Q40 54 28 56 Z"
-        fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1.2"/>
-      {/* Breastplate ridge */}
-      <line x1="40" y1="37" x2="40" y2="54" stroke={g.armorH} strokeWidth="0.8" opacity="0.5"/>
-      <path d="M30 42 Q40 40 50 42" stroke={g.armorH} strokeWidth="0.6" opacity="0.4"/>
+      {/* Torso armor */}
+      <path d="M24 58 Q24 44 40 42 Q56 44 56 58 L54 70 Q40 68 26 70 Z"
+        fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2" filter={`url(#${id}sh)`}/>
+      <path d="M32 46 Q40 44 48 46 L47 66 Q40 64 33 66 Z" fill={b.metalH} stroke="none" opacity="0.2"/>
+      <line x1="40" y1="43" x2="40" y2="68" stroke={b.metalH} strokeWidth="0.8" opacity="0.4"/>
       {/* Pauldrons */}
-      <ellipse cx="25" cy="40" rx="6" ry="4" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1" transform="rotate(-15 25 40)"/>
-      <ellipse cx="55" cy="40" rx="6" ry="4" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1" transform="rotate(15 55 40)"/>
+      <ellipse cx="23" cy="44" rx="7" ry="4.5" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="1" transform="rotate(-15 23 44)"/>
+      <ellipse cx="57" cy="44" rx="7" ry="4.5" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="1" transform="rotate(15 57 44)"/>
       {/* Belt */}
-      <rect x="26" y="55" width="28" height="4" rx="1.5" fill={g.accent} stroke={g.outline} strokeWidth="0.8"/>
-      <rect x="37.5" y="55" width="5" height="4" rx="1" fill={isWhite ? '#FFD700' : '#C0392B'} stroke={g.outline} strokeWidth="0.5"/>
+      <rect x="26" y="60" width="28" height="4.5" rx="2" fill={b.metal} stroke={b.outline} strokeWidth="0.8"/>
+      <rect x="37.5" y="60" width="5" height="4.5" rx="1.5" fill={isWhite ? '#FFD700' : '#882200'} stroke={b.outline} strokeWidth="0.5"/>
 
-      {/* SPEAR arm - right (thrust forward) */}
-      <path d="M54 40 Q60 34 64 26" stroke={`url(#${id}armor)`} strokeWidth="7" strokeLinecap="round" fill="none"/>
-      {/* Spear shaft */}
-      <line x1="62" y1="28" x2="72" y2="6" stroke={g.cloth} strokeWidth="2.5" strokeLinecap="round"/>
-      {/* Spearhead */}
-      <path d="M72 6 L68 12 L70 8 L66 14 Z" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="0.8"/>
-      <path d="M72 6 Q74 4 73 8 Q72 10 70 10 Z" fill={g.armorH} stroke={g.outline} strokeWidth="0.5"/>
+      {/* Spear arm */}
+      <path d="M56 44 Q64 38 68 28" stroke={`url(#${id}mg)`} strokeWidth="7" strokeLinecap="round" fill="none"/>
+      <line x1="66" y1="30" x2="74" y2="8" stroke={b.furSh || b.baseSh} strokeWidth="2.5" strokeLinecap="round"/>
+      <path d="M74 8 L70 14 L72 10 L68 16 Z" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8"/>
+      <path d="M73 9 Q75 7 74 11" stroke={b.hi} strokeWidth="0.8" fill="none" opacity="0.7"/>
 
-      {/* SHIELD arm - left */}
-      <path d="M26 40 Q20 44 16 50" stroke={`url(#${id}armor)`} strokeWidth="7" strokeLinecap="round" fill="none"/>
-      {/* Round shield */}
-      <circle cx="12" cy="52" r="10" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1.2"/>
-      <circle cx="12" cy="52" r="7" fill="none" stroke={g.accent} strokeWidth="1"/>
-      <circle cx="12" cy="52" r="4" fill={g.cloth} stroke={g.outline} strokeWidth="0.8"/>
-      <circle cx="12" cy="52" r="1.8" fill={g.accent}/>
-      {/* Shield emblem */}
-      <line x1="12" y1="45" x2="12" y2="59" stroke={g.accent} strokeWidth="0.8" opacity="0.5"/>
-      <line x1="5" y1="52" x2="19" y2="52" stroke={g.accent} strokeWidth="0.8" opacity="0.5"/>
+      {/* Shield arm */}
+      <path d="M24 44 Q16 48 12 56" stroke={`url(#${id}mg)`} strokeWidth="7" strokeLinecap="round" fill="none"/>
+      <circle cx="8" cy="58" r="11" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <circle cx="8" cy="58" r="8" fill="none" stroke={b.metalH} strokeWidth="1"/>
+      <circle cx="8" cy="58" r="4.5" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
+      <circle cx="8" cy="58" r="2" fill={b.metalH}/>
+      <circle cx="6.5" cy="56.5" r="1.5" fill={b.hi} opacity="0.5"/>
 
       {/* Neck */}
-      <rect x="36" y="30" width="8" height="8" rx="2" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.8"/>
-      {/* Gorget (neck armor) */}
-      <path d="M32 34 Q40 32 48 34 Q48 38 40 39 Q32 38 32 34 Z" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="0.7"/>
+      <rect x="36" y="32" width="8" height="10" rx="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
+      {/* Gorget */}
+      <path d="M32 36 Q40 34 48 36 Q48 40 40 41 Q32 40 32 36 Z" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.7"/>
 
       {/* Head */}
-      <ellipse cx="40" cy="22" rx="11" ry="12" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="1"/>
-      {/* Ears */}
-      <ellipse cx="29.5" cy="22" rx="2" ry="3" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
-      <ellipse cx="50.5" cy="22" rx="2" ry="3" fill={`url(#${id}skin)`} stroke={g.outline} strokeWidth="0.7"/>
+      <ellipse cx="40" cy="24" rx="11" ry="12" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="1.2"/>
 
       {/* Kettle helmet */}
-      <path d="M29 20 Q29 8 40 6 Q51 8 51 20" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1.2"/>
+      <path d="M30 22 Q30 10 40 8 Q50 10 50 22" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
       {/* Wide brim */}
-      <rect x="26" y="18" width="28" height="4" rx="2" fill={`url(#${id}armor)`} stroke={g.outline} strokeWidth="1"/>
-      {/* Coif / mail below helmet */}
-      <path d="M29 22 Q28 28 30 34" stroke={g.armorD} strokeWidth="3" strokeLinecap="round" fill="none"/>
-      <path d="M51 22 Q52 28 50 34" stroke={g.armorD} strokeWidth="3" strokeLinecap="round" fill="none"/>
-      {/* Helmet ridge */}
-      <line x1="31" y1="12" x2="49" y2="12" stroke={g.accent} strokeWidth="1" strokeLinecap="round" opacity="0.7"/>
+      <rect x="27" y="20" width="26" height="4" rx="2" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="1"/>
+      <line x1="32" y1="14" x2="48" y2="14" stroke={b.metalH} strokeWidth="1" strokeLinecap="round" opacity="0.6"/>
+      {/* Mail coif */}
+      <path d="M30 24 Q28 30 30 36" stroke={b.metal} strokeWidth="3" strokeLinecap="round" fill="none"/>
+      <path d="M50 24 Q52 30 50 36" stroke={b.metal} strokeWidth="3" strokeLinecap="round" fill="none"/>
 
       {/* Eyes */}
-      <ellipse cx="35.5" cy="21" rx="3" ry="2.5" fill="white" stroke={g.outline} strokeWidth="0.6"/>
-      <ellipse cx="44.5" cy="21" rx="3" ry="2.5" fill="white" stroke={g.outline} strokeWidth="0.6"/>
-      <circle cx="36" cy="21.5" r="1.8" fill={isWhite ? '#4A3020' : '#2C1A0A'}/>
-      <circle cx="45" cy="21.5" r="1.8" fill={isWhite ? '#4A3020' : '#2C1A0A'}/>
-      <circle cx="36.8" cy="20.8" r="0.6" fill="white"/>
-      <circle cx="45.8" cy="20.8" r="0.6" fill="white"/>
-      {/* Brows - determined */}
-      <path d="M33 19 Q35.5 18 38 19" stroke={g.armorD} strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-      <path d="M42 19 Q44.5 18 47 19" stroke={g.armorD} strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-      {/* Nose */}
-      <path d="M38.5 23 Q38 25.5 40 26.5 Q42 25.5 41.5 23" stroke={g.skinD} strokeWidth="0.7" fill="none"/>
-      {/* Mouth - set firm */}
-      <path d="M36.5 28.5 Q40 29.5 43.5 28.5" stroke={g.outline} strokeWidth="0.9" fill="none" strokeLinecap="round"/>
+      <ellipse cx="35" cy="23" rx="3" ry="2.5" fill={b.dark}/>
+      <ellipse cx="45" cy="23" rx="3" ry="2.5" fill={b.dark}/>
+      <circle cx="35.8" cy="22.3" r="1" fill={b.hi} opacity="0.5"/>
+      <circle cx="45.8" cy="22.3" r="1" fill={b.hi} opacity="0.5"/>
+      <path d="M38 27 Q38.5 29 40 30 Q41.5 29 42 27" stroke={b.skinSh} strokeWidth="0.7" fill="none"/>
+      <path d="M37 31 Q40 32.5 43 31" stroke={b.outline} strokeWidth="0.9" fill="none" strokeLinecap="round"/>
       {/* Stubble */}
-      <path d="M33 27 Q36 30 40 30 Q44 30 47 27" stroke={g.skinD} strokeWidth="0.5" fill="none" opacity="0.4"/>
+      <path d="M33 29 Q36 32 40 32 Q44 32 47 29" stroke={b.skinSh} strokeWidth="0.5" fill="none" opacity="0.4"/>
     </svg>
   );
 }
