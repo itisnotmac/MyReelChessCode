@@ -5,6 +5,7 @@ import { createPageUrl } from '@/utils';
 import { Button } from "@/components/ui/button";
 import { Menu, Cpu, Users, ChevronRight } from 'lucide-react';
 import MenuDrawer from '../components/lobby/MenuDrawer';
+import PieceGroupDisplay from '../components/chess/PieceGroupDisplay';
 
 export default function Lobby() {
   const navigate = useNavigate();
@@ -56,25 +57,22 @@ export default function Lobby() {
 
       {/* Main content */}
       <div className="relative z-10 px-5 pt-12">
-        {/* Decorative piece */}
+        {/* Decorative pieces */}
         <motion.div
-          className="text-center mb-12"
+          className="text-center mb-10"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="relative inline-block">
-            <span className="text-7xl" style={{
-              color: '#D4AF37',
-              filter: 'drop-shadow(0 0 40px rgba(212,175,55,0.2))',
-            }}>♛</span>
-            <motion.div
-              className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-16 h-[1px]"
-              style={{ background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)' }}
-              animate={{ opacity: [0.3, 0.8, 0.3] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            />
+          <div className="relative" style={{ filter: 'drop-shadow(0 0 24px rgba(212,175,55,0.18))' }}>
+            <PieceGroupDisplay size="normal" animate={true} />
           </div>
+          <motion.div
+            className="mx-auto mt-3 h-[1px] w-48"
+            style={{ background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)' }}
+            animate={{ opacity: [0.3, 0.7, 0.3] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
         </motion.div>
 
         {/* Game mode cards */}

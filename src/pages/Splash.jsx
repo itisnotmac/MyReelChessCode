@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import PieceGroupDisplay from '../components/chess/PieceGroupDisplay';
 
 export default function Splash() {
   const navigate = useNavigate();
@@ -36,20 +37,10 @@ export default function Splash() {
           transition={{ type: "spring", stiffness: 150, damping: 15 }}
           className="mb-6"
         >
-          <div className="relative inline-block">
-            <span className="text-8xl" style={{
-              filter: 'drop-shadow(0 0 30px rgba(212,175,55,0.4))',
-              color: '#D4AF37'
-            }}>
-              ♚
-            </span>
-            {/* Gold ring */}
-            <motion.div
-              className="absolute inset-0 rounded-full border border-[#D4AF37]/20"
-              style={{ margin: '-20px' }}
-              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0, 0.3] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            />
+          <div className="relative">
+            <div style={{ filter: 'drop-shadow(0 0 20px rgba(212,175,55,0.25))' }}>
+              <PieceGroupDisplay size="normal" animate={phase >= 1} />
+            </div>
           </div>
         </motion.div>
 
