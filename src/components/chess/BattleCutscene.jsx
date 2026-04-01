@@ -63,11 +63,29 @@ export default function BattleCutscene({ attacker, defender, onComplete }) {
   const attackerWhite = isWhite(attacker);
   const quote = BATTLE_QUOTES[defenderName]?.[Math.floor(Math.random() * 3)] || "A piece falls!";
 
+  const knightAudioRef = useRef(null);
+
   useEffect(() => {
-    const t1 = setTimeout(() => { setPhase('clash'); playClangs(); }, 1200);
-    const t2 = setTimeout(() => { setPhase('victory'); playDeathSigh(0.1); }, 2200);
+    const t1 = setTimeout(() => {
+      setPhase('clash');
+      playClangs();
+    }, 1200);
+    const t2 = setTimeout(() => {
+      setPhase('victory');
+      if (attackerName === 'knight') {
+        const audio = new Audio('https://raw.githubusercontent.com/itisnotmac/ChessAssets/f4d96155f96a4675b59863edece2b655d6694636/knightwinsbattle.mp3');
+        audio.volume = 1.0;
+        audio.play().catch(() => {});
+        knightAudioRef.current = audio;
+      } else {
+        playDeathSigh(0.1);
+      }
+    }, 2200);
     const t3 = setTimeout(() => onComplete(), 3800);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    return () => {
+      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
+      if (knightAudioRef.current) { knightAudioRef.current.pause(); }
+    };
   }, [onComplete]);
 
   return (
