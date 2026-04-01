@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -15,6 +15,21 @@ export default function InfoPage() {
   const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
   const section = urlParams.get('section') || 'settings';
+
+  const [difficulty, setDifficulty] = React.useState(
+    () => localStorage.getItem('chessDifficulty') || 'arrogant'
+  );
+
+  const handleDifficulty = (level) => {
+    setDifficulty(level);
+    localStorage.setItem('chessDifficulty', level);
+  };
+
+  const difficulties = [
+    { id: 'novice', label: 'Novice', desc: 'Learning the ropes' },
+    { id: 'arrogant', label: 'Arrogant', desc: 'Thinks it knows best' },
+    { id: 'grandmaster', label: 'Grandmaster', desc: 'Merciless opponent' },
+  ];
 
   const renderSettings = () => (
     <div className="space-y-6">
@@ -46,17 +61,19 @@ export default function InfoPage() {
 
       <div className="rounded-xl bg-white/5 border border-white/5 p-4">
         <p className="text-white text-sm font-medium mb-3">AI Difficulty</p>
-        <div className="grid grid-cols-3 gap-2">
-          {['Easy', 'Medium', 'Hard'].map((level) => (
+        <div className="flex flex-col gap-2">
+          {difficulties.map((d) => (
             <button
-              key={level}
-              className={`py-2.5 rounded-lg text-xs tracking-wider font-medium transition-all ${
-                level === 'Medium'
+              key={d.id}
+              onClick={() => handleDifficulty(d.id)}
+              className={`flex items-center justify-between px-4 py-3 rounded-lg text-left transition-all ${
+                difficulty === d.id
                   ? 'bg-[#D4AF37] text-[#0a0a0f]'
                   : 'bg-white/5 text-white/50 hover:bg-white/10'
               }`}
             >
-              {level}
+              <span className="text-xs font-bold tracking-wider">{d.label.toUpperCase()}</span>
+              <span className={`text-[10px] ${difficulty === d.id ? 'text-[#0a0a0f]/60' : 'text-white/20'}`}>{d.desc}</span>
             </button>
           ))}
         </div>

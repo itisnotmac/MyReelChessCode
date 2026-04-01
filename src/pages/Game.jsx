@@ -178,8 +178,12 @@ export default function Game() {
     const currentEnPassant = enPassant;
     const currentCastling = castling;
 
+    const difficultyDepth = { novice: 1, arrogant: 2, grandmaster: 4 };
+    const storedDiff = localStorage.getItem('chessDifficulty') || 'arrogant';
+    const depth = difficultyDepth[storedDiff] ?? 2;
+
     const timer = setTimeout(() => {
-      const aiMove = getAIMove(currentBoard, currentEnPassant, currentCastling, 2);
+      const aiMove = getAIMove(currentBoard, currentEnPassant, currentCastling, depth);
       setIsThinking(false);
       aiRunningRef.current = false;
       if (aiMove) {
