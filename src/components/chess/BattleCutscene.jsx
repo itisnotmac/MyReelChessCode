@@ -80,7 +80,9 @@ export default function BattleCutscene({ attacker, defender, onComplete }) {
         audio.play().catch(() => {});
         knightAudioRef.current = audio;
       } else {
-        playDeathSigh(0.1);
+        const groanAudio = new Audio('https://raw.githubusercontent.com/itisnotmac/ChessAssets/f4d96155f96a4675b59863edece2b655d6694636/dragon-studio-male-groan-of-pain-357971.mp3');
+        groanAudio.volume = 1.0;
+        groanAudio.play().catch(() => {});
       }
     }, 2200);
     const t3 = setTimeout(() => onComplete(), 3800);
