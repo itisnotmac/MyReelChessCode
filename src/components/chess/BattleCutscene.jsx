@@ -68,7 +68,9 @@ export default function BattleCutscene({ attacker, defender, onComplete }) {
   useEffect(() => {
     const t1 = setTimeout(() => {
       setPhase('clash');
-      playClangs();
+      const swordAudio = new Audio('https://raw.githubusercontent.com/itisnotmac/ChessAssets/f4d96155f96a4675b59863edece2b655d6694636/dragon-studio-sword-fight-393849.mp3');
+      swordAudio.volume = 1.0;
+      swordAudio.play().catch(() => {});
     }, 1200);
     const t2 = setTimeout(() => {
       setPhase('victory');
