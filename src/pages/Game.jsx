@@ -2,8 +2,9 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, RotateCcw } from 'lucide-react';
+import { ArrowLeft, RotateCcw, Box, Grid } from 'lucide-react';
 import ChessBoard from '../components/chess/ChessBoard';
+import ChessBoard3D from '../components/chess/ChessBoard3D';
 import CapturedPieces from '../components/chess/CapturedPieces';
 import BattleCutscene from '../components/chess/BattleCutscene';
 import GameOverModal from '../components/chess/GameOverModal';
@@ -39,6 +40,7 @@ export default function Game() {
   const [gameOver, setGameOver] = useState(null);
   const [isThinking, setIsThinking] = useState(false);
   const [moveCount, setMoveCount] = useState(0);
+  const [is3D, setIs3D] = useState(false);
 
   // Battle cutscene state
   const [battleInfo, setBattleInfo] = useState(null);
@@ -234,12 +236,21 @@ export default function Game() {
           </p>
           <p className="text-[10px] text-white/20">Move {moveCount}</p>
         </div>
-        <button
-          onClick={resetGame}
-          className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60"
-        >
-          <RotateCcw className="w-4 h-4" />
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setIs3D(v => !v)}
+            className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-[#D4AF37]/70 hover:text-[#D4AF37] transition-colors"
+            title={is3D ? 'Switch to 2D' : 'Switch to 3D'}
+          >
+            {is3D ? <Grid className="w-4 h-4" /> : <Box className="w-4 h-4" />}
+          </button>
+          <button
+            onClick={resetGame}
+            className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Black captured pieces (top) */}
@@ -259,17 +270,28 @@ export default function Game() {
 
       {/* Chess Board */}
       <div className="flex-1 flex items-center justify-center px-4 py-2">
-        <div style={{ width: 'min(92vw, 92vh, 420px)', height: 'min(92vw, 92vh, 420px)' }}>
-          <ChessBoard
-            board={board}
-            selectedSquare={selectedSquare}
-            legalMoves={legalMoves}
-            onSquareClick={handleSquareClick}
-            lastMove={lastMove}
-            isCheck={isInCheck(board, isWhiteTurn)}
-            checkSquare={checkSquare}
-            flipped={shouldFlip}
-          />
+        <div style={{ width: 'min(92vw, 92vh, 480px)', height: 'min(92vw, 92vh, 480px)' }}>
+          {is3D ? (
+            <ChessBoard3D
+              board={board}
+              selectedSquare={selectedSquare}
+              legalMoves={legalMoves}
+              onSquareClick={handleSquareClick}
+              lastMove={lastMove}
+              checkSquare={checkSquare}
+            />
+          ) : (
+            <ChessBoard
+              board={board}
+              selectedSquare={selectedSquare}
+              legalMoves={legalMoves}
+              onSquareClick={handleSquareClick}
+              lastMove={lastMove}
+              isCheck={isInCheck(board, isWhiteTurn)}
+              checkSquare={checkSquare}
+              flipped={shouldFlip}
+            />
+          )}
         </div>
       </div>
 
