@@ -112,23 +112,102 @@ function King({ isWhite }) {
   );
 }
 
-const QUEEN_IMG = 'https://raw.githubusercontent.com/itisnotmac/ChessAssets/main/queen.png';
-
 function Queen({ isWhite }) {
+  const id = isWhite ? 'wq' : 'bq';
+  const b = isWhite ? {
+    base: '#C8960C', baseH: '#F0C040', baseSh: '#7A5A00',
+    metal: '#D4A820', metalH: '#FFE066', metalSh: '#8B6500',
+    skin: '#E8B87A', skinSh: '#A07040',
+    dark: '#5A3A00', outline: '#2A1A00', hi: '#FFF0A0'
+  } : {
+    base: '#2A2018', baseH: '#4A3828', baseSh: '#0A0806',
+    metal: '#1E1A14', metalH: '#3A3028', metalSh: '#080604',
+    skin: '#8A6040', skinSh: '#4A2A10',
+    dark: '#080604', outline: '#000000', hi: '#5A4830'
+  };
+
   return (
-    <img
-      src={QUEEN_IMG}
-      alt="Queen"
-      draggable={false}
-      style={{
-        width: '100%',
-        height: '100%',
-        objectFit: 'contain',
-        filter: isWhite
-          ? 'none'
-          : 'brightness(0.35) sepia(0.3) hue-rotate(180deg)',
-      }}
-    />
+    <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id={`${id}mg`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={b.baseH}/>
+          <stop offset="40%" stopColor={b.base}/>
+          <stop offset="100%" stopColor={b.baseSh}/>
+        </linearGradient>
+        <linearGradient id={`${id}mg2`} x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0%" stopColor={b.metalH}/><stop offset="50%" stopColor={b.metal}/><stop offset="100%" stopColor={b.metalSh}/>
+        </linearGradient>
+        <radialGradient id={`${id}sg`} cx="40%" cy="30%" r="60%">
+          <stop offset="0%" stopColor={b.skin}/><stop offset="100%" stopColor={b.skinSh}/>
+        </radialGradient>
+        <filter id={`${id}sh`} x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="1" dy="2" stdDeviation="2" floodColor={b.dark} floodOpacity="0.7"/>
+        </filter>
+      </defs>
+
+      {/* Plinth base */}
+      <ellipse cx="40" cy="94" rx="26" ry="5" fill={b.baseSh} opacity="0.5"/>
+      <rect x="14" y="86" width="52" height="10" rx="3" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
+      <rect x="17" y="84" width="46" height="6" rx="2" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
+
+      {/* Flowing gown */}
+      <path d="M18 86 Q16 68 20 54 Q25 44 40 42 Q55 44 60 54 Q64 68 62 86 Z"
+        fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2" filter={`url(#${id}sh)`}/>
+      {/* Gown folds */}
+      <path d="M24 56 Q25 70 24 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.5"/>
+      <path d="M32 50 Q33 68 32 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.4"/>
+      <path d="M40 48 L40 85" stroke={b.metalH} strokeWidth="0.7" fill="none" opacity="0.4"/>
+      <path d="M48 50 Q47 68 48 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.4"/>
+      <path d="M56 56 Q55 70 56 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.5"/>
+      {/* Sash */}
+      <path d="M20 62 Q40 59 60 62" stroke={b.metalH} strokeWidth="2" fill="none" strokeLinecap="round"/>
+
+      {/* Arms */}
+      <path d="M22 52 Q12 50 8 56 Q8 62 12 62 Q16 60 20 58" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
+      <path d="M58 52 Q68 50 72 56 Q72 62 68 62 Q64 60 60 58" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
+      <ellipse cx="8" cy="59" rx="4" ry="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
+      <ellipse cx="72" cy="59" rx="4" ry="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
+
+      {/* Orb in left hand */}
+      <circle cx="8" cy="57" r="5" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
+      <circle cx="6.5" cy="55.5" r="1.8" fill={b.hi} opacity="0.6"/>
+      <path d="M5 57 Q8 54 11 57" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.5"/>
+
+      {/* Scepter */}
+      <line x1="72" y1="57" x2="75" y2="28" stroke={`url(#${id}mg)`} strokeWidth="2.5" strokeLinecap="round"/>
+      <circle cx="75" cy="25" r="5" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
+      <circle cx="73.5" cy="23.5" r="2" fill={b.hi} opacity="0.6"/>
+
+      {/* Neck */}
+      <rect x="36" y="36" width="8" height="8" rx="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
+
+      {/* Head */}
+      <ellipse cx="40" cy="28" rx="11" ry="12" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="1.2"/>
+      {/* Hair flowing */}
+      <path d="M29 30 Q26 42 29 50 Q34 54 40 52 Q46 54 51 50 Q54 42 51 30" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8" opacity="0.85"/>
+      <path d="M30 34 L29 50" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
+      <path d="M40 32 L40 52" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
+      <path d="M50 34 L51 50" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
+      {/* Eyes */}
+      <ellipse cx="35" cy="27" rx="3.2" ry="2.5" fill={b.dark}/>
+      <ellipse cx="45" cy="27" rx="3.2" ry="2.5" fill={b.dark}/>
+      <circle cx="35.8" cy="26.3" r="1" fill={b.hi} opacity="0.6"/>
+      <circle cx="45.8" cy="26.3" r="1" fill={b.hi} opacity="0.6"/>
+      {/* Nose */}
+      <path d="M38.5 28 Q38 31 40 32 Q42 31 41.5 28" stroke={b.skinSh} strokeWidth="0.8" fill="none"/>
+      {/* Lips */}
+      <path d="M36.5 33.5 Q40 35 43.5 33.5" stroke={b.outline} strokeWidth="1" fill="none" strokeLinecap="round"/>
+
+      {/* Crown with 5 points */}
+      <path d="M30 24 L31 13 L36 19 L40 9 L44 19 L49 13 L50 24 Z"
+        fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="1.2"/>
+      <rect x="30" y="22" width="20" height="4" rx="2" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8"/>
+      {/* Crown gems */}
+      <circle cx="40" cy="10" r="2.5" fill={isWhite ? '#FF4488' : '#881133'} stroke={b.outline} strokeWidth="0.6"/>
+      <circle cx="32" cy="14" r="1.8" fill={isWhite ? '#FF88AA' : '#663344'} stroke={b.outline} strokeWidth="0.5"/>
+      <circle cx="48" cy="14" r="1.8" fill={isWhite ? '#FF88AA' : '#663344'} stroke={b.outline} strokeWidth="0.5"/>
+      <path d="M32 23 Q40 21 48 23" stroke={b.hi} strokeWidth="0.8" opacity="0.6" fill="none"/>
+    </svg>
   );
 }
 
