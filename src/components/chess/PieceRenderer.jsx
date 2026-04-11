@@ -117,13 +117,17 @@ function Queen({ isWhite }) {
   const b = isWhite ? {
     base: '#C8960C', baseH: '#F0C040', baseSh: '#7A5A00',
     metal: '#D4A820', metalH: '#FFE066', metalSh: '#8B6500',
-    skin: '#E8B87A', skinSh: '#A07040',
-    dark: '#5A3A00', outline: '#2A1A00', hi: '#FFF0A0'
+    skin: '#F2C898', skinSh: '#C08858',
+    hair: '#C8960C', hairH: '#F0C040', hairSh: '#7A5A00',
+    dark: '#5A3A00', outline: '#2A1A00', hi: '#FFF0A0',
+    lip: '#C05060', cheek: '#E08878'
   } : {
     base: '#2A2018', baseH: '#4A3828', baseSh: '#0A0806',
     metal: '#1E1A14', metalH: '#3A3028', metalSh: '#080604',
-    skin: '#8A6040', skinSh: '#4A2A10',
-    dark: '#080604', outline: '#000000', hi: '#5A4830'
+    skin: '#7A5030', skinSh: '#3A1A08',
+    hair: '#0A0806', hairH: '#1A1410', hairSh: '#050402',
+    dark: '#080604', outline: '#000000', hi: '#5A4830',
+    lip: '#6A2030', cheek: '#5A2818'
   };
 
   return (
@@ -140,6 +144,9 @@ function Queen({ isWhite }) {
         <radialGradient id={`${id}sg`} cx="40%" cy="30%" r="60%">
           <stop offset="0%" stopColor={b.skin}/><stop offset="100%" stopColor={b.skinSh}/>
         </radialGradient>
+        <linearGradient id={`${id}hg`} x1="0" y1="0" x2="0.5" y2="1">
+          <stop offset="0%" stopColor={b.hairH}/><stop offset="100%" stopColor={b.hairSh}/>
+        </linearGradient>
         <filter id={`${id}sh`} x="-20%" y="-20%" width="140%" height="140%">
           <feDropShadow dx="1" dy="2" stdDeviation="2" floodColor={b.dark} floodOpacity="0.7"/>
         </filter>
@@ -150,63 +157,94 @@ function Queen({ isWhite }) {
       <rect x="14" y="86" width="52" height="10" rx="3" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2"/>
       <rect x="17" y="84" width="46" height="6" rx="2" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
 
-      {/* Flowing gown */}
-      <path d="M18 86 Q16 68 20 54 Q25 44 40 42 Q55 44 60 54 Q64 68 62 86 Z"
+      {/* Wide elegant gown */}
+      <path d="M14 86 Q12 66 18 52 Q24 42 40 40 Q56 42 62 52 Q68 66 66 86 Z"
         fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1.2" filter={`url(#${id}sh)`}/>
-      {/* Gown folds */}
-      <path d="M24 56 Q25 70 24 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.5"/>
-      <path d="M32 50 Q33 68 32 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.4"/>
-      <path d="M40 48 L40 85" stroke={b.metalH} strokeWidth="0.7" fill="none" opacity="0.4"/>
-      <path d="M48 50 Q47 68 48 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.4"/>
-      <path d="M56 56 Q55 70 56 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.5"/>
-      {/* Sash */}
-      <path d="M20 62 Q40 59 60 62" stroke={b.metalH} strokeWidth="2" fill="none" strokeLinecap="round"/>
+      {/* Gown folds / drapery */}
+      <path d="M20 54 Q21 70 20 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.45"/>
+      <path d="M30 48 Q31 68 30 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.4"/>
+      <path d="M40 46 L40 85" stroke={b.metalH} strokeWidth="0.7" fill="none" opacity="0.35"/>
+      <path d="M50 48 Q49 68 50 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.4"/>
+      <path d="M60 54 Q59 70 60 84" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.45"/>
+      {/* Decorative hem */}
+      <path d="M14 80 Q40 76 66 80" stroke={b.metalH} strokeWidth="1.5" fill="none"/>
+      {/* Bodice detail */}
+      <path d="M26 52 Q40 48 54 52 Q54 62 40 64 Q26 62 26 52 Z" fill={b.metalH} stroke={b.outline} strokeWidth="0.6" opacity="0.25"/>
+      {/* Waist sash */}
+      <path d="M20 66 Q40 62 60 66" stroke={`url(#${id}mg2)`} strokeWidth="3" fill="none" strokeLinecap="round"/>
 
-      {/* Arms */}
-      <path d="M22 52 Q12 50 8 56 Q8 62 12 62 Q16 60 20 58" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
-      <path d="M58 52 Q68 50 72 56 Q72 62 68 62 Q64 60 60 58" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="1"/>
-      <ellipse cx="8" cy="59" rx="4" ry="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
-      <ellipse cx="72" cy="59" rx="4" ry="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
+      {/* Slender arms */}
+      <path d="M24 52 Q14 54 10 60 Q10 65 14 64 Q18 62 22 58" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.9"/>
+      <path d="M56 52 Q66 54 70 60 Q70 65 66 64 Q62 62 58 58" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.9"/>
+      {/* Delicate hands */}
+      <ellipse cx="10" cy="62" rx="3.5" ry="2.5" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.7"/>
+      <ellipse cx="70" cy="62" rx="3.5" ry="2.5" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.7"/>
 
       {/* Orb in left hand */}
-      <circle cx="8" cy="57" r="5" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
-      <circle cx="6.5" cy="55.5" r="1.8" fill={b.hi} opacity="0.6"/>
-      <path d="M5 57 Q8 54 11 57" stroke={b.metalH} strokeWidth="0.6" fill="none" opacity="0.5"/>
+      <circle cx="10" cy="60" r="4.5" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
+      <circle cx="8.8" cy="58.8" r="1.5" fill={b.hi} opacity="0.65"/>
 
-      {/* Scepter */}
-      <line x1="72" y1="57" x2="75" y2="28" stroke={`url(#${id}mg)`} strokeWidth="2.5" strokeLinecap="round"/>
-      <circle cx="75" cy="25" r="5" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
-      <circle cx="73.5" cy="23.5" r="2" fill={b.hi} opacity="0.6"/>
+      {/* Scepter in right hand */}
+      <line x1="70" y1="60" x2="73" y2="30" stroke={`url(#${id}mg)`} strokeWidth="2.2" strokeLinecap="round"/>
+      <circle cx="73" cy="27" r="4.5" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.8"/>
+      <circle cx="71.5" cy="25.5" r="1.8" fill={b.hi} opacity="0.6"/>
+      {/* Scepter fleur */}
+      <path d="M73 23 Q70 20 71 17 Q73 19 73 22" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.5"/>
+      <path d="M73 23 Q76 20 75 17 Q73 19 73 22" fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="0.5"/>
 
-      {/* Neck */}
-      <rect x="36" y="36" width="8" height="8" rx="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
+      {/* Neck — slender */}
+      <rect x="37" y="36" width="6" height="8" rx="3" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="0.8"/>
+      {/* Necklace */}
+      <path d="M34 38 Q40 36 46 38" stroke={b.metalH} strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <circle cx="40" cy="39" r="1.2" fill={isWhite ? '#FF88CC' : '#881144'} stroke={b.outline} strokeWidth="0.4"/>
 
-      {/* Head */}
-      <ellipse cx="40" cy="28" rx="11" ry="12" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="1.2"/>
-      {/* Hair flowing */}
-      <path d="M29 30 Q26 42 29 50 Q34 54 40 52 Q46 54 51 50 Q54 42 51 30" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8" opacity="0.85"/>
-      <path d="M30 34 L29 50" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
-      <path d="M40 32 L40 52" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
-      <path d="M50 34 L51 50" stroke={b.metalH} strokeWidth="0.6" opacity="0.5"/>
-      {/* Eyes */}
-      <ellipse cx="35" cy="27" rx="3.2" ry="2.5" fill={b.dark}/>
-      <ellipse cx="45" cy="27" rx="3.2" ry="2.5" fill={b.dark}/>
-      <circle cx="35.8" cy="26.3" r="1" fill={b.hi} opacity="0.6"/>
-      <circle cx="45.8" cy="26.3" r="1" fill={b.hi} opacity="0.6"/>
-      {/* Nose */}
-      <path d="M38.5 28 Q38 31 40 32 Q42 31 41.5 28" stroke={b.skinSh} strokeWidth="0.8" fill="none"/>
-      {/* Lips */}
-      <path d="M36.5 33.5 Q40 35 43.5 33.5" stroke={b.outline} strokeWidth="1" fill="none" strokeLinecap="round"/>
+      {/* Head — softer oval */}
+      <ellipse cx="40" cy="27" rx="11" ry="12" fill={`url(#${id}sg)`} stroke={b.outline} strokeWidth="1.2"/>
+      {/* Soft cheek blush */}
+      <ellipse cx="34" cy="30" rx="3" ry="2" fill={b.cheek} opacity="0.25"/>
+      <ellipse cx="46" cy="30" rx="3" ry="2" fill={b.cheek} opacity="0.25"/>
 
-      {/* Crown with 5 points */}
-      <path d="M30 24 L31 13 L36 19 L40 9 L44 19 L49 13 L50 24 Z"
-        fill={`url(#${id}mg2)`} stroke={b.outline} strokeWidth="1.2"/>
-      <rect x="30" y="22" width="20" height="4" rx="2" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8"/>
-      {/* Crown gems */}
-      <circle cx="40" cy="10" r="2.5" fill={isWhite ? '#FF4488' : '#881133'} stroke={b.outline} strokeWidth="0.6"/>
-      <circle cx="32" cy="14" r="1.8" fill={isWhite ? '#FF88AA' : '#663344'} stroke={b.outline} strokeWidth="0.5"/>
-      <circle cx="48" cy="14" r="1.8" fill={isWhite ? '#FF88AA' : '#663344'} stroke={b.outline} strokeWidth="0.5"/>
-      <path d="M32 23 Q40 21 48 23" stroke={b.hi} strokeWidth="0.8" opacity="0.6" fill="none"/>
+      {/* Long flowing hair — cascading down sides */}
+      <path d="M29 20 Q24 28 24 40 Q26 50 30 54" fill={`url(#${id}hg)`} stroke={b.outline} strokeWidth="0.8"/>
+      <path d="M51 20 Q56 28 56 40 Q54 50 50 54" fill={`url(#${id}hg)`} stroke={b.outline} strokeWidth="0.8"/>
+      {/* Hair sheen */}
+      <path d="M26 24 Q25 36 26 46" stroke={b.hairH} strokeWidth="0.7" fill="none" opacity="0.5"/>
+      <path d="M54 24 Q55 36 54 46" stroke={b.hairH} strokeWidth="0.7" fill="none" opacity="0.5"/>
+
+      {/* Eyes — almond shaped, feminine */}
+      <path d="M32 26 Q35 23.5 38 26 Q35 28 32 26 Z" fill={b.dark}/>
+      <path d="M42 26 Q45 23.5 48 26 Q45 28 42 26 Z" fill={b.dark}/>
+      <circle cx="35.5" cy="25.5" r="1" fill={b.hi} opacity="0.6"/>
+      <circle cx="45.5" cy="25.5" r="1" fill={b.hi} opacity="0.6"/>
+      {/* Lashes */}
+      <path d="M32 26 Q31 24 30 23" stroke={b.outline} strokeWidth="0.8" fill="none"/>
+      <path d="M34 24.5 Q33 22.5 32 22" stroke={b.outline} strokeWidth="0.7" fill="none"/>
+      <path d="M48 26 Q49 24 50 23" stroke={b.outline} strokeWidth="0.8" fill="none"/>
+      <path d="M46 24.5 Q47 22.5 48 22" stroke={b.outline} strokeWidth="0.7" fill="none"/>
+      {/* Brows — arched */}
+      <path d="M31.5 23 Q35 21 38 22.5" stroke={b.outline} strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M42 22.5 Q45 21 48.5 23" stroke={b.outline} strokeWidth="1" fill="none" strokeLinecap="round"/>
+      {/* Nose — delicate */}
+      <path d="M39 28 Q38.5 30.5 40 31.5 Q41.5 30.5 41 28" stroke={b.skinSh} strokeWidth="0.7" fill="none"/>
+      {/* Lips — full, feminine */}
+      <path d="M36 33.5 Q38 32 40 33 Q42 32 44 33.5" stroke={b.lip} strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <path d="M36.5 33.5 Q40 35.5 43.5 33.5" stroke={b.lip} strokeWidth="1" fill="none" strokeLinecap="round"/>
+
+      {/* Crown — tall elegant with 5 spires */}
+      <rect x="30" y="20" width="20" height="5" rx="2" fill={`url(#${id}mg)`} stroke={b.outline} strokeWidth="0.8"/>
+      <line x1="33" y1="20" x2="31" y2="10" stroke={`url(#${id}mg2)`} strokeWidth="2" strokeLinecap="round"/>
+      <line x1="37" y1="20" x2="36" y2="8" stroke={`url(#${id}mg2)`} strokeWidth="2" strokeLinecap="round"/>
+      <line x1="40" y1="20" x2="40" y2="6" stroke={`url(#${id}mg2)`} strokeWidth="2.2" strokeLinecap="round"/>
+      <line x1="43" y1="20" x2="44" y2="8" stroke={`url(#${id}mg2)`} strokeWidth="2" strokeLinecap="round"/>
+      <line x1="47" y1="20" x2="49" y2="10" stroke={`url(#${id}mg2)`} strokeWidth="2" strokeLinecap="round"/>
+      {/* Spire gems */}
+      <circle cx="40" cy="5" r="2.2" fill={isWhite ? '#FF44AA' : '#AA1144'} stroke={b.outline} strokeWidth="0.5"/>
+      <circle cx="36" cy="7" r="1.6" fill={isWhite ? '#FF88CC' : '#881133'} stroke={b.outline} strokeWidth="0.4"/>
+      <circle cx="44" cy="7" r="1.6" fill={isWhite ? '#FF88CC' : '#881133'} stroke={b.outline} strokeWidth="0.4"/>
+      <circle cx="31" cy="9" r="1.4" fill={isWhite ? '#FFAADD' : '#661122'} stroke={b.outline} strokeWidth="0.4"/>
+      <circle cx="49" cy="9" r="1.4" fill={isWhite ? '#FFAADD' : '#661122'} stroke={b.outline} strokeWidth="0.4"/>
+      {/* Crown band highlight */}
+      <path d="M31 22 Q40 20 49 22" stroke={b.hi} strokeWidth="0.8" opacity="0.6" fill="none"/>
     </svg>
   );
 }
