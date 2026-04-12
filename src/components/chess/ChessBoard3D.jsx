@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 const SQUARE_SIZE = 1;
 const BOARD_SIZE = 8;
@@ -8,212 +9,38 @@ const BOARD_SIZE = 8;
 const LIGHT_SQUARE = new THREE.Color(0xc8a96e);
 const DARK_SQUARE = new THREE.Color(0x4a2e1a);
 const BOARD_BORDER = new THREE.Color(0x2a1a0a);
-const WHITE_PIECE = new THREE.Color(0xd4af37);   // gold/bronze
-const BLACK_PIECE = new THREE.Color(0x1a1a2e);   // dark iron
+const WHITE_PIECE = new THREE.Color(0xd4af37);
+const BLACK_PIECE = new THREE.Color(0x1a1a2e);
 const SELECTED_COLOR = new THREE.Color(0xffff00);
 const LEGAL_COLOR = new THREE.Color(0x00ff88);
 const LAST_MOVE_COLOR = new THREE.Color(0xffa500);
 const CHECK_COLOR = new THREE.Color(0xff2200);
 
-function createMaterial(color, emissive = 0x000000, roughness = 0.4, metalness = 0.8) {
-  return new THREE.MeshStandardMaterial({ color, emissive, roughness, metalness });
-}
-
-// ---------- piece geometry builders ----------
-
-function buildPawn(color) {
-  const group = new THREE.Group();
-  const mat = createMaterial(color === 'white' ? WHITE_PIECE : BLACK_PIECE, 0x111111);
-
-  // Base
-  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.32, 0.08, 16), mat);
-  base.position.y = 0.04;
-  group.add(base);
-
-  // Stem
-  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.2, 0.28, 12), mat);
-  stem.position.y = 0.22;
-  group.add(stem);
-
-  // Head
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 12), mat);
-  head.position.y = 0.52;
-  group.add(head);
-
-  return group;
-}
-
-function buildRook(color) {
-  const group = new THREE.Group();
-  const mat = createMaterial(color === 'white' ? WHITE_PIECE : BLACK_PIECE, 0x111111);
-
-  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.34, 0.08, 16), mat);
-  base.position.y = 0.04;
-  group.add(base);
-
-  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.26, 0.36, 12), mat);
-  stem.position.y = 0.26;
-  group.add(stem);
-
-  // Tower body
-  const tower = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.22, 0.22, 12), mat);
-  tower.position.y = 0.55;
-  group.add(tower);
-
-  // Battlements (3 blocks on top)
-  for (let i = 0; i < 3; i++) {
-    const angle = (i / 3) * Math.PI * 2;
-    const merlon = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 0.1), mat);
-    merlon.position.set(Math.cos(angle) * 0.16, 0.74, Math.sin(angle) * 0.16);
-    group.add(merlon);
-  }
-
-  return group;
-}
-
-function buildKnight(color) {
-  const group = new THREE.Group();
-  const mat = createMaterial(color === 'white' ? WHITE_PIECE : BLACK_PIECE, 0x111111);
-
-  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.32, 0.08, 16), mat);
-  base.position.y = 0.04;
-  group.add(base);
-
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.2, 0.32, 10), mat);
-  neck.position.y = 0.24;
-  group.add(neck);
-
-  // Horse head approximation — elongated box tilted forward
-  const head = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.28, 0.36), mat);
-  head.position.set(0, 0.54, 0.08);
-  head.rotation.x = -0.25;
-  group.add(head);
-
-  // Snout
-  const snout = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.12, 0.2), mat);
-  snout.position.set(0, 0.44, 0.26);
-  group.add(snout);
-
-  return group;
-}
-
-function buildBishop(color) {
-  const group = new THREE.Group();
-  const mat = createMaterial(color === 'white' ? WHITE_PIECE : BLACK_PIECE, 0x111111);
-
-  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.32, 0.08, 16), mat);
-  base.position.y = 0.04;
-  group.add(base);
-
-  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.2, 0.4, 12), mat);
-  stem.position.y = 0.28;
-  group.add(stem);
-
-  // Collar
-  const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.16, 0.08, 12), mat);
-  collar.position.y = 0.52;
-  group.add(collar);
-
-  // Tapered body
-  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.16, 0.3, 12), mat);
-  body.position.y = 0.71;
-  group.add(body);
-
-  // Ball tip
-  const ball = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 10), mat);
-  ball.position.y = 0.9;
-  group.add(ball);
-
-  // Point
-  const point = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.14, 8), mat);
-  point.position.y = 1.04;
-  group.add(point);
-
-  return group;
-}
-
-function buildQueen(color) {
-  const group = new THREE.Group();
-  const mat = createMaterial(color === 'white' ? WHITE_PIECE : BLACK_PIECE, 0x111111);
-
-  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.36, 0.08, 16), mat);
-  base.position.y = 0.04;
-  group.add(base);
-
-  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.24, 0.42, 14), mat);
-  stem.position.y = 0.29;
-  group.add(stem);
-
-  // Waist ring
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.04, 8, 20), mat);
-  ring.rotation.x = Math.PI / 2;
-  ring.position.y = 0.52;
-  group.add(ring);
-
-  // Upper body
-  const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.16, 0.28, 14), mat);
-  upper.position.y = 0.7;
-  group.add(upper);
-
-  // Crown with 5 points
-  for (let i = 0; i < 5; i++) {
-    const angle = (i / 5) * Math.PI * 2;
-    const point = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.18, 6), mat);
-    point.position.set(Math.cos(angle) * 0.15, 0.97, Math.sin(angle) * 0.15);
-    group.add(point);
-  }
-
-  // Crown ball center
-  const ball = new THREE.Mesh(new THREE.SphereGeometry(0.08, 10, 8), mat);
-  ball.position.y = 0.88;
-  group.add(ball);
-
-  return group;
-}
-
-function buildKing(color) {
-  const group = new THREE.Group();
-  const mat = createMaterial(color === 'white' ? WHITE_PIECE : BLACK_PIECE, 0x111111);
-
-  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.38, 0.08, 16), mat);
-  base.position.y = 0.04;
-  group.add(base);
-
-  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.26, 0.46, 14), mat);
-  stem.position.y = 0.31;
-  group.add(stem);
-
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.045, 8, 20), mat);
-  ring.rotation.x = Math.PI / 2;
-  ring.position.y = 0.56;
-  group.add(ring);
-
-  const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.18, 0.3, 14), mat);
-  upper.position.y = 0.75;
-  group.add(upper);
-
-  // Cross top
-  const crossV = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.28, 0.07), mat);
-  crossV.position.y = 1.01;
-  group.add(crossV);
-
-  const crossH = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.07, 0.07), mat);
-  crossH.position.y = 1.08;
-  group.add(crossH);
-
-  return group;
-}
-
-const PIECE_BUILDERS = {
-  p: buildPawn, P: buildPawn,
-  r: buildRook, R: buildRook,
-  n: buildKnight, N: buildKnight,
-  b: buildBishop, B: buildBishop,
-  q: buildQueen, Q: buildQueen,
-  k: buildKing, K: buildKing,
+const BASE_URL = 'https://raw.githubusercontent.com/itisnotmac/3D-Assets/main';
+const MODEL_URLS = {
+  p: `${BASE_URL}/PawnThreeD.glb`,
+  r: `${BASE_URL}/RookThreeD.glb`,
+  n: `${BASE_URL}/KnightThreeD.glb`,
+  b: `${BASE_URL}/BishopThreeD.glb`,
+  q: `${BASE_URL}/QueenThreeD.glb`,
+  k: `${BASE_URL}/KingThreeD.glb`,
 };
 
+function applyColor(gltfScene, color) {
+  gltfScene.traverse(child => {
+    if (child.isMesh) {
+      child.material = child.material.clone();
+      child.material.color.set(color);
+      child.material.metalness = 0.8;
+      child.material.roughness = 0.3;
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+}
+
 // ---------- main component ----------
+
 
 export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSquareClick, lastMove, checkSquare }) {
   const mountRef = useRef(null);
@@ -223,6 +50,9 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
   const frameRef = useRef(null);
   const squareMeshesRef = useRef([]);
   const pieceMeshesRef = useRef([]);
+  const modelsRef = useRef({});
+  const modelsReadyRef = useRef(false);
+  const rebuildPiecesRef = useRef(null);
   const isDragging = useRef(false);
   const lastMouse = useRef({ x: 0, y: 0 });
   const orbitRef = useRef({ theta: Math.PI / 6, phi: Math.PI / 3.2, radius: 11 });
@@ -453,39 +283,66 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     }
   }, [selectedSquare, legalMoves, lastMove, checkSquare]);
 
+  // Preload GLB models once
+  useEffect(() => {
+    const loader = new GLTFLoader();
+    const keys = Object.keys(MODEL_URLS);
+    let loaded = 0;
+    keys.forEach(key => {
+      loader.load(MODEL_URLS[key], (gltf) => {
+        modelsRef.current[key] = gltf.scene;
+        loaded++;
+        if (loaded === keys.length) {
+          modelsReadyRef.current = true;
+          rebuildPiecesRef.current && rebuildPiecesRef.current();
+        }
+      });
+    });
+  }, []);
+
   // Rebuild pieces when board changes
   useEffect(() => {
-    const scene = sceneRef.current;
-    if (!scene) return;
+    const rebuild = () => {
+      const scene = sceneRef.current;
+      if (!scene || !modelsReadyRef.current) return;
 
-    // Remove old pieces
-    pieceMeshesRef.current.forEach(p => scene.remove(p));
-    pieceMeshesRef.current = [];
+      pieceMeshesRef.current.forEach(p => scene.remove(p));
+      pieceMeshesRef.current = [];
 
-    for (let r = 0; r < 8; r++) {
-      for (let c = 0; c < 8; c++) {
-        const piece = board[r][c];
-        if (!piece) continue;
-        const builder = PIECE_BUILDERS[piece];
-        if (!builder) continue;
-        const color = piece === piece.toUpperCase() ? 'white' : 'black';
-        const group = builder(color);
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const piece = board[r][c];
+          if (!piece) continue;
+          const key = piece.toLowerCase();
+          const template = modelsRef.current[key];
+          if (!template) continue;
 
-        // Scale and position
-        group.scale.setScalar(0.72);
-        group.position.set(c, 0.06, r);
+          const isWhite = piece === piece.toUpperCase();
+          const clone = template.clone(true);
+          applyColor(clone, isWhite ? WHITE_PIECE : BLACK_PIECE);
 
-        group.traverse(child => {
-          if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-          }
-        });
+          // Auto-scale to fit square
+          const box = new THREE.Box3().setFromObject(clone);
+          const size = new THREE.Vector3();
+          box.getSize(size);
+          const maxDim = Math.max(size.x, size.y, size.z);
+          const targetHeight = 0.75;
+          clone.scale.setScalar(targetHeight / maxDim);
 
-        scene.add(group);
-        pieceMeshesRef.current.push(group);
+          // Re-center after scale
+          const box2 = new THREE.Box3().setFromObject(clone);
+          const center = new THREE.Vector3();
+          box2.getCenter(center);
+          clone.position.set(c - center.x + clone.position.x, -box2.min.y + 0.06, r - center.z + clone.position.z);
+
+          scene.add(clone);
+          pieceMeshesRef.current.push(clone);
+        }
       }
-    }
+    };
+
+    rebuildPiecesRef.current = rebuild;
+    rebuild();
   }, [board]);
 
   return <div ref={mountRef} style={{ width: '100%', height: '100%' }} />;
