@@ -6,8 +6,8 @@ const SQUARE_SIZE = 1;
 const BOARD_SIZE = 8;
 
 // Colors
-const LIGHT_SQUARE = new THREE.Color(0xc8a96e);
-const DARK_SQUARE = new THREE.Color(0x4a2e1a);
+const LIGHT_SQUARE = new THREE.Color(0xF0EAD6);
+const DARK_SQUARE = new THREE.Color(0x355E3B);
 const BOARD_BORDER = new THREE.Color(0x2a1a0a);
 const WHITE_PIECE = new THREE.Color(0xd4af37);
 const BLACK_PIECE = new THREE.Color(0x1a1a2e);
