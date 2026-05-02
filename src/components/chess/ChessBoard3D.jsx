@@ -321,6 +321,9 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
           const clone = template.clone(true);
           applyColor(clone, isWhite ? WHITE_PIECE : BLACK_PIECE);
 
+          // Rotate pieces to face forward (white faces up, black faces down)
+          clone.rotation.y = isWhite ? Math.PI / 2 : -Math.PI / 2;
+
           // Auto-scale to fit square
           const box = new THREE.Box3().setFromObject(clone);
           const size = new THREE.Vector3();
