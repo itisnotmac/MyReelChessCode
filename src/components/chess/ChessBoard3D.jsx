@@ -322,7 +322,13 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
           applyColor(clone, isWhite ? WHITE_PIECE : BLACK_PIECE);
 
           // Rotate pieces to face forward (white faces up, black faces down)
-          clone.rotation.y = isWhite ? Math.PI / 2 : -Math.PI / 2;
+          // Knights have a different base orientation, so they need an extra 180°
+          const isKnight = key === 'n';
+          if (isKnight) {
+            clone.rotation.y = isWhite ? -Math.PI / 2 : Math.PI / 2;
+          } else {
+            clone.rotation.y = isWhite ? Math.PI / 2 : -Math.PI / 2;
+          }
 
           // Auto-scale to fit square
           const box = new THREE.Box3().setFromObject(clone);
