@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, RotateCcw, Box, Grid } from 'lucide-react';
+import { ArrowLeft, RotateCcw } from 'lucide-react';
 import ChessBoard from '../components/chess/ChessBoard';
 import ChessBoard3D from '../components/chess/ChessBoard3D';
 import CapturedPieces from '../components/chess/CapturedPieces';
@@ -239,10 +239,20 @@ export default function Game() {
         <div className="flex gap-2">
           <button
             onClick={() => setIs3D(v => !v)}
-            className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-[#D4AF37]/70 hover:text-[#D4AF37] transition-colors"
-            title={is3D ? 'Switch to 2D' : 'Switch to 3D'}
+            className="rounded-lg bg-white/5 border border-white/10 flex flex-col items-center justify-center px-2 py-1 text-[#D4AF37]/70 hover:text-[#D4AF37] transition-colors leading-none"
+            title={is3D ? 'Back to 2D' : 'Switch to 3D'}
           >
-            {is3D ? <Grid className="w-4 h-4" /> : <Box className="w-4 h-4" />}
+            {is3D ? (
+              <>
+                <span style={{ fontSize: '7px' }} className="tracking-widest uppercase text-[#D4AF37]/50">Back to</span>
+                <span style={{ fontSize: '15px', fontFamily: "'Georgia', serif", fontWeight: 'bold', letterSpacing: '0.05em', textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>2D</span>
+              </>
+            ) : (
+              <>
+                <span style={{ fontSize: '7px' }} className="tracking-widest uppercase text-[#D4AF37]/50">Switch to</span>
+                <span style={{ fontSize: '15px', fontFamily: "'Palatino Linotype', 'Book Antiqua', Palatino, serif", fontWeight: 'bold', fontStyle: 'italic', letterSpacing: '0.05em', textShadow: '1px 1px 0px #8B6914, 2px 2px 0px rgba(0,0,0,0.5)' }}>3D</span>
+              </>
+            )}
           </button>
           <button
             onClick={resetGame}
