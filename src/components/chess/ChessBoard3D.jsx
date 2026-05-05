@@ -150,8 +150,9 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     const handleClick = (e) => {
       if (isDragging.current) return;
       const rect = container.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const touch = e.changedTouches ? e.changedTouches[0] : (e.touches ? e.touches[0] : null);
+      const clientX = touch ? touch.clientX : e.clientX;
+      const clientY = touch ? touch.clientY : e.clientY;
       const x = ((clientX - rect.left) / rect.width) * 2 - 1;
       const y = -((clientY - rect.top) / rect.height) * 2 + 1;
       raycaster.setFromCamera({ x, y }, camera);
@@ -173,7 +174,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     const onMouseMove = (e) => {
       const dx = e.clientX - lastMouse.current.x;
       const dy = e.clientY - lastMouse.current.y;
-      if (Math.abs(dx) > 2 || Math.abs(dy) > 2) isDragging.current = true;
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging.current = true;
       orbitRef.current.theta -= dx * 0.008;
       orbitRef.current.phi = Math.max(0.3, Math.min(Math.PI / 2.1, orbitRef.current.phi + dy * 0.006));
       lastMouse.current = { x: e.clientX, y: e.clientY };
@@ -202,7 +203,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
       if (e.touches.length === 1) {
         const dx = e.touches[0].clientX - lastMouse.current.x;
         const dy = e.touches[0].clientY - lastMouse.current.y;
-        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) isDragging.current = true;
+        if (Math.abs(dx) > 8 || Math.abs(dy) > 8) isDragging.current = true;
         orbitRef.current.theta -= dx * 0.008;
         orbitRef.current.phi = Math.max(0.3, Math.min(Math.PI / 2.1, orbitRef.current.phi + dy * 0.006));
         lastMouse.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
