@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, RotateCcw } from 'lucide-react';
+import GameMenu from '../components/chess/GameMenu';
 import ChessBoard from '../components/chess/ChessBoard';
 import ChessBoard3D from '../components/chess/ChessBoard3D';
 import CapturedPieces from '../components/chess/CapturedPieces';
@@ -41,6 +41,15 @@ export default function Game() {
   const [isThinking, setIsThinking] = useState(false);
   const [moveCount, setMoveCount] = useState(0);
   const [is3D, setIs3D] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('chessSound') !== 'off');
+
+  const handleToggleSound = () => {
+    setSoundEnabled(prev => {
+      const next = !prev;
+      localStorage.setItem('chessSound', next ? 'on' : 'off');
+      return next;
+    });
+  };
 
   // Battle cutscene state
   const [battleInfo, setBattleInfo] = useState(null);
@@ -224,12 +233,12 @@ export default function Game() {
     <div className="min-h-screen bg-[#0a0a0f] flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
-        <button
-          onClick={() => navigate(createPageUrl('Lobby'))}
-          className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </button>
+        <GameMenu
+          onHome={() => navigate(createPageUrl('Lobby'))}
+          onReset={resetGame}
+          soundEnabled={soundEnabled}
+          onToggleSound={handleToggleSound}
+        />
         <div className="text-center">
           <p className="text-[10px] tracking-[0.3em] uppercase text-[#D4AF37]/60 font-medium">
             {mode === 'ai' ? 'VS AI' : 'LOCAL'}
@@ -254,12 +263,7 @@ export default function Game() {
               </>
             )}
           </button>
-          <button
-            onClick={resetGame}
-            className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
+
         </div>
       </div>
 
