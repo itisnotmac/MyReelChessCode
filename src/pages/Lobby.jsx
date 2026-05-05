@@ -6,17 +6,28 @@ import { Button } from "@/components/ui/button";
 import { Menu, Cpu, Users, ChevronRight } from 'lucide-react';
 import MenuDrawer from '../components/lobby/MenuDrawer';
 import PieceGroupDisplay from '../components/chess/PieceGroupDisplay';
+import DifficultyModal from '../components/lobby/DifficultyModal';
 
 export default function Lobby() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [difficultyOpen, setDifficultyOpen] = useState(false);
 
   const handleNavigate = (section) => {
     navigate(createPageUrl('Info') + `?section=${section}`);
   };
 
   const startGame = (mode) => {
-    navigate(createPageUrl('Game') + `?mode=${mode}`);
+    if (mode === 'ai') {
+      setDifficultyOpen(true);
+    } else {
+      navigate(createPageUrl('Game') + `?mode=${mode}`);
+    }
+  };
+
+  const handleDifficultyConfirm = () => {
+    setDifficultyOpen(false);
+    navigate(createPageUrl('Game') + `?mode=ai`);
   };
 
   return (
@@ -179,6 +190,12 @@ export default function Lobby() {
         isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}
         onNavigate={handleNavigate}
+      />
+
+      <DifficultyModal
+        isOpen={difficultyOpen}
+        onClose={() => setDifficultyOpen(false)}
+        onConfirm={handleDifficultyConfirm}
       />
     </div>
   );

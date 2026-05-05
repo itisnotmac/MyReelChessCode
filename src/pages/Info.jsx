@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Settings, HelpCircle, Mail, Info, Volume2, VolumeX, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Settings, HelpCircle, Mail, Info } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
 import {
   Accordion,
@@ -15,21 +15,6 @@ export default function InfoPage() {
   const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
   const section = urlParams.get('section') || 'settings';
-
-  const [difficulty, setDifficulty] = React.useState(
-    () => localStorage.getItem('chessDifficulty') || 'arrogant'
-  );
-
-  const handleDifficulty = (level) => {
-    setDifficulty(level);
-    localStorage.setItem('chessDifficulty', level);
-  };
-
-  const difficulties = [
-    { id: 'novice', label: 'Novice', desc: 'Learning the ropes' },
-    { id: 'arrogant', label: 'Arrogant', desc: 'Thinks it knows best' },
-    { id: 'grandmaster', label: 'Grandmaster', desc: 'Merciless opponent' },
-  ];
 
   const renderSettings = () => (
     <div className="space-y-6">
@@ -56,26 +41,6 @@ export default function InfoPage() {
             <p className="text-white/30 text-xs mt-0.5">Show legal move indicators</p>
           </div>
           <Switch defaultChecked />
-        </div>
-      </div>
-
-      <div className="rounded-xl bg-white/5 border border-white/5 p-4">
-        <p className="text-white text-sm font-medium mb-3">AI Difficulty</p>
-        <div className="flex flex-col gap-2">
-          {difficulties.map((d) => (
-            <button
-              key={d.id}
-              onClick={() => handleDifficulty(d.id)}
-              className={`flex items-center justify-between px-4 py-3 rounded-lg text-left transition-all ${
-                difficulty === d.id
-                  ? 'bg-[#D4AF37] text-[#0a0a0f]'
-                  : 'bg-white/5 text-white/50 hover:bg-white/10'
-              }`}
-            >
-              <span className="text-xs font-bold tracking-wider">{d.label.toUpperCase()}</span>
-              <span className={`text-[10px] ${difficulty === d.id ? 'text-[#0a0a0f]/60' : 'text-white/20'}`}>{d.desc}</span>
-            </button>
-          ))}
         </div>
       </div>
     </div>
