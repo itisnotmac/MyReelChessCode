@@ -56,6 +56,12 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
   const isDragging = useRef(false);
   const lastMouse = useRef({ x: 0, y: 0 });
   const orbitRef = useRef({ theta: Math.PI / 6, phi: Math.PI / 3.2, radius: 11 });
+  const onSquareClickRef = useRef(onSquareClick);
+
+  // Keep ref in sync with latest prop so the stable Three.js listener always calls the current callback
+  useEffect(() => {
+    onSquareClickRef.current = onSquareClick;
+  }, [onSquareClick]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -160,7 +166,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
       const intersects = raycaster.intersectObjects(flat);
       if (intersects.length > 0) {
         const { row, col } = intersects[0].object.userData;
-        onSquareClick(row, col);
+        onSquareClickRef.current(row, col);
       }
     };
 
