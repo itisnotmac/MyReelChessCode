@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Button } from "@/components/ui/button";
-import { Menu, Cpu, Users, ChevronRight } from 'lucide-react';
+import { Menu, Cpu, Users, BookOpen, ChevronRight } from 'lucide-react';
 import MenuDrawer from '../components/lobby/MenuDrawer';
 import PieceGroupDisplay from '../components/chess/PieceGroupDisplay';
 import DifficultyModal from '../components/lobby/DifficultyModal';
@@ -31,7 +30,7 @@ export default function Lobby() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden">
+    <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden flex flex-col">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-[0.02]"
         style={{
@@ -67,10 +66,10 @@ export default function Lobby() {
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 px-5 pt-12">
+      <div className="relative z-10 px-5 pt-8 flex-1 flex flex-col">
         {/* Decorative pieces */}
         <motion.div
-          className="text-center mb-10"
+          className="text-center mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -87,7 +86,8 @@ export default function Lobby() {
         </motion.div>
 
         {/* Game mode cards */}
-        <div className="space-y-4 max-w-sm mx-auto">
+        <div className="space-y-3 max-w-sm mx-auto w-full">
+
           {/* VS AI */}
           <motion.button
             onClick={() => startGame('ai')}
@@ -99,10 +99,8 @@ export default function Lobby() {
           >
             <div className="relative rounded-2xl p-5 border border-[#D4AF37]/15 overflow-hidden"
               style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(26,26,46,0.9) 100%)' }}>
-              {/* Glow effect */}
               <div className="absolute top-0 right-0 w-32 h-32"
                 style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%)' }} />
-              
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
                   style={{ background: 'linear-gradient(135deg, #D4AF37, #8B6914)' }}>
@@ -114,8 +112,6 @@ export default function Lobby() {
                 </div>
                 <ChevronRight className="w-5 h-5 text-[#D4AF37]/40 group-hover:text-[#D4AF37] transition-colors" />
               </div>
-
-              {/* Difficulty chips */}
               <div className="flex gap-2 mt-4">
                 {['Adaptive', 'Strategic', 'Smart'].map((level) => (
                   <span key={level} className="text-[10px] tracking-wider px-2.5 py-1 rounded-full bg-white/5 text-white/30 border border-white/5">
@@ -132,14 +128,13 @@ export default function Lobby() {
             className="w-full text-left group"
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.45 }}
+            transition={{ delay: 0.42 }}
             whileTap={{ scale: 0.98 }}
           >
             <div className="relative rounded-2xl p-5 border border-[#9B59B6]/15 overflow-hidden"
               style={{ background: 'linear-gradient(135deg, rgba(155,89,182,0.08) 0%, rgba(26,26,46,0.9) 100%)' }}>
               <div className="absolute top-0 right-0 w-32 h-32"
                 style={{ background: 'radial-gradient(circle, rgba(155,89,182,0.1) 0%, transparent 70%)' }} />
-              
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
                   style={{ background: 'linear-gradient(135deg, #9B59B6, #6C3483)' }}>
@@ -151,8 +146,6 @@ export default function Lobby() {
                 </div>
                 <ChevronRight className="w-5 h-5 text-[#9B59B6]/40 group-hover:text-[#9B59B6] transition-colors" />
               </div>
-
-              {/* Feature chips */}
               <div className="flex gap-2 mt-4">
                 {['Pass & Play', 'Board Flip', 'Fair'].map((feat) => (
                   <span key={feat} className="text-[10px] tracking-wider px-2.5 py-1 rounded-full bg-white/5 text-white/30 border border-white/5">
@@ -162,11 +155,38 @@ export default function Lobby() {
               </div>
             </div>
           </motion.button>
+
+          {/* Tutorials — oval pill button */}
+          <motion.div
+            className="flex justify-center pt-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.56 }}
+          >
+            <motion.button
+              onClick={() => navigate('/Tutorial')}
+              whileTap={{ scale: 0.96 }}
+              className="relative group flex items-center gap-2.5 px-10 py-3.5 rounded-full border border-[#3AAFA9]/40 overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.12) 0%, rgba(26,26,46,0.9) 100%)' }}
+            >
+              {/* Animated glow ring */}
+              <motion.div
+                className="absolute inset-0 rounded-full"
+                style={{ background: 'radial-gradient(ellipse, rgba(58,175,169,0.15) 0%, transparent 70%)' }}
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 2.5, repeat: Infinity }}
+              />
+              <BookOpen className="w-4 h-4 text-[#3AAFA9] relative z-10" />
+              <span className="relative z-10 text-sm font-bold tracking-[0.2em] uppercase text-[#3AAFA9]">
+                Tutorials
+              </span>
+            </motion.button>
+          </motion.div>
         </div>
 
         {/* Bottom decorative element */}
         <motion.div
-          className="text-center mt-16"
+          className="text-center mt-auto pt-8 pb-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
