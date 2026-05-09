@@ -1,11 +1,69 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Menu, Cpu, Users, BookOpen, ChevronRight } from 'lucide-react';
-import MenuDrawer from '../components/lobby/MenuDrawer';
-import PieceGroupDisplay from '../components/chess/PieceGroupDisplay';
+import { X, Settings, HelpCircle, Mail, Info } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
+
+const PAWN_IMAGE = 'https://raw.githubusercontent.com/itisnotmac/ChessAssets/main/BackgroundEraser_20260505_224913153.png';
+
+const TEAL_BUTTON = "flex items-center justify-center px-6 py-2.5 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase backdrop-blur-sm hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none";
+
+function MenuModal({ isOpen, onClose, onNavigate }) {
+  const items = [
+    { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'faq',      label: 'FAQ',      icon: HelpCircle },
+    { id: 'contact',  label: 'Contact',  icon: Mail },
+    { id: 'about',    label: 'About',    icon: Info },
+  ];
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
+          <motion.div
+            className="fixed right-0 top-0 bottom-0 w-72 bg-gradient-to-b from-[#1a1a2e] to-[#0f0f1a] z-50 shadow-2xl border-l border-[#3AAFA9]/15"
+            initial={{ x: 300 }} animate={{ x: 0 }} exit={{ x: 300 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          >
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-10">
+                <h2 className="text-lg font-bold tracking-wider text-[#3AAFA9]">MENU</h2>
+                <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white transition-colors">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="space-y-2">
+                {items.map((item, i) => (
+                  <motion.button
+                    key={item.id}
+                    onClick={() => { onNavigate(item.id); onClose(); }}
+                    className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all group"
+                    initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + i * 0.05 }}
+                  >
+                    <div className="w-9 h-9 rounded-lg bg-[#3AAFA9]/10 flex items-center justify-center group-hover:bg-[#3AAFA9]/20 transition-colors">
+                      <item.icon className="w-4 h-4 text-[#3AAFA9]" />
+                    </div>
+                    <span className="text-sm tracking-wider font-medium">{item.label}</span>
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+            <div className="absolute bottom-8 left-0 right-0 text-center">
+              <p className="text-[10px] tracking-[0.3em] uppercase text-white/15">Reel Chess v1.0</p>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
 
 export default function Lobby() {
   const navigate = useNavigate();
@@ -16,14 +74,6 @@ export default function Lobby() {
     navigate(createPageUrl('Info') + `?section=${section}`);
   };
 
-  const startGame = (mode) => {
-    if (mode === 'ai') {
-      setDifficultyOpen(true);
-    } else {
-      navigate(createPageUrl('Game') + `?mode=${mode}`);
-    }
-  };
-
   const handleDifficultyConfirm = () => {
     setDifficultyOpen(false);
     navigate(createPageUrl('Game') + `?mode=ai`);
@@ -31,187 +81,122 @@ export default function Lobby() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden flex flex-col">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-[0.02]"
+      {/* Subtle background chess pattern */}
+      <div className="absolute inset-0 opacity-[0.018]"
         style={{
-          backgroundImage: `repeating-conic-gradient(#D4AF37 0% 25%, transparent 0% 50%)`,
-          backgroundSize: '40px 40px'
+          backgroundImage: `repeating-conic-gradient(#3AAFA9 0% 25%, transparent 0% 50%)`,
+          backgroundSize: '44px 44px'
         }}
       />
 
-      {/* Top ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px]"
-        style={{ background: 'radial-gradient(ellipse, rgba(212,175,55,0.06) 0%, transparent 70%)' }}
-      />
+      {/* Ambient glow behind pawn */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-72 h-72 rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(58,175,169,0.08) 0%, transparent 70%)' }} />
+      </div>
 
-      {/* Header */}
-      <div className="relative z-10 flex items-center justify-between px-5 pt-6">
-        <div>
-          <h1 className="text-lg font-bold tracking-[0.15em]"
-            style={{
-              backgroundImage: 'linear-gradient(135deg, #D4AF37, #F5E6A3)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}>
-            BATTLE CHESS
-          </h1>
-          <p className="text-[10px] tracking-[0.3em] text-white/20 uppercase mt-0.5">Choose Your Battle</p>
-        </div>
-        <button
+      {/* ── TOP TITLE ── */}
+      <motion.div
+        className="relative z-10 text-center pt-10 pb-2"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <h1
+          className="text-4xl font-black tracking-[0.22em] uppercase"
+          style={{
+            backgroundImage: 'linear-gradient(135deg, #3AAFA9 0%, #A8E6E3 50%, #3AAFA9 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            textShadow: 'none',
+            filter: 'drop-shadow(0 0 18px rgba(58,175,169,0.35))',
+          }}
+        >
+          REEL CHESS
+        </h1>
+      </motion.div>
+
+      {/* ── UPPER BUTTONS ROW ── */}
+      <motion.div
+        className="relative z-10 flex items-center justify-between px-6 pt-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.25 }}
+      >
+        {/* Player vs AI — upper left */}
+        <motion.button
+          onClick={() => setDifficultyOpen(true)}
+          className={TEAL_BUTTON}
+          whileTap={{ scale: 0.94 }}
+        >
+          Player vs AI
+        </motion.button>
+
+        {/* PVP — upper right */}
+        <motion.button
+          onClick={() => navigate(createPageUrl('Game') + `?mode=local`)}
+          className={TEAL_BUTTON}
+          whileTap={{ scale: 0.94 }}
+        >
+          PVP (Local)
+        </motion.button>
+      </motion.div>
+
+      {/* ── PAWN IMAGE (center) ── */}
+      <motion.div
+        className="relative z-10 flex-1 flex items-center justify-center py-4"
+        initial={{ opacity: 0, scale: 0.92 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.15, duration: 0.6 }}
+      >
+        <img
+          src={PAWN_IMAGE}
+          alt="3D Chess Pawn"
+          className="w-auto max-h-[42vh] object-contain"
+          style={{ filter: 'drop-shadow(0 0 32px rgba(58,175,169,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))' }}
+        />
+      </motion.div>
+
+      {/* ── LOWER BUTTONS ROW ── */}
+      <motion.div
+        className="relative z-10 flex items-center justify-between px-6 pb-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.35 }}
+      >
+        {/* Tutorials — bottom left */}
+        <motion.button
+          onClick={() => navigate('/Tutorial')}
+          className={TEAL_BUTTON}
+          whileTap={{ scale: 0.94 }}
+        >
+          Tutorials
+        </motion.button>
+
+        {/* Menu — bottom right */}
+        <motion.button
           onClick={() => setMenuOpen(true)}
-          className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#D4AF37] hover:bg-white/10 transition-colors"
+          className={TEAL_BUTTON}
+          whileTap={{ scale: 0.94 }}
         >
-          <Menu className="w-5 h-5" />
-        </button>
-      </div>
+          Menu
+        </motion.button>
+      </motion.div>
 
-      {/* Main content */}
-      <div className="relative z-10 px-5 pt-8 flex-1 flex flex-col">
-        {/* Decorative pieces */}
-        <motion.div
-          className="text-center mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <div className="relative" style={{ filter: 'drop-shadow(0 0 24px rgba(212,175,55,0.18))' }}>
-            <PieceGroupDisplay size="normal" animate={true} />
-          </div>
-          <motion.div
-            className="mx-auto mt-3 h-[1px] w-48"
-            style={{ background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)' }}
-            animate={{ opacity: [0.3, 0.7, 0.3] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          />
-        </motion.div>
+      {/* ── BOTTOM TAGLINE ── */}
+      <motion.div
+        className="relative z-10 text-center pb-8"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45 }}
+      >
+        <p className="text-xs tracking-[0.45em] uppercase text-[#3AAFA9]/40 font-medium">
+          Get Immersed
+        </p>
+      </motion.div>
 
-        {/* Game mode cards */}
-        <div className="space-y-3 max-w-sm mx-auto w-full">
-
-          {/* VS AI */}
-          <motion.button
-            onClick={() => startGame('ai')}
-            className="w-full text-left group"
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="relative rounded-2xl p-5 border border-[#D4AF37]/15 overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(26,26,46,0.9) 100%)' }}>
-              <div className="absolute top-0 right-0 w-32 h-32"
-                style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%)' }} />
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: 'linear-gradient(135deg, #D4AF37, #8B6914)' }}>
-                  <Cpu className="w-7 h-7 text-[#0a0a0f]" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-white font-bold tracking-wider text-sm">PLAYER vs AI</h3>
-                  <p className="text-white/30 text-xs mt-1">Challenge the machine intelligence</p>
-                </div>
-                <ChevronRight className="w-5 h-5 text-[#D4AF37]/40 group-hover:text-[#D4AF37] transition-colors" />
-              </div>
-              <div className="flex gap-2 mt-4">
-                {['Adaptive', 'Strategic', 'Smart'].map((level) => (
-                  <span key={level} className="text-[10px] tracking-wider px-2.5 py-1 rounded-full bg-white/5 text-white/30 border border-white/5">
-                    {level}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </motion.button>
-
-          {/* VS Player */}
-          <motion.button
-            onClick={() => startGame('local')}
-            className="w-full text-left group"
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.42 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="relative rounded-2xl p-5 border border-[#9B59B6]/15 overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, rgba(155,89,182,0.08) 0%, rgba(26,26,46,0.9) 100%)' }}>
-              <div className="absolute top-0 right-0 w-32 h-32"
-                style={{ background: 'radial-gradient(circle, rgba(155,89,182,0.1) 0%, transparent 70%)' }} />
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: 'linear-gradient(135deg, #9B59B6, #6C3483)' }}>
-                  <Users className="w-7 h-7 text-white" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-white font-bold tracking-wider text-sm">PLAYER vs PLAYER</h3>
-                  <p className="text-white/30 text-xs mt-1">Local multiplayer on same device</p>
-                </div>
-                <ChevronRight className="w-5 h-5 text-[#9B59B6]/40 group-hover:text-[#9B59B6] transition-colors" />
-              </div>
-              <div className="flex gap-2 mt-4">
-                {['Pass & Play', 'Board Flip', 'Fair'].map((feat) => (
-                  <span key={feat} className="text-[10px] tracking-wider px-2.5 py-1 rounded-full bg-white/5 text-white/30 border border-white/5">
-                    {feat}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </motion.button>
-
-          {/* Tutorials — oval pill button */}
-          <motion.div
-            className="flex justify-center pt-2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.56 }}
-          >
-            <motion.button
-              onClick={() => navigate('/Tutorial')}
-              whileTap={{ scale: 0.96 }}
-              className="relative group flex items-center gap-2.5 px-10 py-3.5 rounded-full border border-[#3AAFA9]/40 overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.12) 0%, rgba(26,26,46,0.9) 100%)' }}
-            >
-              {/* Animated glow ring */}
-              <motion.div
-                className="absolute inset-0 rounded-full"
-                style={{ background: 'radial-gradient(ellipse, rgba(58,175,169,0.15) 0%, transparent 70%)' }}
-                animate={{ opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2.5, repeat: Infinity }}
-              />
-              <BookOpen className="w-4 h-4 text-[#3AAFA9] relative z-10" />
-              <span className="relative z-10 text-sm font-bold tracking-[0.2em] uppercase text-[#3AAFA9]">
-                Tutorials
-              </span>
-            </motion.button>
-          </motion.div>
-        </div>
-
-        {/* Bottom decorative element */}
-        <motion.div
-          className="text-center mt-auto pt-8 pb-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-        >
-          <div className="flex items-center justify-center gap-3 text-white/10">
-            <span className="text-lg">♜</span>
-            <span className="text-lg">♞</span>
-            <span className="text-lg">♝</span>
-            <span className="text-xl text-[#D4AF37]/20">♛</span>
-            <span className="text-lg">♝</span>
-            <span className="text-lg">♞</span>
-            <span className="text-lg">♜</span>
-          </div>
-          <p className="text-[10px] tracking-[0.4em] text-white/10 uppercase mt-3">
-            Cinematic Battle Chess
-          </p>
-        </motion.div>
-      </div>
-
-      <MenuDrawer
-        isOpen={menuOpen}
-        onClose={() => setMenuOpen(false)}
-        onNavigate={handleNavigate}
-      />
-
+      {/* Modals */}
+      <MenuModal isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavigate={handleNavigate} />
       <DifficultyModal
         isOpen={difficultyOpen}
         onClose={() => setDifficultyOpen(false)}
