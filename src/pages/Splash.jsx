@@ -23,7 +23,7 @@ export default function Splash() {
       <motion.div
         className="absolute w-[500px] h-[500px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(58,175,169,0.08) 0%, transparent 70%)',
         }}
         animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
         transition={{ duration: 4, repeat: Infinity }}
@@ -46,37 +46,24 @@ export default function Splash() {
 
         {/* Title */}
         <motion.h1
-          className="text-4xl sm:text-5xl font-black tracking-[0.15em] mb-2"
+          className="text-4xl sm:text-5xl font-black tracking-[0.22em]"
           style={{
-            backgroundImage: 'linear-gradient(135deg, #D4AF37 0%, #F5E6A3 40%, #D4AF37 60%, #8B6914 100%)',
+            backgroundImage: 'linear-gradient(135deg, #3AAFA9 0%, #A8E6E3 50%, #3AAFA9 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
+            filter: 'drop-shadow(0 0 18px rgba(58,175,169,0.35))',
           }}
           initial={{ opacity: 0, y: 30 }}
           animate={phase >= 1 ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.2, duration: 0.8 }}
         >
-          BATTLE
-        </motion.h1>
-        <motion.h1
-          className="text-4xl sm:text-5xl font-black tracking-[0.15em]"
-          style={{
-            backgroundImage: 'linear-gradient(135deg, #D4AF37 0%, #F5E6A3 40%, #D4AF37 60%, #8B6914 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}
-          initial={{ opacity: 0, y: 30 }}
-          animate={phase >= 1 ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.4, duration: 0.8 }}
-        >
-          CHESS
+          REEL CHESS
         </motion.h1>
 
         {/* Subtitle */}
         <motion.p
-          className="text-xs tracking-[0.4em] uppercase mt-4 text-[#D4AF37]/40"
+          className="text-xs tracking-[0.4em] uppercase mt-4 text-[#3AAFA9]/40"
           initial={{ opacity: 0 }}
           animate={phase >= 2 ? { opacity: 1 } : {}}
           transition={{ duration: 1 }}
@@ -86,14 +73,14 @@ export default function Splash() {
 
         {/* Loading bar */}
         <motion.div
-          className="mt-10 mx-auto h-[2px] bg-[#D4AF37]/10 rounded-full overflow-hidden"
+          className="mt-10 mx-auto h-[2px] bg-[#3AAFA9]/10 rounded-full overflow-hidden"
           style={{ width: '200px' }}
           initial={{ opacity: 0 }}
           animate={phase >= 2 ? { opacity: 1 } : {}}
         >
           <motion.div
             className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, #D4AF37, #F5E6A3)' }}
+            style={{ background: 'linear-gradient(90deg, #3AAFA9, #A8E6E3)' }}
             initial={{ width: '0%' }}
             animate={phase >= 2 ? { width: '100%' } : {}}
             transition={{ duration: 1.2, ease: "easeInOut" }}
