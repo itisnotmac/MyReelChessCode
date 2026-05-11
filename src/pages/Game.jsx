@@ -9,6 +9,7 @@ import CapturedPieces from '../components/chess/CapturedPieces';
 import BattleCutscene from '../components/chess/BattleCutscene';
 import GameOverModal from '../components/chess/GameOverModal';
 import TurnIndicator from '../components/chess/TurnIndicator';
+import PlayerTimer from '../components/chess/PlayerTimer';
 import {
   createInitialBoard,
   getLegalMoves,
@@ -270,6 +271,12 @@ export default function Game() {
       {/* Black captured pieces (top) */}
       <div className="px-4 py-1">
         <CapturedPieces pieces={shouldFlip ? capturedBlack : capturedWhite} color={shouldFlip ? 'black' : 'white'} />
+      </div>
+
+      {/* Timers */}
+      <div className="px-4 pb-1 flex justify-between gap-2">
+        <PlayerTimer isActive={!isWhiteTurn && !gameOver && !battleInfo} label="Black" />
+        <PlayerTimer isActive={isWhiteTurn && !gameOver && !battleInfo} label="White" />
       </div>
 
       {/* Turn indicator */}
