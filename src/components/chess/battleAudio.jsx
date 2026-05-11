@@ -99,10 +99,10 @@ export function playDeathSigh(delay = 0) {
     carrier.type = 'sawtooth';
     // Pitch arc: neutral -> slight rise (pain) -> fall (dying out)
     carrier.frequency.setValueAtTime(130, t);
-    carrier.frequency.linearRampToValueAtTime(170, t + 0.12);  // pain spike up
-    carrier.frequency.linearRampToValueAtTime(145, t + 0.35);
-    carrier.frequency.linearRampToValueAtTime(95, t + 0.9);
-    carrier.frequency.linearRampToValueAtTime(65, t + 1.5);
+    carrier.frequency.linearRampToValueAtTime(170, t + 0.08);  // pain spike up
+    carrier.frequency.linearRampToValueAtTime(145, t + 0.22);
+    carrier.frequency.linearRampToValueAtTime(95, t + 0.5);
+    carrier.frequency.linearRampToValueAtTime(65, t + 0.75);
 
     // --- Formant shaping: carve out the vowel sounds ---
     // "Ah" vowel: F1=800, F2=1200
@@ -122,7 +122,7 @@ export function playDeathSigh(delay = 0) {
     const lpf = ctx.createBiquadFilter();
     lpf.type = 'lowpass';
     lpf.frequency.setValueAtTime(2200, t);
-    lpf.frequency.linearRampToValueAtTime(800, t + 1.5);
+    lpf.frequency.linearRampToValueAtTime(800, t + 0.75);
     lpf.Q.value = 0.7;
 
     // High-pass to remove sub-bass rumble
@@ -133,10 +133,10 @@ export function playDeathSigh(delay = 0) {
     // Amplitude envelope: punchy attack, sustain, fade
     const voiceGain = ctx.createGain();
     voiceGain.gain.setValueAtTime(0.001, t);
-    voiceGain.gain.linearRampToValueAtTime(0.45, t + 0.06);   // fast attack
-    voiceGain.gain.setValueAtTime(0.45, t + 0.25);
-    voiceGain.gain.linearRampToValueAtTime(0.25, t + 0.8);
-    voiceGain.gain.exponentialRampToValueAtTime(0.001, t + 1.6);
+    voiceGain.gain.linearRampToValueAtTime(0.45, t + 0.05);   // fast attack
+    voiceGain.gain.setValueAtTime(0.45, t + 0.15);
+    voiceGain.gain.linearRampToValueAtTime(0.25, t + 0.45);
+    voiceGain.gain.exponentialRampToValueAtTime(0.001, t + 0.85);
 
     carrier.connect(filt1);
     filt1.connect(filt2);
@@ -145,7 +145,7 @@ export function playDeathSigh(delay = 0) {
     hpf.connect(voiceGain);
     voiceGain.connect(ctx.destination);
     carrier.start(t);
-    carrier.stop(t + 1.7);
+    carrier.stop(t + 0.9);
 
     // --- Tremolo / vocal flutter (LFO on amplitude for human waver) ---
     const lfo = ctx.createOscillator();
@@ -156,10 +156,10 @@ export function playDeathSigh(delay = 0) {
     lfo.connect(lfoGain);
     lfoGain.connect(voiceGain.gain);
     lfo.start(t);
-    lfo.stop(t + 1.7);
+    lfo.stop(t + 0.9);
 
     // --- Breath layer: adds human air/rasp texture ---
-    const breathLen = Math.floor(ctx.sampleRate * 1.4);
+    const breathLen = Math.floor(ctx.sampleRate * 0.7);
     const breathBuf = ctx.createBuffer(1, breathLen, ctx.sampleRate);
     const bd = breathBuf.getChannelData(0);
     for (let i = 0; i < breathLen; i++) {
@@ -175,9 +175,9 @@ export function playDeathSigh(delay = 0) {
 
     const breathGain = ctx.createGain();
     breathGain.gain.setValueAtTime(0.001, t);
-    breathGain.gain.linearRampToValueAtTime(0.05, t + 0.1);
-    breathGain.gain.setValueAtTime(0.05, t + 0.5);
-    breathGain.gain.exponentialRampToValueAtTime(0.001, t + 1.4);
+    breathGain.gain.linearRampToValueAtTime(0.05, t + 0.07);
+    breathGain.gain.setValueAtTime(0.05, t + 0.3);
+    breathGain.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
 
     breathSrc.connect(breathBPF);
     breathBPF.connect(breathGain);
