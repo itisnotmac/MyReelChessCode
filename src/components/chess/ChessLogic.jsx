@@ -322,9 +322,37 @@ function minimax(board, depth, alpha, beta, maximizing, enPassant, castling) {
   }
 }
 
+function isSquareAttackedByWhite(board, row, col) {
+  return isSquareAttacked(board, row, col, true);
+}
+
 export function getAIMove(board, enPassant, castling, difficulty = 2) {
   const moves = getAllLegalMoves(board, false, enPassant, castling);
   if (moves.length === 0) return null;
+
+  // Novice mode: deliberately play badly - move pieces to squares where they can be captured
+  if (difficulty === 1) {
+    // Shuffle moves for randomness
+    const shuffled = [...moves].sort(() => Math.random() - 0.5);
+
+    // Tier 1: Move a valuable piece to a square where it can be captured (sacrifice)
+    const sacrificeMoves = shuffled.filter(move => {
+      const result = makeMove(board, move.from[0], move.from[1], move.to[0], move.to[1], enPassant, castling);
+      const pieceValue = getPieceValue(board[move.from[0]][move.from[1]]);
+      return isSquareAttackedByWhite(result.board, move.to[0], move.to[1]) && pieceValue >= 3;
+    });
+    if (sacrificeMoves.length > 0) return sacrificeMoves[0];
+
+    // Tier 2: Move ANY piece to a square where it can be captured
+    const blunderMoves = shuffled.filter(move => {
+      const result = makeMove(board, move.from[0], move.from[1], move.to[0], move.to[1], enPassant, castling);
+      return isSquareAttackedByWhite(result.board, move.to[0], move.to[1]);
+    });
+    if (blunderMoves.length > 0) return blunderMoves[0];
+
+    // Tier 3: Just pick a random move
+    return shuffled[0];
+  }
 
   let bestMove = moves[0];
   let bestEval = Infinity;
