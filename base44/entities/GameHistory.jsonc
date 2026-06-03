@@ -1,0 +1,35 @@
+{
+  "name": "GameHistory",
+  "type": "object",
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": [
+        "ai",
+        "local"
+      ],
+      "description": "Game mode - AI or local multiplayer"
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "white_wins",
+        "black_wins",
+        "draw",
+        "in_progress"
+      ],
+      "default": "in_progress"
+    },
+    "moves_count": {
+      "type": "number",
+      "default": 0
+    },
+    "duration_seconds": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "mode"
+  ]
+}

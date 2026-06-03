@@ -71,6 +71,8 @@ export default function Lobby() {
   const [difficultyOpen, setDifficultyOpen] = useState(false);
 
   const handleNavigate = (section) => {
+    if (section === 'about') { navigate('/About'); return; }
+    if (section === 'contact') { navigate('/Contact'); return; }
     navigate(createPageUrl('Info') + `?section=${section}`);
   };
 
