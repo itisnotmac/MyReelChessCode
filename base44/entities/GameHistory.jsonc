@@ -44,9 +44,6 @@
           "user_condition": {
             "role": "admin"
           }
-        },
-        {
-          "data.Department": "{{user.full_name}}"
         }
       ]
     },
@@ -59,9 +56,6 @@
           "user_condition": {
             "role": "admin"
           }
-        },
-        {
-          "data.Department": "{{user.full_name}}"
         }
       ]
     },
@@ -74,9 +68,6 @@
           "user_condition": {
             "role": "admin"
           }
-        },
-        {
-          "data.Department": "{{user.full_name}}"
         }
       ]
     },
@@ -89,9 +80,6 @@
           "user_condition": {
             "role": "admin"
           }
-        },
-        {
-          "data.Department": "{{user.full_name}}"
         }
       ]
     }
