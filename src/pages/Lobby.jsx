@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -65,10 +65,25 @@ function MenuModal({ isOpen, onClose, onNavigate }) {
   );
 }
 
+const MENU_MUSIC_URL = 'https://raw.githubusercontent.com/itisnotmac/Chess-Audio-Assets/main/ReelChessMenuMusicFinal.mp3';
+
 export default function Lobby() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [difficultyOpen, setDifficultyOpen] = useState(false);
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    const audio = new Audio(MENU_MUSIC_URL);
+    audio.loop = true;
+    audio.volume = 0.5;
+    audioRef.current = audio;
+    audio.play().catch(() => {});
+    return () => {
+      audio.pause();
+      audio.src = '';
+    };
+  }, []);
 
   const handleNavigate = (section) => {
     if (section === 'about') { navigate('/About'); return; }
