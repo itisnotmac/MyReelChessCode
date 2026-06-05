@@ -107,8 +107,16 @@ export default function Lobby() {
     navigate(createPageUrl('Info') + `?section=${section}`);
   };
 
+  const stopMusic = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
+    }
+  };
+
   const handleDifficultyConfirm = () => {
     setDifficultyOpen(false);
+    stopMusic();
     navigate(createPageUrl('Game') + `?mode=ai`);
   };
 
@@ -167,7 +175,7 @@ export default function Lobby() {
 
         {/* PVP — upper right */}
         <motion.button
-          onClick={() => navigate(createPageUrl('Game') + `?mode=local`)}
+          onClick={() => { stopMusic(); navigate(createPageUrl('Game') + `?mode=local`); }}
           className={TEAL_BUTTON}
           whileTap={{ scale: 0.94 }}
         >
