@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { X, Settings, HelpCircle, Mail, Info } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
+import { startMenuMusic, stopMenuMusic } from '@/lib/menuMusic';
 
 const PAWN_IMAGE = 'https://raw.githubusercontent.com/itisnotmac/ChessAssets/main/BackgroundEraser_20260505_224913153.png';
 
@@ -65,42 +66,14 @@ function MenuModal({ isOpen, onClose, onNavigate }) {
   );
 }
 
-const MENU_MUSIC_URL = 'https://raw.githubusercontent.com/itisnotmac/Chess-Audio-Assets/main/ReelChessMenuMusicFinal.mp3';
-
 export default function Lobby() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [difficultyOpen, setDifficultyOpen] = useState(false);
-  const audioRef = useRef(null);
-
-  const stoppedRef = useRef(false);
 
   useEffect(() => {
-    stoppedRef.current = false;
-    const audio = new Audio(MENU_MUSIC_URL);
-    audio.loop = true;
-    audio.volume = 0.5;
-    audioRef.current = audio;
-
-    const tryPlay = () => {
-      if (!stoppedRef.current) audio.play().catch(() => {});
-    };
-
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        document.addEventListener('touchstart', tryPlay, { once: true });
-        document.addEventListener('click', tryPlay, { once: true });
-      });
-    }
-
-    return () => {
-      stoppedRef.current = true;
-      audio.pause();
-      audioRef.current = null;
-      document.removeEventListener('touchstart', tryPlay);
-      document.removeEventListener('click', tryPlay);
-    };
+    startMenuMusic();
+    return () => stopMenuMusic();
   }, []);
 
   const handleNavigate = (section) => {
@@ -109,17 +82,9 @@ export default function Lobby() {
     navigate(createPageUrl('Info') + `?section=${section}`);
   };
 
-  const stopMusic = () => {
-    stoppedRef.current = true;
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
-  };
-
   const handleDifficultyConfirm = () => {
     setDifficultyOpen(false);
-    stopMusic();
+    stopMenuMusic();
     navigate(createPageUrl('Game') + `?mode=ai`);
   };
 
@@ -178,7 +143,7 @@ export default function Lobby() {
 
         {/* PVP — upper right */}
         <motion.button
-          onClick={() => { stopMusic(); navigate(createPageUrl('Game') + `?mode=local`); }}
+          onClick={() => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); }}
           className={TEAL_BUTTON}
           whileTap={{ scale: 0.94 }}
         >
