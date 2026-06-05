@@ -78,10 +78,26 @@ export default function Lobby() {
     audio.loop = true;
     audio.volume = 0.5;
     audioRef.current = audio;
-    audio.play().catch(() => {});
+
+    const tryPlay = () => {
+      audio.play().catch(() => {});
+    };
+
+    // Try autoplay first (works on desktop)
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Autoplay blocked (mobile) — play on first user interaction
+        document.addEventListener('touchstart', tryPlay, { once: true });
+        document.addEventListener('click', tryPlay, { once: true });
+      });
+    }
+
     return () => {
       audio.pause();
       audio.src = '';
+      document.removeEventListener('touchstart', tryPlay);
+      document.removeEventListener('click', tryPlay);
     };
   }, []);
 
