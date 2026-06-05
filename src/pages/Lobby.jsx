@@ -73,29 +73,31 @@ export default function Lobby() {
   const [difficultyOpen, setDifficultyOpen] = useState(false);
   const audioRef = useRef(null);
 
+  const stoppedRef = useRef(false);
+
   useEffect(() => {
+    stoppedRef.current = false;
     const audio = new Audio(MENU_MUSIC_URL);
     audio.loop = true;
     audio.volume = 0.5;
     audioRef.current = audio;
 
     const tryPlay = () => {
-      audio.play().catch(() => {});
+      if (!stoppedRef.current) audio.play().catch(() => {});
     };
 
-    // Try autoplay first (works on desktop)
     const playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise.catch(() => {
-        // Autoplay blocked (mobile) — play on first user interaction
         document.addEventListener('touchstart', tryPlay, { once: true });
         document.addEventListener('click', tryPlay, { once: true });
       });
     }
 
     return () => {
+      stoppedRef.current = true;
       audio.pause();
-      audio.src = '';
+      audioRef.current = null;
       document.removeEventListener('touchstart', tryPlay);
       document.removeEventListener('click', tryPlay);
     };
@@ -108,9 +110,10 @@ export default function Lobby() {
   };
 
   const stopMusic = () => {
+    stoppedRef.current = true;
     if (audioRef.current) {
       audioRef.current.pause();
-      audioRef.current.src = '';
+      audioRef.current = null;
     }
   };
 
