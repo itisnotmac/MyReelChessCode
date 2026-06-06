@@ -4,6 +4,15 @@ import PieceRenderer from './PieceRenderer';
 import { getPieceName, isWhite } from './ChessLogic';
 import { playClangs, playDeathSigh } from './battleAudio';
 
+const CUTSCENE_VIDEOS = {
+  king:   'https://github.com/itisnotmac/Cutscenes/raw/main/KingWinsNoWM.mp4',
+  queen:  'https://github.com/itisnotmac/Cutscenes/raw/main/QueenWinsNoWM.mp4',
+  rook:   'https://github.com/itisnotmac/Cutscenes/raw/main/RookWinsNoWM.mp4',
+  bishop: 'https://github.com/itisnotmac/Cutscenes/raw/main/BishopWinsNoWM.mp4',
+  knight: 'https://github.com/itisnotmac/Cutscenes/raw/main/knightwinsNoWM.mp4',
+  pawn:   'https://github.com/itisnotmac/Cutscenes/raw/main/PawnWinsNoWM.mp4',
+};
+
 const PIECE_TITLES = {
   king: 'The King',
   queen: 'The Queen',
@@ -62,32 +71,24 @@ export default function BattleCutscene({ attacker, defender, onComplete }) {
   const defenderName = getPieceName(defender);
   const attackerWhite = isWhite(attacker);
   const quote = BATTLE_QUOTES[defenderName]?.[Math.floor(Math.random() * 3)] || "A piece falls!";
+  const videoUrl = CUTSCENE_VIDEOS[attackerName];
 
   const knightAudioRef = useRef(null);
+  const videoRef = useRef(null);
 
   useEffect(() => {
-    const t1 = setTimeout(() => {
-      setPhase('clash');
-      const swordAudio = new Audio('https://raw.githubusercontent.com/itisnotmac/ChessAssets/f4d96155f96a4675b59863edece2b655d6694636/dragon-studio-sword-fight-393849.mp3');
-      swordAudio.volume = 1.0;
-      swordAudio.play().catch(() => {});
-    }, 1200);
-    const t2 = setTimeout(() => {
-      setPhase('victory');
-      if (attackerName === 'knight') {
-        const audio = new Audio('https://raw.githubusercontent.com/itisnotmac/ChessAssets/f4d96155f96a4675b59863edece2b655d6694636/knightwinsbattle.mp3');
-        audio.volume = 1.0;
-        audio.play().catch(() => {});
-        knightAudioRef.current = audio;
-      } else {
-        const groanAudio = new Audio('https://raw.githubusercontent.com/itisnotmac/ChessAssets/main/updatedgroanfile.mp3');
-        groanAudio.volume = 1.0;
-        groanAudio.play().catch(() => {});
-      }
-    }, 2200);
+    // Start video immediately
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+
+    const t1 = setTimeout(() => setPhase('clash'), 1200);
+    const t2 = setTimeout(() => setPhase('victory'), 2200);
     const t3 = setTimeout(() => onComplete(), 3800);
+
     return () => {
       clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
+      if (videoRef.current) { videoRef.current.pause(); }
       if (knightAudioRef.current) { knightAudioRef.current.pause(); }
     };
   }, [onComplete]);
@@ -100,24 +101,20 @@ export default function BattleCutscene({ attacker, defender, onComplete }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Cinematic background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-[#141428] to-[#0a0a0f]" />
-      
-      {/* Dramatic vignette */}
-      <div className="absolute inset-0" style={{
-        background: 'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.8) 100%)'
-      }} />
-
-      {/* Ground/battlefield */}
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 h-1/3"
-        style={{
-          background: 'linear-gradient(to top, #1a1a2e 0%, #16213e 40%, transparent 100%)'
-        }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
+      {/* Cinematic video background */}
+      <video
+        ref={videoRef}
+        src={videoUrl}
+        className="absolute inset-0 w-full h-full object-cover"
+        muted
+        playsInline
+        preload="auto"
       />
+
+      {/* Subtle dark overlay so text stays readable */}
+      <div className="absolute inset-0" style={{
+        background: 'radial-gradient(ellipse at center, transparent 20%, rgba(0,0,0,0.45) 100%)'
+      }} />
 
       {/* Cinematic bars */}
       <motion.div
