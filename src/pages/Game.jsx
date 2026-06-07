@@ -10,6 +10,7 @@ import BattleCutscene from '../components/chess/BattleCutscene';
 import GameOverModal from '../components/chess/GameOverModal';
 import TurnIndicator from '../components/chess/TurnIndicator';
 import PlayerTimer from '../components/chess/PlayerTimer';
+import { stopMenuMusic } from '@/lib/menuMusic';
 import {
   createInitialBoard,
   getLegalMoves,
@@ -51,6 +52,9 @@ export default function Game() {
       return next;
     });
   };
+
+  // Stop menu music when game starts
+  useEffect(() => { stopMenuMusic(); }, []);
 
   // Battle cutscene state
   const [battleInfo, setBattleInfo] = useState(null);

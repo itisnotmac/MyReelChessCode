@@ -102,6 +102,7 @@ export default function BattleCutscene({ attacker, defender, onComplete }) {
         ref={videoRef}
         src={videoUrl}
         className="absolute inset-0 w-full h-full object-cover"
+        autoPlay
         playsInline
         preload="auto"
       />
