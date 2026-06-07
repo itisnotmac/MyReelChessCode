@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PieceRenderer from './PieceRenderer';
 import { getPieceName, isWhite } from './ChessLogic';
-import { playClangs, playDeathSigh } from './battleAudio';
 
 const CUTSCENE_VIDEOS = {
   king:   'https://github.com/itisnotmac/Cutscenes/raw/main/KingWinsNoWM.mp4',
@@ -73,23 +72,20 @@ export default function BattleCutscene({ attacker, defender, onComplete }) {
   const quote = BATTLE_QUOTES[defenderName]?.[Math.floor(Math.random() * 3)] || "A piece falls!";
   const videoUrl = CUTSCENE_VIDEOS[attackerName];
 
-  const knightAudioRef = useRef(null);
   const videoRef = useRef(null);
 
   useEffect(() => {
-    // Start video immediately
     if (videoRef.current) {
       videoRef.current.play().catch(() => {});
     }
 
     const t1 = setTimeout(() => setPhase('clash'), 1200);
     const t2 = setTimeout(() => setPhase('victory'), 2200);
-    const t3 = setTimeout(() => onComplete(), 3800);
+    const t3 = setTimeout(() => onComplete(), 5300);
 
     return () => {
       clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
       if (videoRef.current) { videoRef.current.pause(); }
-      if (knightAudioRef.current) { knightAudioRef.current.pause(); }
     };
   }, [onComplete]);
 
@@ -106,7 +102,6 @@ export default function BattleCutscene({ attacker, defender, onComplete }) {
         ref={videoRef}
         src={videoUrl}
         className="absolute inset-0 w-full h-full object-cover"
-        muted
         playsInline
         preload="auto"
       />
