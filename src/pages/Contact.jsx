@@ -35,15 +35,15 @@ export default function Contact() {
         {/* Email card */}
         <a
           href="mailto:reelchessgame@gmail.com"
-          className="flex items-center gap-5 px-6 py-5 rounded-2xl border border-[#3AAFA9]/20 bg-[#3AAFA9]/5 hover:bg-[#3AAFA9]/10 hover:border-[#3AAFA9]/40 transition-all group"
+          className="flex items-center gap-5 px-6 py-5 rounded-2xl border border-[#3AAFA9]/20 bg-[#3AAFA9]/5 hover:bg-[#3AAFA9]/10 hover:border-[#3AAFA9]/40 transition-all group min-h-[80px]"
         >
           <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
             style={{ background: 'linear-gradient(135deg, #3AAFA9, #1a6e6b)' }}>
             <Mail className="w-5 h-5 text-[#0a0a0f]" />
           </div>
-          <div>
+          <div className="min-w-0 flex-1">
             <p className="text-xs tracking-widest uppercase text-[#3AAFA9]/50 mb-1">Email</p>
-            <p className="text-white font-semibold text-sm group-hover:text-[#3AAFA9] transition-colors">
+            <p className="text-[#3AAFA9] font-semibold text-sm group-hover:text-[#A8E6E3] transition-colors truncate">
               reelchessgame@gmail.com
             </p>
           </div>
