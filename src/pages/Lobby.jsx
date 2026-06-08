@@ -109,6 +109,7 @@ export default function Lobby() {
   const handleNavigate = (section) => {
     if (section === 'about') { navigate('/About'); return; }
     if (section === 'contact') { navigate('/Contact'); return; }
+    if (section === 'history') { navigate('/GameHistory'); return; }
     navigate(createPageUrl('Info') + `?section=${section}`);
   };
 
