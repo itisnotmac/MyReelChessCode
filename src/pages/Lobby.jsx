@@ -122,7 +122,7 @@ export default function Lobby() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden flex flex-col">
+    <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden flex flex-col items-center">
       {/* Subtle background chess pattern */}
       <div className="absolute inset-0 opacity-[0.018]"
         style={{
@@ -139,7 +139,7 @@ export default function Lobby() {
 
       {/* ── TOP TITLE ── */}
       <motion.div
-        className="relative z-10 text-center pt-8 pb-1"
+        className="relative z-10 text-center pt-8 pb-1 w-full"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
@@ -159,7 +159,7 @@ export default function Lobby() {
 
       {/* ── ONLINE PVP HERO BANNER ── */}
       <motion.div
-        className="relative z-10 flex justify-center pt-4"
+        className="relative z-10 flex justify-center pt-4 w-full px-4"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.18 }}
@@ -167,8 +167,8 @@ export default function Lobby() {
         <motion.button
           onClick={() => navigate('/OnlineGame')}
           whileTap={{ scale: 0.97 }}
-          className="relative overflow-hidden rounded-2xl border border-[#3AAFA9]/40 px-6 py-4 text-left group"
-          style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', width: '88vw', maxWidth: 380 }}
+          className="relative overflow-hidden rounded-2xl border border-[#3AAFA9]/40 px-6 py-4 text-left group w-full"
+          style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', maxWidth: 480 }}
         >
           <div className="relative z-10 flex items-center justify-between gap-4">
             <div>
@@ -186,12 +186,12 @@ export default function Lobby() {
       {/* ── AUTH BUTTONS (if not logged in) ── */}
       {!isAuthenticated && (
         <motion.div
-          className="relative z-10 flex gap-2 px-6 pt-3"
+          className="relative z-10 flex gap-2 px-4 pt-3 w-full justify-center"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.22 }}
         >
           <motion.button
             onClick={() => navigate('/login')}
-            className="flex-1 flex items-center justify-center px-4 py-2 rounded-full border border-white/20 bg-white/5 text-white font-bold text-xs tracking-[0.18em] uppercase hover:bg-white/10 active:scale-95 transition-all select-none"
+            className="flex items-center justify-center px-8 py-2 rounded-full border border-white/20 bg-white/5 text-white font-bold text-xs tracking-[0.18em] uppercase hover:bg-white/10 active:scale-95 transition-all select-none"
             whileTap={{ scale: 0.94 }}
           >
             <LogIn className="w-3.5 h-3.5 mr-1.5" />
@@ -199,7 +199,7 @@ export default function Lobby() {
           </motion.button>
           <motion.button
             onClick={() => navigate('/register')}
-            className="flex-1 flex items-center justify-center px-4 py-2 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none"
+            className="flex items-center justify-center px-8 py-2 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none"
             whileTap={{ scale: 0.94 }}
           >
             Register
@@ -209,7 +209,7 @@ export default function Lobby() {
 
       {/* ── PAWN ── */}
       <motion.div
-        className="relative z-10 flex justify-center flex-1 min-h-0"
+        className="relative z-10 flex justify-center"
         initial={{ opacity: 0, scale: 0.88 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.15, duration: 0.6 }}
@@ -218,20 +218,20 @@ export default function Lobby() {
           src={PAWN_IMAGE}
           alt="3D Chess Pawn"
           className="w-auto object-contain"
-          style={{ maxHeight: '45vh', filter: 'drop-shadow(0 0 32px rgba(58,175,169,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))' }}
+          style={{ height: '30vh', maxHeight: 280, filter: 'drop-shadow(0 0 32px rgba(58,175,169,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))' }}
         />
       </motion.div>
 
       {/* ── 2×2 BUTTON GRID ── */}
       <motion.div
-        className="relative z-10 flex justify-center pb-4 px-4"
+        className="relative z-10 flex justify-center pb-4 px-4 w-full"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.28 }}
       >
         <div
-          className="grid grid-cols-2 gap-3"
-          style={{ width: '88vw', maxWidth: 380 }}
+          className="grid grid-cols-2 gap-3 w-full"
+          style={{ maxWidth: 480 }}
         >
           {[
             { label: 'vs AI',     onClick: () => setDifficultyOpen(true) },
