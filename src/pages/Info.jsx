@@ -25,7 +25,7 @@ export default function InfoPage() {
             <p className="text-white text-sm font-medium">Battle Cutscenes</p>
             <p className="text-white/30 text-xs mt-0.5">Show cinematic battles on capture</p>
           </div>
-          <Switch defaultChecked />
+          <Switch defaultChecked className="data-[state=checked]:bg-[#3AAFA9]" />
         </div>
         <div className="h-px bg-white/5" />
         <div className="flex items-center justify-between">
@@ -33,7 +33,7 @@ export default function InfoPage() {
             <p className="text-white text-sm font-medium">Board Flip</p>
             <p className="text-white/30 text-xs mt-0.5">Rotate board for Player 2 in local mode</p>
           </div>
-          <Switch defaultChecked />
+          <Switch defaultChecked className="data-[state=checked]:bg-[#3AAFA9]" />
         </div>
         <div className="h-px bg-white/5" />
         <div className="flex items-center justify-between">
@@ -41,7 +41,7 @@ export default function InfoPage() {
             <p className="text-white text-sm font-medium">Move Hints</p>
             <p className="text-white/30 text-xs mt-0.5">Show legal move indicators</p>
           </div>
-          <Switch defaultChecked />
+          <Switch defaultChecked className="data-[state=checked]:bg-[#3AAFA9]" />
         </div>
       </div>
     </div>
