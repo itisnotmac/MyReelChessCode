@@ -168,7 +168,7 @@ export default function Lobby() {
           onClick={() => navigate('/OnlineGame')}
           whileTap={{ scale: 0.97 }}
           className="relative overflow-hidden rounded-2xl border border-[#3AAFA9]/40 px-6 py-4 text-left group"
-          style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', width: '72vw', maxWidth: 320 }}
+          style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', width: '88vw', maxWidth: 380 }}
         >
           <div className="relative z-10 flex items-center justify-between gap-4">
             <div>
@@ -212,8 +212,7 @@ export default function Lobby() {
 
         {/* LEFT COLUMN */}
         <motion.div
-          className="flex flex-col gap-3"
-          style={{ width: '22vw', maxWidth: 96 }}
+          className="flex flex-col gap-3 flex-1"
           initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}
         >
           <motion.button
@@ -234,7 +233,8 @@ export default function Lobby() {
 
         {/* PAWN (center) */}
         <motion.div
-          className="flex-1 flex items-center justify-center min-w-0"
+          className="flex items-center justify-center min-w-0"
+          style={{ flexShrink: 0 }}
           initial={{ opacity: 0, scale: 0.88 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.15, duration: 0.6 }}
@@ -249,8 +249,7 @@ export default function Lobby() {
 
         {/* RIGHT COLUMN */}
         <motion.div
-          className="flex flex-col gap-3"
-          style={{ width: '22vw', maxWidth: 96 }}
+          className="flex flex-col gap-3 flex-1"
           initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}
         >
           <motion.button
