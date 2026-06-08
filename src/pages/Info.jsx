@@ -19,7 +19,7 @@ export default function InfoPage() {
 
   const renderSettings = () => (
     <div className="space-y-6">
-      <div className="rounded-xl bg-white/5 border border-white/5 p-4 space-y-5">
+      <div className="rounded-xl bg-[#3AAFA9]/10 border border-[#3AAFA9]/30 p-4 space-y-5">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-white text-sm font-medium">Battle Cutscenes</p>
