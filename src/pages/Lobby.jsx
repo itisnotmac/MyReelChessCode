@@ -243,7 +243,7 @@ export default function Lobby() {
             src={PAWN_IMAGE}
             alt="3D Chess Pawn"
             className="w-auto object-contain"
-            style={{ maxHeight: '34vh', filter: 'drop-shadow(0 0 32px rgba(58,175,169,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))' }}
+            style={{ maxHeight: '68vh', filter: 'drop-shadow(0 0 32px rgba(58,175,169,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))' }}
           />
         </motion.div>
 
