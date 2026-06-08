@@ -159,7 +159,7 @@ export default function Lobby() {
 
       {/* ── ONLINE PVP HERO BANNER ── */}
       <motion.div
-        className="relative z-10 px-6 pt-4"
+        className="relative z-10 flex justify-center pt-4"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.18 }}
@@ -167,23 +167,17 @@ export default function Lobby() {
         <motion.button
           onClick={() => navigate('/OnlineGame')}
           whileTap={{ scale: 0.97 }}
-          className="w-full relative overflow-hidden rounded-2xl border border-[#3AAFA9]/40 p-5 text-left group"
-          style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)' }}
+          className="relative overflow-hidden rounded-2xl border border-[#3AAFA9]/40 px-6 py-4 text-left group"
+          style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', width: '72vw', maxWidth: 320 }}
         >
-          {/* Glow pulse */}
-          <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-            style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(58,175,169,0.12), transparent 70%)' }} />
-          <div className="relative z-10 flex items-center justify-between">
+          <div className="relative z-10 flex items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <Wifi className="w-4 h-4 text-[#3AAFA9]" />
-                <span className="text-[10px] tracking-[0.3em] uppercase text-[#3AAFA9]/70 font-semibold">Live Match</span>
+                <Wifi className="w-3.5 h-3.5 text-[#3AAFA9]" />
+                <span className="text-[9px] tracking-[0.3em] uppercase text-[#3AAFA9]/70 font-semibold">Live Match</span>
               </div>
-              <p className="text-xl font-black text-white tracking-wider">Play Online PVP</p>
-              <p className="text-[11px] text-white/35 mt-0.5">Challenge anyone, anywhere in the world</p>
-            </div>
-            <div className="w-12 h-12 rounded-xl bg-[#3AAFA9]/20 border border-[#3AAFA9]/30 flex items-center justify-center flex-shrink-0">
-              <span className="text-2xl">⚔️</span>
+              <p className="text-lg font-black text-white tracking-wider">Play Online PVP</p>
+              <p className="text-[10px] text-white/35 mt-0.5">Challenge anyone, anywhere</p>
             </div>
           </div>
         </motion.button>
@@ -214,37 +208,33 @@ export default function Lobby() {
       )}
 
       {/* ── PAWN + SIDE BUTTONS ── */}
-      <motion.div
-        className="relative z-10 flex-1 flex items-center justify-center px-4 pb-6 gap-3"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-      >
+      <div className="relative z-10 flex-1 flex px-3 pb-4 gap-3 min-h-0">
+
         {/* LEFT COLUMN */}
-        <div className="flex flex-col gap-3 flex-shrink-0" style={{ width: '22vw', maxWidth: 100 }}>
+        <motion.div
+          className="flex flex-col gap-3"
+          style={{ width: '22vw', maxWidth: 96 }}
+          initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}
+        >
           <motion.button
             onClick={() => setDifficultyOpen(true)}
             whileTap={{ scale: 0.95 }}
-            className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
-            style={{ height: '28vw', maxHeight: 130 }}
+            className="flex-1 flex flex-col items-center justify-center rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
           >
-            <span className="text-2xl">🤖</span>
-            <span className="text-[10px] font-black tracking-[0.15em] uppercase leading-tight text-center">vs<br/>AI</span>
+            <span className="text-[11px] font-black tracking-[0.12em] uppercase">vs AI</span>
           </motion.button>
           <motion.button
             onClick={() => navigate('/Tutorial')}
             whileTap={{ scale: 0.95 }}
-            className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
-            style={{ height: '28vw', maxHeight: 130 }}
+            className="flex-1 flex flex-col items-center justify-center rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
           >
-            <span className="text-2xl">📖</span>
-            <span className="text-[10px] font-black tracking-[0.15em] uppercase leading-tight text-center">Tutorial</span>
+            <span className="text-[11px] font-black tracking-[0.12em] uppercase">Tutorial</span>
           </motion.button>
-        </div>
+        </motion.div>
 
         {/* PAWN (center) */}
         <motion.div
-          className="flex-1 flex items-center justify-center"
+          className="flex-1 flex items-center justify-center min-w-0"
           initial={{ opacity: 0, scale: 0.88 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.15, duration: 0.6 }}
@@ -252,36 +242,34 @@ export default function Lobby() {
           <img
             src={PAWN_IMAGE}
             alt="3D Chess Pawn"
-            className="w-full object-contain"
-            style={{
-              maxHeight: '62vh',
-              filter: 'drop-shadow(0 0 40px rgba(58,175,169,0.3)) drop-shadow(0 12px 32px rgba(0,0,0,0.7))'
-            }}
+            className="w-full h-full object-contain"
+            style={{ filter: 'drop-shadow(0 0 40px rgba(58,175,169,0.3)) drop-shadow(0 12px 32px rgba(0,0,0,0.7))' }}
           />
         </motion.div>
 
         {/* RIGHT COLUMN */}
-        <div className="flex flex-col gap-3 flex-shrink-0" style={{ width: '22vw', maxWidth: 100 }}>
+        <motion.div
+          className="flex flex-col gap-3"
+          style={{ width: '22vw', maxWidth: 96 }}
+          initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}
+        >
           <motion.button
             onClick={() => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); }}
             whileTap={{ scale: 0.95 }}
-            className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
-            style={{ height: '28vw', maxHeight: 130 }}
+            className="flex-1 flex flex-col items-center justify-center rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
           >
-            <span className="text-2xl">🆚</span>
-            <span className="text-[10px] font-black tracking-[0.15em] uppercase leading-tight text-center">Local<br/>PVP</span>
+            <span className="text-[11px] font-black tracking-[0.12em] uppercase">Local PVP</span>
           </motion.button>
           <motion.button
             onClick={() => setMenuOpen(true)}
             whileTap={{ scale: 0.95 }}
-            className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
-            style={{ height: '28vw', maxHeight: 130 }}
+            className="flex-1 flex flex-col items-center justify-center rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
           >
-            <span className="text-2xl">☰</span>
-            <span className="text-[10px] font-black tracking-[0.15em] uppercase leading-tight text-center">Menu</span>
+            <span className="text-[11px] font-black tracking-[0.12em] uppercase">Menu</span>
           </motion.button>
-        </div>
-      </motion.div>
+        </motion.div>
+
+      </div>
 
       {/* ── BOTTOM TAGLINE ── */}
       <motion.div
