@@ -85,4 +85,19 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Respect Android/iOS system dark mode preference */
+  @media (prefers-color-scheme: dark) {
+    :root:not(.light) {
+      color-scheme: dark;
+    }
+    html:not(.light) {
+      @apply dark;
+    }
+  }
+}
+
+/* Minimum touch target size for all interactive elements */
+button, [role="button"], a {
+  min-height: 44px;
 }

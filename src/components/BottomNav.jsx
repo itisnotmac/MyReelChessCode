@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Gamepad2, Trophy, BarChart2, Settings } from 'lucide-react';
 
@@ -9,14 +9,50 @@ const NAV_ITEMS = [
   { label: 'Settings', icon: Settings, path: '/Info?section=settings' },
 ];
 
+// Persist scroll positions per tab path
+const scrollPositions = {};
+
 export default function BottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
+  const prevPath = useRef(location.pathname);
 
   const isActive = (path) => {
     const basePath = path.split('?')[0];
     if (basePath === '/') return location.pathname === '/';
     return location.pathname === basePath;
+  };
+
+  // Save scroll position of the page we're leaving
+  useEffect(() => {
+    const leaving = prevPath.current;
+    return () => {
+      scrollPositions[leaving] = window.scrollY;
+    };
+  }, [location.pathname]);
+
+  // Restore scroll position when arriving at a tab
+  useEffect(() => {
+    const isTabPath = NAV_ITEMS.some(item => {
+      const base = item.path.split('?')[0];
+      return base === location.pathname;
+    });
+    if (isTabPath) {
+      const saved = scrollPositions[location.pathname] ?? 0;
+      // Defer to let the page render first
+      requestAnimationFrame(() => window.scrollTo(0, saved));
+    }
+    prevPath.current = location.pathname;
+  }, [location.pathname]);
+
+  const handleNav = (path) => {
+    // If already on this tab, scroll to top
+    const basePath = path.split('?')[0];
+    if (location.pathname === basePath || (basePath === '/' && location.pathname === '/')) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      navigate(path);
+    }
   };
 
   return (
@@ -36,9 +72,9 @@ export default function BottomNav() {
         return (
           <button
             key={label}
-            onClick={() => navigate(path)}
-            className="flex flex-col items-center gap-1 px-4 py-1 transition-opacity"
-            style={{ minWidth: 56 }}
+            onClick={() => handleNav(path)}
+            className="flex flex-col items-center gap-1 px-4 transition-opacity"
+            style={{ minWidth: 56, minHeight: 44 }}
           >
             <Icon
               className="w-5 h-5 transition-colors"
