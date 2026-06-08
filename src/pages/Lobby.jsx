@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy } from 'lucide-react';
+import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2 } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
 import { startMenuMusic, stopMenuMusic } from '@/lib/menuMusic';
 import { useAuth } from '@/lib/AuthContext';
@@ -14,9 +14,10 @@ const TEAL_BUTTON = "flex items-center justify-center px-6 py-2.5 rounded-full b
 
 function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
   const [items, setItems] = useState([
-    { id: 'settings', label: 'Settings',     icon: Settings },
-    { id: 'faq',      label: 'FAQ',          icon: HelpCircle },
-    { id: 'history',  label: 'Game History', icon: Trophy },
+    { id: 'settings',   label: 'Settings',     icon: Settings },
+    { id: 'faq',       label: 'FAQ',          icon: HelpCircle },
+    { id: 'dashboard', label: 'Dashboard',    icon: BarChart2 },
+    { id: 'history',   label: 'Game History', icon: Trophy },
     { id: 'contact',  label: 'Contact',      icon: Mail },
     { id: 'about',    label: 'About',        icon: Info },
   ]);
@@ -110,6 +111,7 @@ export default function Lobby() {
     if (section === 'about') { navigate('/About'); return; }
     if (section === 'contact') { navigate('/Contact'); return; }
     if (section === 'history') { navigate('/GameHistory'); return; }
+    if (section === 'dashboard') { navigate('/Dashboard'); return; }
     navigate(createPageUrl('Info') + `?section=${section}`);
   };
 
