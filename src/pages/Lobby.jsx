@@ -176,8 +176,8 @@ export default function Lobby() {
                 <Wifi className="w-3.5 h-3.5 text-[#3AAFA9]" />
                 <span className="text-[9px] tracking-[0.3em] uppercase text-[#3AAFA9]/70 font-semibold">Live Match</span>
               </div>
-              <p className="text-lg font-black text-white tracking-wider">Play Online PVP</p>
-              <p className="text-[10px] text-white/35 mt-0.5">Challenge anyone, anywhere</p>
+              <p className="text-lg font-black text-[#3AAFA9] tracking-wider">Play Online PVP</p>
+              <p className="text-[10px] text-[#3AAFA9]/50 mt-0.5">Challenge anyone, anywhere</p>
             </div>
           </div>
         </motion.button>
