@@ -213,67 +213,74 @@ export default function Lobby() {
         </motion.div>
       )}
 
-      {/* ── PAWN IMAGE (lower center) ── */}
+      {/* ── PAWN + SIDE BUTTONS ── */}
       <motion.div
-        className="relative z-10 flex-1 flex items-end justify-center pb-2"
-        initial={{ opacity: 0, scale: 0.92 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.15, duration: 0.6 }}
-      >
-        <img
-          src={PAWN_IMAGE}
-          alt="3D Chess Pawn"
-          className="w-auto max-h-[34vh] object-contain"
-          style={{ filter: 'drop-shadow(0 0 32px rgba(58,175,169,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))' }}
-        />
-      </motion.div>
-
-      {/* ── LOWER BUTTONS ROW ── */}
-      <motion.div
-        className="relative z-10 flex items-center justify-between px-6 pb-3 gap-3"
+        className="relative z-10 flex-1 flex items-center justify-center px-4 pb-6 gap-3"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.35 }}
+        transition={{ delay: 0.2 }}
       >
-        <motion.button
-          onClick={() => setDifficultyOpen(true)}
-          className={TEAL_BUTTON}
-          whileTap={{ scale: 0.94 }}
-        >
-          vs AI
-        </motion.button>
+        {/* LEFT COLUMN */}
+        <div className="flex flex-col gap-3 flex-shrink-0" style={{ width: '22vw', maxWidth: 100 }}>
+          <motion.button
+            onClick={() => setDifficultyOpen(true)}
+            whileTap={{ scale: 0.95 }}
+            className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
+            style={{ height: '28vw', maxHeight: 130 }}
+          >
+            <span className="text-2xl">🤖</span>
+            <span className="text-[10px] font-black tracking-[0.15em] uppercase leading-tight text-center">vs<br/>AI</span>
+          </motion.button>
+          <motion.button
+            onClick={() => navigate('/Tutorial')}
+            whileTap={{ scale: 0.95 }}
+            className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
+            style={{ height: '28vw', maxHeight: 130 }}
+          >
+            <span className="text-2xl">📖</span>
+            <span className="text-[10px] font-black tracking-[0.15em] uppercase leading-tight text-center">Tutorial</span>
+          </motion.button>
+        </div>
 
-        <motion.button
-          onClick={() => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); }}
-          className={TEAL_BUTTON}
-          whileTap={{ scale: 0.94 }}
+        {/* PAWN (center) */}
+        <motion.div
+          className="flex-1 flex items-center justify-center"
+          initial={{ opacity: 0, scale: 0.88 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.15, duration: 0.6 }}
         >
-          Local PVP
-        </motion.button>
-      </motion.div>
+          <img
+            src={PAWN_IMAGE}
+            alt="3D Chess Pawn"
+            className="w-full object-contain"
+            style={{
+              maxHeight: '62vh',
+              filter: 'drop-shadow(0 0 40px rgba(58,175,169,0.3)) drop-shadow(0 12px 32px rgba(0,0,0,0.7))'
+            }}
+          />
+        </motion.div>
 
-      {/* ── BOTTOM ROW: Tutorials + Menu ── */}
-      <motion.div
-        className="relative z-10 flex items-center justify-between px-6 pb-6 gap-3"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-      >
-        <motion.button
-          onClick={() => navigate('/Tutorial')}
-          className={TEAL_BUTTON}
-          whileTap={{ scale: 0.94 }}
-        >
-          Tutorials
-        </motion.button>
-
-        <motion.button
-          onClick={() => setMenuOpen(true)}
-          className={TEAL_BUTTON}
-          whileTap={{ scale: 0.94 }}
-        >
-          Menu
-        </motion.button>
+        {/* RIGHT COLUMN */}
+        <div className="flex flex-col gap-3 flex-shrink-0" style={{ width: '22vw', maxWidth: 100 }}>
+          <motion.button
+            onClick={() => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); }}
+            whileTap={{ scale: 0.95 }}
+            className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
+            style={{ height: '28vw', maxHeight: 130 }}
+          >
+            <span className="text-2xl">🆚</span>
+            <span className="text-[10px] font-black tracking-[0.15em] uppercase leading-tight text-center">Local<br/>PVP</span>
+          </motion.button>
+          <motion.button
+            onClick={() => setMenuOpen(true)}
+            whileTap={{ scale: 0.95 }}
+            className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
+            style={{ height: '28vw', maxHeight: 130 }}
+          >
+            <span className="text-2xl">☰</span>
+            <span className="text-[10px] font-black tracking-[0.15em] uppercase leading-tight text-center">Menu</span>
+          </motion.button>
+        </div>
       </motion.div>
 
       {/* ── BOTTOM TAGLINE ── */}

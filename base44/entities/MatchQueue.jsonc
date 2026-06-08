@@ -1,0 +1,34 @@
+{
+  "name": "MatchQueue",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "The user waiting for a match"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "waiting",
+        "matched",
+        "cancelled"
+      ],
+      "default": "waiting"
+    },
+    "game_id": {
+      "type": "string",
+      "description": "Assigned once matched"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "host",
+        "guest"
+      ],
+      "description": "Which side this player plays"
+    }
+  },
+  "required": [
+    "user_id"
+  ]
+}
