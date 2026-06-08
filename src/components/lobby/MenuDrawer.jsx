@@ -1,11 +1,12 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, HelpCircle, Mail, Info } from 'lucide-react';
+import { X, Settings, HelpCircle, Mail, Info, Trophy } from 'lucide-react';
 
 export default function MenuDrawer({ isOpen, onClose, onNavigate }) {
   const menuItems = [
     { id: 'settings', label: 'Settings', icon: Settings },
     { id: 'faq', label: 'FAQ', icon: HelpCircle },
+    { id: 'history', label: 'Game History', icon: Trophy },
     { id: 'contact', label: 'Contact Us', icon: Mail },
     { id: 'about', label: 'About', icon: Info },
   ];

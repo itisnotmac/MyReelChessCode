@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Settings, HelpCircle, Mail, Info } from 'lucide-react';
+import { ArrowLeft, Settings, HelpCircle, Mail, Info, Trophy, Trash2 } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
+import { base44 } from '@/api/base44Client';
 import {
   Accordion,
   AccordionContent,
@@ -131,9 +132,65 @@ export default function InfoPage() {
     </div>
   );
 
+  const [history, setHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
+  useEffect(() => {
+    if (section === 'history') {
+      setHistoryLoading(true);
+      base44.entities.GameHistory.list('-created_date', 50)
+        .then(setHistory)
+        .finally(() => setHistoryLoading(false));
+    }
+  }, [section]);
+
+  const deleteRecord = async (id) => {
+    await base44.entities.GameHistory.delete(id);
+    setHistory(prev => prev.filter(r => r.id !== id));
+  };
+
+  const resultLabel = (r) => ({ white_wins: 'White Won', black_wins: 'Black Won', draw: 'Draw', in_progress: 'Abandoned' }[r] || r);
+  const resultColor = (r) => ({ white_wins: '#D4AF37', black_wins: '#9B59B6', draw: '#888', in_progress: '#555' }[r] || '#888');
+
+  const renderHistory = () => (
+    <div className="space-y-3">
+      {historyLoading ? (
+        <div className="text-center text-white/30 text-xs py-10">Loading...</div>
+      ) : history.length === 0 ? (
+        <div className="rounded-xl bg-white/5 border border-white/5 p-8 text-center">
+          <Trophy className="w-8 h-8 text-white/10 mx-auto mb-3" />
+          <p className="text-white/30 text-xs">No games recorded yet.</p>
+        </div>
+      ) : history.map(record => (
+        <div key={record.id} className="rounded-xl bg-white/5 border border-white/5 p-4 flex items-center justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[10px] tracking-widest uppercase text-white/30">{record.mode === 'ai' ? 'vs AI' : 'Local PvP'}</span>
+              <span className="text-[10px] font-bold tracking-wider" style={{ color: resultColor(record.result) }}>
+                {resultLabel(record.result)}
+              </span>
+            </div>
+            <div className="flex gap-4 text-[10px] text-white/20">
+              <span>{record.moves_count || 0} moves</span>
+              {record.duration_seconds > 0 && <span>{Math.floor(record.duration_seconds / 60)}m {record.duration_seconds % 60}s</span>}
+              <span>{new Date(record.created_date).toLocaleDateString()}</span>
+            </div>
+          </div>
+          <button
+            onClick={() => deleteRecord(record.id)}
+            className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-colors flex-shrink-0"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+
   const sections = {
     settings: { title: 'Settings', icon: Settings, render: renderSettings },
     faq: { title: 'FAQ', icon: HelpCircle, render: renderFAQ },
+    history: { title: 'Game History', icon: Trophy, render: renderHistory },
     contact: { title: 'Contact Us', icon: Mail, render: renderContact },
     about: { title: 'About', icon: Info, render: renderAbout },
   };
