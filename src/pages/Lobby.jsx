@@ -83,8 +83,8 @@ export default function Lobby() {
   };
 
   const handleDifficultyConfirm = () => {
-    setDifficultyOpen(false);
     stopMenuMusic();
+    setDifficultyOpen(false);
     navigate(createPageUrl('Game') + `?mode=ai`);
   };
 

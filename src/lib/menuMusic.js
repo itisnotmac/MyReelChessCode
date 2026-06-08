@@ -2,8 +2,14 @@ const MENU_MUSIC_URL = 'https://raw.githubusercontent.com/itisnotmac/Chess-Audio
 
 let audio = null;
 let stopped = false;
-let touchHandler = null;
-let clickHandler = null;
+let pendingHandlers = [];
+
+function clearPendingHandlers() {
+  pendingHandlers.forEach(({ event, handler }) => {
+    document.removeEventListener(event, handler);
+  });
+  pendingHandlers = [];
+}
 
 export function startMenuMusic() {
   if (audio) return;
@@ -14,18 +20,24 @@ export function startMenuMusic() {
   audio.volume = 0.5;
 
   const tryPlay = () => {
-    if (stopped || !audio) return;
+    // By the time this fires, stopped may already be true (set by stopMenuMusic)
+    if (stopped) return;
     audio.play().catch(() => {});
   };
 
   const playPromise = audio.play();
   if (playPromise !== undefined) {
     playPromise.catch(() => {
-      // Autoplay blocked — wait for first user interaction
-      touchHandler = tryPlay;
-      clickHandler = tryPlay;
-      document.addEventListener('touchstart', touchHandler, { once: true });
-      document.addEventListener('click', clickHandler, { once: true });
+      // Autoplay blocked — queue deferred play on first interaction
+      const events = ['pointerdown', 'keydown'];
+      events.forEach(event => {
+        const handler = () => {
+          clearPendingHandlers();
+          tryPlay();
+        };
+        pendingHandlers.push({ event, handler });
+        document.addEventListener(event, handler, { once: true });
+      });
     });
   }
 }
@@ -33,15 +45,8 @@ export function startMenuMusic() {
 export function stopMenuMusic() {
   stopped = true;
 
-  // Remove fallback listeners so they can never re-trigger playback
-  if (touchHandler) {
-    document.removeEventListener('touchstart', touchHandler);
-    touchHandler = null;
-  }
-  if (clickHandler) {
-    document.removeEventListener('click', clickHandler);
-    clickHandler = null;
-  }
+  // Remove all pending interaction listeners immediately
+  clearPendingHandlers();
 
   if (audio) {
     audio.pause();
