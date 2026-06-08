@@ -74,23 +74,18 @@ export default function BattleCutscene({ attacker, defender, onComplete }) {
 
   const videoRef = useRef(null);
 
-  useEffect(() => {
-    if (videoRef.current) {
-      // Small delay to let the element mount, then play with sound
-      setTimeout(() => {
-        if (videoRef.current) {
-          videoRef.current.muted = false;
-          videoRef.current.play().catch(() => {
-            // If unmuted play fails, fall back to muted
-            if (videoRef.current) {
-              videoRef.current.muted = true;
-              videoRef.current.play().catch(() => {});
-            }
-          });
-        }
-      }, 50);
+  const videoRefCallback = (node) => {
+    videoRef.current = node;
+    if (node) {
+      node.muted = false;
+      node.play().catch(() => {
+        node.muted = true;
+        node.play().catch(() => {});
+      });
     }
+  };
 
+  useEffect(() => {
     const t1 = setTimeout(() => setPhase('clash'), 1200);
     const t2 = setTimeout(() => setPhase('victory'), 2200);
     const t3 = setTimeout(() => onComplete(), 5300);
@@ -111,7 +106,7 @@ export default function BattleCutscene({ attacker, defender, onComplete }) {
     >
       {/* Cinematic video background */}
       <video
-        ref={videoRef}
+        ref={videoRefCallback}
         src={videoUrl}
         className="absolute inset-0 w-full h-full object-cover"
         playsInline
