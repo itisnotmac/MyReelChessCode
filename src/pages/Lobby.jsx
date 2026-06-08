@@ -2,21 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { X, Settings, HelpCircle, Mail, Info } from 'lucide-react';
+import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
 import { startMenuMusic, stopMenuMusic } from '@/lib/menuMusic';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
 
 const PAWN_IMAGE = 'https://raw.githubusercontent.com/itisnotmac/ChessAssets/main/BackgroundEraser_20260505_224913153.png';
 
 const TEAL_BUTTON = "flex items-center justify-center px-6 py-2.5 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase backdrop-blur-sm hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none";
 
-function MenuModal({ isOpen, onClose, onNavigate }) {
-  const items = [
+function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
+  const [items, setItems] = useState([
     { id: 'settings', label: 'Settings', icon: Settings },
     { id: 'faq',      label: 'FAQ',      icon: HelpCircle },
     { id: 'contact',  label: 'Contact',  icon: Mail },
     { id: 'about',    label: 'About',    icon: Info },
-  ];
+  ]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setItems(prev => [...prev, { id: 'logout', label: 'Sign Out', icon: LogOut, isDanger: true }]);
+    }
+  }, [isAuthenticated]);
 
   return (
     <AnimatePresence>
@@ -43,13 +51,28 @@ function MenuModal({ isOpen, onClose, onNavigate }) {
                 {items.map((item, i) => (
                   <motion.button
                     key={item.id}
-                    onClick={() => { onNavigate(item.id); onClose(); }}
-                    className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all group"
+                    onClick={() => { 
+                      if (item.id === 'logout') {
+                        onLogout();
+                      } else {
+                        onNavigate(item.id);
+                      }
+                      onClose(); 
+                    }}
+                    className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group ${
+                      item.isDanger 
+                        ? 'text-red-400/70 hover:text-red-400 hover:bg-red-400/10' 
+                        : 'text-white/70 hover:text-white hover:bg-white/5'
+                    }`}
                     initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 + i * 0.05 }}
                   >
-                    <div className="w-9 h-9 rounded-lg bg-[#3AAFA9]/10 flex items-center justify-center group-hover:bg-[#3AAFA9]/20 transition-colors">
-                      <item.icon className="w-4 h-4 text-[#3AAFA9]" />
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center group-hover:transition-colors ${
+                      item.isDanger
+                        ? 'bg-red-400/10 group-hover:bg-red-400/20'
+                        : 'bg-[#3AAFA9]/10 group-hover:bg-[#3AAFA9]/20'
+                    }`}>
+                      <item.icon className={`w-4 h-4 ${item.isDanger ? 'text-red-400' : 'text-[#3AAFA9]'}`} />
                     </div>
                     <span className="text-sm tracking-wider font-medium">{item.label}</span>
                   </motion.button>
@@ -68,6 +91,7 @@ function MenuModal({ isOpen, onClose, onNavigate }) {
 
 export default function Lobby() {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [difficultyOpen, setDifficultyOpen] = useState(false);
 
@@ -75,6 +99,11 @@ export default function Lobby() {
     startMenuMusic();
     return () => stopMenuMusic();
   }, []);
+
+  const handleLogout = async () => {
+    await base44.auth.logout();
+    stopMenuMusic();
+  };
 
   const handleNavigate = (section) => {
     if (section === 'about') { navigate('/About'); return; }
@@ -127,12 +156,33 @@ export default function Lobby() {
 
       {/* ── UPPER BUTTONS ROW ── */}
       <motion.div
-        className="relative z-10 flex items-center justify-between px-6 pt-6"
+        className="relative z-10 flex items-center justify-between px-6 pt-6 gap-3"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.25 }}
       >
-        {/* Player vs AI — upper left */}
+        {/* Auth buttons — top left */}
+        {!isAuthenticated && (
+          <div className="flex gap-2">
+            <motion.button
+              onClick={() => navigate('/login')}
+              className="flex items-center justify-center px-4 py-2.5 rounded-full border border-white/20 bg-white/5 text-white font-bold text-xs tracking-[0.18em] uppercase backdrop-blur-sm hover:bg-white/10 active:scale-95 transition-all select-none"
+              whileTap={{ scale: 0.94 }}
+            >
+              <LogIn className="w-3.5 h-3.5 mr-1.5" />
+              Login
+            </motion.button>
+            <motion.button
+              onClick={() => navigate('/register')}
+              className="flex items-center justify-center px-4 py-2.5 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase backdrop-blur-sm hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none"
+              whileTap={{ scale: 0.94 }}
+            >
+              Register
+            </motion.button>
+          </div>
+        )}
+
+        {/* Player vs AI — upper left/center */}
         <motion.button
           onClick={() => setDifficultyOpen(true)}
           className={TEAL_BUTTON}
@@ -205,7 +255,7 @@ export default function Lobby() {
       </motion.div>
 
       {/* Modals */}
-      <MenuModal isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavigate={handleNavigate} />
+      <MenuModal isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavigate={handleNavigate} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
       <DifficultyModal
         isOpen={difficultyOpen}
         onClose={() => setDifficultyOpen(false)}
