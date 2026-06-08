@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2 } from 'lucide-react';
+import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
 import { startMenuMusic, stopMenuMusic } from '@/lib/menuMusic';
 import { useAuth } from '@/lib/AuthContext';
@@ -139,7 +139,7 @@ export default function Lobby() {
 
       {/* ── TOP TITLE ── */}
       <motion.div
-        className="relative z-10 text-center pt-10 pb-2"
+        className="relative z-10 text-center pt-8 pb-1"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
@@ -150,7 +150,6 @@ export default function Lobby() {
             backgroundImage: 'linear-gradient(135deg, #3AAFA9 0%, #A8E6E3 50%, #3AAFA9 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            textShadow: 'none',
             filter: 'drop-shadow(0 0 18px rgba(58,175,169,0.35))',
           }}
         >
@@ -158,56 +157,65 @@ export default function Lobby() {
         </h1>
       </motion.div>
 
-      {/* ── UPPER BUTTONS ROW ── */}
+      {/* ── ONLINE PVP HERO BANNER ── */}
       <motion.div
-        className="relative z-10 flex items-center justify-between px-6 pt-6 gap-3"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.25 }}
+        className="relative z-10 px-6 pt-4"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.18 }}
       >
-        {/* Auth buttons — top left */}
-        {!isAuthenticated && (
-          <div className="flex gap-2">
-            <motion.button
-              onClick={() => navigate('/login')}
-              className="flex items-center justify-center px-4 py-2.5 rounded-full border border-white/20 bg-white/5 text-white font-bold text-xs tracking-[0.18em] uppercase backdrop-blur-sm hover:bg-white/10 active:scale-95 transition-all select-none"
-              whileTap={{ scale: 0.94 }}
-            >
-              <LogIn className="w-3.5 h-3.5 mr-1.5" />
-              Login
-            </motion.button>
-            <motion.button
-              onClick={() => navigate('/register')}
-              className="flex items-center justify-center px-4 py-2.5 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase backdrop-blur-sm hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none"
-              whileTap={{ scale: 0.94 }}
-            >
-              Register
-            </motion.button>
+        <motion.button
+          onClick={() => navigate('/OnlineGame')}
+          whileTap={{ scale: 0.97 }}
+          className="w-full relative overflow-hidden rounded-2xl border border-[#3AAFA9]/40 p-5 text-left group"
+          style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)' }}
+        >
+          {/* Glow pulse */}
+          <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(58,175,169,0.12), transparent 70%)' }} />
+          <div className="relative z-10 flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Wifi className="w-4 h-4 text-[#3AAFA9]" />
+                <span className="text-[10px] tracking-[0.3em] uppercase text-[#3AAFA9]/70 font-semibold">Live Match</span>
+              </div>
+              <p className="text-xl font-black text-white tracking-wider">Play Online PVP</p>
+              <p className="text-[11px] text-white/35 mt-0.5">Challenge anyone, anywhere in the world</p>
+            </div>
+            <div className="w-12 h-12 rounded-xl bg-[#3AAFA9]/20 border border-[#3AAFA9]/30 flex items-center justify-center flex-shrink-0">
+              <span className="text-2xl">⚔️</span>
+            </div>
           </div>
-        )}
-
-        {/* Player vs AI — upper left/center */}
-        <motion.button
-          onClick={() => setDifficultyOpen(true)}
-          className={TEAL_BUTTON}
-          whileTap={{ scale: 0.94 }}
-        >
-          Player vs AI
-        </motion.button>
-
-        {/* PVP — upper right */}
-        <motion.button
-          onClick={() => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); }}
-          className={TEAL_BUTTON}
-          whileTap={{ scale: 0.94 }}
-        >
-          PVP (Local)
         </motion.button>
       </motion.div>
 
-      {/* ── PAWN IMAGE (center) ── */}
+      {/* ── AUTH BUTTONS (if not logged in) ── */}
+      {!isAuthenticated && (
+        <motion.div
+          className="relative z-10 flex gap-2 px-6 pt-3"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.22 }}
+        >
+          <motion.button
+            onClick={() => navigate('/login')}
+            className="flex-1 flex items-center justify-center px-4 py-2 rounded-full border border-white/20 bg-white/5 text-white font-bold text-xs tracking-[0.18em] uppercase hover:bg-white/10 active:scale-95 transition-all select-none"
+            whileTap={{ scale: 0.94 }}
+          >
+            <LogIn className="w-3.5 h-3.5 mr-1.5" />
+            Login
+          </motion.button>
+          <motion.button
+            onClick={() => navigate('/register')}
+            className="flex-1 flex items-center justify-center px-4 py-2 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none"
+            whileTap={{ scale: 0.94 }}
+          >
+            Register
+          </motion.button>
+        </motion.div>
+      )}
+
+      {/* ── PAWN IMAGE (lower center) ── */}
       <motion.div
-        className="relative z-10 flex-1 flex items-center justify-center py-4"
+        className="relative z-10 flex-1 flex items-end justify-center pb-2"
         initial={{ opacity: 0, scale: 0.92 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.15, duration: 0.6 }}
@@ -215,19 +223,42 @@ export default function Lobby() {
         <img
           src={PAWN_IMAGE}
           alt="3D Chess Pawn"
-          className="w-auto max-h-[42vh] object-contain"
+          className="w-auto max-h-[34vh] object-contain"
           style={{ filter: 'drop-shadow(0 0 32px rgba(58,175,169,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))' }}
         />
       </motion.div>
 
       {/* ── LOWER BUTTONS ROW ── */}
       <motion.div
-        className="relative z-10 flex items-center justify-between px-6 pb-6"
+        className="relative z-10 flex items-center justify-between px-6 pb-3 gap-3"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.35 }}
       >
-        {/* Tutorials — bottom left */}
+        <motion.button
+          onClick={() => setDifficultyOpen(true)}
+          className={TEAL_BUTTON}
+          whileTap={{ scale: 0.94 }}
+        >
+          vs AI
+        </motion.button>
+
+        <motion.button
+          onClick={() => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); }}
+          className={TEAL_BUTTON}
+          whileTap={{ scale: 0.94 }}
+        >
+          Local PVP
+        </motion.button>
+      </motion.div>
+
+      {/* ── BOTTOM ROW: Tutorials + Menu ── */}
+      <motion.div
+        className="relative z-10 flex items-center justify-between px-6 pb-6 gap-3"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+      >
         <motion.button
           onClick={() => navigate('/Tutorial')}
           className={TEAL_BUTTON}
@@ -236,7 +267,6 @@ export default function Lobby() {
           Tutorials
         </motion.button>
 
-        {/* Menu — bottom right */}
         <motion.button
           onClick={() => setMenuOpen(true)}
           className={TEAL_BUTTON}
@@ -248,7 +278,7 @@ export default function Lobby() {
 
       {/* ── BOTTOM TAGLINE ── */}
       <motion.div
-        className="relative z-10 text-center pb-8"
+        className="relative z-10 text-center pb-5"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.45 }}

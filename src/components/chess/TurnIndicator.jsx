@@ -26,7 +26,7 @@ export default function TurnIndicator({ isWhiteTurn, isCheck, mode, isThinking }
             {isThinking && <span className="text-[#D4AF37] ml-1 font-normal">thinking...</span>}
           </p>
           <p className="text-white/30 text-[10px] tracking-wider">
-            {isCheck ? '⚠ IN CHECK' : mode === 'ai' ? (isWhiteTurn ? 'Your Turn' : 'AI Turn') : 'Make your move'}
+            {isCheck ? '⚠ IN CHECK' : mode === 'ai' ? (isWhiteTurn ? 'Your Turn' : 'AI Turn') : mode === 'online' ? (isThinking ? 'Opponent\'s Turn' : 'Your Turn') : 'Make your move'}
           </p>
         </div>
       </div>
