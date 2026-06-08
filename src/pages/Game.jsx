@@ -329,9 +329,10 @@ export default function Game() {
       <div className="h-6" />
 
       {/* Battle Cutscene */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {battleInfo && (
           <BattleCutscene
+            key={moveCount}
             attacker={battleInfo.attacker}
             defender={battleInfo.defender}
             onComplete={handleBattleComplete}

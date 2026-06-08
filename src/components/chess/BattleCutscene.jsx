@@ -99,7 +99,7 @@ export default function BattleCutscene({ attacker, defender, onComplete }) {
       clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
       if (videoRef.current) { videoRef.current.pause(); }
     };
-  }, [onComplete]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <motion.div
