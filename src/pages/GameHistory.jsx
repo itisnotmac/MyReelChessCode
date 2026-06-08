@@ -48,6 +48,9 @@ export default function GameHistoryPage() {
     draws: history.filter(r => r.result === 'draw').length,
   };
 
+  const completed = history.filter(r => r.result !== 'in_progress');
+  const winRate = completed.length > 0 ? Math.round((stats.wins / completed.length) * 100) : 0;
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] relative">
       {/* Subtle grid background */}
@@ -73,6 +76,25 @@ export default function GameHistoryPage() {
       </div>
 
       <div className="relative z-10 px-5 pb-10 space-y-5">
+        {/* Summary section */}
+        {!loading && history.length > 0 && (
+          <motion.div
+            className="rounded-2xl bg-gradient-to-br from-[#3AAFA9]/20 to-[#3AAFA9]/5 border border-[#3AAFA9]/30 p-5"
+            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <p className="text-[11px] text-white/50 tracking-wider uppercase mb-2">Total Games Played</p>
+                <p className="text-3xl font-black text-white">{stats.total}</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-white/50 tracking-wider uppercase mb-2">Win Rate</p>
+                <p className="text-3xl font-black text-[#D4AF37]">{winRate}%</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Stats row */}
         {!loading && history.length > 0 && (
           <motion.div
