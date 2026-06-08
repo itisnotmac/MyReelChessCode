@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Settings, HelpCircle, Mail, Info, Trophy, Trash2 } from 'lucide-react';
+import { ArrowLeft, Settings, HelpCircle, Mail, Info, Trophy, Trash2, AlertTriangle } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
 import { base44 } from '@/api/base44Client';
 import {
@@ -11,11 +11,31 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function InfoPage() {
   const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
   const section = urlParams.get('section') || 'settings';
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    // Delete all game history, then sign out
+    const history = await base44.entities.GameHistory.list('-created_date', 200);
+    await Promise.all(history.map(r => base44.entities.GameHistory.delete(r.id)));
+    base44.auth.logout('/');
+  };
 
   const renderSettings = () => (
     <div className="space-y-6">
@@ -44,6 +64,51 @@ export default function InfoPage() {
           <Switch defaultChecked className="data-[state=checked]:bg-[#3AAFA9]" />
         </div>
       </div>
+
+      {/* Delete Account */}
+      <div className="rounded-xl bg-red-500/5 border border-red-500/20 p-4">
+        <div className="flex items-start gap-3 mb-4">
+          <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+          <div>
+            <p className="text-white text-sm font-medium">Delete Account</p>
+            <p className="text-white/30 text-xs mt-0.5 leading-relaxed">
+              Permanently delete your account and all associated game history. This action cannot be undone.
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => setShowDeleteDialog(true)}
+          className="w-full py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold tracking-wider hover:bg-red-500/20 transition-colors"
+        >
+          DELETE ACCOUNT
+        </button>
+      </div>
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent className="bg-[#12121a] border border-white/10 text-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Delete Account?</AlertDialogTitle>
+            <AlertDialogDescription className="text-white/50">
+              This will permanently delete your account and all game history. You cannot undo this action.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              disabled={deleting}
+              className="bg-white/5 border-white/10 text-white hover:bg-white/10"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={deleting}
+              onClick={handleDeleteAccount}
+              className="bg-red-600 hover:bg-red-700 text-white border-0"
+            >
+              {deleting ? 'Deleting...' : 'Yes, Delete'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 
@@ -89,7 +154,7 @@ export default function InfoPage() {
         >
           EMAIL US
         </a>
-        <p className="text-white/20 text-[10px] mt-4 tracking-wider">support@battlechess.app</p>
+        <p className="text-white/20 text-xs mt-4 tracking-wider">support@battlechess.app</p>
       </div>
     </div>
   );
@@ -107,11 +172,11 @@ export default function InfoPage() {
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
           }}>
-          BATTLE CHESS
+          REEL CHESS
         </h3>
-        <p className="text-white/20 text-[10px] tracking-[0.3em] mb-6">VERSION 1.0</p>
+        <p className="text-white/20 text-xs tracking-[0.3em] mb-6">VERSION 1.0</p>
         <p className="text-white/40 text-xs leading-relaxed max-w-xs mx-auto">
-          Battle Chess reimagines the classic game with cinematic battle cutscenes. 
+          Reel Chess reimagines the classic game with cinematic battle cutscenes.
           Every capture becomes an epic showdown between chess pieces on the battlefield.
         </p>
       </div>
@@ -165,12 +230,12 @@ export default function InfoPage() {
         <div key={record.id} className="rounded-xl bg-white/5 border border-white/5 p-4 flex items-center justify-between gap-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] tracking-widest uppercase text-white/30">{record.mode === 'ai' ? 'vs AI' : 'Local PvP'}</span>
-              <span className="text-[10px] font-bold tracking-wider" style={{ color: resultColor(record.result) }}>
+              <span className="text-xs tracking-widest uppercase text-white/30">{record.mode === 'ai' ? 'vs AI' : 'Local PvP'}</span>
+              <span className="text-xs font-bold tracking-wider" style={{ color: resultColor(record.result) }}>
                 {resultLabel(record.result)}
               </span>
             </div>
-            <div className="flex gap-4 text-[10px] text-white/20">
+            <div className="flex gap-4 text-xs text-white/20">
               <span>{record.moves_count || 0} moves</span>
               {record.duration_seconds > 0 && <span>{Math.floor(record.duration_seconds / 60)}m {record.duration_seconds % 60}s</span>}
               <span>{new Date(record.created_date).toLocaleDateString()}</span>
@@ -200,7 +265,10 @@ export default function InfoPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0f] relative">
       {/* Header */}
-      <div className="flex items-center gap-3 px-5 pt-6 pb-8">
+      <div
+        className="flex items-center gap-3 px-5 pb-8"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 24px)' }}
+      >
         <button
           onClick={() => navigate(createPageUrl('Lobby'))}
           className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors"

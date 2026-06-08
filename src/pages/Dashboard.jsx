@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, BarChart2, Clock, Swords, Trophy, Bot, Users, TrendingUp } from 'lucide-react';
+import { ArrowLeft, BarChart2, Clock, Swords, Trophy, Bot, Users, TrendingUp, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 function formatDuration(secs) {
   if (!secs) return '—';
@@ -25,10 +26,10 @@ function StatCard({ icon: Icon, label, value, sub, color = '#3AAFA9', delay = 0 
         <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: color + '18', border: `1px solid ${color}30` }}>
           <Icon className="w-4 h-4" style={{ color }} />
         </div>
-        <span className="text-[11px] text-white/30 tracking-wider uppercase">{label}</span>
+        <span className="text-xs text-white/30 tracking-wider uppercase">{label}</span>
       </div>
       <p className="text-2xl font-black text-white leading-none">{value}</p>
-      {sub && <p className="text-[11px] text-white/30">{sub}</p>}
+      {sub && <p className="text-xs text-white/30">{sub}</p>}
     </motion.div>
   );
 }
@@ -50,11 +51,16 @@ export default function Dashboard() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    base44.entities.GameHistory.list('-created_date', 200)
-      .then(setHistory)
-      .finally(() => setLoading(false));
+  const fetchData = useCallback(async () => {
+    const data = await base44.entities.GameHistory.list('-created_date', 200);
+    setHistory(data);
   }, []);
+
+  useEffect(() => {
+    fetchData().finally(() => setLoading(false));
+  }, []);
+
+  const { refreshing, pullProgress, containerProps } = usePullToRefresh(fetchData);
 
   const completed = history.filter(r => r.result !== 'in_progress');
   const total = history.length;
@@ -75,7 +81,6 @@ export default function Dashboard() {
   const aiGames = history.filter(r => r.mode === 'ai').length;
   const pvpGames = history.filter(r => r.mode === 'local').length;
 
-  // Last 7 days activity
   const activityData = Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
@@ -87,14 +92,11 @@ export default function Dashboard() {
     return { name: label, count };
   });
 
-  const resultChartData = [
-    { name: 'Wins', count: wins, color: '#D4AF37' },
-    { name: 'Losses', count: losses, color: '#9B59B6' },
-    { name: 'Draws', count: draws, color: '#3AAFA9' },
-  ];
-
   return (
-    <div className="min-h-screen bg-[#0a0a0f] relative">
+    <div
+      className="min-h-screen bg-[#0a0a0f] relative overflow-y-auto"
+      {...containerProps}
+    >
       <div className="absolute inset-0 opacity-[0.018]"
         style={{
           backgroundImage: `repeating-conic-gradient(#3AAFA9 0% 25%, transparent 0% 50%)`,
@@ -102,8 +104,26 @@ export default function Dashboard() {
         }}
       />
 
+      {/* Pull-to-refresh indicator */}
+      <div
+        className="relative z-10 flex items-center justify-center overflow-hidden transition-all duration-200"
+        style={{ height: refreshing ? 48 : pullProgress * 48 }}
+      >
+        <RefreshCw
+          className="w-5 h-5 text-[#3AAFA9]"
+          style={{
+            opacity: Math.max(pullProgress, refreshing ? 1 : 0),
+            transform: `rotate(${refreshing ? 'none' : pullProgress * 180 + 'deg'})`,
+            animation: refreshing ? 'spin 1s linear infinite' : 'none',
+          }}
+        />
+      </div>
+
       {/* Header */}
-      <div className="relative z-10 flex items-center gap-3 px-5 pt-6 pb-6">
+      <div
+        className="relative z-10 flex items-center gap-3 px-5 pb-6"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 24px)' }}
+      >
         <button
           onClick={() => navigate(createPageUrl('Lobby'))}
           className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors"
@@ -132,7 +152,6 @@ export default function Dashboard() {
           </motion.div>
         ) : (
           <>
-            {/* Key stats */}
             <div className="grid grid-cols-2 gap-3">
               <StatCard icon={Trophy} label="Total Games" value={total} sub={`${aiGames} vs AI · ${pvpGames} PvP`} color="#D4AF37" delay={0} />
               <StatCard icon={TrendingUp} label="Win Rate" value={`${winRate}%`} sub={`${wins}W · ${losses}L · ${draws}D`} color="#3AAFA9" delay={0.05} />
@@ -140,12 +159,11 @@ export default function Dashboard() {
               <StatCard icon={Swords} label="Avg Moves" value={avgMoves || '—'} sub="per game" color="#E67E22" delay={0.15} />
             </div>
 
-            {/* Win rate bar */}
             <motion.div
               className="rounded-2xl bg-white/5 border border-white/5 p-4"
               initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             >
-              <p className="text-[11px] text-white/30 tracking-wider uppercase mb-3">Results Breakdown</p>
+              <p className="text-xs text-white/30 tracking-wider uppercase mb-3">Results Breakdown</p>
               <div className="flex rounded-full overflow-hidden h-3 gap-0.5">
                 {wins > 0 && <div className="bg-[#D4AF37] transition-all" style={{ flex: wins }} />}
                 {losses > 0 && <div className="bg-[#9B59B6] transition-all" style={{ flex: losses }} />}
@@ -155,21 +173,20 @@ export default function Dashboard() {
                 {[{ label: 'Wins', val: wins, c: '#D4AF37' }, { label: 'Losses', val: losses, c: '#9B59B6' }, { label: 'Draws', val: draws, c: '#3AAFA9' }].map(item => (
                   <div key={item.label} className="flex items-center gap-1.5">
                     <div className="w-2 h-2 rounded-full" style={{ background: item.c }} />
-                    <span className="text-[11px] text-white/40">{item.label} <span className="text-white/70 font-semibold">{item.val}</span></span>
+                    <span className="text-xs text-white/40">{item.label} <span className="text-white/70 font-semibold">{item.val}</span></span>
                   </div>
                 ))}
               </div>
             </motion.div>
 
-            {/* 7-day activity */}
             <motion.div
               className="rounded-2xl bg-white/5 border border-white/5 p-4"
               initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
             >
-              <p className="text-[11px] text-white/30 tracking-wider uppercase mb-4">Last 7 Days</p>
+              <p className="text-xs text-white/30 tracking-wider uppercase mb-4">Last 7 Days</p>
               <ResponsiveContainer width="100%" height={110}>
                 <BarChart data={activityData} barSize={20}>
-                  <XAxis dataKey="name" tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="name" tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 12 }} axisLine={false} tickLine={false} />
                   <YAxis hide allowDecimals={false} />
                   <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
                   <Bar dataKey="count" radius={[4, 4, 0, 0]}>
@@ -181,25 +198,24 @@ export default function Dashboard() {
               </ResponsiveContainer>
             </motion.div>
 
-            {/* Mode breakdown */}
             <motion.div
               className="rounded-2xl bg-white/5 border border-white/5 p-4"
               initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
             >
-              <p className="text-[11px] text-white/30 tracking-wider uppercase mb-3">Game Mode</p>
+              <p className="text-xs text-white/30 tracking-wider uppercase mb-3">Game Mode</p>
               <div className="flex gap-3">
                 <div className="flex-1 rounded-xl bg-[#3AAFA9]/10 border border-[#3AAFA9]/20 p-3 flex items-center gap-3">
                   <Bot className="w-5 h-5 text-[#3AAFA9]" />
                   <div>
                     <p className="text-lg font-black text-white">{aiGames}</p>
-                    <p className="text-[10px] text-white/30 uppercase tracking-wider">vs AI</p>
+                    <p className="text-xs text-white/30 uppercase tracking-wider">vs AI</p>
                   </div>
                 </div>
                 <div className="flex-1 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/20 p-3 flex items-center gap-3">
                   <Users className="w-5 h-5 text-[#D4AF37]" />
                   <div>
                     <p className="text-lg font-black text-white">{pvpGames}</p>
-                    <p className="text-[10px] text-white/30 uppercase tracking-wider">Local PvP</p>
+                    <p className="text-xs text-white/30 uppercase tracking-wider">Local PvP</p>
                   </div>
                 </div>
               </div>

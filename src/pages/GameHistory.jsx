@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Trophy, Trash2, Bot, Users, Clock, Swords } from 'lucide-react';
+import { ArrowLeft, Trophy, Trash2, Bot, Users, Clock, Swords, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 const resultLabel = (r) => ({ white_wins: 'White Won', black_wins: 'Black Won', draw: 'Draw', in_progress: 'Abandoned' }[r] || r);
 const resultColor = (r) => ({ white_wins: '#D4AF37', black_wins: '#9B59B6', draw: '#3AAFA9', in_progress: '#555' }[r] || '#888');
@@ -30,11 +31,16 @@ export default function GameHistoryPage() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    base44.entities.GameHistory.list('-created_date', 50)
-      .then(setHistory)
-      .finally(() => setLoading(false));
+  const fetchHistory = useCallback(async () => {
+    const data = await base44.entities.GameHistory.list('-created_date', 50);
+    setHistory(data);
   }, []);
+
+  useEffect(() => {
+    fetchHistory().finally(() => setLoading(false));
+  }, []);
+
+  const { refreshing, pullProgress, containerProps } = usePullToRefresh(fetchHistory);
 
   const deleteRecord = async (id) => {
     await base44.entities.GameHistory.delete(id);
@@ -52,7 +58,10 @@ export default function GameHistoryPage() {
   const winRate = completed.length > 0 ? Math.round((stats.wins / completed.length) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] relative">
+    <div
+      className="min-h-screen bg-[#0a0a0f] relative overflow-y-auto"
+      {...containerProps}
+    >
       {/* Subtle grid background */}
       <div className="absolute inset-0 opacity-[0.018]"
         style={{
@@ -61,8 +70,26 @@ export default function GameHistoryPage() {
         }}
       />
 
+      {/* Pull-to-refresh indicator */}
+      <div
+        className="relative z-10 flex items-center justify-center overflow-hidden transition-all duration-200"
+        style={{ height: refreshing ? 48 : pullProgress * 48 }}
+      >
+        <RefreshCw
+          className="w-5 h-5 text-[#3AAFA9]"
+          style={{
+            opacity: Math.max(pullProgress, refreshing ? 1 : 0),
+            transform: `rotate(${refreshing ? 'none' : pullProgress * 180 + 'deg'})`,
+            animation: refreshing ? 'spin 1s linear infinite' : 'none',
+          }}
+        />
+      </div>
+
       {/* Header */}
-      <div className="relative z-10 flex items-center gap-3 px-5 pt-6 pb-6">
+      <div
+        className="relative z-10 flex items-center gap-3 px-5 pb-6"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 24px)' }}
+      >
         <button
           onClick={() => navigate(createPageUrl('Lobby'))}
           className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors"
@@ -84,11 +111,11 @@ export default function GameHistoryPage() {
           >
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <p className="text-[11px] text-white/50 tracking-wider uppercase mb-2">Total Games Played</p>
+                <p className="text-xs text-white/50 tracking-wider uppercase mb-2">Total Games Played</p>
                 <p className="text-3xl font-black text-white">{stats.total}</p>
               </div>
               <div>
-                <p className="text-[11px] text-white/50 tracking-wider uppercase mb-2">Win Rate</p>
+                <p className="text-xs text-white/50 tracking-wider uppercase mb-2">Win Rate</p>
                 <p className="text-3xl font-black text-[#D4AF37]">{winRate}%</p>
               </div>
             </div>
@@ -109,7 +136,7 @@ export default function GameHistoryPage() {
             ].map(s => (
               <div key={s.label} className="rounded-xl bg-white/5 border border-white/5 p-3 text-center">
                 <p className={`text-xl font-black ${s.color}`}>{s.value}</p>
-                <p className="text-[10px] text-white/30 tracking-wider uppercase mt-0.5">{s.label}</p>
+                <p className="text-xs text-white/30 tracking-wider uppercase mt-0.5">{s.label}</p>
               </div>
             ))}
           </motion.div>
@@ -141,7 +168,6 @@ export default function GameHistoryPage() {
                 transition={{ delay: i * 0.04 }}
               >
                 <div className="flex items-start justify-between gap-3">
-                  {/* Left: mode + result */}
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className="w-10 h-10 rounded-xl bg-[#3AAFA9]/10 border border-[#3AAFA9]/20 flex items-center justify-center flex-shrink-0">
                       {record.mode === 'ai'
@@ -165,22 +191,21 @@ export default function GameHistoryPage() {
                         </span>
                       </div>
                       <div className="flex items-center gap-3 mt-1.5 flex-wrap">
-                        <span className="flex items-center gap-1 text-[11px] text-white/30">
+                        <span className="flex items-center gap-1 text-xs text-white/30">
                           <Swords className="w-3 h-3" />
                           {record.moves_count || 0} moves
                         </span>
-                        <span className="flex items-center gap-1 text-[11px] text-white/30">
+                        <span className="flex items-center gap-1 text-xs text-white/30">
                           <Clock className="w-3 h-3" />
                           {formatDuration(record.duration_seconds)}
                         </span>
-                        <span className="text-[11px] text-white/20">
+                        <span className="text-xs text-white/20">
                           {formatDate(record.created_date)} · {formatTime(record.created_date)}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Delete */}
                   <button
                     onClick={() => deleteRecord(record.id)}
                     className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-colors flex-shrink-0"

@@ -88,12 +88,12 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                 >
                   {/* Coordinates */}
                   {col === (flipped ? 7 : 0) && (
-                    <span className="absolute top-0.5 left-0.5 text-[8px] font-semibold opacity-40 select-none">
+                    <span className="absolute top-0.5 left-0.5 font-semibold opacity-40 select-none" style={{ fontSize: 12 }}>
                       {ranks[row]}
                     </span>
                   )}
                   {row === (flipped ? 0 : 7) && (
-                    <span className="absolute bottom-0.5 right-0.5 text-[8px] font-semibold opacity-40 select-none">
+                    <span className="absolute bottom-0.5 right-0.5 font-semibold opacity-40 select-none" style={{ fontSize: 12 }}>
                       {files[col]}
                     </span>
                   )}

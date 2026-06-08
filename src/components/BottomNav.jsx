@@ -1,0 +1,58 @@
+import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Gamepad2, Trophy, BarChart2, Settings } from 'lucide-react';
+
+const NAV_ITEMS = [
+  { label: 'Play', icon: Gamepad2, path: '/' },
+  { label: 'History', icon: Trophy, path: '/GameHistory' },
+  { label: 'Stats', icon: BarChart2, path: '/Dashboard' },
+  { label: 'Settings', icon: Settings, path: '/Info?section=settings' },
+];
+
+export default function BottomNav() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path) => {
+    const basePath = path.split('?')[0];
+    if (basePath === '/') return location.pathname === '/';
+    return location.pathname === basePath;
+  };
+
+  return (
+    <div
+      className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around"
+      style={{
+        background: 'linear-gradient(to top, rgba(10,10,15,0.98) 80%, rgba(10,10,15,0.85))',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
+        paddingBottom: 'calc(env(safe-area-inset-bottom) + 8px)',
+        paddingTop: '8px',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+      }}
+    >
+      {NAV_ITEMS.map(({ label, icon: Icon, path }) => {
+        const active = isActive(path);
+        return (
+          <button
+            key={label}
+            onClick={() => navigate(path)}
+            className="flex flex-col items-center gap-1 px-4 py-1 transition-opacity"
+            style={{ minWidth: 56 }}
+          >
+            <Icon
+              className="w-5 h-5 transition-colors"
+              style={{ color: active ? '#3AAFA9' : 'rgba(255,255,255,0.3)' }}
+            />
+            <span
+              className="text-[11px] font-medium tracking-wider transition-colors"
+              style={{ color: active ? '#3AAFA9' : 'rgba(255,255,255,0.25)' }}
+            >
+              {label}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
