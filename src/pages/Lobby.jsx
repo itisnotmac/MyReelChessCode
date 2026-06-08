@@ -207,68 +207,53 @@ export default function Lobby() {
         </motion.div>
       )}
 
-      {/* ── PAWN + SIDE BUTTONS ── */}
-      <div className="relative z-10 flex-1 flex px-3 pb-4 gap-3 min-h-0">
+      {/* ── PAWN ── */}
+      <motion.div
+        className="relative z-10 flex justify-center flex-1 min-h-0"
+        initial={{ opacity: 0, scale: 0.88 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.15, duration: 0.6 }}
+      >
+        <img
+          src={PAWN_IMAGE}
+          alt="3D Chess Pawn"
+          className="w-auto object-contain"
+          style={{ maxHeight: '45vh', filter: 'drop-shadow(0 0 32px rgba(58,175,169,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))' }}
+        />
+      </motion.div>
 
-        {/* LEFT COLUMN */}
-        <motion.div
-          className="flex flex-col gap-3 flex-1"
-          initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}
+      {/* ── 2×2 BUTTON GRID ── */}
+      <motion.div
+        className="relative z-10 flex justify-center pb-4 px-4"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.28 }}
+      >
+        <div
+          className="grid grid-cols-2 gap-3"
+          style={{ width: '88vw', maxWidth: 380 }}
         >
-          <motion.button
-            onClick={() => setDifficultyOpen(true)}
-            whileTap={{ scale: 0.95 }}
-            className="flex-1 flex flex-col items-center justify-center rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
-          >
-            <span className="text-[11px] font-black tracking-[0.12em] uppercase">vs AI</span>
-          </motion.button>
-          <motion.button
-            onClick={() => navigate('/Tutorial')}
-            whileTap={{ scale: 0.95 }}
-            className="flex-1 flex flex-col items-center justify-center rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
-          >
-            <span className="text-[11px] font-black tracking-[0.12em] uppercase">Tutorial</span>
-          </motion.button>
-        </motion.div>
-
-        {/* PAWN (center) */}
-        <motion.div
-          className="flex items-center justify-center min-w-0"
-          style={{ flexShrink: 0 }}
-          initial={{ opacity: 0, scale: 0.88 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.15, duration: 0.6 }}
-        >
-          <img
-            src={PAWN_IMAGE}
-            alt="3D Chess Pawn"
-            className="w-auto object-contain"
-            style={{ maxHeight: '68vh', filter: 'drop-shadow(0 0 32px rgba(58,175,169,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))' }}
-          />
-        </motion.div>
-
-        {/* RIGHT COLUMN */}
-        <motion.div
-          className="flex flex-col gap-3 flex-1"
-          initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}
-        >
-          <motion.button
-            onClick={() => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); }}
-            whileTap={{ scale: 0.95 }}
-            className="flex-1 flex flex-col items-center justify-center rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
-          >
-            <span className="text-[11px] font-black tracking-[0.12em] uppercase">Local PVP</span>
-          </motion.button>
-          <motion.button
-            onClick={() => setMenuOpen(true)}
-            whileTap={{ scale: 0.95 }}
-            className="flex-1 flex flex-col items-center justify-center rounded-2xl border border-[#3AAFA9]/50 bg-[#3AAFA9]/10 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
-          >
-            <span className="text-[11px] font-black tracking-[0.12em] uppercase">Menu</span>
-          </motion.button>
-        </motion.div>
-
-      </div>
+          {[
+            { label: 'vs AI',     onClick: () => setDifficultyOpen(true) },
+            { label: 'Local PVP', onClick: () => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); } },
+            { label: 'Tutorial',  onClick: () => navigate('/Tutorial') },
+            { label: 'Menu',      onClick: () => setMenuOpen(true) },
+          ].map((btn, i) => (
+            <motion.button
+              key={btn.label}
+              onClick={btn.onClick}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + i * 0.05 }}
+              className="flex items-center justify-center rounded-2xl border border-[#3AAFA9]/40 py-4 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
+              style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)' }}
+            >
+              <span className="text-sm font-black tracking-[0.18em] uppercase">{btn.label}</span>
+            </motion.button>
+          ))}
+        </div>
+      </motion.div>
 
       {/* ── BOTTOM TAGLINE ── */}
       <motion.div
