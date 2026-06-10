@@ -10,14 +10,21 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
   const getSquareColor = (row, col) => {
     const isLight = (row + col) % 2 === 0;
     const isSelected = selectedSquare && selectedSquare[0] === row && selectedSquare[1] === col;
-    const isLegal = legalMoves.some(([r, c]) => r === row && c === col);
     const isLastMove = lastMove && ((lastMove.from[0] === row && lastMove.from[1] === col) || (lastMove.to[0] === row && lastMove.to[1] === col));
     const isCheckSq = isCheck && checkSquare && checkSquare[0] === row && checkSquare[1] === col;
 
-    if (isCheckSq) return 'bg-red-500/60';
-    if (isSelected) return isLight ? 'bg-amber-300' : 'bg-amber-600';
-    if (isLastMove) return isLight ? 'bg-yellow-200/60' : 'bg-yellow-700/40';
-    return isLight ? 'bg-[#F0EAD6]' : 'bg-[#355E3B]';
+    if (isCheckSq) return isLight ? 'bg-red-500/50' : 'bg-red-700/60';
+    if (isSelected) return 'bg-[#3AAFA9]/40';
+    if (isLastMove) return isLight ? 'bg-[#3AAFA9]/20' : 'bg-[#3AAFA9]/10';
+    return isLight ? 'bg-[#2e2e4e]' : 'bg-[#1a1a2e]';
+  };
+
+  const getSquareStyle = (row, col) => {
+    const isSelected = selectedSquare && selectedSquare[0] === row && selectedSquare[1] === col;
+    const isCheckSq = isCheck && checkSquare && checkSquare[0] === row && checkSquare[1] === col;
+    if (isCheckSq) return { boxShadow: 'inset 0 0 18px rgba(239,68,68,0.7)' };
+    if (isSelected) return { boxShadow: 'inset 0 0 18px rgba(58,175,169,0.65)' };
+    return {};
   };
 
   const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
@@ -69,7 +76,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
   return (
     <div className="relative w-full h-full" ref={boardRef}>
       {/* Board shadow and border */}
-      <div className="rounded-lg overflow-hidden shadow-2xl border-2 border-[#8B6914]/30 w-full h-full">
+      <div className="rounded-lg overflow-hidden w-full h-full" style={{ boxShadow: '0 0 40px rgba(58,175,169,0.15), 0 8px 32px rgba(0,0,0,0.7)', border: '1px solid rgba(58,175,169,0.25)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gridTemplateRows: 'repeat(8, 1fr)', width: '100%', height: '100%' }}>
           {displayRows.map((row) =>
             displayCols.map((col) => {
@@ -82,33 +89,35 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
               return (
                 <div
                   key={`${row}-${col}`}
-                  className={`relative flex items-center justify-center cursor-pointer transition-colors duration-150 ${getSquareColor(row, col)}`}
-                  style={{ aspectRatio: '1 / 1' }}
+                  className={`relative flex items-center justify-center cursor-pointer transition-all duration-150 ${getSquareColor(row, col)}`}
+                  style={{ aspectRatio: '1 / 1', ...getSquareStyle(row, col) }}
                   onClick={() => onSquareClick(row, col)}
                 >
                   {/* Coordinates */}
                   {col === (flipped ? 7 : 0) && (
-                    <span className="absolute top-0.5 left-0.5 font-semibold opacity-40 select-none" style={{ fontSize: 12 }}>
+                    <span className="absolute top-0.5 left-0.5 font-bold select-none text-[#3AAFA9]/50" style={{ fontSize: 10, textShadow: '0 0 6px rgba(58,175,169,0.4)' }}>
                       {ranks[row]}
                     </span>
                   )}
                   {row === (flipped ? 0 : 7) && (
-                    <span className="absolute bottom-0.5 right-0.5 font-semibold opacity-40 select-none" style={{ fontSize: 12 }}>
+                    <span className="absolute bottom-0.5 right-0.5 font-bold select-none text-[#3AAFA9]/50" style={{ fontSize: 10, textShadow: '0 0 6px rgba(58,175,169,0.4)' }}>
                       {files[col]}
                     </span>
                   )}
 
-                  {/* Legal move indicator */}
+                  {/* Legal move indicator — glowing teal dot */}
                   {isLegal && !hasCapture && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="w-[26%] h-[26%] rounded-full bg-black/20" />
+                      <div className="w-[28%] h-[28%] rounded-full"
+                        style={{ background: 'rgba(58,175,169,0.55)', boxShadow: '0 0 10px rgba(58,175,169,0.8), 0 0 20px rgba(58,175,169,0.3)' }} />
                     </div>
                   )}
 
-                  {/* Capture indicator */}
+                  {/* Capture indicator — glowing teal ring */}
                   {hasCapture && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="w-full h-full rounded-full border-[3px] border-black/25" />
+                      <div className="absolute inset-0 rounded-none"
+                        style={{ boxShadow: 'inset 0 0 0 3px rgba(58,175,169,0.7), inset 0 0 16px rgba(58,175,169,0.25)' }} />
                     </div>
                   )}
 
