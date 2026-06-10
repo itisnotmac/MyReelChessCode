@@ -1,22 +1,22 @@
 import React from 'react';
 
-// Matches the 3D piece aesthetic: gold/bronze for white, dark iron for black
+// White pieces: gold/bronze. Black pieces: bright silver/steel with neon teal edge for contrast on dark board.
 // Clean, centered silhouettes that stay within their square
 
 function King({ isWhite }) {
   const fill = isWhite ? 'url(#wgrad)' : 'url(#bgrad)';
-  const stroke = isWhite ? '#8B6500' : '#000000';
+  const stroke = isWhite ? '#8B6500' : '#1a6b68';
   const gradId = isWhite ? 'wgrad' : 'bgrad';
-  const hiColor = isWhite ? '#FFE88A' : '#3A3028';
-  const shColor = isWhite ? '#7A5A00' : '#080604';
+  const hiColor = isWhite ? '#FFE88A' : '#c8e6e5';
+  const shColor = isWhite ? '#7A5A00' : '#2a5a58';
 
   return (
     <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id={gradId} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%" stopColor={isWhite ? '#FFE066' : '#3A3028'} />
-          <stop offset="50%" stopColor={isWhite ? '#D4A820' : '#1E1A14'} />
-          <stop offset="100%" stopColor={shColor} />
+          <stop offset="0%" stopColor={isWhite ? '#FFE066' : '#e8f4f4'} />
+          <stop offset="50%" stopColor={isWhite ? '#D4A820' : '#9abfbe'} />
+          <stop offset="100%" stopColor={isWhite ? '#7A5A00' : '#2a5a58'} />
         </linearGradient>
       </defs>
       {/* Base */}
@@ -40,18 +40,18 @@ function King({ isWhite }) {
 
 function Queen({ isWhite }) {
   const fill = isWhite ? 'url(#wqgrad)' : 'url(#bqgrad)';
-  const stroke = isWhite ? '#8B6500' : '#000000';
+  const stroke = isWhite ? '#8B6500' : '#1a6b68';
   const gradId = isWhite ? 'wqgrad' : 'bqgrad';
-  const hiColor = isWhite ? '#FFE88A' : '#3A3028';
-  const shColor = isWhite ? '#7A5A00' : '#080604';
+  const hiColor = isWhite ? '#FFE88A' : '#c8e6e5';
+  const shColor = isWhite ? '#7A5A00' : '#2a5a58';
 
   return (
     <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id={gradId} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%" stopColor={isWhite ? '#FFE066' : '#3A3028'} />
-          <stop offset="50%" stopColor={isWhite ? '#D4A820' : '#1E1A14'} />
-          <stop offset="100%" stopColor={shColor} />
+          <stop offset="0%" stopColor={isWhite ? '#FFE066' : '#e8f4f4'} />
+          <stop offset="50%" stopColor={isWhite ? '#D4A820' : '#9abfbe'} />
+          <stop offset="100%" stopColor={isWhite ? '#7A5A00' : '#2a5a58'} />
         </linearGradient>
       </defs>
       {/* Base */}
@@ -77,18 +77,18 @@ function Queen({ isWhite }) {
 
 function Rook({ isWhite }) {
   const fill = isWhite ? 'url(#wrgrad)' : 'url(#brgrad)';
-  const stroke = isWhite ? '#8B6500' : '#000000';
+  const stroke = isWhite ? '#8B6500' : '#1a6b68';
   const gradId = isWhite ? 'wrgrad' : 'brgrad';
-  const hiColor = isWhite ? '#FFE88A' : '#3A3028';
-  const shColor = isWhite ? '#7A5A00' : '#080604';
+  const hiColor = isWhite ? '#FFE88A' : '#c8e6e5';
+  const shColor = isWhite ? '#7A5A00' : '#2a5a58';
 
   return (
     <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id={gradId} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%" stopColor={isWhite ? '#FFE066' : '#3A3028'} />
-          <stop offset="50%" stopColor={isWhite ? '#D4A820' : '#1E1A14'} />
-          <stop offset="100%" stopColor={shColor} />
+          <stop offset="0%" stopColor={isWhite ? '#FFE066' : '#e8f4f4'} />
+          <stop offset="50%" stopColor={isWhite ? '#D4A820' : '#9abfbe'} />
+          <stop offset="100%" stopColor={isWhite ? '#7A5A00' : '#2a5a58'} />
         </linearGradient>
       </defs>
       {/* Base */}
@@ -110,17 +110,17 @@ function Rook({ isWhite }) {
 
 function Bishop({ isWhite }) {
   const fill = isWhite ? 'url(#wbgrad)' : 'url(#bbgrad)';
-  const stroke = isWhite ? '#8B6500' : '#000000';
-  const hiColor = isWhite ? '#FFE88A' : '#3A3028';
-  const shColor = isWhite ? '#7A5A00' : '#080604';
+  const stroke = isWhite ? '#8B6500' : '#1a6b68';
+  const hiColor = isWhite ? '#FFE88A' : '#c8e6e5';
+  const shColor = isWhite ? '#7A5A00' : '#2a5a58';
 
   return (
     <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id={isWhite ? 'wbgrad' : 'bbgrad'} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%" stopColor={isWhite ? '#FFE066' : '#3A3028'} />
-          <stop offset="50%" stopColor={isWhite ? '#D4A820' : '#1E1A14'} />
-          <stop offset="100%" stopColor={shColor} />
+          <stop offset="0%" stopColor={isWhite ? '#FFE066' : '#e8f4f4'} />
+          <stop offset="50%" stopColor={isWhite ? '#D4A820' : '#9abfbe'} />
+          <stop offset="100%" stopColor={isWhite ? '#7A5A00' : '#2a5a58'} />
         </linearGradient>
       </defs>
       {/* Base */}
@@ -144,17 +144,17 @@ function Bishop({ isWhite }) {
 
 function Knight({ isWhite }) {
   const fill = isWhite ? 'url(#wngrad)' : 'url(#bngrad)';
-  const stroke = isWhite ? '#8B6500' : '#000000';
-  const hiColor = isWhite ? '#FFE88A' : '#3A3028';
-  const shColor = isWhite ? '#7A5A00' : '#080604';
+  const stroke = isWhite ? '#8B6500' : '#1a6b68';
+  const hiColor = isWhite ? '#FFE88A' : '#c8e6e5';
+  const shColor = isWhite ? '#7A5A00' : '#2a5a58';
 
   return (
     <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id={isWhite ? 'wngrad' : 'bngrad'} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%" stopColor={isWhite ? '#FFE066' : '#3A3028'} />
-          <stop offset="50%" stopColor={isWhite ? '#D4A820' : '#1E1A14'} />
-          <stop offset="100%" stopColor={shColor} />
+          <stop offset="0%" stopColor={isWhite ? '#FFE066' : '#e8f4f4'} />
+          <stop offset="50%" stopColor={isWhite ? '#D4A820' : '#9abfbe'} />
+          <stop offset="100%" stopColor={isWhite ? '#7A5A00' : '#2a5a58'} />
         </linearGradient>
       </defs>
       {/* Base */}
@@ -169,10 +169,10 @@ function Knight({ isWhite }) {
       <path d="M18 24 Q16 28 18 32 Q22 34 26 32 Q22 30 20 26 Z"
         fill={fill} stroke={stroke} strokeWidth="0.8"/>
       {/* Eye */}
-      <circle cx="32" cy="20" r="2" fill={shColor} stroke={stroke} strokeWidth="0.5"/>
-      <circle cx="32.6" cy="19.4" r="0.7" fill={hiColor} opacity="0.7"/>
+      <circle cx="32" cy="20" r="2" fill={isWhite ? shColor : '#0d3030'} stroke={stroke} strokeWidth="0.5"/>
+      <circle cx="32.6" cy="19.4" r="0.7" fill={hiColor} opacity="0.8"/>
       {/* Mane */}
-      <path d="M36 14 Q40 10 38 6 Q34 10 34 14" fill={shColor} stroke={stroke} strokeWidth="0.5" opacity="0.8"/>
+      <path d="M36 14 Q40 10 38 6 Q34 10 34 14" fill={isWhite ? shColor : '#1a5a58'} stroke={stroke} strokeWidth="0.5" opacity="0.8"/>
       {/* Highlight */}
       <path d="M22 26 Q30 24 38 26" stroke={hiColor} strokeWidth="0.8" fill="none" opacity="0.5"/>
     </svg>
@@ -181,17 +181,17 @@ function Knight({ isWhite }) {
 
 function Pawn({ isWhite }) {
   const fill = isWhite ? 'url(#wpgrad)' : 'url(#bpgrad)';
-  const stroke = isWhite ? '#8B6500' : '#000000';
-  const hiColor = isWhite ? '#FFE88A' : '#3A3028';
-  const shColor = isWhite ? '#7A5A00' : '#080604';
+  const stroke = isWhite ? '#8B6500' : '#1a6b68';
+  const hiColor = isWhite ? '#FFE88A' : '#c8e6e5';
+  const shColor = isWhite ? '#7A5A00' : '#2a5a58';
 
   return (
     <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id={isWhite ? 'wpgrad' : 'bpgrad'} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%" stopColor={isWhite ? '#FFE066' : '#3A3028'} />
-          <stop offset="50%" stopColor={isWhite ? '#D4A820' : '#1E1A14'} />
-          <stop offset="100%" stopColor={shColor} />
+          <stop offset="0%" stopColor={isWhite ? '#FFE066' : '#e8f4f4'} />
+          <stop offset="50%" stopColor={isWhite ? '#D4A820' : '#9abfbe'} />
+          <stop offset="100%" stopColor={isWhite ? '#7A5A00' : '#2a5a58'} />
         </linearGradient>
       </defs>
       {/* Base */}
