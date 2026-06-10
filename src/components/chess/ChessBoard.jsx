@@ -123,7 +123,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
 
                   {/* Piece — hidden at destination while animating */}
                   {piece && !isAnimDest && (
-                    <div className="absolute inset-[6%] z-10 flex items-center justify-center">
+                    <div className="absolute inset-[2%] z-10 flex items-center justify-center">
                       <PieceRenderer piece={piece} size="fill" />
                     </div>
                   )}

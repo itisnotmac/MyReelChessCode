@@ -230,13 +230,17 @@ export default function PieceRenderer({ piece, size = 'normal' }) {
   const isFill = size === 'fill';
   const px = isFill ? null : (SIZE_PX[size] ?? 62);
 
+  const glowStyle = !isWhite ? { filter: 'drop-shadow(0 0 4px rgba(58,175,169,0.7)) drop-shadow(0 1px 3px rgba(0,0,0,0.9))' } : { filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.5))' };
+
   return (
     <span
       className="inline-flex items-center justify-center select-none"
-      style={isFill
-        ? { width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }
-        : { width: px, height: px, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }
-      }
+      style={{
+        ...(isFill
+          ? { width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }
+          : { width: px, height: px, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }),
+        ...glowStyle,
+      }}
     >
       <Component isWhite={isWhite} />
     </span>
