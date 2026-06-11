@@ -101,6 +101,8 @@ function App() {
         <Router>
           <Routes>
             <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
+            <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="*" element={<AuthenticatedApp />} />
           </Routes>
         </Router>
