@@ -17,6 +17,16 @@ import Dashboard from './pages/Dashboard';
 import OnlineGame from './pages/OnlineGame';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 
+// Handles case-insensitive routing for public pages
+const RootRouter = () => {
+  const location = useLocation();
+  const normalized = location.pathname.toLowerCase().replace(/-/g, '');
+  if (normalized === '/privacypolicy') {
+    return <PrivacyPolicy />;
+  }
+  return <AuthenticatedApp />;
+};
+
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
@@ -100,10 +110,7 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <Routes>
-            <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
-            <Route path="/privacypolicy" element={<PrivacyPolicy />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="*" element={<AuthenticatedApp />} />
+            <Route path="*" element={<RootRouter />} />
           </Routes>
         </Router>
         <Toaster />
