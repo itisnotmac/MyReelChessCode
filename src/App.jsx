@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -17,15 +17,6 @@ import Dashboard from './pages/Dashboard';
 import OnlineGame from './pages/OnlineGame';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 
-// Handles case-insensitive routing for public pages
-const RootRouter = () => {
-  const location = useLocation();
-  const normalized = location.pathname.toLowerCase().replace(/-/g, '');
-  if (normalized === '/privacypolicy') {
-    return <PrivacyPolicy />;
-  }
-  return <AuthenticatedApp />;
-};
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -110,25 +101,12 @@ const AuthenticatedApp = () => {
 };
 
 
-// Checks path before any auth logic runs
-const PublicRouteGuard = ({ children }) => {
-  const normalized = window.location.pathname.toLowerCase().replace(/-/g, '');
-  if (normalized === '/privacypolicy') {
-    return <PrivacyPolicy />;
-  }
-  return children;
-};
-
 function App() {
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
-          <PublicRouteGuard>
-            <Routes>
-              <Route path="*" element={<RootRouter />} />
-            </Routes>
-          </PublicRouteGuard>
+          <AuthenticatedApp />
         </Router>
         <Toaster />
       </QueryClientProvider>
