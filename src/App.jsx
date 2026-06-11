@@ -103,19 +103,29 @@ const AuthenticatedApp = () => {
 };
 
 
-function App() {
+// Checks path before any auth logic runs
+const PublicRouteGuard = ({ children }) => {
+  const normalized = window.location.pathname.toLowerCase().replace(/-/g, '');
+  if (normalized === '/privacypolicy') {
+    return <PrivacyPolicy />;
+  }
+  return children;
+};
 
+function App() {
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
-        <Router>
-          <Routes>
-            <Route path="*" element={<RootRouter />} />
-          </Routes>
-        </Router>
-        <Toaster />
-      </QueryClientProvider>
-    </AuthProvider>
+    <PublicRouteGuard>
+      <AuthProvider>
+        <QueryClientProvider client={queryClientInstance}>
+          <Router>
+            <Routes>
+              <Route path="*" element={<RootRouter />} />
+            </Routes>
+          </Router>
+          <Toaster />
+        </QueryClientProvider>
+      </AuthProvider>
+    </PublicRouteGuard>
   )
 }
 
