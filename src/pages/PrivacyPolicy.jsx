@@ -140,7 +140,7 @@ export default function PrivacyPolicy() {
             If you have any questions, concerns, or requests regarding this Privacy Policy, please
             reach out to us at:
           </p>
-          <p className="mt-2 text-teal-400 font-medium">support@reelchess.app</p>
+          <p className="mt-2 text-teal-400 font-medium">reelchessgame@gmail.com</p>
           <p className="mt-1 text-gray-400 text-xs">
             (Replace with your actual support email before submitting to the Play Store.)
           </p>
