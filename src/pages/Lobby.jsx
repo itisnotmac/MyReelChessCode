@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi } from 'lucide-react';
+import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi, Crown } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
+import PremiumModal from '../components/lobby/PremiumModal';
 import { startMenuMusic, stopMenuMusic } from '@/lib/menuMusic';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -93,9 +94,10 @@ function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
 
 export default function Lobby() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [difficultyOpen, setDifficultyOpen] = useState(false);
+  const [premiumOpen, setPremiumOpen] = useState(false);
 
   useEffect(() => {
     startMenuMusic();
@@ -165,20 +167,37 @@ export default function Lobby() {
         transition={{ delay: 0.18 }}
       >
         <motion.button
-          onClick={() => navigate('/OnlineGame')}
+          onClick={() => user?.is_premium ? (stopMenuMusic(), navigate('/OnlineGame')) : setPremiumOpen(true)}
           whileTap={{ scale: 0.97 }}
-          className="relative overflow-hidden rounded-2xl border border-[#3AAFA9]/40 px-6 py-4 text-left group w-full"
-          style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', maxWidth: 480 }}
+          className="relative overflow-hidden rounded-2xl px-6 py-4 text-left group w-full"
+          style={user?.is_premium
+            ? { background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', border: '1px solid rgba(58,175,169,0.4)' }
+            : { background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.04) 100%)', border: '1px solid rgba(212,175,55,0.35)', maxWidth: 480 }}
         >
           <div className="relative z-10 flex items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <Wifi className="w-3.5 h-3.5 text-[#3AAFA9]" />
-                <span className="text-[9px] tracking-[0.3em] uppercase text-[#3AAFA9]/70 font-semibold">Live Match</span>
+                {user?.is_premium
+                  ? <Wifi className="w-3.5 h-3.5 text-[#3AAFA9]" />
+                  : <Crown className="w-3.5 h-3.5" style={{ color: '#D4AF37' }} />}
+                <span className="text-[9px] tracking-[0.3em] uppercase font-semibold"
+                  style={{ color: user?.is_premium ? 'rgba(58,175,169,0.7)' : 'rgba(212,175,55,0.7)' }}>
+                  {user?.is_premium ? 'Live Match' : 'Premium Feature'}
+                </span>
               </div>
-              <p className="text-lg font-black text-[#3AAFA9] tracking-wider">Play Online PVP</p>
-              <p className="text-[10px] text-[#3AAFA9]/50 mt-0.5">Challenge anyone, anywhere</p>
+              <p className="text-lg font-black tracking-wider" style={{ color: user?.is_premium ? '#3AAFA9' : '#D4AF37' }}>
+                Play Online PVP
+              </p>
+              <p className="text-[10px] mt-0.5" style={{ color: user?.is_premium ? 'rgba(58,175,169,0.5)' : 'rgba(212,175,55,0.5)' }}>
+                {user?.is_premium ? 'Challenge anyone, anywhere' : 'Subscribe for $4.99/mo to unlock'}
+              </p>
             </div>
+            {!user?.is_premium && (
+              <div className="shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase"
+                style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)', color: '#D4AF37' }}>
+                Unlock
+              </div>
+            )}
           </div>
         </motion.button>
       </motion.div>
@@ -269,6 +288,7 @@ export default function Lobby() {
 
       {/* Modals */}
       <MenuModal isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavigate={handleNavigate} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+      <PremiumModal isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} isAuthenticated={isAuthenticated} />
       <DifficultyModal
         isOpen={difficultyOpen}
         onClose={() => setDifficultyOpen(false)}
