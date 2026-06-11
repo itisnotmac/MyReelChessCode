@@ -114,18 +114,18 @@ const PublicRouteGuard = ({ children }) => {
 
 function App() {
   return (
-    <PublicRouteGuard>
-      <AuthProvider>
-        <QueryClientProvider client={queryClientInstance}>
-          <Router>
+    <AuthProvider>
+      <QueryClientProvider client={queryClientInstance}>
+        <Router>
+          <PublicRouteGuard>
             <Routes>
               <Route path="*" element={<RootRouter />} />
             </Routes>
-          </Router>
-          <Toaster />
-        </QueryClientProvider>
-      </AuthProvider>
-    </PublicRouteGuard>
+          </PublicRouteGuard>
+        </Router>
+        <Toaster />
+      </QueryClientProvider>
+    </AuthProvider>
   )
 }
 
