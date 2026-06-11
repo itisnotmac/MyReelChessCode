@@ -52,13 +52,6 @@ export const AuthProvider = ({ children }) => {
         if (appError.status === 403 && appError.data?.extra_data?.reason) {
           const reason = appError.data.extra_data.reason;
           if (reason === 'auth_required') {
-            // Don't block public pages with auth redirect
-            const normalized = window.location.pathname.toLowerCase().replace(/-/g, '');
-            if (normalized === '/privacypolicy') {
-              setIsLoadingPublicSettings(false);
-              setIsLoadingAuth(false);
-              return;
-            }
             setAuthError({
               type: 'auth_required',
               message: 'Authentication required'
@@ -109,13 +102,10 @@ export const AuthProvider = ({ children }) => {
       
       // If user auth fails, it might be an expired token
       if (error.status === 401 || error.status === 403) {
-        const normalized = window.location.pathname.toLowerCase().replace(/-/g, '');
-        if (normalized !== '/privacypolicy') {
-          setAuthError({
-            type: 'auth_required',
-            message: 'Authentication required'
-          });
-        }
+        setAuthError({
+          type: 'auth_required',
+          message: 'Authentication required'
+        });
       }
     }
   };

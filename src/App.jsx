@@ -44,11 +44,6 @@ const AuthenticatedApp = () => {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      // Don't redirect public pages to login
-      const normalized = window.location.pathname.toLowerCase().replace(/-/g, '');
-      if (normalized === '/privacypolicy') {
-        return <PrivacyPolicy />;
-      }
       navigateToLogin();
       return null;
     }
@@ -101,16 +96,26 @@ const AuthenticatedApp = () => {
 };
 
 
+function AppRoutes() {
+  const location = useLocation();
+  // Render PrivacyPolicy BEFORE auth checks — no login required
+  const path = location.pathname.toLowerCase().replace(/-/g, '');
+  if (path === '/privacypolicy') {
+    return <PrivacyPolicy />;
+  }
+  return <AuthenticatedApp />;
+}
+
 function App() {
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
-        <Router>
-          <AuthenticatedApp />
-        </Router>
-        <Toaster />
-      </QueryClientProvider>
-    </AuthProvider>
+    <QueryClientProvider client={queryClientInstance}>
+      <Router>
+        <AuthProvider>
+          <AppRoutes />
+          <Toaster />
+        </AuthProvider>
+      </Router>
+    </QueryClientProvider>
   )
 }
 
