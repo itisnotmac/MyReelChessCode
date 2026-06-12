@@ -86,10 +86,10 @@ const AuthenticatedApp = () => {
           <Route path="/GameHistory" element={<LayoutWrapper currentPageName="GameHistory"><GameHistory /></LayoutWrapper>} />
           <Route path="/Dashboard" element={<LayoutWrapper currentPageName="Dashboard"><Dashboard /></LayoutWrapper>} />
           <Route path="/OnlineGame" element={<LayoutWrapper currentPageName="OnlineGame"><OnlineGame /></LayoutWrapper>} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/privacypolicy" element={<PrivacyPolicy />} />
           <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
           <Route path="/premium-success" element={<LayoutWrapper currentPageName="PremiumSuccess"><PremiumSuccess /></LayoutWrapper>} />
-          <Route path="/privacypolicy" element={<PrivacyPolicy />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </motion.div>
@@ -101,8 +101,8 @@ const AuthenticatedApp = () => {
 function AppRoutes() {
   const location = useLocation();
   // Render PrivacyPolicy BEFORE auth checks — no login required
-  const path = location.pathname.toLowerCase().replace(/-/g, '');
-  if (path === '/privacypolicy') {
+  const normalizedPath = location.pathname.toLowerCase().replace(/-/g, '').replace(/\//g, '');
+  if (normalizedPath === 'privacypolicy') {
     return <PrivacyPolicy />;
   }
   return <AuthenticatedApp />;
