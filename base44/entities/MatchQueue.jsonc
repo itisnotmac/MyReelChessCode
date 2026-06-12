@@ -26,6 +26,20 @@
         "guest"
       ],
       "description": "Which side this player plays"
+    },
+    "region": {
+      "type": "string",
+      "enum": [
+        "north-america",
+        "south-america",
+        "europe",
+        "asia",
+        "africa",
+        "oceania",
+        "unknown"
+      ],
+      "default": "unknown",
+      "description": "Approximate geographic region used for matchmaking quality \u2014 derived from coarse timezone/locale, not GPS"
     }
   },
   "required": [

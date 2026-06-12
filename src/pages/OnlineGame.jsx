@@ -85,11 +85,26 @@ export default function OnlineGame() {
     if (g.result && g.result !== 'in_progress') setGameOver(g.result);
   }
 
+  // Derive approximate region from timezone — no GPS needed
+  const getRegion = () => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      if (/America\/(New_York|Chicago|Denver|Los_Angeles|Toronto|Vancouver|Phoenix|Anchorage|Honolulu)/.test(tz)) return 'north-america';
+      if (/America\//.test(tz)) return 'south-america';
+      if (/Europe\//.test(tz)) return 'europe';
+      if (/Asia\//.test(tz)) return 'asia';
+      if (/Africa\//.test(tz)) return 'africa';
+      if (/Australia\/|Pacific\//.test(tz)) return 'oceania';
+    } catch {}
+    return 'unknown';
+  };
+
   // ── MATCHMAKING ──
   const handleFindMatch = async () => {
     if (!user) { navigate('/login'); return; }
     setLoading(true);
     setSearchSeconds(0);
+    const region = getRegion();
 
     // Clean up any stale queue entry for this user first
     const stale = await base44.entities.MatchQueue.filter({ user_id: user.id, status: 'waiting' });
@@ -130,6 +145,7 @@ export default function OnlineGame() {
         status: 'matched',
         game_id: game.id,
         role: 'guest',
+        region,
       });
       queueIdRef.current = myEntry.id;
 
@@ -147,6 +163,7 @@ export default function OnlineGame() {
       const entry = await base44.entities.MatchQueue.create({
         user_id: user.id,
         status: 'waiting',
+        region,
       });
       queueIdRef.current = entry.id;
       roleRef.current = 'host';

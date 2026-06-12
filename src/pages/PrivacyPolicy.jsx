@@ -48,10 +48,16 @@ export default function PrivacyPolicy() {
             <li>Device information (operating system version, device type)</li>
             <li>Crash reports and performance data</li>
           </ul>
+          <p className="font-medium text-gray-200 mt-3 mb-1">Location information:</p>
+          <ul className="list-disc list-inside space-y-1 ml-2">
+            <li>
+              We derive your <span className="text-gray-200">approximate geographic region</span> (e.g., "North America", "Europe") from your device's timezone or locale settings when you enter the online matchmaking queue. This is used solely to improve match quality. We do <strong>not</strong> access your GPS or precise device location at any time.
+            </li>
+          </ul>
           <p className="font-medium text-gray-200 mt-3 mb-1">Information we do NOT collect:</p>
           <ul className="list-disc list-inside space-y-1 ml-2">
-            <li>Payment or billing information</li>
-            <li>Location data</li>
+            <li>Payment or billing information (handled securely by Stripe)</li>
+            <li>Precise GPS or device location</li>
             <li>Contacts or photos from your device</li>
             <li>Microphone or camera data</li>
           </ul>
