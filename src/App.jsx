@@ -17,6 +17,7 @@ import Dashboard from './pages/Dashboard';
 import OnlineGame from './pages/OnlineGame';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import PremiumSuccess from './pages/PremiumSuccess';
+import Info from './pages/Info';
 
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -87,6 +88,8 @@ const AuthenticatedApp = () => {
           <Route path="/Dashboard" element={<LayoutWrapper currentPageName="Dashboard"><Dashboard /></LayoutWrapper>} />
           <Route path="/OnlineGame" element={<LayoutWrapper currentPageName="OnlineGame"><OnlineGame /></LayoutWrapper>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/delete-account" element={<LayoutWrapper currentPageName="Info"><Info /></LayoutWrapper>} />
+          <Route path="/delete-data" element={<LayoutWrapper currentPageName="Info"><Info /></LayoutWrapper>} />
           <Route path="/privacypolicy" element={<PrivacyPolicy />} />
           <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
           <Route path="/premium-success" element={<LayoutWrapper currentPageName="PremiumSuccess"><PremiumSuccess /></LayoutWrapper>} />

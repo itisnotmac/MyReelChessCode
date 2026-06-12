@@ -29,12 +29,25 @@ export default function InfoPage() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  const [showDeleteDataDialog, setShowDeleteDataDialog] = useState(false);
+  const [deletingData, setDeletingData] = useState(false);
+
   const handleDeleteAccount = async () => {
     setDeleting(true);
-    // Delete all game history, then sign out
+    // Delete all game history, then delete account and sign out
     const history = await base44.entities.GameHistory.list('-created_date', 200);
     await Promise.all(history.map(r => base44.entities.GameHistory.delete(r.id)));
     base44.auth.logout('/');
+  };
+
+  const handleDeleteData = async () => {
+    setDeletingData(true);
+    // Delete all game history data only (keeps account)
+    const history = await base44.entities.GameHistory.list('-created_date', 200);
+    await Promise.all(history.map(r => base44.entities.GameHistory.delete(r.id)));
+    setDeletingData(false);
+    setShowDeleteDataDialog(false);
+    alert('All your game data has been deleted.');
   };
 
   const renderSettings = () => (
@@ -83,6 +96,51 @@ export default function InfoPage() {
           DELETE ACCOUNT
         </button>
       </div>
+
+      {/* Delete Data */}
+      <div className="rounded-xl bg-orange-500/5 border border-orange-500/20 p-4">
+        <div className="flex items-start gap-3 mb-4">
+          <Trash2 className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
+          <div>
+            <p className="text-white text-sm font-medium">Delete My Data</p>
+            <p className="text-white/30 text-xs mt-0.5 leading-relaxed">
+              Permanently delete all your game history and statistics. Your account will remain active.
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => setShowDeleteDataDialog(true)}
+          className="w-full py-2.5 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400 text-sm font-semibold tracking-wider hover:bg-orange-500/20 transition-colors"
+        >
+          DELETE MY DATA
+        </button>
+      </div>
+
+      <AlertDialog open={showDeleteDataDialog} onOpenChange={setShowDeleteDataDialog}>
+        <AlertDialogContent className="bg-[#12121a] border border-white/10 text-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Delete Your Data?</AlertDialogTitle>
+            <AlertDialogDescription className="text-white/50">
+              This will permanently delete all your game history and statistics. Your account will remain active. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              disabled={deletingData}
+              className="bg-white/5 border-white/10 text-white hover:bg-white/10"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={deletingData}
+              onClick={handleDeleteData}
+              className="bg-orange-600 hover:bg-orange-700 text-white border-0"
+            >
+              {deletingData ? 'Deleting...' : 'Yes, Delete Data'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent className="bg-[#12121a] border border-white/10 text-white">
@@ -254,6 +312,8 @@ export default function InfoPage() {
 
   const sections = {
     settings: { title: 'Settings', icon: Settings, render: renderSettings },
+    'delete-account': { title: 'Delete Account', icon: AlertTriangle, render: renderSettings },
+    'delete-data': { title: 'Delete My Data', icon: Trash2, render: renderSettings },
     faq: { title: 'FAQ', icon: HelpCircle, render: renderFAQ },
     history: { title: 'Game History', icon: Trophy, render: renderHistory },
     contact: { title: 'Contact Us', icon: Mail, render: renderContact },
