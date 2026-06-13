@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
       payment_method_types: ['card'],
       line_items: [
         {
-          price: 'price_1Thy2GIgBX0JIPkjLZZFOcbM',
+          price: 'price_1Thy3IIgBX0JIPkjHxS9Yzuu',
           quantity: 1,
         },
       ],
