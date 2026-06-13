@@ -9,7 +9,7 @@ import { startMenuMusic, stopMenuMusic } from '@/lib/menuMusic';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 
-const PAWN_IMAGE = 'https://raw.githubusercontent.com/itisnotmac/ChessAssets/main/BackgroundEraser_20260505_224913153.png';
+const SWORD_LOGO = 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/bfd9306c6_generated_image.png';
 
 const TEAL_BUTTON = "flex items-center justify-center px-6 py-2.5 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase backdrop-blur-sm hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none";
 
@@ -226,18 +226,19 @@ export default function Lobby() {
         </motion.div>
       )}
 
-      {/* ── PAWN ── */}
+      {/* ── SWORD LOGO HERO ── */}
       <motion.div
-        className="relative z-10 flex justify-center"
+        className="relative z-10 flex justify-center items-center"
         initial={{ opacity: 0, scale: 0.88 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.15, duration: 0.6 }}
+        style={{ flex: 1, minHeight: 0 }}
       >
         <img
-          src={PAWN_IMAGE}
-          alt="3D Chess Pawn"
+          src={SWORD_LOGO}
+          alt="Reel Chess Logo"
           className="w-auto object-contain"
-          style={{ height: '30vh', maxHeight: 280, filter: 'drop-shadow(0 0 32px rgba(58,175,169,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))' }}
+          style={{ height: '38vh', maxHeight: 340, filter: 'drop-shadow(0 0 40px rgba(212,175,55,0.3)) drop-shadow(0 0 80px rgba(58,175,169,0.15))' }}
         />
       </motion.div>
 
