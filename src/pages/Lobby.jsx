@@ -9,7 +9,7 @@ import { startMenuMusic, stopMenuMusic } from '@/lib/menuMusic';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 
-const SWORD_LOGO = 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/bfd9306c6_generated_image.png';
+const SWORD_LOGO = 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/bd9037623_generated_image.png';
 
 const TEAL_BUTTON = "flex items-center justify-center px-6 py-2.5 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase backdrop-blur-sm hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none";
 
