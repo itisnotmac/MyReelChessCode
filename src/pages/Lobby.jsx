@@ -293,7 +293,13 @@ export default function Lobby() {
         isOpen={twoVTwoOpen}
         onClose={() => setTwoVTwoOpen(false)}
         onLocal={() => { setTwoVTwoOpen(false); stopMenuMusic(); navigate(createPageUrl('Game') + '?mode=2v2'); }}
-        onOnline={() => { setTwoVTwoOpen(false); navigate(createPageUrl('Online2v2Game')); }}
+        onOnline={() => {
+          setTwoVTwoOpen(false);
+          if (!user?.is_premium) { setPremiumOpen(true); return; }
+          if (!isAuthenticated) { navigate('/login'); return; }
+          navigate(createPageUrl('Online2v2Game'));
+        }}
+        isPremium={user?.is_premium}
         isAuthenticated={isAuthenticated}
       />
       <DifficultyModal
