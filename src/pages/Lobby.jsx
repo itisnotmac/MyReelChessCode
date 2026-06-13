@@ -180,31 +180,28 @@ export default function Lobby() {
           onClick={() => user?.is_premium ? (stopMenuMusic(), navigate('/OnlineGame')) : setPremiumOpen(true)}
           whileTap={{ scale: 0.97 }}
           className="relative overflow-hidden rounded-2xl px-6 py-4 text-left group w-full"
-          style={user?.is_premium
-            ? { background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', border: '1px solid rgba(58,175,169,0.4)' }
-            : { background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.04) 100%)', border: '1px solid rgba(212,175,55,0.35)', maxWidth: 480 }}
+          style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', border: '1px solid rgba(58,175,169,0.4)', maxWidth: 480 }}
         >
           <div className="relative z-10 flex items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 {user?.is_premium
                   ? <Wifi className="w-3.5 h-3.5 text-[#3AAFA9]" />
-                  : <Crown className="w-3.5 h-3.5" style={{ color: '#D4AF37' }} />}
-                <span className="text-[9px] tracking-[0.3em] uppercase font-semibold"
-                  style={{ color: user?.is_premium ? 'rgba(58,175,169,0.7)' : 'rgba(212,175,55,0.7)' }}>
+                  : <Crown className="w-3.5 h-3.5 text-[#3AAFA9]" />}
+                <span className="text-[9px] tracking-[0.3em] uppercase font-semibold text-[#3AAFA9]/70">
                   {user?.is_premium ? 'Live Match' : 'Premium Feature'}
                 </span>
               </div>
-              <p className="text-lg font-black tracking-wider" style={{ color: user?.is_premium ? '#3AAFA9' : '#D4AF37' }}>
+              <p className="text-lg font-black tracking-wider text-[#3AAFA9]">
                 Play Online PVP
               </p>
-              <p className="text-[10px] mt-0.5" style={{ color: user?.is_premium ? 'rgba(58,175,169,0.5)' : 'rgba(212,175,55,0.5)' }}>
+              <p className="text-[10px] mt-0.5 text-[#3AAFA9]/50">
                 {user?.is_premium ? 'Challenge anyone, anywhere' : 'Subscribe for $4.99/mo to unlock'}
               </p>
             </div>
             {!user?.is_premium && (
               <div className="shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase"
-                style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)', color: '#D4AF37' }}>
+                style={{ background: 'rgba(58,175,169,0.15)', border: '1px solid rgba(58,175,169,0.3)', color: '#3AAFA9' }}>
                 Unlock
               </div>
             )}
@@ -237,75 +234,73 @@ export default function Lobby() {
       )}
 
       {/* ── HERO COMPOSITION ── */}
+      {/* Layout: [Rook(lg) Bishop(md) King(sm)] [Sword] [Pawn(lg) Knight(md) Queen(sm)] */}
       <motion.div
         className="relative z-10 flex justify-center items-center w-full"
         style={{ flex: 1, minHeight: 0 }}
-        initial={{ opacity: 0, scale: 0.92 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.15, duration: 0.6 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.15, duration: 0.5 }}
       >
-        <div className="relative flex items-center justify-center" style={{ width: '100%', maxWidth: 400, height: '36vh', maxHeight: 320 }}>
+        <div className="relative flex items-end justify-center gap-0" style={{ width: '100%', maxWidth: 420, height: '38vh', maxHeight: 330 }}>
 
-          {/* Left column: King, Queen, Rook (top to bottom) */}
-          {[
-            { src: PIECES.king,   delay: 0.2,  top: '0%'   },
-            { src: PIECES.queen,  delay: 0.25, top: '33%'  },
-            { src: PIECES.rook,   delay: 0.3,  top: '66%'  },
-          ].map((p, i) => (
-            <motion.img
-              key={'left-' + i}
-              src={p.src}
-              alt=""
-              initial={{ opacity: 0, x: -18 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: p.delay, duration: 0.5 }}
-              className="absolute object-contain"
-              style={{
-                width: '18%',
-                left: '2%',
-                top: p.top,
-                height: '30%',
-                filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.7)) drop-shadow(0 0 8px rgba(58,175,169,0.15))',
-              }}
+          {/* LEFT GROUP — stacked vertically, bottom-aligned, largest at top */}
+          <div className="flex flex-col items-end justify-end h-full" style={{ width: '28%', paddingBottom: '4%' }}>
+            {/* Rook — largest, top */}
+            <motion.img src={PIECES.rook} alt="Rook"
+              initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2, duration: 0.5 }}
+              className="object-contain w-full"
+              style={{ height: '42%', filter: 'drop-shadow(0 0 14px rgba(58,175,169,0.5)) drop-shadow(0 4px 10px rgba(0,0,0,0.8))' }}
             />
-          ))}
+            {/* Bishop — medium */}
+            <motion.img src={PIECES.bishop} alt="Bishop"
+              initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25, duration: 0.5 }}
+              className="object-contain"
+              style={{ height: '33%', width: '75%', filter: 'drop-shadow(0 0 10px rgba(58,175,169,0.4)) drop-shadow(0 4px 8px rgba(0,0,0,0.7))' }}
+            />
+            {/* King — smallest */}
+            <motion.img src={PIECES.king} alt="King"
+              initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, duration: 0.5 }}
+              className="object-contain"
+              style={{ height: '25%', width: '55%', filter: 'drop-shadow(0 0 8px rgba(58,175,169,0.35)) drop-shadow(0 4px 6px rgba(0,0,0,0.7))' }}
+            />
+          </div>
 
-          {/* Center sword logo */}
-          <img
+          {/* CENTER — Sword logo */}
+          <motion.img
             src={SWORD_LOGO}
-            alt="Reel Chess Logo"
-            className="object-contain"
+            alt="Reel Chess"
+            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15, duration: 0.6 }}
+            className="object-contain shrink-0"
             style={{
               height: '100%',
-              width: 'auto',
-              maxWidth: '46%',
-              filter: 'drop-shadow(0 0 36px rgba(212,175,55,0.32)) drop-shadow(0 8px 24px rgba(0,0,0,0.7))',
+              width: '44%',
+              filter: 'drop-shadow(0 0 28px rgba(58,175,169,0.45)) drop-shadow(0 0 60px rgba(58,175,169,0.15)) drop-shadow(0 8px 20px rgba(0,0,0,0.8))',
             }}
           />
 
-          {/* Right column: Bishop, Knight, Pawn (top to bottom) */}
-          {[
-            { src: PIECES.bishop, delay: 0.2,  top: '0%'  },
-            { src: PIECES.knight, delay: 0.25, top: '33%' },
-            { src: PIECES.pawn,   delay: 0.3,  top: '66%' },
-          ].map((p, i) => (
-            <motion.img
-              key={'right-' + i}
-              src={p.src}
-              alt=""
-              initial={{ opacity: 0, x: 18 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: p.delay, duration: 0.5 }}
-              className="absolute object-contain"
-              style={{
-                width: '18%',
-                right: '2%',
-                top: p.top,
-                height: '30%',
-                filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.7)) drop-shadow(0 0 8px rgba(58,175,169,0.15))',
-              }}
+          {/* RIGHT GROUP — mirrored, Pawn largest at top */}
+          <div className="flex flex-col items-start justify-end h-full" style={{ width: '28%', paddingBottom: '4%' }}>
+            {/* Pawn — largest, top */}
+            <motion.img src={PIECES.pawn} alt="Pawn"
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2, duration: 0.5 }}
+              className="object-contain w-full"
+              style={{ height: '42%', filter: 'drop-shadow(0 0 14px rgba(58,175,169,0.5)) drop-shadow(0 4px 10px rgba(0,0,0,0.8))' }}
             />
-          ))}
+            {/* Knight — medium */}
+            <motion.img src={PIECES.knight} alt="Knight"
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25, duration: 0.5 }}
+              className="object-contain"
+              style={{ height: '33%', width: '75%', filter: 'drop-shadow(0 0 10px rgba(58,175,169,0.4)) drop-shadow(0 4px 8px rgba(0,0,0,0.7))' }}
+            />
+            {/* Queen — smallest */}
+            <motion.img src={PIECES.queen} alt="Queen"
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, duration: 0.5 }}
+              className="object-contain"
+              style={{ height: '25%', width: '55%', filter: 'drop-shadow(0 0 8px rgba(58,175,169,0.35)) drop-shadow(0 4px 6px rgba(0,0,0,0.7))' }}
+            />
+          </div>
+
         </div>
       </motion.div>
 
