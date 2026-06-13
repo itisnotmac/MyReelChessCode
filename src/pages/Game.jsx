@@ -30,6 +30,13 @@ export default function Game() {
   const modeRef = useRef(new URLSearchParams(window.location.search).get('mode') || 'ai');
   const mode = modeRef.current;
 
+  // 2v2: track which sub-player within each team is active
+  // Turn order: P1(white), P3(black), P2(white), P4(black), repeat
+  // playerSlot cycles 0→1→2→3→0... slot 0=P1, 1=P3, 2=P2, 3=P4
+  const [playerSlot, setPlayerSlot] = useState(0); // 0-indexed
+  const PLAYER_NAMES = ['Player 1', 'Player 3', 'Player 2', 'Player 4'];
+  const PLAYER_TEAMS = [0, 1, 0, 1]; // 0=Team A (white), 1=Team B (black)
+
   const [board, setBoard] = useState(createInitialBoard());
   const [isWhiteTurn, setIsWhiteTurn] = useState(true);
   const [selectedSquare, setSelectedSquare] = useState(null);
@@ -119,6 +126,7 @@ export default function Game() {
     setLegalMoves([]);
     setMoveCount(prev => prev + 1);
     setIsWhiteTurn(nextWhite);
+    if (mode === '2v2') setPlayerSlot(prev => (prev + 1) % 4);
 
     // Check game end
     if (isCheckmate(result.board, nextWhite, result.enPassant, result.castling)) {
@@ -174,6 +182,8 @@ export default function Game() {
     if (piece && getPieceColor(piece) === (isWhiteTurn ? 'white' : 'black')) {
       // In AI mode, only allow selecting white pieces
       if (mode === 'ai' && !isWhitePiece(piece)) return;
+      // In 2v2 mode, only allow the current player's team color
+      if (mode === '2v2' && isWhitePiece(piece) !== (PLAYER_TEAMS[playerSlot] === 0)) return;
       
       const moves = getLegalMoves(board, row, col, enPassant, castling);
       setSelectedSquare([row, col]);
@@ -230,9 +240,10 @@ export default function Game() {
     pendingMoveRef.current = null;
     aiRunningRef.current = false;
     setMoveCount(0);
+    setPlayerSlot(0);
   };
 
-  const shouldFlip = mode === 'local' && !isWhiteTurn;
+  const shouldFlip = (mode === 'local' || mode === '2v2') && !isWhiteTurn;
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex flex-col">
@@ -246,7 +257,7 @@ export default function Game() {
         />
         <div className="text-center">
           <p className="text-[10px] tracking-[0.3em] uppercase text-[#D4AF37]/60 font-medium">
-            {mode === 'ai' ? 'VS AI' : 'LOCAL'}
+            {mode === 'ai' ? 'VS AI' : mode === '2v2' ? '2V2' : 'LOCAL'}
           </p>
           <p className="text-[10px] text-white/20">Move {moveCount}</p>
         </div>
@@ -290,6 +301,8 @@ export default function Game() {
           isCheck={isInCheck(board, isWhiteTurn)}
           mode={mode}
           isThinking={isThinking}
+          playerName={mode === '2v2' ? PLAYER_NAMES[playerSlot] : null}
+          teamLabel={mode === '2v2' ? (PLAYER_TEAMS[playerSlot] === 0 ? 'Team A' : 'Team B') : null}
         />
       </div>
 
@@ -346,6 +359,7 @@ export default function Game() {
           result={gameOver}
           onRematch={resetGame}
           onHome={() => navigate(createPageUrl('Lobby'))}
+          mode={mode}
         />
       )}
     </div>

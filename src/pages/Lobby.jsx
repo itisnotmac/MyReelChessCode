@@ -170,31 +170,28 @@ export default function Lobby() {
           onClick={() => user?.is_premium ? (stopMenuMusic(), navigate('/OnlineGame')) : setPremiumOpen(true)}
           whileTap={{ scale: 0.97 }}
           className="relative overflow-hidden rounded-2xl px-6 py-4 text-left group w-full"
-          style={user?.is_premium
-            ? { background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', border: '1px solid rgba(58,175,169,0.4)' }
-            : { background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.04) 100%)', border: '1px solid rgba(212,175,55,0.35)', maxWidth: 480 }}
+          style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', border: '1px solid rgba(58,175,169,0.4)', maxWidth: 480 }}
         >
           <div className="relative z-10 flex items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 {user?.is_premium
                   ? <Wifi className="w-3.5 h-3.5 text-[#3AAFA9]" />
-                  : <Crown className="w-3.5 h-3.5" style={{ color: '#D4AF37' }} />}
-                <span className="text-[9px] tracking-[0.3em] uppercase font-semibold"
-                  style={{ color: user?.is_premium ? 'rgba(58,175,169,0.7)' : 'rgba(212,175,55,0.7)' }}>
+                  : <Crown className="w-3.5 h-3.5 text-[#3AAFA9]" />}
+                <span className="text-[9px] tracking-[0.3em] uppercase font-semibold text-[#3AAFA9]/70">
                   {user?.is_premium ? 'Live Match' : 'Premium Feature'}
                 </span>
               </div>
-              <p className="text-lg font-black tracking-wider" style={{ color: user?.is_premium ? '#3AAFA9' : '#D4AF37' }}>
+              <p className="text-lg font-black tracking-wider text-[#3AAFA9]">
                 Play Online PVP
               </p>
-              <p className="text-[10px] mt-0.5" style={{ color: user?.is_premium ? 'rgba(58,175,169,0.5)' : 'rgba(212,175,55,0.5)' }}>
+              <p className="text-[10px] mt-0.5 text-[#3AAFA9]/50">
                 {user?.is_premium ? 'Challenge anyone, anywhere' : 'Subscribe for $4.99/mo to unlock'}
               </p>
             </div>
             {!user?.is_premium && (
-              <div className="shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase"
-                style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)', color: '#D4AF37' }}>
+              <div className="shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase text-[#3AAFA9]"
+                style={{ background: 'rgba(58,175,169,0.15)', border: '1px solid rgba(58,175,169,0.3)' }}>
                 Unlock
               </div>
             )}
@@ -253,10 +250,11 @@ export default function Lobby() {
           style={{ maxWidth: 480 }}
         >
           {[
-            { label: 'vs AI',     onClick: () => setDifficultyOpen(true) },
-            { label: 'Local PVP', onClick: () => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); } },
-            { label: 'Tutorial',  onClick: () => navigate('/Tutorial') },
-            { label: 'Menu',      onClick: () => setMenuOpen(true) },
+            { label: 'vs AI',     onClick: () => setDifficultyOpen(true),                                                           span: false },
+            { label: 'Local PVP', onClick: () => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); },             span: false },
+            { label: '2v2',       onClick: () => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=2v2`); },               span: false },
+            { label: 'Tutorial',  onClick: () => navigate('/Tutorial'),                                                              span: false },
+            { label: 'Menu',      onClick: () => setMenuOpen(true),                                                                  span: true  },
           ].map((btn, i) => (
             <motion.button
               key={btn.label}
@@ -265,7 +263,7 @@ export default function Lobby() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 + i * 0.05 }}
-              className="flex items-center justify-center rounded-2xl border border-[#3AAFA9]/40 py-4 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none"
+              className={`flex items-center justify-center rounded-2xl border border-[#3AAFA9]/40 py-4 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none${btn.span ? ' col-span-2' : ''}`}
               style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)' }}
             >
               <span className="text-sm font-black tracking-[0.18em] uppercase">{btn.label}</span>

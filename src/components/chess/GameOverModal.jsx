@@ -3,9 +3,11 @@ import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { Trophy, Handshake, RotateCcw, Home } from 'lucide-react';
 
-export default function GameOverModal({ result, onRematch, onHome }) {
+export default function GameOverModal({ result, onRematch, onHome, mode }) {
   const isCheckmate = result === 'white_wins' || result === 'black_wins';
-  const winner = result === 'white_wins' ? 'White' : 'Black';
+  const winner = result === 'white_wins'
+    ? (mode === '2v2' ? 'Team A' : 'White')
+    : (mode === '2v2' ? 'Team B' : 'Black');
 
   return (
     <motion.div
