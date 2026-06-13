@@ -11,6 +11,16 @@ import { base44 } from '@/api/base44Client';
 
 const SWORD_LOGO = 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/bd9037623_generated_image.png';
 
+const BASE = 'https://raw.githubusercontent.com/itisnotmac/ThreeDPieces/main/';
+const PIECES = {
+  king:   BASE + 'king.png',
+  queen:  BASE + 'queen.png',
+  rook:   BASE + 'Rook.png',
+  bishop: BASE + 'Bishop.png',
+  knight: BASE + 'knight.png',
+  pawn:   BASE + 'pawn.png',
+};
+
 const TEAL_BUTTON = "flex items-center justify-center px-6 py-2.5 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase backdrop-blur-sm hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none";
 
 function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
@@ -226,20 +236,77 @@ export default function Lobby() {
         </motion.div>
       )}
 
-      {/* ── SWORD LOGO HERO ── */}
+      {/* ── HERO COMPOSITION ── */}
       <motion.div
-        className="relative z-10 flex justify-center items-center"
-        initial={{ opacity: 0, scale: 0.88 }}
+        className="relative z-10 flex justify-center items-center w-full"
+        style={{ flex: 1, minHeight: 0 }}
+        initial={{ opacity: 0, scale: 0.92 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.15, duration: 0.6 }}
-        style={{ flex: 1, minHeight: 0 }}
       >
-        <img
-          src={SWORD_LOGO}
-          alt="Reel Chess Logo"
-          className="w-auto object-contain"
-          style={{ height: '38vh', maxHeight: 340, filter: 'drop-shadow(0 0 40px rgba(212,175,55,0.3)) drop-shadow(0 0 80px rgba(58,175,169,0.15))' }}
-        />
+        <div className="relative flex items-center justify-center" style={{ width: '100%', maxWidth: 400, height: '36vh', maxHeight: 320 }}>
+
+          {/* Left column: King, Queen, Rook (top to bottom) */}
+          {[
+            { src: PIECES.king,   delay: 0.2,  top: '0%'   },
+            { src: PIECES.queen,  delay: 0.25, top: '33%'  },
+            { src: PIECES.rook,   delay: 0.3,  top: '66%'  },
+          ].map((p, i) => (
+            <motion.img
+              key={'left-' + i}
+              src={p.src}
+              alt=""
+              initial={{ opacity: 0, x: -18 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: p.delay, duration: 0.5 }}
+              className="absolute object-contain"
+              style={{
+                width: '18%',
+                left: '2%',
+                top: p.top,
+                height: '30%',
+                filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.7)) drop-shadow(0 0 8px rgba(58,175,169,0.15))',
+              }}
+            />
+          ))}
+
+          {/* Center sword logo */}
+          <img
+            src={SWORD_LOGO}
+            alt="Reel Chess Logo"
+            className="object-contain"
+            style={{
+              height: '100%',
+              width: 'auto',
+              maxWidth: '46%',
+              filter: 'drop-shadow(0 0 36px rgba(212,175,55,0.32)) drop-shadow(0 8px 24px rgba(0,0,0,0.7))',
+            }}
+          />
+
+          {/* Right column: Bishop, Knight, Pawn (top to bottom) */}
+          {[
+            { src: PIECES.bishop, delay: 0.2,  top: '0%'  },
+            { src: PIECES.knight, delay: 0.25, top: '33%' },
+            { src: PIECES.pawn,   delay: 0.3,  top: '66%' },
+          ].map((p, i) => (
+            <motion.img
+              key={'right-' + i}
+              src={p.src}
+              alt=""
+              initial={{ opacity: 0, x: 18 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: p.delay, duration: 0.5 }}
+              className="absolute object-contain"
+              style={{
+                width: '18%',
+                right: '2%',
+                top: p.top,
+                height: '30%',
+                filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.7)) drop-shadow(0 0 8px rgba(58,175,169,0.15))',
+              }}
+            />
+          ))}
+        </div>
       </motion.div>
 
       {/* ── 2×2 BUTTON GRID ── */}
