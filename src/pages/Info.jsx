@@ -34,10 +34,10 @@ export default function InfoPage() {
 
   const handleDeleteAccount = async () => {
     setDeleting(true);
-    // Delete all game history, then delete account and sign out
+    // Delete all game history, then sign out (Base44 handles account deletion via logout)
     const history = await base44.entities.GameHistory.list('-created_date', 200);
     await Promise.all(history.map(r => base44.entities.GameHistory.delete(r.id)));
-    base44.auth.logout('/');
+    await base44.auth.logout('/');
   };
 
   const handleDeleteData = async () => {
