@@ -8,14 +8,17 @@ export default function PremiumModal({ isOpen, onClose, isAuthenticated }) {
   const [error, setError] = useState(null);
 
   const handleSubscribe = async () => {
+    // Block checkout inside iframe (preview mode)
     if (window.self !== window.top) {
       alert('Checkout is only available from the published app.');
       return;
     }
+
     if (!isAuthenticated) {
       window.location.href = '/login';
       return;
     }
+
     setLoading(true);
     setError(null);
     try {
@@ -43,7 +46,7 @@ export default function PremiumModal({ isOpen, onClose, isAuthenticated }) {
           />
           <motion.div
             className="fixed inset-x-4 bottom-0 z-50 rounded-t-3xl overflow-hidden"
-            style={{ background: 'linear-gradient(160deg, #1a1a2e 0%, #0f0f1a 100%)', border: '1px solid rgba(58,175,169,0.25)', borderBottom: 'none', maxWidth: 480, margin: '0 auto' }}
+            style={{ background: 'linear-gradient(160deg, #1a1a2e 0%, #0f0f1a 100%)', border: '1px solid rgba(212,175,55,0.2)', borderBottom: 'none', maxWidth: 480, margin: '0 auto' }}
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
             transition={{ type: 'spring', stiffness: 280, damping: 30 }}
           >
@@ -51,8 +54,8 @@ export default function PremiumModal({ isOpen, onClose, isAuthenticated }) {
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                  <Crown className="w-5 h-5 text-[#3AAFA9]" />
-                  <span className="font-black tracking-[0.2em] uppercase text-sm text-[#3AAFA9]">Premium</span>
+                  <Crown className="w-5 h-5" style={{ color: '#D4AF37' }} />
+                  <span className="font-black tracking-[0.2em] uppercase text-sm" style={{ color: '#D4AF37' }}>Premium</span>
                 </div>
                 <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-colors">
                   <X className="w-4 h-4" />
@@ -62,8 +65,8 @@ export default function PremiumModal({ isOpen, onClose, isAuthenticated }) {
               {/* Lock icon */}
               <div className="flex justify-center mb-4">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center"
-                  style={{ background: 'radial-gradient(circle, rgba(58,175,169,0.2) 0%, transparent 70%)', border: '1px solid rgba(58,175,169,0.3)' }}>
-                  <Lock className="w-7 h-7 text-[#3AAFA9]" />
+                  style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 70%)', border: '1px solid rgba(212,175,55,0.3)' }}>
+                  <Lock className="w-7 h-7" style={{ color: '#D4AF37' }} />
                 </div>
               </div>
 
@@ -77,8 +80,8 @@ export default function PremiumModal({ isOpen, onClose, isAuthenticated }) {
                   { icon: Users, label: '2v2 Team Mode — Coming Soon' },
                 ].map(({ icon: Icon, label }) => (
                   <div key={label} className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                    style={{ background: 'rgba(58,175,169,0.06)', border: '1px solid rgba(58,175,169,0.18)' }}>
-                    <Icon className="w-4 h-4 shrink-0 text-[#3AAFA9]" />
+                    style={{ background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}>
+                    <Icon className="w-4 h-4 shrink-0" style={{ color: '#D4AF37' }} />
                     <span className="text-sm text-white/75 tracking-wide">{label}</span>
                   </div>
                 ))}
@@ -96,7 +99,7 @@ export default function PremiumModal({ isOpen, onClose, isAuthenticated }) {
                 onClick={handleSubscribe}
                 disabled={loading}
                 className="w-full py-4 rounded-2xl font-black text-sm tracking-[0.2em] uppercase text-[#0a0a0f] disabled:opacity-60 transition-opacity"
-                style={{ background: 'linear-gradient(135deg, #3AAFA9, #5fcfca)', boxShadow: '0 0 24px rgba(58,175,169,0.4)' }}
+                style={{ background: 'linear-gradient(135deg, #D4AF37, #F0D060)' }}
               >
                 {loading ? 'Loading…' : isAuthenticated ? 'Subscribe Now' : 'Sign In to Subscribe'}
               </button>

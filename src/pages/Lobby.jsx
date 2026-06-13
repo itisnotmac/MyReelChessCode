@@ -9,17 +9,7 @@ import { startMenuMusic, stopMenuMusic } from '@/lib/menuMusic';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 
-const SWORD_LOGO = 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/bd9037623_generated_image.png';
-
-const BASE = 'https://raw.githubusercontent.com/itisnotmac/ThreeDPieces/main/';
-const PIECES = {
-  king:   BASE + 'king.png',
-  queen:  BASE + 'queen.png',
-  rook:   BASE + 'Rook.png',
-  bishop: BASE + 'Bishop.png',
-  knight: BASE + 'knight.png',
-  pawn:   BASE + 'pawn.png',
-};
+const PAWN_IMAGE = 'https://raw.githubusercontent.com/itisnotmac/ChessAssets/main/BackgroundEraser_20260505_224913153.png';
 
 const TEAL_BUTTON = "flex items-center justify-center px-6 py-2.5 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase backdrop-blur-sm hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none";
 
@@ -180,28 +170,31 @@ export default function Lobby() {
           onClick={() => user?.is_premium ? (stopMenuMusic(), navigate('/OnlineGame')) : setPremiumOpen(true)}
           whileTap={{ scale: 0.97 }}
           className="relative overflow-hidden rounded-2xl px-6 py-4 text-left group w-full"
-          style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', border: '1px solid rgba(58,175,169,0.4)', maxWidth: 480 }}
+          style={user?.is_premium
+            ? { background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', border: '1px solid rgba(58,175,169,0.4)' }
+            : { background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.04) 100%)', border: '1px solid rgba(212,175,55,0.35)', maxWidth: 480 }}
         >
           <div className="relative z-10 flex items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 {user?.is_premium
                   ? <Wifi className="w-3.5 h-3.5 text-[#3AAFA9]" />
-                  : <Crown className="w-3.5 h-3.5 text-[#3AAFA9]" />}
-                <span className="text-[9px] tracking-[0.3em] uppercase font-semibold text-[#3AAFA9]/70">
+                  : <Crown className="w-3.5 h-3.5" style={{ color: '#D4AF37' }} />}
+                <span className="text-[9px] tracking-[0.3em] uppercase font-semibold"
+                  style={{ color: user?.is_premium ? 'rgba(58,175,169,0.7)' : 'rgba(212,175,55,0.7)' }}>
                   {user?.is_premium ? 'Live Match' : 'Premium Feature'}
                 </span>
               </div>
-              <p className="text-lg font-black tracking-wider text-[#3AAFA9]">
+              <p className="text-lg font-black tracking-wider" style={{ color: user?.is_premium ? '#3AAFA9' : '#D4AF37' }}>
                 Play Online PVP
               </p>
-              <p className="text-[10px] mt-0.5 text-[#3AAFA9]/50">
+              <p className="text-[10px] mt-0.5" style={{ color: user?.is_premium ? 'rgba(58,175,169,0.5)' : 'rgba(212,175,55,0.5)' }}>
                 {user?.is_premium ? 'Challenge anyone, anywhere' : 'Subscribe for $4.99/mo to unlock'}
               </p>
             </div>
             {!user?.is_premium && (
               <div className="shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase"
-                style={{ background: 'rgba(58,175,169,0.15)', border: '1px solid rgba(58,175,169,0.3)', color: '#3AAFA9' }}>
+                style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)', color: '#D4AF37' }}>
                 Unlock
               </div>
             )}
@@ -233,75 +226,19 @@ export default function Lobby() {
         </motion.div>
       )}
 
-      {/* ── HERO COMPOSITION ── */}
-      {/* Layout: [Rook(lg) Bishop(md) King(sm)] [Sword] [Pawn(lg) Knight(md) Queen(sm)] */}
+      {/* ── PAWN ── */}
       <motion.div
-        className="relative z-10 flex justify-center items-center w-full"
-        style={{ flex: 1, minHeight: 0 }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.15, duration: 0.5 }}
+        className="relative z-10 flex justify-center"
+        initial={{ opacity: 0, scale: 0.88 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.15, duration: 0.6 }}
       >
-        <div className="relative flex items-end justify-center gap-0" style={{ width: '100%', maxWidth: 420, height: '38vh', maxHeight: 330 }}>
-
-          {/* LEFT GROUP — stacked vertically, bottom-aligned, largest at top */}
-          <div className="flex flex-col items-end justify-end h-full" style={{ width: '28%', paddingBottom: '4%' }}>
-            {/* Rook — largest, top */}
-            <motion.img src={PIECES.rook} alt="Rook"
-              initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2, duration: 0.5 }}
-              className="object-contain w-full"
-              style={{ height: '42%', filter: 'drop-shadow(0 0 14px rgba(58,175,169,0.5)) drop-shadow(0 4px 10px rgba(0,0,0,0.8))' }}
-            />
-            {/* Bishop — medium */}
-            <motion.img src={PIECES.bishop} alt="Bishop"
-              initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25, duration: 0.5 }}
-              className="object-contain"
-              style={{ height: '33%', width: '75%', filter: 'drop-shadow(0 0 10px rgba(58,175,169,0.4)) drop-shadow(0 4px 8px rgba(0,0,0,0.7))' }}
-            />
-            {/* King — smallest */}
-            <motion.img src={PIECES.king} alt="King"
-              initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, duration: 0.5 }}
-              className="object-contain"
-              style={{ height: '25%', width: '55%', filter: 'drop-shadow(0 0 8px rgba(58,175,169,0.35)) drop-shadow(0 4px 6px rgba(0,0,0,0.7))' }}
-            />
-          </div>
-
-          {/* CENTER — Sword logo */}
-          <motion.img
-            src={SWORD_LOGO}
-            alt="Reel Chess"
-            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15, duration: 0.6 }}
-            className="object-contain shrink-0"
-            style={{
-              height: '100%',
-              width: '44%',
-              filter: 'drop-shadow(0 0 28px rgba(58,175,169,0.45)) drop-shadow(0 0 60px rgba(58,175,169,0.15)) drop-shadow(0 8px 20px rgba(0,0,0,0.8))',
-            }}
-          />
-
-          {/* RIGHT GROUP — mirrored, Pawn largest at top */}
-          <div className="flex flex-col items-start justify-end h-full" style={{ width: '28%', paddingBottom: '4%' }}>
-            {/* Pawn — largest, top */}
-            <motion.img src={PIECES.pawn} alt="Pawn"
-              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2, duration: 0.5 }}
-              className="object-contain w-full"
-              style={{ height: '42%', filter: 'drop-shadow(0 0 14px rgba(58,175,169,0.5)) drop-shadow(0 4px 10px rgba(0,0,0,0.8))' }}
-            />
-            {/* Knight — medium */}
-            <motion.img src={PIECES.knight} alt="Knight"
-              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25, duration: 0.5 }}
-              className="object-contain"
-              style={{ height: '33%', width: '75%', filter: 'drop-shadow(0 0 10px rgba(58,175,169,0.4)) drop-shadow(0 4px 8px rgba(0,0,0,0.7))' }}
-            />
-            {/* Queen — smallest */}
-            <motion.img src={PIECES.queen} alt="Queen"
-              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, duration: 0.5 }}
-              className="object-contain"
-              style={{ height: '25%', width: '55%', filter: 'drop-shadow(0 0 8px rgba(58,175,169,0.35)) drop-shadow(0 4px 6px rgba(0,0,0,0.7))' }}
-            />
-          </div>
-
-        </div>
+        <img
+          src={PAWN_IMAGE}
+          alt="3D Chess Pawn"
+          className="w-auto object-contain"
+          style={{ height: '30vh', maxHeight: 280, filter: 'drop-shadow(0 0 32px rgba(58,175,169,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))' }}
+        />
       </motion.div>
 
       {/* ── 2×2 BUTTON GRID ── */}
