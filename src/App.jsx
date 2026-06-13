@@ -18,6 +18,7 @@ import OnlineGame from './pages/OnlineGame';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import PremiumSuccess from './pages/PremiumSuccess';
 import Info from './pages/Info';
+import Online2v2Game from './pages/Online2v2Game';
 
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -93,6 +94,7 @@ const AuthenticatedApp = () => {
           <Route path="/privacypolicy" element={<PrivacyPolicy />} />
           <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
           <Route path="/premium-success" element={<LayoutWrapper currentPageName="PremiumSuccess"><PremiumSuccess /></LayoutWrapper>} />
+          <Route path="/Online2v2Game" element={<LayoutWrapper currentPageName="Online2v2Game"><Online2v2Game /></LayoutWrapper>} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </motion.div>

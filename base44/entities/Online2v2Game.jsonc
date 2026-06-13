@@ -1,0 +1,137 @@
+{
+  "name": "Online2v2Game",
+  "type": "object",
+  "properties": {
+    "invite_code": {
+      "type": "string",
+      "description": "Short code for joining the game"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "waiting",
+        "active",
+        "finished"
+      ],
+      "default": "waiting"
+    },
+    "player1_id": {
+      "type": "string",
+      "description": "Team A \u2014 moves on slot 0"
+    },
+    "player2_id": {
+      "type": "string",
+      "description": "Team A \u2014 moves on slot 2"
+    },
+    "player3_id": {
+      "type": "string",
+      "description": "Team B \u2014 moves on slot 1"
+    },
+    "player4_id": {
+      "type": "string",
+      "description": "Team B \u2014 moves on slot 3"
+    },
+    "board": {
+      "type": "string",
+      "description": "JSON serialized board state"
+    },
+    "is_white_turn": {
+      "type": "boolean",
+      "default": true
+    },
+    "player_slot": {
+      "type": "number",
+      "default": 0,
+      "description": "Current player slot 0-3"
+    },
+    "en_passant": {
+      "type": "string"
+    },
+    "castling": {
+      "type": "string"
+    },
+    "last_move": {
+      "type": "string"
+    },
+    "captured_white": {
+      "type": "string"
+    },
+    "captured_black": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "white_wins",
+        "black_wins",
+        "draw",
+        "in_progress"
+      ],
+      "default": "in_progress"
+    },
+    "move_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "player1_id"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "data.player1_id": "{{user.id}}"
+        },
+        {
+          "data.player2_id": "{{user.id}}"
+        },
+        {
+          "data.player3_id": "{{user.id}}"
+        },
+        {
+          "data.player4_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.player1_id": "{{user.id}}"
+        },
+        {
+          "data.player2_id": "{{user.id}}"
+        },
+        {
+          "data.player3_id": "{{user.id}}"
+        },
+        {
+          "data.player4_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.player1_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

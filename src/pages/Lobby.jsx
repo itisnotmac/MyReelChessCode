@@ -5,6 +5,7 @@ import { createPageUrl } from '@/utils';
 import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi, Crown } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
 import PremiumModal from '../components/lobby/PremiumModal';
+import TwoVTwoModal from '../components/lobby/TwoVTwoModal';
 import { startMenuMusic, stopMenuMusic } from '@/lib/menuMusic';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -98,6 +99,7 @@ export default function Lobby() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [difficultyOpen, setDifficultyOpen] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
+  const [twoVTwoOpen, setTwoVTwoOpen] = useState(false);
 
   useEffect(() => {
     startMenuMusic();
@@ -252,7 +254,7 @@ export default function Lobby() {
           {[
             { label: 'vs AI',     onClick: () => setDifficultyOpen(true),                                                           span: false },
             { label: 'Local PVP', onClick: () => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); },             span: false },
-            { label: '2v2',       onClick: () => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=2v2`); },               span: false },
+            { label: '2v2',       onClick: () => setTwoVTwoOpen(true),                                                               span: false },
             { label: 'Tutorial',  onClick: () => navigate('/Tutorial'),                                                              span: false },
             { label: 'Menu',      onClick: () => setMenuOpen(true),                                                                  span: true  },
           ].map((btn, i) => (
@@ -287,6 +289,13 @@ export default function Lobby() {
       {/* Modals */}
       <MenuModal isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavigate={handleNavigate} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
       <PremiumModal isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} isAuthenticated={isAuthenticated} />
+      <TwoVTwoModal
+        isOpen={twoVTwoOpen}
+        onClose={() => setTwoVTwoOpen(false)}
+        onLocal={() => { setTwoVTwoOpen(false); stopMenuMusic(); navigate(createPageUrl('Game') + '?mode=2v2'); }}
+        onOnline={() => { setTwoVTwoOpen(false); navigate(createPageUrl('Online2v2Game')); }}
+        isAuthenticated={isAuthenticated}
+      />
       <DifficultyModal
         isOpen={difficultyOpen}
         onClose={() => setDifficultyOpen(false)}
