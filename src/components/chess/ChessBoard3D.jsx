@@ -30,12 +30,14 @@ const MODEL_URLS = {
 function applyColor(gltfScene, color) {
   gltfScene.traverse(child => {
     if (child.isMesh) {
-      child.material = child.material.clone();
-      child.material.color.set(color);
-      child.material.emissive.set(TEAL_GLOW);
-      child.material.emissiveIntensity = 0.35;
-      child.material.metalness = 0.6;
-      child.material.roughness = 0.35;
+      const mat = new THREE.MeshStandardMaterial({
+        color: color,
+        emissive: TEAL_GLOW,
+        emissiveIntensity: 0.4,
+        metalness: 0.6,
+        roughness: 0.35,
+      });
+      child.material = mat;
       child.castShadow = true;
       child.receiveShadow = true;
     }
