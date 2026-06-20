@@ -29,19 +29,28 @@ const MODEL_URLS = {
 };
 
 function applyColor(gltfScene, color, isWhite) {
-  gltfScene.traverse(child => {
-    if (child.isMesh) {
-      const mat = new THREE.MeshStandardMaterial({
-        color: color,
-        emissive: isWhite ? WHITE_GLOW : TEAL_GLOW,
-        emissiveIntensity: isWhite ? 0.25 : 0.45,
-        metalness: 0.6,
-        roughness: 0.35,
-      });
-      child.material = mat;
-      child.castShadow = true;
-      child.receiveShadow = true;
-    }
+  const glowColor = isWhite ? WHITE_GLOW : TEAL_GLOW;
+  const meshes = [];
+  gltfScene.traverse(child => { if (child.isMesh) meshes.push(child); });
+
+  meshes.forEach(child => {
+    // Main piece material — neutral, no emissive tint on the body
+    child.material = new THREE.MeshStandardMaterial({
+      color: color,
+      metalness: 0.6,
+      roughness: 0.35,
+    });
+    child.castShadow = true;
+    child.receiveShadow = true;
+
+    // Outline shell: back-face only, slightly enlarged, emissive glow color
+    const outlineMat = new THREE.MeshBasicMaterial({
+      color: glowColor,
+      side: THREE.BackSide,
+    });
+    const outline = new THREE.Mesh(child.geometry, outlineMat);
+    outline.scale.setScalar(1.12);
+    child.add(outline);
   });
 }
 
