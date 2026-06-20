@@ -5,12 +5,13 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 const SQUARE_SIZE = 1;
 const BOARD_SIZE = 8;
 
-// Colors
-const LIGHT_SQUARE = new THREE.Color(0xF0EAD6);
-const DARK_SQUARE = new THREE.Color(0x355E3B);
-const BOARD_BORDER = new THREE.Color(0x2a1a0a);
-const WHITE_PIECE = new THREE.Color(0xd4af37);
-const BLACK_PIECE = new THREE.Color(0x1a1a2e);
+// Colors — matched to 2D board palette
+const LIGHT_SQUARE = new THREE.Color(0xf0d9b5);
+const DARK_SQUARE = new THREE.Color(0xb58863);
+const BOARD_BORDER = new THREE.Color(0x5c3d1e);
+const WHITE_PIECE = new THREE.Color(0xf5f0e8);
+const BLACK_PIECE = new THREE.Color(0x2a2a2a);
+const TEAL_GLOW = new THREE.Color(0x3aafa9);
 const SELECTED_COLOR = new THREE.Color(0xffff00);
 const LEGAL_COLOR = new THREE.Color(0x00ff88);
 const LAST_MOVE_COLOR = new THREE.Color(0xffa500);
@@ -31,8 +32,10 @@ function applyColor(gltfScene, color) {
     if (child.isMesh) {
       child.material = child.material.clone();
       child.material.color.set(color);
-      child.material.metalness = 0.8;
-      child.material.roughness = 0.3;
+      child.material.emissive.set(TEAL_GLOW);
+      child.material.emissiveIntensity = 0.35;
+      child.material.metalness = 0.6;
+      child.material.roughness = 0.35;
       child.castShadow = true;
       child.receiveShadow = true;
     }
