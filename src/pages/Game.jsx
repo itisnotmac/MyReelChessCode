@@ -11,6 +11,7 @@ import GameOverModal from '../components/chess/GameOverModal';
 import TurnIndicator from '../components/chess/TurnIndicator';
 import PlayerTimer from '../components/chess/PlayerTimer';
 import { stopMenuMusic } from '@/lib/menuMusic';
+import { base44 } from '@/api/base44Client';
 import {
   createInitialBoard,
   getLegalMoves,
@@ -130,9 +131,13 @@ export default function Game() {
 
     // Check game end
     if (isCheckmate(result.board, nextWhite, result.enPassant, result.castling)) {
-      setGameOver(nextWhite ? 'black_wins' : 'white_wins');
+      const winner = nextWhite ? 'black_wins' : 'white_wins';
+      setGameOver(winner);
+      base44.analytics.track({ eventName: 'game_completed', properties: { result: winner, mode, move_count: moveCount + 1 } });
+      base44.analytics.track({ eventName: 'game_win', properties: { winner: nextWhite ? 'black' : 'white', mode, move_count: moveCount + 1 } });
     } else if (isStalemate(result.board, nextWhite, result.enPassant, result.castling)) {
       setGameOver('draw');
+      base44.analytics.track({ eventName: 'game_completed', properties: { result: 'draw', mode, move_count: moveCount + 1 } });
     }
   }, []);
 
