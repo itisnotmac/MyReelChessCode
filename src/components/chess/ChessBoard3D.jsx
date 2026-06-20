@@ -6,9 +6,9 @@ const SQUARE_SIZE = 1;
 const BOARD_SIZE = 8;
 
 // Colors — matched to 2D board palette
-const LIGHT_SQUARE = new THREE.Color(0xf0d9b5);
-const DARK_SQUARE = new THREE.Color(0xb58863);
-const BOARD_BORDER = new THREE.Color(0x5c3d1e);
+const LIGHT_SQUARE = new THREE.Color(0x2e2e4e);
+const DARK_SQUARE = new THREE.Color(0x1a1a2e);
+const BOARD_BORDER = new THREE.Color(0x0a0a1a);
 const WHITE_PIECE = new THREE.Color(0xf5f0e8);
 const BLACK_PIECE = new THREE.Color(0x2a2a2a);
 const TEAL_GLOW = new THREE.Color(0x3aafa9);
