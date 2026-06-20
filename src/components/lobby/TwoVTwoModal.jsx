@@ -18,7 +18,7 @@ export default function TwoVTwoModal({ isOpen, onClose, onLocal, onOnline, isAut
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
             transition={{ type: 'spring', stiffness: 280, damping: 30 }}
           >
-            <div className="p-6" style={{ paddingBottom: 'calc(2.5rem + env(safe-area-inset-bottom))' }}>
+            <div className="p-6" style={{ paddingBottom: 'calc(5rem + env(safe-area-inset-bottom))' }}>
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
                   <Users className="w-5 h-5 text-[#3AAFA9]" />
