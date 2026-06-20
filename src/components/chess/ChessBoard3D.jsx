@@ -10,7 +10,8 @@ const LIGHT_SQUARE = new THREE.Color(0x2e2e4e);
 const DARK_SQUARE = new THREE.Color(0x1a1a2e);
 const BOARD_BORDER = new THREE.Color(0x0a0a1a);
 const WHITE_PIECE = new THREE.Color(0xf5f0e8);
-const BLACK_PIECE = new THREE.Color(0x2a2a2a);
+const BLACK_PIECE = new THREE.Color(0x1a3a3a);
+const WHITE_GLOW = new THREE.Color(0xffffff);
 const TEAL_GLOW = new THREE.Color(0x3aafa9);
 const SELECTED_COLOR = new THREE.Color(0xffff00);
 const LEGAL_COLOR = new THREE.Color(0x00ff88);
@@ -27,13 +28,13 @@ const MODEL_URLS = {
   k: `${BASE_URL}/KingThreeD.glb`,
 };
 
-function applyColor(gltfScene, color) {
+function applyColor(gltfScene, color, isWhite) {
   gltfScene.traverse(child => {
     if (child.isMesh) {
       const mat = new THREE.MeshStandardMaterial({
         color: color,
-        emissive: TEAL_GLOW,
-        emissiveIntensity: 0.4,
+        emissive: isWhite ? WHITE_GLOW : TEAL_GLOW,
+        emissiveIntensity: isWhite ? 0.25 : 0.45,
         metalness: 0.6,
         roughness: 0.35,
       });
@@ -331,7 +332,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
 
           const isWhite = piece === piece.toUpperCase();
           const clone = template.clone(true);
-          applyColor(clone, isWhite ? WHITE_PIECE : BLACK_PIECE);
+          applyColor(clone, isWhite ? WHITE_PIECE : BLACK_PIECE, isWhite);
 
           // Rotate pieces to face forward (white faces up, black faces down)
           // Knights have a different base orientation, so they need an extra 180°
