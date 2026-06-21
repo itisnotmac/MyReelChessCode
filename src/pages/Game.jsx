@@ -12,7 +12,7 @@ import TurnIndicator from '../components/chess/TurnIndicator';
 import PlayerTimer from '../components/chess/PlayerTimer';
 import { stopMenuMusic } from '@/lib/menuMusic';
 import { base44 } from '@/api/base44Client';
-import { playMoveSound, playCheckSound, playGameOverSound } from '@/lib/chessSound';
+import { playMoveSound, playCheckSound, playGameOverSound, unlockAudio } from '@/lib/chessSound';
 import {
   createInitialBoard,
   getLegalMoves,
@@ -125,9 +125,9 @@ export default function Game() {
     // Detect castling (king moved 2 squares)
     const isCastling = movingPiece?.toLowerCase() === 'k' && Math.abs(toC - fromC) === 2;
 
-    // Play move sound (only if sound enabled)
-    if (soundEnabledRef.current) {
-      playMoveSound(movingPiece, !!captured, isCastling);
+    // Play move sound — skip for captures (cutscene has its own audio)
+    if (soundEnabledRef.current && !captured) {
+      playMoveSound(movingPiece, isCastling);
     }
 
     setBoard(result.board);
@@ -170,6 +170,7 @@ export default function Game() {
   }, [finishMove]);
 
   const handleSquareClick = useCallback((row, col) => {
+    unlockAudio(); // ensure AudioContext is running after user gesture
     if (gameOver || battleInfo || isThinking) return;
 
     const piece = board[row][col];

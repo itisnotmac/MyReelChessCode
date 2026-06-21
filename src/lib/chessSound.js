@@ -6,7 +6,9 @@
 let ctx = null;
 
 function getCtx() {
-  if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+  if (!ctx) {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+  }
   return ctx;
 }
 
@@ -14,6 +16,11 @@ function resume() {
   const c = getCtx();
   if (c.state === 'suspended') c.resume();
   return c;
+}
+
+// Call this on first user interaction to unlock the AudioContext
+export function unlockAudio() {
+  resume();
 }
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -99,12 +106,6 @@ function kingMove() {
   playNoise({ gain: 0.10, duration: 0.14, highpass: 200 });
 }
 
-// Capture — additional sharp impact layered on top of piece sound
-function captureImpact() {
-  playNoise({ gain: 0.28, duration: 0.22, highpass: 150 });
-  playTone({ freq: 60, type: 'sawtooth', gain: 0.25, attack: 0.001, decay: 0.08, sustain: 0.1, release: 0.12, duration: 0.22 });
-}
-
 // Check — dramatic ominous alert: low rumble + high bell
 function checkAlert() {
   // Low warning rumble
@@ -137,12 +138,11 @@ function gameOverSound() {
 
 const PIECE_SOUNDS = { p: pawnMove, n: knightMove, b: bishopMove, r: rookMove, q: queenMove, k: kingMove };
 
-export function playMoveSound(piece, isCapture, isCastling) {
+export function playMoveSound(piece, isCastling) {
   if (!piece) return;
   if (isCastling) { castlingSound(); return; }
   const fn = PIECE_SOUNDS[piece.toLowerCase()];
   if (fn) fn();
-  if (isCapture) setTimeout(() => captureImpact(), 40);
 }
 
 export function playCheckSound() { checkAlert(); }
