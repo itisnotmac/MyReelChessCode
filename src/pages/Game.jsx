@@ -12,6 +12,7 @@ import TurnIndicator from '../components/chess/TurnIndicator';
 import PlayerTimer from '../components/chess/PlayerTimer';
 import { stopMenuMusic } from '@/lib/menuMusic';
 import { base44 } from '@/api/base44Client';
+import { playMoveSound, playCheckSound, playGameOverSound } from '@/lib/chessSound';
 import {
   createInitialBoard,
   getLegalMoves,
@@ -52,6 +53,8 @@ export default function Game() {
   const [moveCount, setMoveCount] = useState(0);
   const [is3D, setIs3D] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('chessSound') !== 'off');
+  const soundEnabledRef = useRef(soundEnabled);
+  useEffect(() => { soundEnabledRef.current = soundEnabled; }, [soundEnabled]);
 
   const handleToggleSound = () => {
     setSoundEnabled(prev => {
@@ -119,6 +122,14 @@ export default function Game() {
       }
     }
 
+    // Detect castling (king moved 2 squares)
+    const isCastling = movingPiece?.toLowerCase() === 'k' && Math.abs(toC - fromC) === 2;
+
+    // Play move sound (only if sound enabled)
+    if (soundEnabledRef.current) {
+      playMoveSound(movingPiece, !!captured, isCastling);
+    }
+
     setBoard(result.board);
     setEnPassant(result.enPassant);
     setCastling(result.castling);
@@ -133,11 +144,15 @@ export default function Game() {
     if (isCheckmate(result.board, nextWhite, result.enPassant, result.castling)) {
       const winner = nextWhite ? 'black_wins' : 'white_wins';
       setGameOver(winner);
+      if (soundEnabledRef.current) playGameOverSound();
       base44.analytics.track({ eventName: 'game_completed', properties: { result: winner, mode, move_count: moveCount + 1 } });
       base44.analytics.track({ eventName: 'game_win', properties: { winner: nextWhite ? 'black' : 'white', mode, move_count: moveCount + 1 } });
     } else if (isStalemate(result.board, nextWhite, result.enPassant, result.castling)) {
       setGameOver('draw');
+      if (soundEnabledRef.current) playGameOverSound();
       base44.analytics.track({ eventName: 'game_completed', properties: { result: 'draw', mode, move_count: moveCount + 1 } });
+    } else if (isInCheck(result.board, nextWhite)) {
+      if (soundEnabledRef.current) setTimeout(() => playCheckSound(), 120);
     }
   }, []);
 
