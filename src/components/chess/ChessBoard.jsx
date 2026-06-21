@@ -120,14 +120,15 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
 
                   {/* LAST MOVE TRAIL OVERLAYS */}
 
-                  {/* Origin square — soft pulse */}
+                  {/* Origin square — soft gold pulse */}
                   {fromSq && (
                     <motion.div
                       key={`from-${pulseKey}`}
-                      className="absolute inset-0 pointer-events-none"
-                      style={{ background: 'rgba(212,175,55,0.18)', boxShadow: 'inset 0 0 14px rgba(212,175,55,0.35)' }}
-                      animate={{ opacity: [0.7, 0.35, 0.7] }}
+                      className="absolute inset-0 pointer-events-none z-[1]"
+                      initial={{ opacity: 0.8 }}
+                      animate={{ opacity: [0.8, 0.35, 0.8] }}
                       transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+                      style={{ background: 'rgba(212,175,55,0.22)', boxShadow: 'inset 0 0 14px rgba(212,175,55,0.4)' }}
                     />
                   )}
 
@@ -135,37 +136,39 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                   {pathSq && (
                     <motion.div
                       key={`path-${pulseKey}-${row}-${col}`}
-                      className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                      className="absolute inset-0 flex items-center justify-center pointer-events-none z-[1]"
                       initial={{ opacity: 0 }}
-                      animate={{ opacity: [0, 0.6, 0.25] }}
-                      transition={{ duration: 1.0, ease: 'easeOut' }}
+                      animate={{ opacity: [0, 0.8, 0.4] }}
+                      transition={{ duration: 0.8, ease: 'easeOut' }}
                     >
                       <div
                         className="rounded-full"
                         style={{
-                          width: '30%',
-                          height: '30%',
-                          background: 'rgba(212,175,55,0.45)',
-                          boxShadow: '0 0 8px rgba(212,175,55,0.6)',
+                          width: '28%',
+                          height: '28%',
+                          background: 'rgba(212,175,55,0.55)',
+                          boxShadow: '0 0 10px rgba(212,175,55,0.7)',
                         }}
                       />
                     </motion.div>
                   )}
 
-                  {/* Destination square — heavy pulse */}
+                  {/* Destination square — heavy pulsing glow */}
                   {toSq && (
                     <motion.div
                       key={`to-${pulseKey}`}
-                      className="absolute inset-0 pointer-events-none"
-                      style={{ background: 'rgba(212,175,55,0.22)' }}
+                      className="absolute inset-0 pointer-events-none z-[1]"
+                      initial={{ opacity: 1 }}
                       animate={{
+                        opacity: [1, 0.6, 1],
                         boxShadow: [
-                          'inset 0 0 20px rgba(212,175,55,0.55), 0 0 12px rgba(212,175,55,0.3)',
-                          'inset 0 0 36px rgba(212,175,55,0.85), 0 0 24px rgba(212,175,55,0.55)',
-                          'inset 0 0 20px rgba(212,175,55,0.55), 0 0 12px rgba(212,175,55,0.3)',
+                          'inset 0 0 22px rgba(212,175,55,0.65), 0 0 14px rgba(212,175,55,0.4)',
+                          'inset 0 0 40px rgba(212,175,55,0.95), 0 0 28px rgba(212,175,55,0.65)',
+                          'inset 0 0 22px rgba(212,175,55,0.65), 0 0 14px rgba(212,175,55,0.4)',
                         ],
                       }}
-                      transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                      style={{ background: 'rgba(212,175,55,0.28)' }}
                     />
                   )}
 

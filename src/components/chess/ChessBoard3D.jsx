@@ -47,9 +47,10 @@ function applyColor(gltfScene, color, isWhite) {
     const outlineMat = new THREE.MeshBasicMaterial({
       color: glowColor,
       side: THREE.BackSide,
+      toneMapped: false,
     });
     const outline = new THREE.Mesh(child.geometry, outlineMat);
-    outline.scale.setScalar(1.12);
+    outline.scale.setScalar(1.14);
     child.add(outline);
   });
 }
@@ -99,7 +100,12 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    // Use linear color space to prevent color shifts (SRGBColorSpace can cause green/washed tint in some Three.js builds)
+    if (THREE.LinearSRGBColorSpace !== undefined) {
+      renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+    } else {
+      renderer.outputEncoding = 3000; // LinearEncoding fallback
+    }
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
