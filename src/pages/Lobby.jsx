@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi, Crown, UserCircle } from 'lucide-react';
+import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi, Crown, UserCircle, Award } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
 import PremiumModal from '../components/lobby/PremiumModal';
 import TwoVTwoModal from '../components/lobby/TwoVTwoModal';
@@ -18,9 +18,10 @@ function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
   const [items, setItems] = useState([
     { id: 'settings',   label: 'Settings',     icon: Settings },
     { id: 'faq',       label: 'FAQ',          icon: HelpCircle },
-    { id: 'profile',   label: 'Profile',      icon: UserCircle },
-    { id: 'dashboard', label: 'Dashboard',    icon: BarChart2 },
-    { id: 'history',   label: 'Game History', icon: Trophy },
+    { id: 'profile',      label: 'Profile',       icon: UserCircle },
+    { id: 'achievements', label: 'Achievements',  icon: Award },
+    { id: 'dashboard',    label: 'Dashboard',     icon: BarChart2 },
+    { id: 'history',      label: 'Game History',  icon: Trophy },
     { id: 'contact',  label: 'Contact',      icon: Mail },
     { id: 'about',    label: 'About',        icon: Info },
   ]);
@@ -118,6 +119,7 @@ export default function Lobby() {
     if (section === 'history') { navigate('/GameHistory'); return; }
     if (section === 'dashboard') { navigate('/Dashboard'); return; }
     if (section === 'profile') { navigate('/Profile'); return; }
+    if (section === 'achievements') { navigate('/Achievements'); return; }
     navigate(createPageUrl('Info') + `?section=${section}`);
   };
 

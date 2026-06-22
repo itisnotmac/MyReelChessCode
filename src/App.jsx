@@ -20,6 +20,7 @@ import PremiumSuccess from './pages/PremiumSuccess';
 import Info from './pages/Info';
 import Online2v2Game from './pages/Online2v2Game';
 import Profile from './pages/Profile';
+import Achievements from './pages/Achievements';
 import OnboardingProfile from './components/OnboardingProfile';
 import { hasProfile } from './lib/profileUtils';
 
@@ -104,6 +105,7 @@ const AuthenticatedApp = () => {
           <Route path="/premium-success" element={<LayoutWrapper currentPageName="PremiumSuccess"><PremiumSuccess /></LayoutWrapper>} />
           <Route path="/Online2v2Game" element={<LayoutWrapper currentPageName="Online2v2Game"><Online2v2Game /></LayoutWrapper>} />
           <Route path="/Profile" element={<LayoutWrapper currentPageName="Profile"><Profile /></LayoutWrapper>} />
+          <Route path="/Achievements" element={<LayoutWrapper currentPageName="Achievements"><Achievements /></LayoutWrapper>} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </motion.div>
