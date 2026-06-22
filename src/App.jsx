@@ -114,12 +114,24 @@ const AuthenticatedApp = () => {
 };
 
 
+// Pages accessible without login — gives search engines crawlable content
+const PUBLIC_PAGES = {
+  'privacypolicy': PrivacyPolicy,
+  'about': About,
+  'tutorial': Tutorial,
+  'contact': Contact,
+};
+
 function AppRoutes() {
   const location = useLocation();
-  // Render PrivacyPolicy BEFORE auth checks — no login required
   const normalizedPath = location.pathname.toLowerCase().replace(/-/g, '').replace(/\//g, '');
-  if (normalizedPath === 'privacypolicy') {
-    return <PrivacyPolicy />;
+  const PublicPage = PUBLIC_PAGES[normalizedPath];
+  if (PublicPage) {
+    return (
+      <LayoutWrapper currentPageName={normalizedPath}>
+        <PublicPage />
+      </LayoutWrapper>
+    );
   }
   return <AuthenticatedApp />;
 }

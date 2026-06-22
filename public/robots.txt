@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /About
+Allow: /Tutorial
+Allow: /Contact
+Allow: /privacy-policy
+
+# Game and user-specific pages require login
+Disallow: /Game
+Disallow: /OnlineGame
+Disallow: /Online2v2Game
+Disallow: /Dashboard
+Disallow: /GameHistory
+Disallow: /Profile
+Disallow: /Achievements
+
+Sitemap: https://reelchess.com/sitemap.xml
