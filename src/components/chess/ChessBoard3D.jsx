@@ -100,12 +100,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    // Use linear color space to prevent color shifts (SRGBColorSpace can cause green/washed tint in some Three.js builds)
-    if (THREE.LinearSRGBColorSpace !== undefined) {
-      renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
-    } else {
-      renderer.outputEncoding = 3000; // LinearEncoding fallback
-    }
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
