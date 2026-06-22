@@ -11,6 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import ThemePicker from '@/components/ThemePicker';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -52,6 +53,7 @@ export default function InfoPage() {
 
   const renderSettings = () => (
     <div className="space-y-6">
+      <ThemePicker />
       <div className="rounded-xl bg-[#3AAFA9]/10 border border-[#3AAFA9]/30 p-4 space-y-5">
         <div className="flex items-center justify-between">
           <div>

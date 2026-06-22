@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import { AnimatePresence, motion } from 'framer-motion';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import { ThemeProvider } from '@/lib/themeContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Tutorial from './pages/Tutorial';
 import About from './pages/About';
@@ -146,10 +147,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClientInstance}>
       <Router>
-        <AuthProvider>
-          <AppRoutes />
-          <Toaster />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <AppRoutes />
+            <Toaster />
+          </AuthProvider>
+        </ThemeProvider>
       </Router>
     </QueryClientProvider>
   )
