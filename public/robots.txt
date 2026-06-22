@@ -14,4 +14,4 @@ Disallow: /GameHistory
 Disallow: /Profile
 Disallow: /Achievements
 
-Sitemap: https://reelchess.com/sitemap.xml
+Sitemap: https://reelchess.org/sitemap.xml
