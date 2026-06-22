@@ -23,6 +23,7 @@ import Profile from './pages/Profile';
 import Achievements from './pages/Achievements';
 import OnboardingProfile from './components/OnboardingProfile';
 import { hasProfile } from './lib/profileUtils';
+import LandingPage from './pages/LandingPage';
 
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -124,6 +125,7 @@ const PUBLIC_PAGES = {
 
 function AppRoutes() {
   const location = useLocation();
+  const { isAuthenticated, isLoadingAuth } = useAuth();
   const normalizedPath = location.pathname.toLowerCase().replace(/-/g, '').replace(/\//g, '');
   const PublicPage = PUBLIC_PAGES[normalizedPath];
   if (PublicPage) {
@@ -132,6 +134,10 @@ function AppRoutes() {
         <PublicPage />
       </LayoutWrapper>
     );
+  }
+  // Public landing page for unauthenticated visitors at root — gives search engines rich crawlable content
+  if (normalizedPath === '' && !isAuthenticated && !isLoadingAuth) {
+    return <LandingPage />;
   }
   return <AuthenticatedApp />;
 }
