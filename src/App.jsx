@@ -20,6 +20,8 @@ import PremiumSuccess from './pages/PremiumSuccess';
 import Info from './pages/Info';
 import Online2v2Game from './pages/Online2v2Game';
 import Profile from './pages/Profile';
+import OnboardingProfile from './components/OnboardingProfile';
+import { hasProfile } from './lib/profileUtils';
 
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -31,7 +33,7 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   : <>{children}</>;
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, isAuthenticated } = useAuth();
   const location = useLocation();
 
   // Show loading spinner while checking app public settings or auth
@@ -51,6 +53,11 @@ const AuthenticatedApp = () => {
       navigateToLogin();
       return null;
     }
+  }
+
+  // Gate: require profile creation on first app open
+  if (!hasProfile()) {
+    return <OnboardingProfile onComplete={() => window.location.reload()} isAuthenticated={isAuthenticated} />;
   }
 
   // Render the main app
