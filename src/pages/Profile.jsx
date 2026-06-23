@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, User as UserIcon, Camera, Check, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { PRESET_AVATARS, getLocalProfile, setLocalProfile, renderAvatarContent } from '@/lib/profileUtils';
+import StreakBadge from '../components/streak/StreakBadge';
+import { getTierName, getStreakTier, getNextMilestone } from '@/lib/streakTiers';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -14,6 +16,7 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [streak, setStreak] = useState(0);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -27,6 +30,10 @@ export default function Profile() {
       if (u?.username) setUsername(u.username);
       if (u?.avatar_url) setAvatarUrl(u.avatar_url);
     }).catch(() => {}).finally(() => setLoading(false));
+
+    base44.entities.PlayerAccount.list().then(accounts => {
+      if (accounts?.[0]) setStreak(accounts[0].login_streak || 0);
+    }).catch(() => {});
   }, []);
 
   const handleUpload = async (e) => {
@@ -123,6 +130,22 @@ export default function Profile() {
             </button>
           )}
         </motion.div>
+
+        {/* Streak Badge */}
+        {streak > 0 && (
+          <motion.div
+            className="flex items-center justify-center gap-4 py-2"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08 }}
+          >
+            <StreakBadge streak={streak} size="md" />
+            <div>
+              <p className="text-sm font-bold text-[#3AAFA9]">{getTierName(getStreakTier(streak))}</p>
+              <p className="text-xs text-white/40">Day {streak} • Next reward: Day {getNextMilestone(streak).day}</p>
+            </div>
+          </motion.div>
+        )}
 
         {/* Username */}
         <motion.div

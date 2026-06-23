@@ -39,6 +39,15 @@
       "type": "string",
       "default": "[]",
       "description": "JSON array of challenge IDs claimed today"
+    },
+    "login_streak": {
+      "type": "number",
+      "default": 0,
+      "description": "Current consecutive day login streak"
+    },
+    "last_login_date": {
+      "type": "string",
+      "description": "YYYY-MM-DD of the last login day processed for streak"
     }
   },
   "required": [

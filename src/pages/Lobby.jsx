@@ -9,6 +9,8 @@ import TwoVTwoModal from '../components/lobby/TwoVTwoModal';
 import { startMenuMusic, stopMenuMusic } from '@/lib/menuMusic';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
+import StreakBadge from '../components/streak/StreakBadge';
+import StreakPopup from '../components/streak/StreakPopup';
 
 const PAWN_IMAGE = 'https://raw.githubusercontent.com/itisnotmac/ChessAssets/main/BackgroundEraser_20260505_224913153.png';
 
@@ -102,11 +104,32 @@ export default function Lobby() {
   const [difficultyOpen, setDifficultyOpen] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [twoVTwoOpen, setTwoVTwoOpen] = useState(false);
+  const [streakData, setStreakData] = useState(null);
+  const [showStreakPopup, setShowStreakPopup] = useState(false);
 
   useEffect(() => {
     startMenuMusic();
     return () => stopMenuMusic();
   }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const processStreak = async () => {
+      try {
+        const date = new Date().toLocaleDateString('en-CA');
+        const res = await base44.functions.invoke('processLoginStreak', { date });
+        if (res.data) {
+          setStreakData(res.data);
+          if (res.data.isNewDay && res.data.rewardAwarded > 0) {
+            setShowStreakPopup(true);
+          }
+        }
+      } catch (e) {
+        console.error('Streak processing failed:', e);
+      }
+    };
+    processStreak();
+  }, [isAuthenticated]);
 
   const handleLogout = async () => {
     await base44.auth.logout();
@@ -164,6 +187,21 @@ export default function Lobby() {
           REEL CHESS
         </h1>
       </motion.div>
+
+      {/* ── STREAK INDICATOR ── */}
+      {isAuthenticated && streakData?.streak > 0 && (
+        <motion.div
+          className="relative z-10 flex justify-center pb-1"
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.14 }}
+        >
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-[#3AAFA9]/20">
+            <StreakBadge streak={streakData.streak} size="xs" showNumber={false} />
+            <span className="text-xs font-bold text-[#3AAFA9]">Day {streakData.streak}</span>
+          </div>
+        </motion.div>
+      )}
 
       {/* ── ONLINE PVP HERO BANNER ── */}
       <motion.div
@@ -307,6 +345,13 @@ export default function Lobby() {
         }}
         isPremium={user?.is_premium}
         isAuthenticated={isAuthenticated}
+      />
+      <StreakPopup
+        isOpen={showStreakPopup}
+        onClose={() => setShowStreakPopup(false)}
+        streak={streakData?.streak || 0}
+        previousStreak={streakData?.previousStreak || 0}
+        rewardAwarded={streakData?.rewardAwarded || 0}
       />
       <DifficultyModal
         isOpen={difficultyOpen}
