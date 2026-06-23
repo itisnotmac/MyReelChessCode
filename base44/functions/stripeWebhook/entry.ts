@@ -30,6 +30,27 @@ Deno.serve(async (req) => {
           console.log(`Upgraded user ${userId} to premium`);
         }
       }
+
+      if (userId && session.mode === 'payment') {
+        const itemId = session.metadata?.item_id;
+        const itemType = session.metadata?.item_type;
+        const itemName = session.metadata?.item_name;
+        if (itemId) {
+          const existing = await base44.asServiceRole.entities.UserPurchase.filter({
+            user_id: userId,
+            item_id: itemId,
+          });
+          if (existing.length === 0) {
+            await base44.asServiceRole.entities.UserPurchase.create({
+              user_id: userId,
+              item_id: itemId,
+              item_type: itemType || '',
+              item_name: itemName || '',
+            });
+            console.log(`Recorded cosmetic purchase: user=${userId}, item=${itemId}`);
+          }
+        }
+      }
     }
 
     if (event.type === 'customer.subscription.deleted') {

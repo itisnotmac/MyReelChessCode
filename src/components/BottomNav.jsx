@@ -1,9 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Gamepad2, Trophy, BarChart2, Settings } from 'lucide-react';
+import { Gamepad2, Trophy, BarChart2, Settings, ShoppingBag } from 'lucide-react';
 
 const NAV_ITEMS = [
   { label: 'Play', icon: Gamepad2, path: '/' },
+  { label: 'Store', icon: ShoppingBag, path: '/Store' },
   { label: 'History', icon: Trophy, path: '/GameHistory' },
   { label: 'Stats', icon: BarChart2, path: '/Dashboard' },
   { label: 'Settings', icon: Settings, path: '/Info?section=settings' },

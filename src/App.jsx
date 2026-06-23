@@ -25,6 +25,8 @@ import Achievements from './pages/Achievements';
 import OnboardingProfile from './components/OnboardingProfile';
 import { hasProfile } from './lib/profileUtils';
 import LandingPage from './pages/LandingPage';
+import Store from './pages/Store';
+import { SkinProvider } from '@/lib/skinContext';
 
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -108,6 +110,7 @@ const AuthenticatedApp = () => {
           <Route path="/Online2v2Game" element={<LayoutWrapper currentPageName="Online2v2Game"><Online2v2Game /></LayoutWrapper>} />
           <Route path="/Profile" element={<LayoutWrapper currentPageName="Profile"><Profile /></LayoutWrapper>} />
           <Route path="/Achievements" element={<LayoutWrapper currentPageName="Achievements"><Achievements /></LayoutWrapper>} />
+          <Route path="/Store" element={<LayoutWrapper currentPageName="Store"><Store /></LayoutWrapper>} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </motion.div>
@@ -148,10 +151,12 @@ function App() {
     <QueryClientProvider client={queryClientInstance}>
       <Router>
         <ThemeProvider>
-          <AuthProvider>
+          <SkinProvider>
+            <AuthProvider>
             <AppRoutes />
             <Toaster />
-          </AuthProvider>
+            </AuthProvider>
+          </SkinProvider>
         </ThemeProvider>
       </Router>
     </QueryClientProvider>

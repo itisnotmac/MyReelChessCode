@@ -1,0 +1,59 @@
+{
+  "name": "UserPurchase",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "User who purchased the item"
+    },
+    "item_id": {
+      "type": "string",
+      "description": "Cosmetic item identifier"
+    },
+    "item_type": {
+      "type": "string",
+      "enum": [
+        "board",
+        "pieces"
+      ],
+      "description": "Category of cosmetic"
+    },
+    "item_name": {
+      "type": "string",
+      "description": "Display name of the purchased item"
+    }
+  },
+  "required": [
+    "user_id",
+    "item_id"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

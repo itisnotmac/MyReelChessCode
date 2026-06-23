@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PieceRenderer from './PieceRenderer';
+import { useSkin } from '@/lib/skinContext';
+import { BOARD_SKINS } from '@/lib/storeCatalog';
 
 // Returns the squares a piece travels through between from→to (exclusive of endpoints)
 function getPathSquares(from, to) {
@@ -28,14 +30,17 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
   const pathSquares = lastMove ? getPathSquares(lastMove.from, lastMove.to) : [];
   const pathSet = new Set(pathSquares.map(([r, c]) => `${r}-${c}`));
 
-  const getSquareColor = (row, col) => {
+  const { boardSkin } = useSkin();
+  const skin = BOARD_SKINS[boardSkin] || BOARD_SKINS.classic;
+
+  const getSquareBg = (row, col) => {
     const isLight = (row + col) % 2 === 0;
     const isSelected = selectedSquare && selectedSquare[0] === row && selectedSquare[1] === col;
     const isCheckSq = isCheck && checkSquare && checkSquare[0] === row && checkSquare[1] === col;
 
-    if (isCheckSq) return isLight ? 'bg-red-500/50' : 'bg-red-700/60';
-    if (isSelected) return 'bg-[#3AAFA9]/40';
-    return isLight ? 'bg-[#2e2e4e]' : 'bg-[#1a1a2e]';
+    if (isCheckSq) return isLight ? 'rgba(239,68,68,0.5)' : 'rgba(185,28,28,0.6)';
+    if (isSelected) return 'rgba(58,175,169,0.4)';
+    return isLight ? skin.light : skin.dark;
   };
 
   const getSquareStyle = (row, col) => {
@@ -87,7 +92,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
 
   return (
     <div className="relative w-full h-full" ref={boardRef}>
-      <div className="rounded-lg overflow-hidden w-full h-full" style={{ boxShadow: '0 0 40px rgba(58,175,169,0.15), 0 8px 32px rgba(0,0,0,0.7)', border: '1px solid rgba(58,175,169,0.25)' }}>
+      <div className="rounded-lg overflow-hidden w-full h-full" style={{ boxShadow: `0 0 40px ${skin.glow}, 0 8px 32px rgba(0,0,0,0.7)`, border: `1px solid ${skin.border}` }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gridTemplateRows: 'repeat(8, 1fr)', width: '100%', height: '100%' }}>
           {displayRows.map((row) =>
             displayCols.map((col) => {
@@ -102,18 +107,18 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
               return (
                 <div
                   key={`${row}-${col}`}
-                  className={`relative flex items-center justify-center cursor-pointer transition-all duration-150 ${getSquareColor(row, col)}`}
-                  style={{ aspectRatio: '1 / 1', ...getSquareStyle(row, col) }}
+                  className="relative flex items-center justify-center cursor-pointer transition-all duration-150"
+                  style={{ aspectRatio: '1 / 1', backgroundColor: getSquareBg(row, col), ...getSquareStyle(row, col) }}
                   onClick={() => onSquareClick(row, col)}
                 >
                   {/* Coordinates */}
                   {col === (flipped ? 7 : 0) && (
-                    <span className="absolute top-0.5 left-0.5 font-bold select-none text-[#3AAFA9]/50" style={{ fontSize: 10, textShadow: '0 0 6px rgba(58,175,169,0.4)' }}>
+                    <span className="absolute top-0.5 left-0.5 font-bold select-none" style={{ fontSize: 10, color: skin.coords, textShadow: `0 0 6px ${skin.glow}` }}>
                       {ranks[row]}
                     </span>
                   )}
                   {row === (flipped ? 0 : 7) && (
-                    <span className="absolute bottom-0.5 right-0.5 font-bold select-none text-[#3AAFA9]/50" style={{ fontSize: 10, textShadow: '0 0 6px rgba(58,175,169,0.4)' }}>
+                    <span className="absolute bottom-0.5 right-0.5 font-bold select-none" style={{ fontSize: 10, color: skin.coords, textShadow: `0 0 6px ${skin.glow}` }}>
                       {files[col]}
                     </span>
                   )}

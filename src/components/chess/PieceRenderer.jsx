@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSkin } from '@/lib/skinContext';
+import { renderPieceSet } from './PieceSets';
 
 // White pieces: pure white/ivory fill with white glow edge
 // Black pieces: near-black fill with teal neon glow edge
@@ -166,12 +168,18 @@ const SIZE_PX = {
 const PIECE_COMPONENTS = { K: King, Q: Queen, R: Rook, B: Bishop, N: Knight, P: Pawn };
 
 export default function PieceRenderer({ piece, size = 'normal' }) {
+  const { pieceSet } = useSkin();
+
   if (!piece) return null;
 
   const isWhite = piece === piece.toUpperCase();
   const type    = piece.toUpperCase();
   const Component = PIECE_COMPONENTS[type];
   if (!Component) return null;
+
+  if (pieceSet && pieceSet !== 'classic') {
+    return renderPieceSet(pieceSet, { piece, isWhite, size });
+  }
 
   const isFill = size === 'fill';
   const px = isFill ? null : (SIZE_PX[size] ?? 62);
