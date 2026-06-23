@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, Suspense, lazy } from 'react';
 import { motion, AnimatePresence, useAnimationControls } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ScrollText } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import GameMenu from '../components/chess/GameMenu';
 import ChessBoard from '../components/chess/ChessBoard';
-import ChessBoard3D from '../components/chess/ChessBoard3D';
+const ChessBoard3D = lazy(() => import('../components/chess/ChessBoard3D'));
 import CapturedPieces from '../components/chess/CapturedPieces';
 import BattleCutscene from '../components/chess/BattleCutscene';
 import GameOverModal from '../components/chess/GameOverModal';
@@ -404,14 +404,16 @@ export default function Game() {
           style={{ width: 'min(92vw, 92vh, 480px)', height: 'min(92vw, 92vh, 480px)' }}
         >
           {is3D ? (
-            <ChessBoard3D
-              board={board}
-              selectedSquare={selectedSquare}
-              legalMoves={legalMoves}
-              onSquareClick={handleSquareClick}
-              lastMove={lastMove}
-              checkSquare={checkSquare}
-            />
+            <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-[#3AAFA9]/40 text-xs tracking-widest">LOADING 3D…</div>}>
+              <ChessBoard3D
+                board={board}
+                selectedSquare={selectedSquare}
+                legalMoves={legalMoves}
+                onSquareClick={handleSquareClick}
+                lastMove={lastMove}
+                checkSquare={checkSquare}
+              />
+            </Suspense>
           ) : (
             <ChessBoard
               board={board}

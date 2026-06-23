@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -14,7 +15,7 @@ import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import GameHistory from './pages/GameHistory';
-import Dashboard from './pages/Dashboard';
+const Dashboard = lazy(() => import('./pages/Dashboard'));
 import OnlineGame from './pages/OnlineGame';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import PremiumSuccess from './pages/PremiumSuccess';
@@ -100,7 +101,7 @@ const AuthenticatedApp = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/GameHistory" element={<LayoutWrapper currentPageName="GameHistory"><GameHistory /></LayoutWrapper>} />
-          <Route path="/Dashboard" element={<LayoutWrapper currentPageName="Dashboard"><Dashboard /></LayoutWrapper>} />
+          <Route path="/Dashboard" element={<Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-[#3AAFA9]/30 border-t-[#3AAFA9] rounded-full animate-spin" /></div>}><LayoutWrapper currentPageName="Dashboard"><Dashboard /></LayoutWrapper></Suspense>} />
           <Route path="/OnlineGame" element={<LayoutWrapper currentPageName="OnlineGame"><OnlineGame /></LayoutWrapper>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/delete-account" element={<LayoutWrapper currentPageName="Info"><Info /></LayoutWrapper>} />
