@@ -102,8 +102,11 @@ export default function Game() {
       shakeControls.start({
         x: [0, -4, 4, -3, 3, -2, 2, 0],
         y: [0, 2, -2, 1, -1, 1, 0, 0],
-        transition: { duration: 0.4, ease: 'easeInOut' },
+        transition: { duration: 0.5, ease: 'easeInOut', repeat: Infinity, repeatDelay: 0.8 },
       });
+    } else if (!inCheck && wasInCheckRef.current) {
+      shakeControls.stop();
+      shakeControls.set({ x: 0, y: 0 });
     }
     wasInCheckRef.current = inCheck;
   }, [board, isWhiteTurn, gameOver, shakeControls]);
