@@ -74,8 +74,11 @@ export default function Game() {
     });
   };
 
-  // Stop menu music when game starts
-  useEffect(() => { stopMenuMusic(); }, []);
+  // Stop menu music when game starts + track game start
+  useEffect(() => {
+    stopMenuMusic();
+    base44.analytics.track({ eventName: 'game_started', properties: { mode } });
+  }, []);
 
   // Track game result for daily challenges
   useEffect(() => {
@@ -325,6 +328,7 @@ export default function Game() {
     setMoveHistory([]);
     setMoveData([]);
     setShowAnalysis(false);
+    base44.analytics.track({ eventName: 'game_started', properties: { mode } });
   };
 
   const shouldFlip = (mode === 'local' || mode === '2v2') && !isWhiteTurn;
