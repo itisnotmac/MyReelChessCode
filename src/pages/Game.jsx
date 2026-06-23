@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useAnimationControls } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ScrollText } from 'lucide-react';
 import { createPageUrl } from '@/utils';
@@ -92,6 +92,21 @@ export default function Game() {
   }, []);
 
   const checkSquare = isInCheck(board, isWhiteTurn) ? findKingPosition(board, isWhiteTurn) : null;
+
+  // Camera shake when in check
+  const shakeControls = useAnimationControls();
+  const wasInCheckRef = useRef(false);
+  useEffect(() => {
+    const inCheck = isInCheck(board, isWhiteTurn) && !gameOver;
+    if (inCheck && !wasInCheckRef.current) {
+      shakeControls.start({
+        x: [0, -4, 4, -3, 3, -2, 2, 0],
+        y: [0, 2, -2, 1, -1, 1, 0, 0],
+        transition: { duration: 0.4, ease: 'easeInOut' },
+      });
+    }
+    wasInCheckRef.current = inCheck;
+  }, [board, isWhiteTurn, gameOver, shakeControls]);
 
   const executeMove = useCallback((fromR, fromC, toR, toC, currentBoard, currentEnPassant, currentCastling) => {
     const piece = currentBoard[fromR][fromC];
@@ -371,7 +386,10 @@ export default function Game() {
 
       {/* Chess Board */}
       <div className="flex-1 flex items-center justify-center px-4 py-2">
-        <div style={{ width: 'min(92vw, 92vh, 480px)', height: 'min(92vw, 92vh, 480px)' }}>
+        <motion.div
+          animate={shakeControls}
+          style={{ width: 'min(92vw, 92vh, 480px)', height: 'min(92vw, 92vh, 480px)' }}
+        >
           {is3D ? (
             <ChessBoard3D
               board={board}
@@ -393,7 +411,7 @@ export default function Game() {
               flipped={shouldFlip}
             />
           )}
-        </div>
+        </motion.div>
       </div>
 
       {/* White captured pieces (bottom) */}
