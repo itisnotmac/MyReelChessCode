@@ -1,9 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { useSeo } from '@/lib/useSeo';
 
 export default function PrivacyPolicy() {
   const navigate = useNavigate();
+  useSeo(
+    'Privacy Policy – Reel Chess',
+    'Read the Reel Chess privacy policy. Learn how we handle account data, game history, and player information in our free browser-based chess game.'
+  );
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white px-4 py-8 max-w-2xl mx-auto">

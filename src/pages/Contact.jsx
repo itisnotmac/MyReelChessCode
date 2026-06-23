@@ -1,9 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Mail } from 'lucide-react';
+import { useSeo } from '@/lib/useSeo';
 
 export default function Contact() {
   const navigate = useNavigate();
+  useSeo(
+    'Contact Reel Chess – Support, Feedback & Bug Reports',
+    'Contact the Reel Chess team for support, bug reports, or feature requests. Email reelchessgame@gmail.com — we respond to all player feedback for our free online chess game.'
+  );
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col">

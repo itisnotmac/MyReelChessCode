@@ -1,9 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { useSeo } from '@/lib/useSeo';
 
 export default function About() {
   const navigate = useNavigate();
+  useSeo(
+    'About Reel Chess – Immersive Browser Chess with AI & Tutorials',
+    'Learn about Reel Chess — a free browser-based chess game with cinematic battle cutscenes, AI opponents at multiple difficulty levels, local PvP and 2v2 multiplayer, and built-in interactive tutorials.'
+  );
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col">

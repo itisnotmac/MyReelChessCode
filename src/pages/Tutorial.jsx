@@ -4,9 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, CheckCircle2, BookOpen, Lock } from 'lucide-react';
 import { LESSONS, CHAPTERS } from '../lib/tutorialLessons';
 import TutorialBoard from '../components/tutorial/TutorialBoard';
+import { useSeo } from '@/lib/useSeo';
 
 export default function Tutorial() {
   const navigate = useNavigate();
+  useSeo(
+    'Learn Chess – Free Interactive Chess Tutorial | Reel Chess',
+    'Learn how to play chess with Reel Chess free interactive tutorial. Step-by-step lessons cover piece movement, castling, en passant, check, checkmate, and basic chess strategy for beginners.'
+  );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [completed, setCompleted] = useState(() => {
     try { return JSON.parse(localStorage.getItem('tutorialCompleted') || '[]'); }

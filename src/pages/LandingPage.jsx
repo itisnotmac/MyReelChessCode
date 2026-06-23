@@ -3,12 +3,17 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Play } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { useSeo } from '@/lib/useSeo';
 import LandingHero from '@/components/landing/LandingHero';
 import LandingFeatures from '@/components/landing/LandingFeatures';
 import LandingModes from '@/components/landing/LandingModes';
 import LandingFAQ from '@/components/landing/LandingFAQ';
 
 export default function LandingPage() {
+  useSeo(
+    'Reel Chess – Play Free Online Chess with Cinematic Battle Cutscenes',
+    'Play Reel Chess free online — an immersive chess game with cinematic battle cutscenes, AI opponents from Novice to Grandmaster, local PvP multiplayer, 2v2 mode, and interactive chess tutorials.'
+  );
   const handlePlayNow = () => {
     base44.auth.redirectToLogin('/');
   };
