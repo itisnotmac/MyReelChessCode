@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { ScrollText } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import GameMenu from '../components/chess/GameMenu';
 import ChessBoard from '../components/chess/ChessBoard';
@@ -10,6 +11,8 @@ import BattleCutscene from '../components/chess/BattleCutscene';
 import GameOverModal from '../components/chess/GameOverModal';
 import TurnIndicator from '../components/chess/TurnIndicator';
 import PlayerTimer from '../components/chess/PlayerTimer';
+import MoveHistory from '../components/chess/MoveHistory';
+import { toAlgebraicNotation } from '../lib/chessNotation';
 import { stopMenuMusic } from '@/lib/menuMusic';
 import { base44 } from '@/api/base44Client';
 import { playMoveSound, playCheckSound, playGameOverSound, unlockAudio } from '@/lib/chessSound';
@@ -52,6 +55,8 @@ export default function Game() {
   const [isThinking, setIsThinking] = useState(false);
   const [moveCount, setMoveCount] = useState(0);
   const [is3D, setIs3D] = useState(false);
+  const [moveHistory, setMoveHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('chessSound') !== 'off');
   const soundEnabledRef = useRef(soundEnabled);
   useEffect(() => { soundEnabledRef.current = soundEnabled; }, [soundEnabled]);
@@ -141,17 +146,31 @@ export default function Game() {
     if (mode === '2v2') setPlayerSlot(prev => (prev + 1) % 4);
 
     // Check game end
-    if (isCheckmate(result.board, nextWhite, result.enPassant, result.castling)) {
+    const isMate = isCheckmate(result.board, nextWhite, result.enPassant, result.castling);
+    const isStale = !isMate && isStalemate(result.board, nextWhite, result.enPassant, result.castling);
+    const isCheckAfter = !isMate && !isStale && isInCheck(result.board, nextWhite);
+
+    // Generate algebraic notation
+    const notation = toAlgebraicNotation(currentBoard, fromR, fromC, toR, toC, {
+      captured,
+      enPassant: currentEnPassant,
+      castling: currentCastling,
+      isCheck: isCheckAfter,
+      isCheckmate: isMate,
+    });
+    setMoveHistory(prev => [...prev, notation]);
+
+    if (isMate) {
       const winner = nextWhite ? 'black_wins' : 'white_wins';
       setGameOver(winner);
       if (soundEnabledRef.current) playGameOverSound();
       base44.analytics.track({ eventName: 'game_completed', properties: { result: winner, mode, move_count: moveCount + 1 } });
       base44.analytics.track({ eventName: 'game_win', properties: { winner: nextWhite ? 'black' : 'white', mode, move_count: moveCount + 1 } });
-    } else if (isStalemate(result.board, nextWhite, result.enPassant, result.castling)) {
+    } else if (isStale) {
       setGameOver('draw');
       if (soundEnabledRef.current) playGameOverSound();
       base44.analytics.track({ eventName: 'game_completed', properties: { result: 'draw', mode, move_count: moveCount + 1 } });
-    } else if (isInCheck(result.board, nextWhite)) {
+    } else if (isCheckAfter) {
       if (soundEnabledRef.current) setTimeout(() => playCheckSound(), 120);
     }
   }, []);
@@ -262,6 +281,7 @@ export default function Game() {
     aiRunningRef.current = false;
     setMoveCount(0);
     setPlayerSlot(0);
+    setMoveHistory([]);
   };
 
   const shouldFlip = (mode === 'local' || mode === '2v2') && !isWhiteTurn;
@@ -283,6 +303,13 @@ export default function Game() {
           <p className="text-[10px] text-white/20">Move {moveCount}</p>
         </div>
         <div className="flex gap-2">
+          <button
+            onClick={() => setShowHistory(true)}
+            className="rounded-lg bg-white/5 border border-white/10 flex items-center justify-center px-2.5 py-1.5 text-[#3AAFA9] hover:bg-[#3AAFA9]/10 transition-colors"
+            title="Move History"
+          >
+            <ScrollText className="w-4 h-4" />
+          </button>
           <button
             onClick={() => setIs3D(v => !v)}
             className="rounded-lg bg-white/5 border border-white/10 flex flex-col items-center justify-center px-2 py-1 text-[#D4AF37]/70 hover:text-[#D4AF37] transition-colors leading-none"
@@ -383,6 +410,9 @@ export default function Game() {
           mode={mode}
         />
       )}
+
+      {/* Move History Panel */}
+      <MoveHistory moves={moveHistory} open={showHistory} onClose={() => setShowHistory(false)} />
     </div>
   );
 }
