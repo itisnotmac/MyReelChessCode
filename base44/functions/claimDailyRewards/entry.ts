@@ -7,6 +7,15 @@ const CHALLENGES = [
   { id: 'play_3', check: (a) => (a.daily_games_played || 0) >= 3, reward: 25 },
 ];
 
+// Must match lib/dailyChallenges.js getDayIndex exactly
+function getDayIndex(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  const start = new Date(d.getFullYear(), 0, 0);
+  const diff = d - start;
+  const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+  return dayOfYear % CHALLENGES.length;
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -47,15 +56,15 @@ Deno.serve(async (req) => {
     let claimed = [];
     try { claimed = JSON.parse(account.claimed_today || '[]'); } catch { claimed = []; }
 
+    // Only one challenge is active per day
+    const todaysChallenge = CHALLENGES[getDayIndex(date)];
     let newRewards = 0;
     const newlyClaimed = [];
 
-    for (const ch of CHALLENGES) {
-      if (!claimed.includes(ch.id) && ch.check(account)) {
-        claimed.push(ch.id);
-        newRewards += ch.reward;
-        newlyClaimed.push(ch.id);
-      }
+    if (!claimed.includes(todaysChallenge.id) && todaysChallenge.check(account)) {
+      claimed.push(todaysChallenge.id);
+      newRewards += todaysChallenge.reward;
+      newlyClaimed.push(todaysChallenge.id);
     }
 
     if (newRewards > 0) {

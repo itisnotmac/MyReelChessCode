@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Coins, Gift, Loader2, LogIn, ShoppingBag } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
-import { DAILY_CHALLENGES, TOTAL_DAILY_REWARD } from '@/lib/dailyChallenges';
+import { getTodaysChallenge, CHALLENGE_REWARD, ITEM_COST_COINS } from '@/lib/dailyChallenges';
 
 export default function DailyChallenges() {
   const navigate = useNavigate();
@@ -68,10 +68,12 @@ export default function DailyChallenges() {
   };
 
   const coinBalance = account?.currency_balance || 0;
-  const hasUnclaimed = DAILY_CHALLENGES.some(ch => {
-    const progress = ch.getProgress(account);
-    return progress >= ch.target && !claimedList.includes(ch.id);
-  });
+  const todayStr = new Date().toLocaleDateString('en-CA');
+  const todaysChallenge = getTodaysChallenge(todayStr);
+  const hasUnclaimed = (() => {
+    const progress = todaysChallenge.getProgress(account);
+    return progress >= todaysChallenge.target && !claimedList.includes(todaysChallenge.id);
+  })();
 
   if (!isAuthenticated) {
     return (
@@ -124,7 +126,7 @@ export default function DailyChallenges() {
       </div>
 
       <div className="px-4 mb-4 flex items-center justify-between">
-        <p className="text-[10px] tracking-[0.2em] uppercase text-white/30">{DAILY_CHALLENGES.length} Challenges • {TOTAL_DAILY_REWARD} Coins Total</p>
+        <p className="text-[10px] tracking-[0.2em] uppercase text-white/30">1 Challenge • {CHALLENGE_REWARD} Coins</p>
         <p className="text-[10px] tracking-wider text-white/30">Resets in {timeUntilReset}</p>
       </div>
 
@@ -142,43 +144,43 @@ export default function DailyChallenges() {
         </div>
       ) : (
         <div className="px-4 space-y-3">
-          {DAILY_CHALLENGES.map((ch, i) => {
+          {(() => {
+            const ch = todaysChallenge;
             const progress = ch.getProgress(account);
             const isComplete = progress >= ch.target;
             const isClaimed = claimedList.includes(ch.id);
             const pct = Math.min(100, (progress / ch.target) * 100);
 
             return (
-              <motion.div key={ch.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className={`rounded-xl p-4 border transition-all ${
+              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                className={`rounded-xl p-5 border transition-all ${
                   isClaimed ? 'border-[#3AAFA9]/30 bg-[#3AAFA9]/5'
                   : isComplete ? 'border-[#D4AF37]/40 bg-[#D4AF37]/10'
                   : 'border-white/10 bg-white/5'
                 }`}>
                 <div className="flex items-center gap-3 mb-3">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
                     isClaimed ? 'bg-[#3AAFA9]/15'
                     : isComplete ? 'bg-[#D4AF37]/15'
                     : 'bg-white/5'
                   }`}>
-                    <ch.Icon className={`w-5 h-5 ${
+                    <ch.Icon className={`w-6 h-6 ${
                       isClaimed ? 'text-[#3AAFA9]'
                       : isComplete ? 'text-[#D4AF37]'
                       : 'text-white/40'
                     }`} />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-bold text-white">{ch.title}</p>
-                    <p className="text-[10px] text-white/40">{ch.description}</p>
+                    <p className="text-base font-bold text-white">{ch.title}</p>
+                    <p className="text-xs text-white/40">{ch.description}</p>
                   </div>
-                  <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20">
-                    <Coins className="w-3 h-3 text-[#D4AF37]" />
-                    <span className="text-[10px] font-bold text-[#D4AF37]">{ch.reward}</span>
+                  <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20">
+                    <Coins className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <span className="text-xs font-bold text-[#D4AF37]">{ch.reward}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 h-2 rounded-full bg-white/5 overflow-hidden">
+                  <div className="flex-1 h-2.5 rounded-full bg-white/5 overflow-hidden">
                     <div className="h-full rounded-full transition-all duration-500"
                       style={{
                         width: `${pct}%`,
@@ -186,11 +188,11 @@ export default function DailyChallenges() {
                       }}
                     />
                   </div>
-                  <span className="text-[10px] font-bold text-white/50 min-w-[30px] text-right">{progress}/{ch.target}</span>
+                  <span className="text-xs font-bold text-white/50 min-w-[35px] text-right">{progress}/{ch.target}</span>
                 </div>
               </motion.div>
             );
-          })}
+          })()}
         </div>
       )}
 
@@ -209,7 +211,7 @@ export default function DailyChallenges() {
             )}
           </button>
           <p className="text-center text-[10px] text-white/20 mt-3">
-            Complete all {DAILY_CHALLENGES.length} challenges to earn {TOTAL_DAILY_REWARD} coins — enough for 1 store item
+            Complete today's challenge for {CHALLENGE_REWARD} coins — earn {ITEM_COST_COINS} coins over 4 days to unlock 1 store item
           </p>
         </div>
       )}
