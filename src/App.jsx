@@ -26,6 +26,7 @@ import OnboardingProfile from './components/OnboardingProfile';
 import { hasProfile } from './lib/profileUtils';
 import LandingPage from './pages/LandingPage';
 import Store from './pages/Store';
+import DailyChallenges from './pages/DailyChallenges';
 import { SkinProvider } from '@/lib/skinContext';
 
 
@@ -111,6 +112,7 @@ const AuthenticatedApp = () => {
           <Route path="/Profile" element={<LayoutWrapper currentPageName="Profile"><Profile /></LayoutWrapper>} />
           <Route path="/Achievements" element={<LayoutWrapper currentPageName="Achievements"><Achievements /></LayoutWrapper>} />
           <Route path="/Store" element={<LayoutWrapper currentPageName="Store"><Store /></LayoutWrapper>} />
+          <Route path="/DailyChallenges" element={<LayoutWrapper currentPageName="DailyChallenges"><DailyChallenges /></LayoutWrapper>} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </motion.div>

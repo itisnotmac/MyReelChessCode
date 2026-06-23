@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi, Crown, UserCircle, Award, ShoppingBag } from 'lucide-react';
+import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi, Crown, UserCircle, Award, ShoppingBag, Gift } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
 import PremiumModal from '../components/lobby/PremiumModal';
 import TwoVTwoModal from '../components/lobby/TwoVTwoModal';
@@ -260,6 +260,7 @@ export default function Lobby() {
             { label: 'Local PVP', onClick: () => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); },             span: false },
             { label: '2v2',       onClick: () => setTwoVTwoOpen(true),                                                               span: false },
             { label: 'Tutorial',  onClick: () => navigate('/Tutorial'),                                                              span: false },
+            { label: 'Daily',      onClick: () => navigate('/DailyChallenges'),                                                       span: false },
             { label: 'Store',      onClick: () => navigate('/Store'),                                                                 span: false },
             { label: 'Menu',      onClick: () => setMenuOpen(true),                                                                  span: true  },
           ].map((btn, i) => (
