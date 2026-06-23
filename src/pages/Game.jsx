@@ -12,6 +12,7 @@ import GameOverModal from '../components/chess/GameOverModal';
 import TurnIndicator from '../components/chess/TurnIndicator';
 import PlayerTimer from '../components/chess/PlayerTimer';
 import MoveHistory from '../components/chess/MoveHistory';
+import PostGameAnalysis from '../components/chess/PostGameAnalysis';
 import { toAlgebraicNotation } from '../lib/chessNotation';
 import { stopMenuMusic } from '@/lib/menuMusic';
 import { base44 } from '@/api/base44Client';
@@ -57,6 +58,8 @@ export default function Game() {
   const [is3D, setIs3D] = useState(false);
   const [moveHistory, setMoveHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [moveData, setMoveData] = useState([]);
+  const [showAnalysis, setShowAnalysis] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('chessSound') !== 'off');
   const soundEnabledRef = useRef(soundEnabled);
   useEffect(() => { soundEnabledRef.current = soundEnabled; }, [soundEnabled]);
@@ -159,6 +162,16 @@ export default function Game() {
       isCheckmate: isMate,
     });
     setMoveHistory(prev => [...prev, notation]);
+    setMoveData(prev => [...prev, {
+      from: [fromR, fromC],
+      to: [toR, toC],
+      boardBefore: currentBoard,
+      notation,
+      movedByWhite,
+      enPassantBefore: currentEnPassant,
+      castlingBefore: currentCastling,
+      captured,
+    }]);
 
     if (isMate) {
       const winner = nextWhite ? 'black_wins' : 'white_wins';
@@ -282,6 +295,8 @@ export default function Game() {
     setMoveCount(0);
     setPlayerSlot(0);
     setMoveHistory([]);
+    setMoveData([]);
+    setShowAnalysis(false);
   };
 
   const shouldFlip = (mode === 'local' || mode === '2v2') && !isWhiteTurn;
@@ -402,12 +417,22 @@ export default function Game() {
       </AnimatePresence>
 
       {/* Game Over Modal */}
-      {gameOver && (
+      {gameOver && !showAnalysis && (
         <GameOverModal
           result={gameOver}
           onRematch={resetGame}
           onHome={() => navigate(createPageUrl('Lobby'))}
+          onAnalysis={() => setShowAnalysis(true)}
           mode={mode}
+        />
+      )}
+
+      {/* Post Game Analysis */}
+      {showAnalysis && (
+        <PostGameAnalysis
+          moveData={moveData}
+          result={gameOver}
+          onClose={() => setShowAnalysis(false)}
         />
       )}
 

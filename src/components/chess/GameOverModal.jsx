@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
-import { Trophy, Handshake, RotateCcw, Home } from 'lucide-react';
+import { Trophy, Handshake, RotateCcw, Home, Brain } from 'lucide-react';
 
-export default function GameOverModal({ result, onRematch, onHome, mode }) {
+export default function GameOverModal({ result, onRematch, onHome, onAnalysis, mode }) {
   const isCheckmate = result === 'white_wins' || result === 'black_wins';
   const winner = result === 'white_wins'
     ? (mode === '2v2' ? 'Team A' : 'White')
@@ -62,6 +62,14 @@ export default function GameOverModal({ result, onRematch, onHome, mode }) {
             >
               <RotateCcw className="w-4 h-4 mr-2" />
               REMATCH
+            </Button>
+            <Button
+              onClick={onAnalysis}
+              variant="outline"
+              className="w-full border-[#3AAFA9]/40 text-[#3AAFA9] hover:bg-[#3AAFA9]/10"
+            >
+              <Brain className="w-4 h-4 mr-2" />
+              ANALYSIS
             </Button>
             <Button
               onClick={onHome}
