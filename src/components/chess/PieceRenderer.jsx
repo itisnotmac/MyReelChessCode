@@ -2,24 +2,18 @@ import React from 'react';
 import { useSkin } from '@/lib/skinContext';
 import { renderPieceSet } from './PieceSets';
 
-// White pieces: pure white/ivory fill with white glow edge
-// Black pieces: near-black fill with teal neon glow edge
-// Both have strong edge strokes that carry the glow color
+// Solid fills instead of SVG gradients — iOS Safari breaks url() gradient
+// references when a CSS filter (drop-shadow) is applied to the parent.
+const WHITE_FILL = '#f5f5f5';
+const BLACK_FILL = '#12121a';
 
 function King({ isWhite }) {
-  const fill   = isWhite ? 'url(#wgrad)' : 'url(#bgrad)';
-  const stroke = isWhite ? '#ffffff'     : '#00e5cc';
-  const hiColor = isWhite ? '#ffffff'    : '#00e5cc';
-  const gradId = isWhite ? 'wgrad'       : 'bgrad';
+  const fill   = isWhite ? WHITE_FILL : BLACK_FILL;
+  const stroke = isWhite ? '#ffffff'   : '#00e5cc';
+  const hiColor = isWhite ? '#ffffff'  : '#00e5cc';
 
   return (
-    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id={gradId} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%"   stopColor={isWhite ? '#ffffff' : '#1a1a2e'} />
-          <stop offset="100%" stopColor={isWhite ? '#cccccc' : '#0d0d1a'} />
-        </linearGradient>
-      </defs>
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
       <ellipse cx="30" cy="55" rx="14" ry="3.5" fill={stroke} opacity="0.15"/>
       <rect x="16" y="50" width="28" height="6" rx="3" fill={fill} stroke={stroke} strokeWidth="1.2"/>
       <path d="M22 50 Q21 40 24 34 Q27 30 30 30 Q33 30 36 34 Q39 40 38 50 Z" fill={fill} stroke={stroke} strokeWidth="1.2"/>
@@ -32,19 +26,12 @@ function King({ isWhite }) {
 }
 
 function Queen({ isWhite }) {
-  const fill   = isWhite ? 'url(#wqgrad)' : 'url(#bqgrad)';
-  const stroke = isWhite ? '#ffffff'      : '#00e5cc';
-  const hiColor = isWhite ? '#ffffff'     : '#00e5cc';
-  const gradId = isWhite ? 'wqgrad'       : 'bqgrad';
+  const fill   = isWhite ? WHITE_FILL : BLACK_FILL;
+  const stroke = isWhite ? '#ffffff'  : '#00e5cc';
+  const hiColor = isWhite ? '#ffffff' : '#00e5cc';
 
   return (
-    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id={gradId} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%"   stopColor={isWhite ? '#ffffff' : '#1a1a2e'} />
-          <stop offset="100%" stopColor={isWhite ? '#cccccc' : '#0d0d1a'} />
-        </linearGradient>
-      </defs>
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
       <ellipse cx="30" cy="55" rx="14" ry="3.5" fill={stroke} opacity="0.15"/>
       <rect x="16" y="50" width="28" height="6" rx="3" fill={fill} stroke={stroke} strokeWidth="1.2"/>
       <path d="M23 50 Q22 40 25 34 Q27 30 30 30 Q33 30 35 34 Q38 40 37 50 Z" fill={fill} stroke={stroke} strokeWidth="1.2"/>
@@ -59,18 +46,11 @@ function Queen({ isWhite }) {
 }
 
 function Rook({ isWhite }) {
-  const fill   = isWhite ? 'url(#wrgrad)' : 'url(#brgrad)';
-  const stroke = isWhite ? '#ffffff'      : '#00e5cc';
-  const gradId = isWhite ? 'wrgrad'       : 'brgrad';
+  const fill   = isWhite ? WHITE_FILL : BLACK_FILL;
+  const stroke = isWhite ? '#ffffff'  : '#00e5cc';
 
   return (
-    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id={gradId} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%"   stopColor={isWhite ? '#ffffff' : '#1a1a2e'} />
-          <stop offset="100%" stopColor={isWhite ? '#cccccc' : '#0d0d1a'} />
-        </linearGradient>
-      </defs>
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
       <ellipse cx="30" cy="55" rx="14" ry="3.5" fill={stroke} opacity="0.15"/>
       <rect x="16" y="50" width="28" height="6" rx="3" fill={fill} stroke={stroke} strokeWidth="1.2"/>
       <path d="M22 50 Q21 42 23 38 Q25 34 30 34 Q35 34 37 38 Q39 42 38 50 Z" fill={fill} stroke={stroke} strokeWidth="1.2"/>
@@ -83,18 +63,12 @@ function Rook({ isWhite }) {
 }
 
 function Bishop({ isWhite }) {
-  const fill   = isWhite ? 'url(#wbgrad)' : 'url(#bbgrad)';
-  const stroke = isWhite ? '#ffffff'      : '#00e5cc';
-  const hiColor = isWhite ? '#ffffff'     : '#00e5cc';
+  const fill   = isWhite ? WHITE_FILL : BLACK_FILL;
+  const stroke = isWhite ? '#ffffff'  : '#00e5cc';
+  const hiColor = isWhite ? '#ffffff' : '#00e5cc';
 
   return (
-    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id={isWhite ? 'wbgrad' : 'bbgrad'} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%"   stopColor={isWhite ? '#ffffff' : '#1a1a2e'} />
-          <stop offset="100%" stopColor={isWhite ? '#cccccc' : '#0d0d1a'} />
-        </linearGradient>
-      </defs>
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
       <ellipse cx="30" cy="55" rx="13" ry="3.5" fill={stroke} opacity="0.15"/>
       <rect x="17" y="50" width="26" height="6" rx="3" fill={fill} stroke={stroke} strokeWidth="1.2"/>
       <path d="M24 50 Q23 42 25 36 Q27 32 30 32 Q33 32 35 36 Q37 42 36 50 Z" fill={fill} stroke={stroke} strokeWidth="1.2"/>
@@ -107,18 +81,12 @@ function Bishop({ isWhite }) {
 }
 
 function Knight({ isWhite }) {
-  const fill   = isWhite ? 'url(#wngrad)' : 'url(#bngrad)';
-  const stroke = isWhite ? '#ffffff'      : '#00e5cc';
-  const hiColor = isWhite ? '#ffffff'     : '#00e5cc';
+  const fill   = isWhite ? WHITE_FILL : BLACK_FILL;
+  const stroke = isWhite ? '#ffffff'  : '#00e5cc';
+  const hiColor = isWhite ? '#ffffff' : '#00e5cc';
 
   return (
-    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id={isWhite ? 'wngrad' : 'bngrad'} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%"   stopColor={isWhite ? '#ffffff' : '#1a1a2e'} />
-          <stop offset="100%" stopColor={isWhite ? '#cccccc' : '#0d0d1a'} />
-        </linearGradient>
-      </defs>
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
       <ellipse cx="30" cy="55" rx="13" ry="3.5" fill={stroke} opacity="0.15"/>
       <rect x="17" y="50" width="26" height="6" rx="3" fill={fill} stroke={stroke} strokeWidth="1.2"/>
       <path d="M24 50 Q22 42 24 36 Q26 32 30 32 Q34 32 36 36 Q38 42 36 50 Z" fill={fill} stroke={stroke} strokeWidth="1.2"/>
@@ -136,17 +104,11 @@ function Knight({ isWhite }) {
 }
 
 function Pawn({ isWhite }) {
-  const fill   = isWhite ? 'url(#wpgrad)' : 'url(#bpgrad)';
-  const stroke = isWhite ? '#ffffff'      : '#00e5cc';
+  const fill   = isWhite ? WHITE_FILL : BLACK_FILL;
+  const stroke = isWhite ? '#ffffff'  : '#00e5cc';
 
   return (
-    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id={isWhite ? 'wpgrad' : 'bpgrad'} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%"   stopColor={isWhite ? '#ffffff' : '#1a1a2e'} />
-          <stop offset="100%" stopColor={isWhite ? '#cccccc' : '#0d0d1a'} />
-        </linearGradient>
-      </defs>
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
       <ellipse cx="30" cy="55" rx="12" ry="3.5" fill={stroke} opacity="0.15"/>
       <rect x="18" y="50" width="24" height="6" rx="3" fill={fill} stroke={stroke} strokeWidth="1.2"/>
       <path d="M25 50 Q24 42 26 38 Q27 35 30 35 Q33 35 34 38 Q36 42 35 50 Z" fill={fill} stroke={stroke} strokeWidth="1.2"/>

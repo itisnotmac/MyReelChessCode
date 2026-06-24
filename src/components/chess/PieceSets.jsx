@@ -44,16 +44,14 @@ function MinimalistSet({ piece, isWhite }) {
 
 // === FUTURISTIC SET ===
 function FuturisticSet({ piece, isWhite }) {
-  const gid = `fut-${piece}-${isWhite ? 'w' : 'b'}`;
-  const c1 = isWhite ? '#ffffff' : '#0d0d1a';
-  const c2 = isWhite ? '#88ccff' : '#003344';
+  const fill = isWhite ? '#e8f4ff' : '#0a1a22';
   const stroke = isWhite ? '#00ffff' : '#00ffaa';
   const sw = 1;
   const type = piece.toUpperCase();
 
   const Base = () => (
     <>
-      <rect x="18" y="50" width="24" height="6" rx="1" fill={`url(#${gid})`} stroke={stroke} strokeWidth={sw} />
+      <rect x="18" y="50" width="24" height="6" rx="1" fill={fill} stroke={stroke} strokeWidth={sw} />
       <line x1="18" y1="53" x2="42" y2="53" stroke={stroke} strokeWidth="0.5" opacity="0.6" />
     </>
   );
@@ -61,22 +59,22 @@ function FuturisticSet({ piece, isWhite }) {
   let body;
   switch (type) {
     case 'P':
-      body = (<><Base /><polygon points="30,14 38,26 34,50 26,50 22,26" fill={`url(#${gid})`} stroke={stroke} strokeWidth={sw} /><line x1="30" y1="20" x2="30" y2="46" stroke={stroke} strokeWidth="0.5" opacity="0.5" /></>);
+      body = (<><Base /><polygon points="30,14 38,26 34,50 26,50 22,26" fill={fill} stroke={stroke} strokeWidth={sw} /><line x1="30" y1="20" x2="30" y2="46" stroke={stroke} strokeWidth="0.5" opacity="0.5" /></>);
       break;
     case 'R':
-      body = (<><Base /><polygon points="22,50 22,22 20,14 26,14 26,20 28,20 28,14 32,14 32,20 34,20 34,14 40,14 38,22 38,50" fill={`url(#${gid})`} stroke={stroke} strokeWidth={sw} /><line x1="22" y1="30" x2="38" y2="30" stroke={stroke} strokeWidth="0.5" opacity="0.4" /></>);
+      body = (<><Base /><polygon points="22,50 22,22 20,14 26,14 26,20 28,20 28,14 32,14 32,20 34,20 34,14 40,14 38,22 38,50" fill={fill} stroke={stroke} strokeWidth={sw} /><line x1="22" y1="30" x2="38" y2="30" stroke={stroke} strokeWidth="0.5" opacity="0.4" /></>);
       break;
     case 'N':
-      body = (<><Base /><polygon points="22,50 22,34 24,26 30,18 38,16 38,28 34,34 32,50" fill={`url(#${gid})`} stroke={stroke} strokeWidth={sw} /><circle cx="33" cy="24" r="1.5" fill={stroke} /><line x1="24" y1="34" x2="32" y2="34" stroke={stroke} strokeWidth="0.5" opacity="0.4" /></>);
+      body = (<><Base /><polygon points="22,50 22,34 24,26 30,18 38,16 38,28 34,34 32,50" fill={fill} stroke={stroke} strokeWidth={sw} /><circle cx="33" cy="24" r="1.5" fill={stroke} /><line x1="24" y1="34" x2="32" y2="34" stroke={stroke} strokeWidth="0.5" opacity="0.4" /></>);
       break;
     case 'B':
-      body = (<><Base /><polygon points="30,12 24,20 24,36 26,50 34,50 36,36 36,20" fill={`url(#${gid})`} stroke={stroke} strokeWidth={sw} /><line x1="27" y1="30" x2="33" y2="30" stroke={stroke} strokeWidth="0.5" opacity="0.5" /></>);
+      body = (<><Base /><polygon points="30,12 24,20 24,36 26,50 34,50 36,36 36,20" fill={fill} stroke={stroke} strokeWidth={sw} /><line x1="27" y1="30" x2="33" y2="30" stroke={stroke} strokeWidth="0.5" opacity="0.5" /></>);
       break;
     case 'Q':
-      body = (<><Base /><polygon points="22,50 20,34 26,28 24,16 30,22 36,16 34,28 40,34 38,50" fill={`url(#${gid})`} stroke={stroke} strokeWidth={sw} /><circle cx="30" cy="18" r="2" fill={stroke} opacity="0.8" /></>);
+      body = (<><Base /><polygon points="22,50 20,34 26,28 24,16 30,22 36,16 34,28 40,34 38,50" fill={fill} stroke={stroke} strokeWidth={sw} /><circle cx="30" cy="18" r="2" fill={stroke} opacity="0.8" /></>);
       break;
     case 'K':
-      body = (<><Base /><polygon points="22,50 20,34 26,28 24,20 30,24 36,20 34,28 40,34 38,50" fill={`url(#${gid})`} stroke={stroke} strokeWidth={sw} /><rect x="28" y="8" width="4" height="12" fill={`url(#${gid})`} stroke={stroke} strokeWidth={sw} /><rect x="25" y="11" width="10" height="3" fill={`url(#${gid})`} stroke={stroke} strokeWidth={sw} /></>);
+      body = (<><Base /><polygon points="22,50 20,34 26,28 24,20 30,24 36,20 34,28 40,34 38,50" fill={fill} stroke={stroke} strokeWidth={sw} /><rect x="28" y="8" width="4" height="12" fill={fill} stroke={stroke} strokeWidth={sw} /><rect x="25" y="11" width="10" height="3" fill={fill} stroke={stroke} strokeWidth={sw} /></>);
       break;
     default:
       body = <Base />;
@@ -84,12 +82,6 @@ function FuturisticSet({ piece, isWhite }) {
 
   return (
     <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-      <defs>
-        <linearGradient id={gid} x1="0" y1="0" x2="0.5" y2="1">
-          <stop offset="0%" stopColor={c1} />
-          <stop offset="100%" stopColor={c2} />
-        </linearGradient>
-      </defs>
       {body}
     </svg>
   );
