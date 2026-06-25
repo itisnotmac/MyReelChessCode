@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import PieceRenderer from '../chess/PieceRenderer';
 import { getLegalMoves, getPieceColor, getPieceName, isWhite } from '../chess/ChessLogic';
+import { useSkin } from '@/lib/skinContext';
+import { BOARD_SKINS } from '@/lib/storeCatalog';
 
 export default function TutorialBoard({ board: initialBoard, lesson, onSuccess }) {
   const [board, setBoard] = useState(initialBoard.map(r => [...r]));
@@ -10,6 +12,8 @@ export default function TutorialBoard({ board: initialBoard, lesson, onSuccess }
 
   const playerColor = lesson.playerColor || 'white';
   const enPassantTarget = lesson.enPassantTarget || null;
+  const { boardSkin } = useSkin();
+  const skin = BOARD_SKINS[boardSkin] || BOARD_SKINS.classic;
 
   const handleClick = (row, col) => {
     if (succeeded) return;
@@ -74,15 +78,14 @@ export default function TutorialBoard({ board: initialBoard, lesson, onSuccess }
 
       // Reselect own piece
       if (piece && getPieceColor(piece) === playerColor) {
-        const moves = getLegalMoves(board, row, col, enPassantTarget, {
-          whiteKingSide: true, whiteQueenSide: true, blackKingSide: true, blackQueenSide: true
-        });
-        // For free-form lessons, only allow the designated moving piece
         if (lesson.movingPiece && piece.toUpperCase() !== lesson.movingPiece) {
           setSelected(null);
           setLegalMoves([]);
           return;
         }
+        const moves = getLegalMoves(board, row, col, enPassantTarget, {
+          whiteKingside: true, whiteQueenside: true, blackKingside: true, blackQueenside: true
+        });
         setSelected([row, col]);
         setLegalMoves(moves);
         return;
@@ -97,60 +100,73 @@ export default function TutorialBoard({ board: initialBoard, lesson, onSuccess }
     if (piece && getPieceColor(piece) === playerColor) {
       if (lesson.movingPiece && piece.toUpperCase() !== lesson.movingPiece) return;
       const moves = getLegalMoves(board, row, col, enPassantTarget, {
-        whiteKingSide: true, whiteQueenSide: true, blackKingSide: true, blackQueenSide: true
+        whiteKingside: true, whiteQueenside: true, blackKingside: true, blackQueenside: true
       });
       setSelected([row, col]);
       setLegalMoves(moves);
     }
   };
 
-  const getSquareStyle = (row, col) => {
+  const getSquareBg = (row, col) => {
     const isLight = (row + col) % 2 === 0;
-    const isSel = selected && selected[0] === row && selected[1] === col;
-    const isLegal = legalMoves.some(([r, c]) => r === row && c === col);
+    const isSelected = selected && selected[0] === row && selected[1] === col;
+    if (isSelected) return 'rgba(58,175,169,0.4)';
+    return isLight ? skin.light : skin.dark;
+  };
 
-    if (isSel) return isLight ? 'bg-amber-300' : 'bg-amber-600';
-    if (isLegal) return isLight ? 'bg-[#a8e6a3]' : 'bg-[#4a9645]';
-    return isLight ? 'bg-[#F0EAD6]' : 'bg-[#355E3B]';
+  const getSquareStyle = (row, col) => {
+    const isSelected = selected && selected[0] === row && selected[1] === col;
+    if (isSelected) return { boxShadow: 'inset 0 0 18px rgba(58,175,169,0.65)' };
+    return {};
   };
 
   return (
     <div className="relative w-full aspect-square">
       <div
-        className={`rounded-lg overflow-hidden shadow-2xl border-2 w-full h-full transition-all duration-500 ${succeeded ? 'border-emerald-400/60' : 'border-[#8B6914]/30'}`}
-        style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gridTemplateRows: 'repeat(8, 1fr)' }}
+        className={`rounded-lg overflow-hidden w-full h-full transition-all duration-500 ${succeeded ? 'ring-2 ring-emerald-400/60' : ''}`}
+        style={{ boxShadow: `0 0 40px ${skin.glow}, 0 8px 32px rgba(0,0,0,0.7)`, border: `1px solid ${skin.border}` }}
       >
-        {[...Array(8).keys()].map(row =>
-          [...Array(8).keys()].map(col => {
-            const piece = board[row][col];
-            const isLegal = legalMoves.some(([r, c]) => r === row && c === col);
-            const hasCapture = isLegal && piece;
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gridTemplateRows: 'repeat(8, 1fr)', width: '100%', height: '100%' }}>
+          {[...Array(8).keys()].map(row =>
+            [...Array(8).keys()].map(col => {
+              const piece = board[row][col];
+              const isLegal = legalMoves.some(([r, c]) => r === row && c === col);
+              const hasCapture = isLegal && piece;
 
-            return (
-              <div
-                key={`${row}-${col}`}
-                className={`relative flex items-center justify-center cursor-pointer transition-colors duration-150 ${getSquareStyle(row, col)}`}
-                onClick={() => handleClick(row, col)}
-              >
-                {isLegal && !hasCapture && (
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-[26%] h-[26%] rounded-full bg-black/20" />
-                  </div>
-                )}
-                {hasCapture && (
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-full h-full rounded-full border-[3px] border-black/25" />
-                  </div>
-                )}
-                {piece && (
-                  <div className="absolute inset-[6%] z-10 flex items-center justify-center">
-                    <PieceRenderer piece={piece} size="fill" />
-                  </div>
-                )}
-              </div>
-            );
-          })
-        )}
+              return (
+                <div
+                  key={`${row}-${col}`}
+                  className="relative flex items-center justify-center cursor-pointer transition-all duration-150"
+                  style={{ aspectRatio: '1 / 1', backgroundColor: getSquareBg(row, col), ...getSquareStyle(row, col) }}
+                  onClick={() => handleClick(row, col)}
+                >
+                  {/* Legal move indicator */}
+                  {isLegal && !hasCapture && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-[28%] h-[28%] rounded-full"
+                        style={{ background: 'rgba(58,175,169,0.55)', boxShadow: '0 0 10px rgba(58,175,169,0.8)' }} />
+                    </div>
+                  )}
+
+                  {/* Capture indicator */}
+                  {hasCapture && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="absolute inset-0 rounded-none"
+                        style={{ boxShadow: 'inset 0 0 0 3px rgba(58,175,169,0.7), inset 0 0 16px rgba(58,175,169,0.25)' }} />
+                    </div>
+                  )}
+
+                  {/* Piece */}
+                  {piece && (
+                    <div className="absolute inset-[2%] z-10 flex items-center justify-center">
+                      <PieceRenderer piece={piece} size="fill" />
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
 
       {/* Success overlay */}
