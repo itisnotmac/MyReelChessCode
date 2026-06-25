@@ -59,7 +59,7 @@ export const STRATEGY_LESSONS = [
     id: 'weak-square-intro',
     chapter: 'Intermediate Strategy',
     title: 'Weak Squares',
-    icon: ' cracks',
+    icon: '🔲',
     description: 'A weak square is one that can never be protected by a pawn. Once a pawn moves or is traded, the squares it used to guard become permanent weaknesses. Here, Black\'s f6 square is weak — the e7 and g7 pawns have advanced, and no black pawn can ever guard f6 again. White can plant a piece there and it will be a permanent thorn in Black\'s position.',
     board: [
       [null,null,null,null,'k',null,null,null],

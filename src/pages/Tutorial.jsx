@@ -18,6 +18,7 @@ export default function Tutorial() {
     catch { return []; }
   });
   const [showList, setShowList] = useState(true);
+  const [expandedChapter, setExpandedChapter] = useState(null);
   const [boardKey, setBoardKey] = useState(0);
 
   const lesson = LESSONS[currentIndex];
@@ -93,44 +94,65 @@ export default function Tutorial() {
           <p className="text-[10px] text-white/20 mt-1 text-right">{progress}% complete</p>
         </div>
 
-        {/* Lesson list by chapter */}
-        <div className="px-5 space-y-6 pb-10">
+        {/* Lesson list by chapter (collapsible) */}
+        <div className="px-5 space-y-2 pb-10">
           {CHAPTERS.map((chapter, ci) => {
             const chapterLessons = LESSONS.filter(l => l.chapter === chapter);
+            const doneCount = chapterLessons.filter(l => isCompleted(l.id)).length;
+            const isOpen = expandedChapter === chapter;
             return (
-              <div key={chapter}>
-                <p className="text-[10px] tracking-[0.3em] uppercase text-[#3AAFA9]/50 font-semibold mb-3">{chapter}</p>
-                <div className="space-y-2">
-                  {chapterLessons.map((l, li) => {
-                    const globalIdx = LESSONS.findIndex(x => x.id === l.id);
-                    const done = isCompleted(l.id);
-                    return (
-                      <motion.button
-                        key={l.id}
-                        onClick={() => goToLesson(globalIdx)}
-                        className="w-full text-left"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: ci * 0.05 + li * 0.04 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <div className={`relative rounded-xl px-4 py-3.5 border flex items-center gap-3 transition-all ${done ? 'border-[#3AAFA9]/30 bg-[#3AAFA9]/05' : 'border-white/6 bg-white/3'}`}>
-                          <span className="text-xl w-7 text-center">{l.icon}</span>
-                          <div className="flex-1">
-                            <p className="text-white/80 text-sm font-medium">{l.title}</p>
-                            {l.interactive && (
-                              <p className="text-[10px] text-white/20 mt-0.5">Interactive Exercise</p>
-                            )}
-                          </div>
-                          {done
-                            ? <CheckCircle2 className="w-4 h-4 text-[#3AAFA9] shrink-0" />
-                            : <ChevronRight className="w-4 h-4 text-white/15 shrink-0" />
-                          }
-                        </div>
-                      </motion.button>
-                    );
-                  })}
-                </div>
+              <div key={chapter} className="rounded-xl border border-white/6 bg-white/3 overflow-hidden">
+                <button
+                  onClick={() => setExpandedChapter(isOpen ? null : chapter)}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/5 transition-colors"
+                >
+                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#3AAFA9]/60 font-semibold flex-1">{chapter}</span>
+                  <span className="text-[10px] text-white/20">{doneCount}/{chapterLessons.length}</span>
+                  <ChevronRight className={`w-4 h-4 text-white/30 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
+                </button>
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="space-y-1.5 px-3 pb-3">
+                        {chapterLessons.map((l, li) => {
+                          const globalIdx = LESSONS.findIndex(x => x.id === l.id);
+                          const done = isCompleted(l.id);
+                          return (
+                            <motion.button
+                              key={l.id}
+                              onClick={() => goToLesson(globalIdx)}
+                              className="w-full text-left"
+                              initial={{ opacity: 0, y: 8 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: li * 0.03 }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              <div className={`relative rounded-lg px-3 py-2.5 border flex items-center gap-3 transition-all ${done ? 'border-[#3AAFA9]/25 bg-[#3AAFA9]/05' : 'border-white/5 bg-white/2'}`}>
+                                <span className="text-lg w-6 text-center">{l.icon}</span>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-white/75 text-[13px] font-medium truncate">{l.title}</p>
+                                  {l.interactive && (
+                                    <p className="text-[9px] text-[#3AAFA9]/40 mt-0.5">Interactive</p>
+                                  )}
+                                </div>
+                                {done
+                                  ? <CheckCircle2 className="w-3.5 h-3.5 text-[#3AAFA9] shrink-0" />
+                                  : <ChevronRight className="w-3.5 h-3.5 text-white/15 shrink-0" />
+                                }
+                              </div>
+                            </motion.button>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}
