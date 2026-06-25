@@ -3,6 +3,7 @@ import { SPECIAL_MOVES_LESSONS } from './specialMoves';
 import { ENDGAME_LESSONS } from './endgame';
 import { OPENING_LESSONS } from './opening';
 import { TACTICS_LESSONS } from './tactics';
+import { STRATEGY_LESSONS } from './strategy';
 
 export const LESSONS = [
   ...BASICS_LESSONS,
@@ -10,6 +11,7 @@ export const LESSONS = [
   ...ENDGAME_LESSONS,
   ...OPENING_LESSONS,
   ...TACTICS_LESSONS,
+  ...STRATEGY_LESSONS,
 ];
 
 export const CHAPTERS = [...new Set(LESSONS.map(l => l.chapter))];
