@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PieceRenderer from '../chess/PieceRenderer';
-import { getLegalMoves, getPieceColor } from '../chess/ChessLogic';
+import { getLegalMoves, getPieceColor, getPieceName, isWhite } from '../chess/ChessLogic';
 
 export default function TutorialBoard({ board: initialBoard, lesson, onSuccess }) {
   const [board, setBoard] = useState(initialBoard.map(r => [...r]));
@@ -9,6 +9,7 @@ export default function TutorialBoard({ board: initialBoard, lesson, onSuccess }
   const [succeeded, setSucceeded] = useState(false);
 
   const playerColor = lesson.playerColor || 'white';
+  const enPassantTarget = lesson.enPassantTarget || null;
 
   const handleClick = (row, col) => {
     if (succeeded) return;
@@ -25,10 +26,39 @@ export default function TutorialBoard({ board: initialBoard, lesson, onSuccess }
           lesson.expectedMoves.some(([fr, fc, tr, tc]) => fr === selR && fc === selC && tr === row && tc === col);
 
         if (isCorrect || !lesson.expectedMoves) {
-          // Accept any legal move for free-form lessons
           const newBoard = board.map(r => [...r]);
-          newBoard[row][col] = newBoard[selR][selC];
+          const movingPiece = newBoard[selR][selC];
+          const pieceName = getPieceName(movingPiece);
+          const isWhitePiece = isWhite(movingPiece);
+
+          newBoard[row][col] = movingPiece;
           newBoard[selR][selC] = null;
+
+          // Castling — move the rook too
+          if (pieceName === 'king' && Math.abs(col - selC) === 2) {
+            const homeRow = isWhitePiece ? 7 : 0;
+            if (col === 6) {
+              newBoard[homeRow][5] = newBoard[homeRow][7];
+              newBoard[homeRow][7] = null;
+            } else if (col === 2) {
+              newBoard[homeRow][3] = newBoard[homeRow][0];
+              newBoard[homeRow][0] = null;
+            }
+          }
+
+          // En passant — remove the captured pawn
+          if (pieceName === 'pawn' && enPassantTarget &&
+              row === enPassantTarget[0] && col === enPassantTarget[1]) {
+            newBoard[selR][col] = null;
+          }
+
+          // Pawn promotion — auto-queen
+          if (pieceName === 'pawn') {
+            if ((isWhitePiece && row === 0) || (!isWhitePiece && row === 7)) {
+              newBoard[row][col] = isWhitePiece ? 'Q' : 'q';
+            }
+          }
+
           setBoard(newBoard);
           setSelected(null);
           setLegalMoves([]);
@@ -44,7 +74,7 @@ export default function TutorialBoard({ board: initialBoard, lesson, onSuccess }
 
       // Reselect own piece
       if (piece && getPieceColor(piece) === playerColor) {
-        const moves = getLegalMoves(board, row, col, null, {
+        const moves = getLegalMoves(board, row, col, enPassantTarget, {
           whiteKingSide: true, whiteQueenSide: true, blackKingSide: true, blackQueenSide: true
         });
         // For free-form lessons, only allow the designated moving piece
@@ -66,7 +96,7 @@ export default function TutorialBoard({ board: initialBoard, lesson, onSuccess }
     // Select own piece
     if (piece && getPieceColor(piece) === playerColor) {
       if (lesson.movingPiece && piece.toUpperCase() !== lesson.movingPiece) return;
-      const moves = getLegalMoves(board, row, col, null, {
+      const moves = getLegalMoves(board, row, col, enPassantTarget, {
         whiteKingSide: true, whiteQueenSide: true, blackKingSide: true, blackQueenSide: true
       });
       setSelected([row, col]);
