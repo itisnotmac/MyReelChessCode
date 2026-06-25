@@ -58,7 +58,7 @@ export const LESSONS = [
   {
     id: 'pawn-capture',
     chapter: 'The Pawn',
-    title: 'Pawns Capture Diagonally',
+    title: 'How the Pawn Captures',
     icon: '♙',
     description: 'Pawns capture one square diagonally forward — they cannot capture straight ahead. Capture the black pawn!',
     board: [
@@ -100,6 +100,28 @@ export const LESSONS = [
     movingPiece: 'R',
     hint: 'Click the Rook, then click any square in the same row or column.',
   },
+  {
+    id: 'rook-capture',
+    chapter: 'The Rook',
+    title: 'How the Rook Captures',
+    icon: '♖',
+    description: 'The Rook captures by moving to an enemy piece\'s square along its line of attack — horizontally or vertically. It cannot jump. Capture the black pawn!',
+    board: [
+      [null,null,null,null,'k',null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,'p',null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,'R',null,null,null,'K'],
+    ],
+    interactive: true,
+    playerColor: 'white',
+    expectedMoves: [[7,3,5,3]],
+    movingPiece: 'R',
+    hint: 'Click your Rook on d1, then click the black pawn on d6 to capture it along the file.',
+  },
 
   // ─── Chapter 4: The Bishop ───────────────────────────────────────────────────
   {
@@ -123,6 +145,28 @@ export const LESSONS = [
     expectedMoves: null,
     movingPiece: 'B',
     hint: 'Click the Bishop, then click any square diagonally from it.',
+  },
+  {
+    id: 'bishop-capture',
+    chapter: 'The Bishop',
+    title: 'How the Bishop Captures',
+    icon: '♗',
+    description: 'The Bishop captures by sliding diagonally onto an enemy piece\'s square. It stays on its own color forever. Capture the black pawn!',
+    board: [
+      [null,null,null,null,'k',null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,'p',null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,'B',null,'K'],
+    ],
+    interactive: true,
+    playerColor: 'white',
+    expectedMoves: [[7,5,5,5]],
+    movingPiece: 'B',
+    hint: 'Click your Bishop on f1, then click the black pawn on f6 to capture it along the diagonal.',
   },
 
   // ─── Chapter 5: The Knight ───────────────────────────────────────────────────
@@ -148,6 +192,28 @@ export const LESSONS = [
     movingPiece: 'N',
     hint: 'Click the Knight, then click one of the highlighted L-shaped squares.',
   },
+  {
+    id: 'knight-capture',
+    chapter: 'The Knight',
+    title: 'How the Knight Captures',
+    icon: '♘',
+    description: 'The Knight captures by landing on an enemy piece\'s square with its L-shaped jump. Unlike other pieces, it can leap over anything to get there! Capture the black pawn!',
+    board: [
+      [null,null,null,null,'k',null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,'p',null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,'N',null,null,'K'],
+    ],
+    interactive: true,
+    playerColor: 'white',
+    expectedMoves: [[7,4,4,5]],
+    movingPiece: 'N',
+    hint: 'Click your Knight on e1, then click the black pawn on f4. The Knight jumps in an L-shape to capture it.',
+  },
 
   // ─── Chapter 6: The Queen ────────────────────────────────────────────────────
   {
@@ -172,6 +238,28 @@ export const LESSONS = [
     movingPiece: 'Q',
     hint: 'Click the Queen, then click any square she can reach.',
   },
+  {
+    id: 'queen-capture',
+    chapter: 'The Queen',
+    title: 'How the Queen Captures',
+    icon: '♕',
+    description: 'The Queen captures by moving onto an enemy piece\'s square — in any direction (horizontal, vertical, or diagonal). She is devastating on open lines! Capture the black pawn!',
+    board: [
+      [null,null,null,null,'k',null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,'p',null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,'Q',null,null,'K'],
+    ],
+    interactive: true,
+    playerColor: 'white',
+    expectedMoves: [[7,4,4,5]],
+    movingPiece: 'Q',
+    hint: 'Click your Queen on e1, then click the black pawn on f4 to capture it diagonally.',
+  },
 
   // ─── Chapter 7: The King ─────────────────────────────────────────────────────
   {
@@ -195,6 +283,28 @@ export const LESSONS = [
     expectedMoves: null,
     movingPiece: 'K',
     hint: 'Click the King, then click any adjacent square to move him.',
+  },
+  {
+    id: 'king-capture',
+    chapter: 'The King',
+    title: 'How the King Captures',
+    icon: '♔',
+    description: 'The King captures by stepping one square onto an enemy piece\'s square in any direction. But be careful — never capture a piece that is defended, or your King will be in danger! Capture the black pawn!',
+    board: [
+      [null,null,null,null,'k',null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,'p',null,null,null],
+      [null,null,null,null,'K',null,null,null],
+    ],
+    interactive: true,
+    playerColor: 'white',
+    expectedMoves: [[7,4,6,4]],
+    movingPiece: 'K',
+    hint: 'Click your King on e1, then click the black pawn on e2 to capture it. The King steps forward one square.',
   },
 
   // ─── Chapter: Special Moves ──────────────────────────────────────────────────
