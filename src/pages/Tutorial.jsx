@@ -56,7 +56,7 @@ export default function Tutorial() {
 
   if (showList) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden">
+      <div className="min-h-screen bg-[#0a0a0f] relative overflow-y-auto">
         {/* Background */}
         <div className="absolute inset-0 opacity-[0.02]"
           style={{ backgroundImage: `repeating-conic-gradient(#3AAFA9 0% 25%, transparent 0% 50%)`, backgroundSize: '40px 40px' }} />
