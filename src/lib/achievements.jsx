@@ -2,8 +2,9 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import {
   Trophy, Target, Swords, Bot, Clock, Zap, Crown, Star,
-  Award, Flame, Shield, TrendingUp, Handshake, Gamepad2
+  Award, Flame, Shield, TrendingUp, Handshake, Gamepad2, BookOpen
 } from 'lucide-react';
+import { LESSONS } from './tutorialLessons';
 
 // Each achievement: id, title, description, icon, color, check(stats) -> boolean
 export const ACHIEVEMENTS = [
@@ -119,7 +120,26 @@ export const ACHIEVEMENTS = [
     color: '#E67E22',
     check: s => s.pvpWins >= 5,
   },
+  {
+    id: 'bookworm',
+    title: 'Bookworm',
+    description: 'Complete every lesson in Reel Chess University',
+    icon: BookOpen,
+    color: '#3AAFA9',
+    hidden: true,
+    check: s => s.tutorialCompleted >= s.tutorialTotal,
+  },
 ];
+
+// Read tutorial completion from localStorage
+function getTutorialCompletedCount() {
+  try {
+    const completed = JSON.parse(localStorage.getItem('tutorialCompleted') || '[]');
+    return Array.isArray(completed) ? completed.length : 0;
+  } catch {
+    return 0;
+  }
+}
 
 // Compute stats from GameHistory records
 export function computeStats(history) {
@@ -151,6 +171,8 @@ export function computeStats(history) {
     fastestWinSec,
     longestGameMoves,
     winRate,
+    tutorialCompleted: getTutorialCompletedCount(),
+    tutorialTotal: LESSONS.length,
   };
 }
 

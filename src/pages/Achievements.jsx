@@ -101,9 +101,9 @@ export default function Achievements() {
               </div>
             </motion.div>
 
-            {/* Badge grid */}
+            {/* Badge grid — hidden achievements only appear once earned */}
             <div className="grid grid-cols-2 gap-3">
-              {ACHIEVEMENTS.map((ach, i) => (
+              {ACHIEVEMENTS.filter(ach => !ach.hidden || earned[ach.id]).map((ach, i) => (
                 <AchievementBadge
                   key={ach.id}
                   achievement={ach}
