@@ -81,7 +81,7 @@ export default function Tutorial() {
         </div>
 
         {/* Progress bar */}
-        <div className="px-5 mb-6">
+        <div className="relative z-10 px-5 mb-6">
           <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
             <motion.div
               className="h-full rounded-full"
@@ -95,7 +95,7 @@ export default function Tutorial() {
         </div>
 
         {/* Lesson list by chapter (collapsible) */}
-        <div className="px-5 space-y-2 pb-10">
+        <div className="relative z-10 px-5 space-y-2 pb-10">
           {CHAPTERS.map((chapter, ci) => {
             const chapterLessons = LESSONS.filter(l => l.chapter === chapter);
             const doneCount = chapterLessons.filter(l => isCompleted(l.id)).length;

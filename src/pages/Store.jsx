@@ -333,7 +333,7 @@ export default function Store() {
       {/* Footer note */}
       <div className="px-4 text-center">
         <p className="text-[10px] text-white/20 tracking-wider">
-          All cosmetics are one-time purchases. $0.99 each.
+          All cosmetics are one-time purchases. $0.99 each, or can be purchased with in-game currency, earned from playing the game.
         </p>
       </div>
     </div>
