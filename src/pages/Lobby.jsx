@@ -297,7 +297,7 @@ export default function Lobby() {
             { label: 'vs AI',     onClick: () => setDifficultyOpen(true),                                                           span: false },
             { label: 'Local PVP', onClick: () => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); },             span: false },
             { label: '2v2',       onClick: () => setTwoVTwoOpen(true),                                                               span: false },
-            { label: 'Tutorial',  onClick: () => navigate('/Tutorial'),                                                              span: false },
+            { label: 'R.C.U.',   onClick: () => navigate('/Tutorial'),                                                              span: false },
             { label: 'Daily',      onClick: () => navigate('/DailyChallenges'),                                                       span: false },
             { label: 'Store',      onClick: () => navigate('/Store'),                                                                 span: false },
             { label: 'Menu',      onClick: () => setMenuOpen(true),                                                                  span: true  },

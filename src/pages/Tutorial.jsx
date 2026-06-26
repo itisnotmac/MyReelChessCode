@@ -62,19 +62,19 @@ export default function Tutorial() {
           style={{ backgroundImage: `repeating-conic-gradient(#3AAFA9 0% 25%, transparent 0% 50%)`, backgroundSize: '40px 40px' }} />
 
         {/* Header */}
-        <div className="relative z-10 flex items-center gap-3 px-5 pt-6 pb-4">
+        <div className="relative z-10 flex items-center gap-3 px-5 pt-6 pb-2">
           <button onClick={() => navigate(-1)}
-            className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors">
+            className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors shrink-0">
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <div>
-            <h1 className="text-base font-bold tracking-[0.15em]"
+          <div className="flex-1 text-center">
+            <h1 className="text-lg font-black tracking-[0.12em]"
               style={{ backgroundImage: 'linear-gradient(135deg, #3AAFA9, #A8E6E3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              TUTORIALS
+              REEL CHESS UNIVERSITY
             </h1>
-            <p className="text-[10px] tracking-[0.25em] text-white/20 uppercase">Learn to Play Chess</p>
+            <p className="text-[10px] tracking-[0.3em] text-white/25 uppercase font-medium">from beginner to winner</p>
           </div>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <BookOpen className="w-4 h-4 text-[#3AAFA9]/60" />
             <span className="text-xs text-white/30">{completed.length}/{LESSONS.length}</span>
           </div>
