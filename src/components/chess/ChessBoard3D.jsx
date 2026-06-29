@@ -20,14 +20,36 @@ const LEGAL_COLOR = new THREE.Color(0x00ff88);
 const LAST_MOVE_COLOR = new THREE.Color(0xffa500);
 const CHECK_COLOR = new THREE.Color(0xff2200);
 
+// Fresnel-based neon edge glow — only the silhouette edges emit light, not the whole surface
 function applyMaterial(object3D, color, isWhite) {
+  const glowColor = isWhite ? WHITE_GLOW : TEAL_GLOW;
+  const glowIntensity = isWhite ? 2.2 : 2.8;
+  const glowPower = 2.0;
+
   const mat = new THREE.MeshStandardMaterial({
     color: color,
-    metalness: 0.4,
-    roughness: 0.25,
-    emissive: isWhite ? WHITE_GLOW : TEAL_GLOW,
-    emissiveIntensity: isWhite ? 0.35 : 0.6,
+    metalness: 0.3,
+    roughness: 0.35,
+    emissive: glowColor,
+    emissiveIntensity: 0,
   });
+
+  mat.onBeforeCompile = (shader) => {
+    shader.uniforms.uGlowColor = { value: glowColor };
+    shader.uniforms.uGlowIntensity = { value: glowIntensity };
+    shader.uniforms.uGlowPower = { value: glowPower };
+    shader.fragmentShader =
+      'uniform vec3 uGlowColor;\nuniform float uGlowIntensity;\nuniform float uGlowPower;\n' +
+      shader.fragmentShader;
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <emissivemap_fragment>',
+      `#include <emissivemap_fragment>
+       vec3 viewDir = normalize(vViewPosition);
+       float fresnel = pow(1.0 - max(0.0, dot(normalize(vNormal), viewDir)), uGlowPower);
+       totalEmissiveRadiance = uGlowColor * uGlowIntensity * fresnel;`
+    );
+  };
+
   object3D.traverse(child => {
     if (child.isMesh) {
       child.material = mat;
@@ -300,10 +322,15 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     const keys = ['p', 'r', 'n', 'b', 'q', 'k'];
 
     const processTemplate = (gltfScene, key) => {
+      // Knight GLB faces -Z by default; other pieces face +X and need π/2 to face -Z
+      const isKnight = key === 'n';
+      const wRotY = isKnight ? 0 : Math.PI / 2;
+      const bRotY = isKnight ? Math.PI : -Math.PI / 2;
+
       // White variant — face -Z (towards black at row 0)
       const wTmpl = gltfScene.clone(true);
       applyMaterial(wTmpl, WHITE_PIECE, true);
-      wTmpl.rotation.y = Math.PI / 2;
+      wTmpl.rotation.y = wRotY;
       const wBox = new THREE.Box3().setFromObject(wTmpl);
       const wSize = new THREE.Vector3();
       wBox.getSize(wSize);
@@ -316,7 +343,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
       // Black variant — face +Z (towards white at row 7)
       const bTmpl = gltfScene.clone(true);
       applyMaterial(bTmpl, BLACK_PIECE, false);
-      bTmpl.rotation.y = -Math.PI / 2;
+      bTmpl.rotation.y = bRotY;
       const bBox = new THREE.Box3().setFromObject(bTmpl);
       const bSize = new THREE.Vector3();
       bBox.getSize(bSize);
