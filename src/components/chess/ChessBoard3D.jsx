@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { createPiece } from '@/lib/proceduralPieces';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { COMPRESSED_GLB_URLS } from '@/lib/compressedPieceUrls';
 
 const SQUARE_SIZE = 1;
 const BOARD_SIZE = 8;
@@ -287,16 +289,21 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     }
   }, [selectedSquare, legalMoves, lastMove, checkSquare]);
 
-  // Build piece templates once — procedural geometry, no network loading
+  // Build piece templates once — load Draco-compressed GLB models (~500 KB each)
   useEffect(() => {
+    let cancelled = false;
+    const loader = new GLTFLoader();
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+    loader.setDRACOLoader(dracoLoader);
+
     const keys = ['p', 'r', 'n', 'b', 'q', 'k'];
-    for (const key of keys) {
-      const rawModel = createPiece(key);
-      if (!rawModel) continue;
+
+    const processTemplate = (gltfScene, key) => {
       const isKnight = key === 'n';
 
       // White variant
-      const wTmpl = rawModel.clone(true);
+      const wTmpl = gltfScene.clone(true);
       applyMaterial(wTmpl, WHITE_PIECE, true);
       if (isKnight) wTmpl.rotation.y = Math.PI;
       const wBox = new THREE.Box3().setFromObject(wTmpl);
@@ -309,7 +316,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
       templatesRef.current[key.toUpperCase()] = { mesh: wTmpl, offsetX: wCenter.x, offsetZ: wCenter.z, yOffset: -wBox2.min.y + 0.06 };
 
       // Black variant
-      const bTmpl = rawModel.clone(true);
+      const bTmpl = gltfScene.clone(true);
       applyMaterial(bTmpl, BLACK_PIECE, false);
       const bBox = new THREE.Box3().setFromObject(bTmpl);
       const bSize = new THREE.Vector3();
@@ -319,9 +326,27 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
       const bCenter = new THREE.Vector3();
       bBox2.getCenter(bCenter);
       templatesRef.current[key.toLowerCase()] = { mesh: bTmpl, offsetX: bCenter.x, offsetZ: bCenter.z, yOffset: -bBox2.min.y + 0.06 };
-    }
-    modelsReadyRef.current = true;
-    rebuildPiecesRef.current && rebuildPiecesRef.current();
+    };
+
+    Promise.all(keys.map(key =>
+      new Promise((resolve, reject) => {
+        loader.load(COMPRESSED_GLB_URLS[key], (gltf) => resolve({ key, scene: gltf.scene }), undefined, reject);
+      })
+    )).then(results => {
+      if (cancelled) return;
+      for (const { key, scene } of results) {
+        processTemplate(scene, key);
+      }
+      modelsReadyRef.current = true;
+      rebuildPiecesRef.current && rebuildPiecesRef.current();
+    }).catch(err => {
+      console.error('Failed to load GLB models:', err);
+    });
+
+    return () => {
+      cancelled = true;
+      dracoLoader.dispose();
+    };
   }, []);
 
   // Rebuild pieces when board changes — clones pre-built templates, no material/bbox work per move
