@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, CheckCircle2, BookOpen, Lock } from 'lucide-react';
-import { LESSONS, CHAPTERS } from '../lib/tutorialLessons';
+import { LESSONS, CHAPTERS, SECTIONS } from '../lib/tutorialLessons';
 import TutorialBoard from '../components/tutorial/TutorialBoard';
 import { useSeo } from '@/lib/useSeo';
 
@@ -94,14 +94,28 @@ export default function Tutorial() {
           <p className="text-[10px] text-white/20 mt-1 text-right">{progress}% complete</p>
         </div>
 
-        {/* Lesson list by chapter (collapsible) */}
-        <div className="relative z-10 px-5 space-y-2 pb-10">
-          {CHAPTERS.map((chapter, ci) => {
-            const chapterLessons = LESSONS.filter(l => l.chapter === chapter);
-            const doneCount = chapterLessons.filter(l => isCompleted(l.id)).length;
-            const isOpen = expandedChapter === chapter;
+        {/* Lesson list by section (grouped chapters) */}
+        <div className="relative z-10 px-5 space-y-5 pb-10">
+          {SECTIONS.map((section) => {
+            const sectionChapters = section.chapters.filter(ch => CHAPTERS.includes(ch));
+            if (sectionChapters.length === 0) return null;
             return (
-              <div key={chapter} className="rounded-xl border border-white/6 bg-white/3 overflow-hidden">
+              <div key={section.name} className="space-y-2">
+                {/* Section divider */}
+                <div className="flex items-center gap-3 px-1 pt-1">
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#3AAFA9]/25" />
+                  <div className="text-center shrink-0">
+                    <p className="text-[11px] tracking-[0.25em] uppercase font-bold text-[#3AAFA9]">{section.name}</p>
+                    <p className="text-[9px] text-white/25 mt-0.5">{section.description}</p>
+                  </div>
+                  <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#3AAFA9]/25" />
+                </div>
+                {sectionChapters.map((chapter) => {
+                  const chapterLessons = LESSONS.filter(l => l.chapter === chapter);
+                  const doneCount = chapterLessons.filter(l => isCompleted(l.id)).length;
+                  const isOpen = expandedChapter === chapter;
+                  return (
+                    <div key={chapter} className="rounded-xl border border-white/6 bg-white/3 overflow-hidden">
                 <button
                   onClick={() => setExpandedChapter(isOpen ? null : chapter)}
                   className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/5 transition-colors"
@@ -156,6 +170,9 @@ export default function Tutorial() {
               </div>
             );
           })}
+            </div>
+          );
+        })}
         </div>
       </div>
     );

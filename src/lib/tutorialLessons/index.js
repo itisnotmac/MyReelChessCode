@@ -17,3 +17,21 @@ export const LESSONS = [
 ];
 
 export const CHAPTERS = [...new Set(LESSONS.map(l => l.chapter))];
+
+export const SECTIONS = [
+  {
+    name: 'Beginner',
+    description: 'Board rules, piece movement & special moves',
+    chapters: ['The Board', 'Special Moves', 'Check & Checkmate', 'Opening Principles'],
+  },
+  {
+    name: 'Intermediate',
+    description: 'Tactical patterns & positional strategy',
+    chapters: ['Chess Tactics', 'Intermediate Strategy'],
+  },
+  {
+    name: 'Advanced',
+    description: 'Master-level concepts & tournament play',
+    chapters: ['Advanced Concepts'],
+  },
+];
