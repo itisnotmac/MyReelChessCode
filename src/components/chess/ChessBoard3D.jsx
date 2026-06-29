@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { createPiece } from '@/lib/proceduralPieces';
 
 const SQUARE_SIZE = 1;
 const BOARD_SIZE = 8;
@@ -18,39 +18,20 @@ const LEGAL_COLOR = new THREE.Color(0x00ff88);
 const LAST_MOVE_COLOR = new THREE.Color(0xffa500);
 const CHECK_COLOR = new THREE.Color(0xff2200);
 
-const MODEL_URLS = {
-  p: 'https://base44.app/api/apps/69ab30c24c8c7db2b8432adf/files/mp/public/69ab30c24c8c7db2b8432adf/ae686f474_PawnThreeD.glb',
-  r: 'https://base44.app/api/apps/69ab30c24c8c7db2b8432adf/files/mp/public/69ab30c24c8c7db2b8432adf/3173ccad6_RookThreeD.glb',
-  n: 'https://base44.app/api/apps/69ab30c24c8c7db2b8432adf/files/mp/public/69ab30c24c8c7db2b8432adf/6c1050bde_KnightThreeD.glb',
-  b: 'https://base44.app/api/apps/69ab30c24c8c7db2b8432adf/files/mp/public/69ab30c24c8c7db2b8432adf/ae1ab8cab_BishopThreeD.glb',
-  q: 'https://base44.app/api/apps/69ab30c24c8c7db2b8432adf/files/mp/public/69ab30c24c8c7db2b8432adf/eedb484e3_QueenThreeD.glb',
-  k: 'https://base44.app/api/apps/69ab30c24c8c7db2b8432adf/files/mp/public/69ab30c24c8c7db2b8432adf/1f88a60cd_KingThreeD.glb',
-};
-
-function applyColor(gltfScene, color, isWhite) {
-  const glowColor = isWhite ? WHITE_GLOW : TEAL_GLOW;
-  const meshes = [];
-  gltfScene.traverse(child => { if (child.isMesh) meshes.push(child); });
-
-  meshes.forEach(child => {
-    // Main piece material — neutral, no emissive tint on the body
-    child.material = new THREE.MeshStandardMaterial({
-      color: color,
-      metalness: 0.6,
-      roughness: 0.35,
-    });
-    child.castShadow = true;
-    child.receiveShadow = true;
-
-    // Outline shell: back-face only, slightly enlarged, emissive glow color
-    const outlineMat = new THREE.MeshBasicMaterial({
-      color: glowColor,
-      side: THREE.BackSide,
-      toneMapped: false,
-    });
-    const outline = new THREE.Mesh(child.geometry, outlineMat);
-    outline.scale.setScalar(1.14);
-    child.add(outline);
+function applyMaterial(object3D, color, isWhite) {
+  const mat = new THREE.MeshStandardMaterial({
+    color: color,
+    metalness: 0.5,
+    roughness: 0.3,
+    emissive: isWhite ? 0x1a1a1a : 0x0a2222,
+    emissiveIntensity: 0.15,
+  });
+  object3D.traverse(child => {
+    if (child.isMesh) {
+      child.material = mat;
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
   });
 }
 
@@ -65,7 +46,6 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
   const frameRef = useRef(null);
   const squareMeshesRef = useRef([]);
   const pieceMeshesRef = useRef([]);
-  const modelsRef = useRef({});
   const templatesRef = useRef({});
   const modelsReadyRef = useRef(false);
   const rebuildPiecesRef = useRef(null);
@@ -307,52 +287,41 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     }
   }, [selectedSquare, legalMoves, lastMove, checkSquare]);
 
-  // Preload GLB models once, then pre-build ready-to-clone templates (materials, rotation, scale, centering all baked in)
+  // Build piece templates once — procedural geometry, no network loading
   useEffect(() => {
-    const loader = new GLTFLoader();
-    const keys = Object.keys(MODEL_URLS);
-    let loaded = 0;
-    keys.forEach(key => {
-      loader.load(MODEL_URLS[key], (gltf) => {
-        modelsRef.current[key] = gltf.scene;
-        loaded++;
-        if (loaded === keys.length) {
-          // Pre-build both color variants of each piece type so moves only clone + position
-          for (const key of keys) {
-            const rawModel = modelsRef.current[key];
-            const isKnight = key === 'n';
+    const keys = ['p', 'r', 'n', 'b', 'q', 'k'];
+    for (const key of keys) {
+      const rawModel = createPiece(key);
+      if (!rawModel) continue;
+      const isKnight = key === 'n';
 
-            // White variant
-            const wTmpl = rawModel.clone(true);
-            applyColor(wTmpl, WHITE_PIECE, true);
-            wTmpl.rotation.y = isKnight ? -Math.PI / 2 : Math.PI / 2;
-            const wBox = new THREE.Box3().setFromObject(wTmpl);
-            const wSize = new THREE.Vector3();
-            wBox.getSize(wSize);
-            wTmpl.scale.setScalar(0.75 / Math.max(wSize.x, wSize.y, wSize.z));
-            const wBox2 = new THREE.Box3().setFromObject(wTmpl);
-            const wCenter = new THREE.Vector3();
-            wBox2.getCenter(wCenter);
-            templatesRef.current[key.toUpperCase()] = { mesh: wTmpl, offsetX: wCenter.x, offsetZ: wCenter.z, yOffset: -wBox2.min.y + 0.06 };
+      // White variant
+      const wTmpl = rawModel.clone(true);
+      applyMaterial(wTmpl, WHITE_PIECE, true);
+      if (isKnight) wTmpl.rotation.y = Math.PI;
+      const wBox = new THREE.Box3().setFromObject(wTmpl);
+      const wSize = new THREE.Vector3();
+      wBox.getSize(wSize);
+      wTmpl.scale.setScalar(0.75 / Math.max(wSize.x, wSize.y, wSize.z));
+      const wBox2 = new THREE.Box3().setFromObject(wTmpl);
+      const wCenter = new THREE.Vector3();
+      wBox2.getCenter(wCenter);
+      templatesRef.current[key.toUpperCase()] = { mesh: wTmpl, offsetX: wCenter.x, offsetZ: wCenter.z, yOffset: -wBox2.min.y + 0.06 };
 
-            // Black variant
-            const bTmpl = rawModel.clone(true);
-            applyColor(bTmpl, BLACK_PIECE, false);
-            bTmpl.rotation.y = isKnight ? Math.PI / 2 : -Math.PI / 2;
-            const bBox = new THREE.Box3().setFromObject(bTmpl);
-            const bSize = new THREE.Vector3();
-            bBox.getSize(bSize);
-            bTmpl.scale.setScalar(0.75 / Math.max(bSize.x, bSize.y, bSize.z));
-            const bBox2 = new THREE.Box3().setFromObject(bTmpl);
-            const bCenter = new THREE.Vector3();
-            bBox2.getCenter(bCenter);
-            templatesRef.current[key.toLowerCase()] = { mesh: bTmpl, offsetX: bCenter.x, offsetZ: bCenter.z, yOffset: -bBox2.min.y + 0.06 };
-          }
-          modelsReadyRef.current = true;
-          rebuildPiecesRef.current && rebuildPiecesRef.current();
-        }
-      });
-    });
+      // Black variant
+      const bTmpl = rawModel.clone(true);
+      applyMaterial(bTmpl, BLACK_PIECE, false);
+      const bBox = new THREE.Box3().setFromObject(bTmpl);
+      const bSize = new THREE.Vector3();
+      bBox.getSize(bSize);
+      bTmpl.scale.setScalar(0.75 / Math.max(bSize.x, bSize.y, bSize.z));
+      const bBox2 = new THREE.Box3().setFromObject(bTmpl);
+      const bCenter = new THREE.Vector3();
+      bBox2.getCenter(bCenter);
+      templatesRef.current[key.toLowerCase()] = { mesh: bTmpl, offsetX: bCenter.x, offsetZ: bCenter.z, yOffset: -bBox2.min.y + 0.06 };
+    }
+    modelsReadyRef.current = true;
+    rebuildPiecesRef.current && rebuildPiecesRef.current();
   }, []);
 
   // Rebuild pieces when board changes — clones pre-built templates, no material/bbox work per move
