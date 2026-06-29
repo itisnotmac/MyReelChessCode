@@ -23,10 +23,10 @@ const CHECK_COLOR = new THREE.Color(0xff2200);
 function applyMaterial(object3D, color, isWhite) {
   const mat = new THREE.MeshStandardMaterial({
     color: color,
-    metalness: 0.5,
-    roughness: 0.3,
-    emissive: isWhite ? 0x1a1a1a : 0x0a2222,
-    emissiveIntensity: 0.15,
+    metalness: 0.4,
+    roughness: 0.25,
+    emissive: isWhite ? WHITE_GLOW : TEAL_GLOW,
+    emissiveIntensity: isWhite ? 0.35 : 0.6,
   });
   object3D.traverse(child => {
     if (child.isMesh) {
@@ -300,12 +300,10 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     const keys = ['p', 'r', 'n', 'b', 'q', 'k'];
 
     const processTemplate = (gltfScene, key) => {
-      const isKnight = key === 'n';
-
-      // White variant
+      // White variant — face -Z (towards black at row 0)
       const wTmpl = gltfScene.clone(true);
       applyMaterial(wTmpl, WHITE_PIECE, true);
-      if (isKnight) wTmpl.rotation.y = Math.PI;
+      wTmpl.rotation.y = Math.PI / 2;
       const wBox = new THREE.Box3().setFromObject(wTmpl);
       const wSize = new THREE.Vector3();
       wBox.getSize(wSize);
@@ -315,9 +313,10 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
       wBox2.getCenter(wCenter);
       templatesRef.current[key.toUpperCase()] = { mesh: wTmpl, offsetX: wCenter.x, offsetZ: wCenter.z, yOffset: -wBox2.min.y + 0.06 };
 
-      // Black variant
+      // Black variant — face +Z (towards white at row 7)
       const bTmpl = gltfScene.clone(true);
       applyMaterial(bTmpl, BLACK_PIECE, false);
+      bTmpl.rotation.y = -Math.PI / 2;
       const bBox = new THREE.Box3().setFromObject(bTmpl);
       const bSize = new THREE.Vector3();
       bBox.getSize(bSize);
