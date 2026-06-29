@@ -18,14 +18,13 @@ const LEGAL_COLOR = new THREE.Color(0x00ff88);
 const LAST_MOVE_COLOR = new THREE.Color(0xffa500);
 const CHECK_COLOR = new THREE.Color(0xff2200);
 
-const BASE_URL = 'https://raw.githubusercontent.com/itisnotmac/3D-Assets/main';
 const MODEL_URLS = {
-  p: `${BASE_URL}/PawnThreeD.glb`,
-  r: `${BASE_URL}/RookThreeD.glb`,
-  n: `${BASE_URL}/KnightThreeD.glb`,
-  b: `${BASE_URL}/BishopThreeD.glb`,
-  q: `${BASE_URL}/QueenThreeD.glb`,
-  k: `${BASE_URL}/KingThreeD.glb`,
+  p: 'https://base44.app/api/apps/69ab30c24c8c7db2b8432adf/files/mp/public/69ab30c24c8c7db2b8432adf/ae686f474_PawnThreeD.glb',
+  r: 'https://base44.app/api/apps/69ab30c24c8c7db2b8432adf/files/mp/public/69ab30c24c8c7db2b8432adf/3173ccad6_RookThreeD.glb',
+  n: 'https://base44.app/api/apps/69ab30c24c8c7db2b8432adf/files/mp/public/69ab30c24c8c7db2b8432adf/6c1050bde_KnightThreeD.glb',
+  b: 'https://base44.app/api/apps/69ab30c24c8c7db2b8432adf/files/mp/public/69ab30c24c8c7db2b8432adf/ae1ab8cab_BishopThreeD.glb',
+  q: 'https://base44.app/api/apps/69ab30c24c8c7db2b8432adf/files/mp/public/69ab30c24c8c7db2b8432adf/eedb484e3_QueenThreeD.glb',
+  k: 'https://base44.app/api/apps/69ab30c24c8c7db2b8432adf/files/mp/public/69ab30c24c8c7db2b8432adf/1f88a60cd_KingThreeD.glb',
 };
 
 function applyColor(gltfScene, color, isWhite) {
