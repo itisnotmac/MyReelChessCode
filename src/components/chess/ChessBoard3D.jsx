@@ -66,6 +66,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
   const squareMeshesRef = useRef([]);
   const pieceMeshesRef = useRef([]);
   const modelsRef = useRef({});
+  const templatesRef = useRef({});
   const modelsReadyRef = useRef(false);
   const rebuildPiecesRef = useRef(null);
   const isDragging = useRef(false);
@@ -96,7 +97,8 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(W, H);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && window.innerWidth < 1024);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -110,7 +112,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     const dirLight = new THREE.DirectionalLight(0xfff5e0, 1.6);
     dirLight.position.set(6, 12, 8);
     dirLight.castShadow = true;
-    dirLight.shadow.mapSize.set(1024, 1024);
+    dirLight.shadow.mapSize.set(isMobile ? 512 : 1024, isMobile ? 512 : 1024);
     scene.add(dirLight);
 
     const fillLight = new THREE.DirectionalLight(0x8888ff, 0.3);
@@ -305,7 +307,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     }
   }, [selectedSquare, legalMoves, lastMove, checkSquare]);
 
-  // Preload GLB models once
+  // Preload GLB models once, then pre-build ready-to-clone templates (materials, rotation, scale, centering all baked in)
   useEffect(() => {
     const loader = new GLTFLoader();
     const keys = Object.keys(MODEL_URLS);
@@ -315,6 +317,37 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
         modelsRef.current[key] = gltf.scene;
         loaded++;
         if (loaded === keys.length) {
+          // Pre-build both color variants of each piece type so moves only clone + position
+          for (const key of keys) {
+            const rawModel = modelsRef.current[key];
+            const isKnight = key === 'n';
+
+            // White variant
+            const wTmpl = rawModel.clone(true);
+            applyColor(wTmpl, WHITE_PIECE, true);
+            wTmpl.rotation.y = isKnight ? -Math.PI / 2 : Math.PI / 2;
+            const wBox = new THREE.Box3().setFromObject(wTmpl);
+            const wSize = new THREE.Vector3();
+            wBox.getSize(wSize);
+            wTmpl.scale.setScalar(0.75 / Math.max(wSize.x, wSize.y, wSize.z));
+            const wBox2 = new THREE.Box3().setFromObject(wTmpl);
+            const wCenter = new THREE.Vector3();
+            wBox2.getCenter(wCenter);
+            templatesRef.current[key.toUpperCase()] = { mesh: wTmpl, offsetX: wCenter.x, offsetZ: wCenter.z, yOffset: -wBox2.min.y + 0.06 };
+
+            // Black variant
+            const bTmpl = rawModel.clone(true);
+            applyColor(bTmpl, BLACK_PIECE, false);
+            bTmpl.rotation.y = isKnight ? Math.PI / 2 : -Math.PI / 2;
+            const bBox = new THREE.Box3().setFromObject(bTmpl);
+            const bSize = new THREE.Vector3();
+            bBox.getSize(bSize);
+            bTmpl.scale.setScalar(0.75 / Math.max(bSize.x, bSize.y, bSize.z));
+            const bBox2 = new THREE.Box3().setFromObject(bTmpl);
+            const bCenter = new THREE.Vector3();
+            bBox2.getCenter(bCenter);
+            templatesRef.current[key.toLowerCase()] = { mesh: bTmpl, offsetX: bCenter.x, offsetZ: bCenter.z, yOffset: -bBox2.min.y + 0.06 };
+          }
           modelsReadyRef.current = true;
           rebuildPiecesRef.current && rebuildPiecesRef.current();
         }
@@ -322,7 +355,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     });
   }, []);
 
-  // Rebuild pieces when board changes
+  // Rebuild pieces when board changes — clones pre-built templates, no material/bbox work per move
   useEffect(() => {
     const rebuild = () => {
       const scene = sceneRef.current;
@@ -335,37 +368,10 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
         for (let c = 0; c < 8; c++) {
           const piece = board[r][c];
           if (!piece) continue;
-          const key = piece.toLowerCase();
-          const template = modelsRef.current[key];
-          if (!template) continue;
-
-          const isWhite = piece === piece.toUpperCase();
-          const clone = template.clone(true);
-          applyColor(clone, isWhite ? WHITE_PIECE : BLACK_PIECE, isWhite);
-
-          // Rotate pieces to face forward (white faces up, black faces down)
-          // Knights have a different base orientation, so they need an extra 180°
-          const isKnight = key === 'n';
-          if (isKnight) {
-            clone.rotation.y = isWhite ? -Math.PI / 2 : Math.PI / 2;
-          } else {
-            clone.rotation.y = isWhite ? Math.PI / 2 : -Math.PI / 2;
-          }
-
-          // Auto-scale to fit square
-          const box = new THREE.Box3().setFromObject(clone);
-          const size = new THREE.Vector3();
-          box.getSize(size);
-          const maxDim = Math.max(size.x, size.y, size.z);
-          const targetHeight = 0.75;
-          clone.scale.setScalar(targetHeight / maxDim);
-
-          // Re-center after scale
-          const box2 = new THREE.Box3().setFromObject(clone);
-          const center = new THREE.Vector3();
-          box2.getCenter(center);
-          clone.position.set(c - center.x + clone.position.x, -box2.min.y + 0.06, r - center.z + clone.position.z);
-
+          const tmpl = templatesRef.current[piece];
+          if (!tmpl) continue;
+          const clone = tmpl.mesh.clone(true);
+          clone.position.set(c - tmpl.offsetX, tmpl.yOffset, r - tmpl.offsetZ);
           scene.add(clone);
           pieceMeshesRef.current.push(clone);
         }
