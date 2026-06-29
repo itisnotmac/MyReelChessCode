@@ -34,19 +34,37 @@ function applyMaterial(object3D, color, isWhite) {
     emissiveIntensity: 0,
   });
 
+  // Unique cache key per glow variant — prevents Three.js from reusing a cached
+  // shader program that lacks our fresnel injection
+  mat.customProgramCacheKey = () => isWhite ? 'fresnel_glow_white' : 'fresnel_glow_teal';
+
   mat.onBeforeCompile = (shader) => {
     shader.uniforms.uGlowColor = { value: glowColor };
     shader.uniforms.uGlowIntensity = { value: glowIntensity };
     shader.uniforms.uGlowPower = { value: glowPower };
+
+    // Vertex: pass view-space normal and position via our own varyings
+    shader.vertexShader =
+      'varying vec3 vGlowNormal;\nvarying vec3 vGlowViewPos;\n' +
+      shader.vertexShader;
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <project_vertex>',
+      `#include <project_vertex>
+       vGlowNormal = normalize(normalMatrix * normal);
+       vGlowViewPos = mvPosition.xyz;`
+    );
+
+    // Fragment: compute fresnel from our own varyings — no dependency on built-in varyings
     shader.fragmentShader =
       'uniform vec3 uGlowColor;\nuniform float uGlowIntensity;\nuniform float uGlowPower;\n' +
+      'varying vec3 vGlowNormal;\nvarying vec3 vGlowViewPos;\n' +
       shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <emissivemap_fragment>',
       `#include <emissivemap_fragment>
-       vec3 viewDir = normalize(vViewPosition);
-       float fresnel = pow(1.0 - max(0.0, dot(normalize(vNormal), viewDir)), uGlowPower);
-       totalEmissiveRadiance = uGlowColor * uGlowIntensity * fresnel;`
+       vec3 glowViewDir = normalize(-vGlowViewPos);
+       float glowFresnel = pow(1.0 - max(0.0, dot(normalize(vGlowNormal), glowViewDir)), uGlowPower);
+       totalEmissiveRadiance = uGlowColor * uGlowIntensity * glowFresnel;`
     );
   };
 
