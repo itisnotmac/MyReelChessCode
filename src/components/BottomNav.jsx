@@ -47,17 +47,24 @@ export default function BottomNav() {
   }, [location.pathname]);
 
   const handleNav = (path) => {
-    // If already on this tab, scroll to top
     const basePath = path.split('?')[0];
     if (location.pathname === basePath || (basePath === '/' && location.pathname === '/')) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      navigate(path);
+      // Use replace for tab switches so the back stack doesn't accumulate
+      // tab-to-tab navigations — pressing back exits the app from any tab root.
+      const isTabSwitch = NAV_ITEMS.some(item => {
+        const itemBase = item.path.split('?')[0];
+        return itemBase === basePath;
+      });
+      navigate(path, { replace: isTabSwitch });
     }
   };
 
   return (
-    <div
+    <nav
+      role="navigation"
+      aria-label="Main navigation"
       className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around"
       style={{
         background: 'linear-gradient(to top, rgba(10,10,15,0.98) 80%, rgba(10,10,15,0.85))',
@@ -74,12 +81,17 @@ export default function BottomNav() {
           <button
             key={label}
             onClick={() => handleNav(path)}
+            aria-label={label}
+            aria-current={active ? 'page' : undefined}
+            role="tab"
+            aria-selected={active}
             className="flex flex-col items-center gap-1 px-4 transition-opacity"
-            style={{ minWidth: 56, minHeight: 44 }}
+            style={{ minWidth: 56, minHeight: 48 }}
           >
             <Icon
               className="w-5 h-5 transition-colors"
               style={{ color: active ? '#3AAFA9' : 'rgba(255,255,255,0.3)' }}
+              aria-hidden="true"
             />
             <span
               className="text-[11px] font-medium tracking-wider transition-colors"
@@ -90,6 +102,6 @@ export default function BottomNav() {
           </button>
         );
       })}
-    </div>
+    </nav>
   );
 }

@@ -102,6 +102,46 @@ button, [role="button"], a {
   min-height: 44px;
 }
 
+/* Disable system gestures: prevent double-tap zoom, pinch zoom, and pull-to-refresh */
+html, body {
+  touch-action: manipulation;
+  overscroll-behavior: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Game board areas: block all default touch gestures so drag/zoom doesn't interfere */
+canvas, [data-game-board], [data-no-gesture] {
+  touch-action: none;
+}
+
+/* Prevent long-press image save / callout on chess piece SVGs and images */
+img, svg {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+/* Allow text selection only in content areas that need it (tutorials, policies) */
+[contenteditable], input, textarea, [data-selectable] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* Keyboard focus indicator for accessibility */
+button:focus-visible, a:focus-visible, [role="button"]:focus-visible, [role="tab"]:focus-visible {
+  outline: 2px solid #3AAFA9;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* === THEME SYSTEM === */
 
 /* Color scheme for native controls */
