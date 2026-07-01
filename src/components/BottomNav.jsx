@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Gamepad2, Trophy, BarChart2, Settings, ShoppingBag } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { label: 'Play', icon: Gamepad2, path: '/' },
+  { label: 'Play', icon: Gamepad2, path: '/Lobby' },
   { label: 'Store', icon: ShoppingBag, path: '/Store' },
   { label: 'History', icon: Trophy, path: '/GameHistory' },
   { label: 'Stats', icon: BarChart2, path: '/Dashboard' },
@@ -48,16 +48,10 @@ export default function BottomNav() {
 
   const handleNav = (path) => {
     const basePath = path.split('?')[0];
-    if (location.pathname === basePath || (basePath === '/' && location.pathname === '/')) {
+    if (location.pathname === basePath) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      // Use replace for tab switches so the back stack doesn't accumulate
-      // tab-to-tab navigations — pressing back exits the app from any tab root.
-      const isTabSwitch = NAV_ITEMS.some(item => {
-        const itemBase = item.path.split('?')[0];
-        return itemBase === basePath;
-      });
-      navigate(path, { replace: isTabSwitch });
+      navigate(path);
     }
   };
 

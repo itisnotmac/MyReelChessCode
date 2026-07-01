@@ -13,7 +13,7 @@ export default function Splash() {
     const t1 = setTimeout(() => setPhase(1), 500);
     const t2 = setTimeout(() => setPhase(2), 1500);
     const t3 = setTimeout(() => setPhase(3), 2800);
-    const t4 = setTimeout(() => navigateRef.current(createPageUrl('Lobby')), 3600);
+    const t4 = setTimeout(() => navigateRef.current(createPageUrl('Lobby'), { replace: true }), 3600);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
