@@ -48,7 +48,7 @@ export default function About() {
             looking for a quick casual match, Reel Chess has a mode for you. Jump into a game against our
             AI opponent — choose Novice for a forgiving intro, Arrogant for a balanced challenge, or
             Grandmaster when you're ready to test your limits. Prefer playing with a friend? Local PvP lets
-            two players go head-to-head on the same device, no accounts required.
+            two players go head-to-head on the same device.
           </p>
           <p>
             Learning the game is built right in. The interactive Tutorial section walks you through every piece,
