@@ -288,8 +288,15 @@ export default function Game() {
     const currentEnPassant = enPassant;
     const currentCastling = castling;
 
-    const difficultyDepth = { novice: 1, arrogant: 2, grandmaster: 4 };
-    const storedDiff = localStorage.getItem('chessDifficulty') || 'arrogant';
+    const difficultyDepth = {
+      novice: 0,
+      'yellow-belt': 1,
+      'tough-guy': 2,
+      'getting-serious': 3,
+      'brick-top': 4,
+      'final-boss': 5,
+    };
+    const storedDiff = localStorage.getItem('chessDifficulty') || 'tough-guy';
     const depth = difficultyDepth[storedDiff] ?? 2;
 
     const timer = setTimeout(() => {

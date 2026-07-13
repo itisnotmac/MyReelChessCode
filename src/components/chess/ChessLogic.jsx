@@ -331,7 +331,7 @@ export function getAIMove(board, enPassant, castling, difficulty = 2) {
   if (moves.length === 0) return null;
 
   // Novice mode: deliberately play badly - move pieces to squares where they can be captured
-  if (difficulty === 1) {
+  if (difficulty === 0) {
     // Shuffle moves for randomness
     const shuffled = [...moves].sort(() => Math.random() - 0.5);
 
