@@ -476,6 +476,7 @@ export default function Game() {
         <PostGameAnalysis
           moveData={moveData}
           result={gameOver}
+          mode={mode}
           onClose={() => setShowAnalysis(false)}
         />
       )}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Loader2, Brain } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Loader2, Brain, TrendingUp } from 'lucide-react';
 import AnalysisBoard from './AnalysisBoard';
 import { analyzeMove } from '@/lib/chessAnalysis';
 
@@ -27,7 +27,15 @@ const RESULT_LABELS = {
   draw: 'Draw',
 };
 
-export default function PostGameAnalysis({ moveData, result, onClose }) {
+const PROGRESSION_MESSAGES = {
+  'novice':          "You've got the basics down now! Ready to see if you can handle a little resistance with the Yellow Belt?",
+  'yellow-belt':     "Impressive focus. You're starting to control the board. Think you can hold your own against a Tough Guy?",
+  'tough-guy':       "You're really separating yourself from the pack. It's time to see how you fare when the AI starts Getting Serious.",
+  'getting-serious': "Strong play! Your tactical awareness is growing fast. Ready to test yourself against the Brick Top?",
+  'brick-top':       "Masterful execution. You've conquered the ranks, but the Final Boss is a different beast entirely. Are you ready?",
+};
+
+export default function PostGameAnalysis({ moveData, result, mode, onClose }) {
   const [analysis, setAnalysis] = useState([]);
   const [analyzing, setAnalyzing] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -252,6 +260,24 @@ export default function PostGameAnalysis({ moveData, result, onClose }) {
             )}
           </div>
         )}
+
+        {/* Difficulty progression message (AI wins only) */}
+        {mode === 'ai' && result === 'white_wins' && (() => {
+          const currentDiff = localStorage.getItem('chessDifficulty') || 'tough-guy';
+          const msg = PROGRESSION_MESSAGES[currentDiff];
+          if (!msg) return null;
+          return (
+            <div className="px-4 pb-4">
+              <div className="rounded-xl p-4 border border-[#3AAFA9]/30"
+                style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.12) 0%, rgba(58,175,169,0.03) 100%)' }}>
+                <div className="flex items-start gap-2.5">
+                  <TrendingUp className="w-4 h-4 text-[#3AAFA9] mt-0.5 flex-shrink-0" />
+                  <p className="text-xs text-white/80 leading-relaxed">{msg}</p>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Move list */}
         <div className="px-4 pb-8">
