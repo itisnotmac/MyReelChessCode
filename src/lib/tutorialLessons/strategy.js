@@ -43,15 +43,15 @@ export const STRATEGY_LESSONS = [
       [null,null,null,'p',null,'n',null,null],
       [null,null,null,null,null,null,null,null],
       [null,null,'P',null,null,null,null,null],
-      [null,null,null,null,null,'N',null,null],
+      [null,null,'N',null,null,null,null,null],
       ['P','P',null,'P','P','P','P','P'],
       ['R',null,'B','Q','K','B',null,'R'],
     ],
     interactive: true,
     playerColor: 'white',
     movingPiece: 'N',
-    expectedMoves: [[5,5,3,3]],
-    hint: 'Click your knight on f3 and jump it to d5. The square is protected by your c4 pawn and can\'t be attacked by any black pawn — a textbook outpost!',
+    expectedMoves: [[5,2,3,3]],
+    hint: 'Click your knight on c3 and jump it to d5. The square is protected by your c4 pawn and can\'t be attacked by any black pawn — a textbook outpost!',
   },
 
   // ─── Weak Squares ──────────────────────────────────────────────────────────

@@ -154,7 +154,7 @@ export const ADVANCED_LESSONS = [
     interactive: true,
     playerColor: 'white',
     movingPiece: 'R',
-    expectedMoves: [[7,2,6,2]],
+    expectedMoves: [[7,2,1,2]],
     hint: 'Click your rook on c1 and slide it to c7. You\'ve invaded the 7th rank — the rook now attacks a7 and traps the black King on the back rank. This is a decisive positional advantage!',
   },
 
