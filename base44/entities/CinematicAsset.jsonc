@@ -1,0 +1,57 @@
+{
+  "name": "CinematicAsset",
+  "type": "object",
+  "properties": {
+    "piece": {
+      "type": "string",
+      "enum": [
+        "king",
+        "queen",
+        "rook",
+        "bishop",
+        "knight",
+        "pawn"
+      ],
+      "description": "Which piece this cinematic video belongs to"
+    },
+    "video_url": {
+      "type": "string",
+      "description": "Base44-hosted or external video file URL"
+    },
+    "variant": {
+      "type": "string",
+      "description": "Variant name for rotation (e.g. default, seasonal, streak-based)"
+    },
+    "theme": {
+      "type": "string",
+      "description": "Thematic tag for filtering (e.g. medieval, noir, festive)"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this asset is eligible for selection in cutscenes"
+    }
+  },
+  "required": [
+    "piece",
+    "video_url"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "name": "CutsceneAudio",
+  "type": "object",
+  "properties": {
+    "piece": {
+      "type": "string",
+      "enum": [
+        "king",
+        "queen",
+        "rook",
+        "bishop",
+        "knight",
+        "pawn"
+      ],
+      "description": "Which piece this audio belongs to"
+    },
+    "audio_url": {
+      "type": "string",
+      "description": "Base44-hosted audio file URL (from UploadFile)"
+    },
+    "label": {
+      "type": "string",
+      "description": "Human-readable name for this audio clip"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this audio is available for use in cutscenes"
+    }
+  },
+  "required": [
+    "piece",
+    "audio_url"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
