@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi, Crown, UserCircle, Award, ShoppingBag, Gift } from 'lucide-react';
+import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi, Crown, UserCircle, Award, ShoppingBag, Gift, MessageCircle } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
 import PremiumModal from '../components/lobby/PremiumModal';
 import TwoVTwoModal from '../components/lobby/TwoVTwoModal';
@@ -20,6 +20,7 @@ function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
   const [items, setItems] = useState([
     { id: 'settings',   label: 'Settings',     icon: Settings },
     { id: 'faq',       label: 'FAQ',          icon: HelpCircle },
+    { id: 'chat',      label: 'Community Chat', icon: MessageCircle },
     { id: 'profile',      label: 'Profile',       icon: UserCircle },
     { id: 'achievements', label: 'Achievements',  icon: Award },
     { id: 'dashboard',    label: 'Dashboard',     icon: BarChart2 },
@@ -140,6 +141,7 @@ export default function Lobby() {
     if (section === 'about') { navigate('/About'); return; }
     if (section === 'contact') { navigate('/Contact'); return; }
     if (section === 'faq') { navigate('/FAQ'); return; }
+    if (section === 'chat') { navigate('/Chat'); return; }
     if (section === 'history') { navigate('/GameHistory'); return; }
     if (section === 'dashboard') { navigate('/Dashboard'); return; }
     if (section === 'profile') { navigate('/Profile'); return; }

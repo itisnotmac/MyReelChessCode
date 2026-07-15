@@ -21,6 +21,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import PremiumSuccess from './pages/PremiumSuccess';
 import Info from './pages/Info';
 import FAQ from './pages/FAQ';
+import Chat from './pages/Chat';
 import Online2v2Game from './pages/Online2v2Game';
 import Profile from './pages/Profile';
 import Achievements from './pages/Achievements';
@@ -113,6 +114,7 @@ const AuthenticatedApp = () => {
           <Route path="/Achievements" element={<LayoutWrapper currentPageName="Achievements"><Achievements /></LayoutWrapper>} />
           <Route path="/Store" element={<LayoutWrapper currentPageName="Store"><Store /></LayoutWrapper>} />
           <Route path="/DailyChallenges" element={<LayoutWrapper currentPageName="DailyChallenges"><DailyChallenges /></LayoutWrapper>} />
+          <Route path="/Chat" element={<LayoutWrapper currentPageName="Chat"><Chat /></LayoutWrapper>} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </motion.div>
