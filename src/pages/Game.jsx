@@ -16,7 +16,6 @@ import PostGameAnalysis from '../components/chess/PostGameAnalysis';
 import { toAlgebraicNotation } from '../lib/chessNotation';
 import { stopMenuMusic } from '@/lib/menuMusic';
 import { base44 } from '@/api/base44Client';
-import { useAuth } from '@/lib/AuthContext';
 import { playMoveSound, playCheckSound, playGameOverSound, unlockAudio } from '@/lib/chessSound';
 import {
   createInitialBoard,
@@ -33,7 +32,6 @@ import {
 
 export default function Game() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
   // Store mode in a ref so screen rotation / re-renders don't re-read it
   const modeRef = useRef(new URLSearchParams(window.location.search).get('mode') || 'ai');
   const mode = modeRef.current;
@@ -82,11 +80,11 @@ export default function Game() {
 
   // Track game result for daily challenges
   useEffect(() => {
-    if (!gameOver || !isAuthenticated) return;
+    if (!gameOver) return;
     const date = new Date().toLocaleDateString('en-CA');
     base44.functions.invoke('recordGameResult', { mode, result: gameOver, date })
       .catch(e => console.error('Failed to record game result:', e));
-  }, [gameOver, isAuthenticated, mode]);
+  }, [gameOver, mode]);
 
   // Battle cutscene state
   const [battleInfo, setBattleInfo] = useState(null);
