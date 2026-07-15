@@ -9,8 +9,8 @@ import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  AccordionTrigger } from
+"@/components/ui/accordion";
 import ThemePicker from '@/components/ThemePicker';
 import {
   AlertDialog,
@@ -20,8 +20,8 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTitle } from
+"@/components/ui/alert-dialog";
 
 export default function InfoPage() {
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ export default function InfoPage() {
     setDeleting(true);
     // Delete all game history, then sign out (Base44 handles account deletion via logout)
     const history = await base44.entities.GameHistory.list('-created_date', 200);
-    await Promise.all(history.map(r => base44.entities.GameHistory.delete(r.id)));
+    await Promise.all(history.map((r) => base44.entities.GameHistory.delete(r.id)));
     await base44.auth.logout('/');
   };
 
@@ -52,20 +52,20 @@ export default function InfoPage() {
     setDeletingData(true);
     // Delete all game history data only (keeps account)
     const history = await base44.entities.GameHistory.list('-created_date', 200);
-    await Promise.all(history.map(r => base44.entities.GameHistory.delete(r.id)));
+    await Promise.all(history.map((r) => base44.entities.GameHistory.delete(r.id)));
     setDeletingData(false);
     setShowDeleteDataDialog(false);
     alert('All your game data has been deleted.');
   };
 
-  const renderSettings = () => (
-    <div className="space-y-6">
+  const renderSettings = () =>
+  <div className="space-y-6">
       <ThemePicker />
       <div className="rounded-xl bg-[#3AAFA9]/10 border border-[#3AAFA9]/30 p-4 space-y-5">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-white text-sm font-medium">Sound Effects</p>
-            <p className="text-white/30 text-xs mt-0.5">Move sounds, check alerts, and game events</p>
+            <p className="text-white/30 text-xs mt-0.5 [font-family:'Architects_Daughter',_system-ui]">Move sounds, check alerts, and game events</p>
           </div>
           <Switch checked={soundEnabled} onCheckedChange={toggleSound} className="data-[state=checked]:bg-[#3AAFA9]" />
         </div>
@@ -107,9 +107,9 @@ export default function InfoPage() {
           </div>
         </div>
         <button
-          onClick={() => setShowDeleteDialog(true)}
-          className="w-full py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold tracking-wider hover:bg-red-500/20 transition-colors"
-        >
+        onClick={() => setShowDeleteDialog(true)}
+        className="w-full py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold tracking-wider hover:bg-red-500/20 transition-colors">
+        
           DELETE ACCOUNT
         </button>
       </div>
@@ -126,9 +126,9 @@ export default function InfoPage() {
           </div>
         </div>
         <button
-          onClick={() => setShowDeleteDataDialog(true)}
-          className="w-full py-2.5 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400 text-sm font-semibold tracking-wider hover:bg-orange-500/20 transition-colors"
-        >
+        onClick={() => setShowDeleteDataDialog(true)}
+        className="w-full py-2.5 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400 text-sm font-semibold tracking-wider hover:bg-orange-500/20 transition-colors">
+        
           DELETE MY DATA
         </button>
       </div>
@@ -143,16 +143,16 @@ export default function InfoPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel
-              disabled={deletingData}
-              className="bg-white/5 border-white/10 text-white hover:bg-white/10"
-            >
+            disabled={deletingData}
+            className="bg-white/5 border-white/10 text-white hover:bg-white/10">
+            
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              disabled={deletingData}
-              onClick={handleDeleteData}
-              className="bg-orange-600 hover:bg-orange-700 text-white border-0"
-            >
+            disabled={deletingData}
+            onClick={handleDeleteData}
+            className="bg-orange-600 hover:bg-orange-700 text-white border-0">
+            
               {deletingData ? 'Deleting...' : 'Yes, Delete Data'}
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -169,38 +169,38 @@ export default function InfoPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel
-              disabled={deleting}
-              className="bg-white/5 border-white/10 text-white hover:bg-white/10"
-            >
+            disabled={deleting}
+            className="bg-white/5 border-white/10 text-white hover:bg-white/10">
+            
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              disabled={deleting}
-              onClick={handleDeleteAccount}
-              className="bg-red-600 hover:bg-red-700 text-white border-0"
-            >
+            disabled={deleting}
+            onClick={handleDeleteAccount}
+            className="bg-red-600 hover:bg-red-700 text-white border-0">
+            
               {deleting ? 'Deleting...' : 'Yes, Delete'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
-  );
+    </div>;
 
-  const renderFAQ = () => (
-    <Accordion type="single" collapsible className="space-y-2">
+
+  const renderFAQ = () =>
+  <Accordion type="single" collapsible className="space-y-2">
       {[
-        { q: "How do the battle cutscenes work?", a: "When a piece captures another piece, the game transitions to a cinematic battle scene showing the capturing piece defeating the captured piece in an animated showdown. You can skip these by tapping 'SKIP' or disable them in Settings." },
-        { q: "How does Player vs AI work?", a: "You play as White and the AI plays as Black. The AI uses a minimax algorithm with alpha-beta pruning to calculate its moves. You can adjust difficulty in Settings." },
-        { q: "How does Player vs Player work?", a: "Both players share the same device. After each move, the board flips so each player sees from their perspective. This is a 'pass and play' style local multiplayer." },
-        { q: "What are the chess rules?", a: "Standard chess rules apply including castling, en passant, and pawn promotion (auto-promotes to Queen). The game detects checkmate and stalemate automatically." },
-        { q: "Can I undo a move?", a: "Currently there is no undo feature. Think carefully before making your move!" },
-      ].map((item, i) => (
-        <AccordionItem
-          key={i}
-          value={`faq-${i}`}
-          className="rounded-xl bg-white/5 border border-white/5 px-4 overflow-hidden"
-        >
+    { q: "How do the battle cutscenes work?", a: "When a piece captures another piece, the game transitions to a cinematic battle scene showing the capturing piece defeating the captured piece in an animated showdown. You can skip these by tapping 'SKIP' or disable them in Settings." },
+    { q: "How does Player vs AI work?", a: "You play as White and the AI plays as Black. The AI uses a minimax algorithm with alpha-beta pruning to calculate its moves. You can adjust difficulty in Settings." },
+    { q: "How does Player vs Player work?", a: "Both players share the same device. After each move, the board flips so each player sees from their perspective. This is a 'pass and play' style local multiplayer." },
+    { q: "What are the chess rules?", a: "Standard chess rules apply including castling, en passant, and pawn promotion (auto-promotes to Queen). The game detects checkmate and stalemate automatically." },
+    { q: "Can I undo a move?", a: "Currently there is no undo feature. Think carefully before making your move!" }].
+    map((item, i) =>
+    <AccordionItem
+      key={i}
+      value={`faq-${i}`}
+      className="rounded-xl bg-white/5 border border-white/5 px-4 overflow-hidden">
+      
           <AccordionTrigger className="text-white text-sm font-medium py-4 hover:no-underline">
             {item.q}
           </AccordionTrigger>
@@ -208,15 +208,15 @@ export default function InfoPage() {
             {item.a}
           </AccordionContent>
         </AccordionItem>
-      ))}
-    </Accordion>
-  );
+    )}
+    </Accordion>;
 
-  const renderContact = () => (
-    <div className="space-y-6">
+
+  const renderContact = () =>
+  <div className="space-y-6">
       <div className="rounded-xl bg-white/5 border border-white/5 p-6 text-center">
         <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, #D4AF37, #8B6914)' }}>
+      style={{ background: 'linear-gradient(135deg, #D4AF37, #8B6914)' }}>
           <Mail className="w-6 h-6 text-[#0a0a0f]" />
         </div>
         <h3 className="text-white font-bold tracking-wider text-sm mb-2">GET IN TOUCH</h3>
@@ -224,29 +224,29 @@ export default function InfoPage() {
           Have feedback, found a bug, or want to suggest a feature? We'd love to hear from you.
         </p>
         <a
-          href="mailto:support@battlechess.app"
-          className="inline-block px-6 py-3 rounded-xl bg-[#D4AF37] text-[#0a0a0f] text-xs font-bold tracking-wider hover:bg-[#C4A030] transition-colors"
-        >
+        href="mailto:support@battlechess.app"
+        className="inline-block px-6 py-3 rounded-xl bg-[#D4AF37] text-[#0a0a0f] text-xs font-bold tracking-wider hover:bg-[#C4A030] transition-colors">
+        
           EMAIL US
         </a>
         <p className="text-white/20 text-xs mt-4 tracking-wider">support@battlechess.app</p>
       </div>
-    </div>
-  );
+    </div>;
 
-  const renderAbout = () => (
-    <div className="space-y-6">
+
+  const renderAbout = () =>
+  <div className="space-y-6">
       <div className="rounded-xl bg-white/5 border border-white/5 p-6 text-center">
         <span className="text-5xl mb-4 inline-block" style={{
-          color: '#D4AF37',
-          filter: 'drop-shadow(0 0 20px rgba(212,175,55,0.3))',
-        }}>♚</span>
+        color: '#D4AF37',
+        filter: 'drop-shadow(0 0 20px rgba(212,175,55,0.3))'
+      }}>♚</span>
         <h3 className="text-xl font-black tracking-[0.15em] mb-1"
-          style={{
-            backgroundImage: 'linear-gradient(135deg, #D4AF37, #F5E6A3)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}>
+      style={{
+        backgroundImage: 'linear-gradient(135deg, #D4AF37, #F5E6A3)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent'
+      }}>
           REEL CHESS
         </h3>
         <p className="text-white/20 text-xs tracking-[0.3em] mb-6">VERSION 1.0</p>
@@ -258,19 +258,19 @@ export default function InfoPage() {
 
       <div className="rounded-xl bg-white/5 border border-white/5 p-4 space-y-3">
         {[
-          { label: 'Engine', value: 'Custom Minimax AI' },
-          { label: 'Framework', value: 'React' },
-          { label: 'Animations', value: 'Framer Motion' },
-          { label: 'Platform', value: 'Base44' },
-        ].map((item) => (
-          <div key={item.label} className="flex justify-between items-center">
+      { label: 'Engine', value: 'Custom Minimax AI' },
+      { label: 'Framework', value: 'React' },
+      { label: 'Animations', value: 'Framer Motion' },
+      { label: 'Platform', value: 'Base44' }].
+      map((item) =>
+      <div key={item.label} className="flex justify-between items-center">
             <span className="text-white/30 text-xs">{item.label}</span>
             <span className="text-white/60 text-xs font-medium">{item.value}</span>
           </div>
-        ))}
+      )}
       </div>
-    </div>
-  );
+    </div>;
+
 
   const [history, setHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(false);
@@ -278,32 +278,32 @@ export default function InfoPage() {
   useEffect(() => {
     if (section === 'history') {
       setHistoryLoading(true);
-      base44.entities.GameHistory.list('-created_date', 50)
-        .then(setHistory)
-        .catch(() => {})
-        .finally(() => setHistoryLoading(false));
+      base44.entities.GameHistory.list('-created_date', 50).
+      then(setHistory).
+      catch(() => {}).
+      finally(() => setHistoryLoading(false));
     }
   }, [section]);
 
   const deleteRecord = async (id) => {
     await base44.entities.GameHistory.delete(id);
-    setHistory(prev => prev.filter(r => r.id !== id));
+    setHistory((prev) => prev.filter((r) => r.id !== id));
   };
 
-  const resultLabel = (r) => ({ white_wins: 'White Won', black_wins: 'Black Won', draw: 'Draw', in_progress: 'Abandoned' }[r] || r);
-  const resultColor = (r) => ({ white_wins: '#D4AF37', black_wins: '#9B59B6', draw: '#888', in_progress: '#555' }[r] || '#888');
+  const resultLabel = (r) => ({ white_wins: 'White Won', black_wins: 'Black Won', draw: 'Draw', in_progress: 'Abandoned' })[r] || r;
+  const resultColor = (r) => ({ white_wins: '#D4AF37', black_wins: '#9B59B6', draw: '#888', in_progress: '#555' })[r] || '#888';
 
-  const renderHistory = () => (
-    <div className="space-y-3">
-      {historyLoading ? (
-        <div className="text-center text-white/30 text-xs py-10">Loading...</div>
-      ) : history.length === 0 ? (
-        <div className="rounded-xl bg-white/5 border border-white/5 p-8 text-center">
+  const renderHistory = () =>
+  <div className="space-y-3">
+      {historyLoading ?
+    <div className="text-center text-white/30 text-xs py-10">Loading...</div> :
+    history.length === 0 ?
+    <div className="rounded-xl bg-white/5 border border-white/5 p-8 text-center">
           <Trophy className="w-8 h-8 text-white/10 mx-auto mb-3" />
           <p className="text-white/30 text-xs">No games recorded yet.</p>
-        </div>
-      ) : history.map(record => (
-        <div key={record.id} className="rounded-xl bg-white/5 border border-white/5 p-4 flex items-center justify-between gap-3">
+        </div> :
+    history.map((record) =>
+    <div key={record.id} className="rounded-xl bg-white/5 border border-white/5 p-4 flex items-center justify-between gap-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs tracking-widest uppercase text-white/30">{record.mode === 'ai' ? 'vs AI' : 'Local PvP'}</span>
@@ -318,15 +318,15 @@ export default function InfoPage() {
             </div>
           </div>
           <button
-            onClick={() => deleteRecord(record.id)}
-            className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-colors flex-shrink-0"
-          >
+        onClick={() => deleteRecord(record.id)}
+        className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-colors flex-shrink-0">
+        
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
-      ))}
-    </div>
-  );
+    )}
+    </div>;
+
 
   const sections = {
     settings: { title: 'Settings', icon: Settings, render: renderSettings },
@@ -335,7 +335,7 @@ export default function InfoPage() {
     faq: { title: 'FAQ', icon: HelpCircle, render: renderFAQ },
     history: { title: 'Game History', icon: Trophy, render: renderHistory },
     contact: { title: 'Contact Us', icon: Mail, render: renderContact },
-    about: { title: 'About', icon: Info, render: renderAbout },
+    about: { title: 'About', icon: Info, render: renderAbout }
   };
 
   const current = sections[section] || sections.settings;
@@ -345,12 +345,12 @@ export default function InfoPage() {
       {/* Header */}
       <div
         className="flex items-center gap-3 px-5 pb-8"
-        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 24px)' }}
-      >
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 24px)' }}>
+        
         <button
           onClick={() => navigate(createPageUrl('Lobby'))}
-          className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors"
-        >
+          className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
+          
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-2">
@@ -364,10 +364,10 @@ export default function InfoPage() {
         className="px-5 pb-8"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        key={section}
-      >
+        key={section}>
+        
         {current.render()}
       </motion.div>
-    </div>
-  );
+    </div>);
+
 }
