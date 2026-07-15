@@ -33,6 +33,13 @@ export default function InfoPage() {
   const [showDeleteDataDialog, setShowDeleteDataDialog] = useState(false);
   const [deletingData, setDeletingData] = useState(false);
 
+  const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('chessSound') !== 'off');
+  const toggleSound = () => {
+    const next = !soundEnabled;
+    setSoundEnabled(next);
+    localStorage.setItem('chessSound', next ? 'on' : 'off');
+  };
+
   const handleDeleteAccount = async () => {
     setDeleting(true);
     // Delete all game history, then sign out (Base44 handles account deletion via logout)
@@ -55,6 +62,14 @@ export default function InfoPage() {
     <div className="space-y-6">
       <ThemePicker />
       <div className="rounded-xl bg-[#3AAFA9]/10 border border-[#3AAFA9]/30 p-4 space-y-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-white text-sm font-medium">Sound Effects</p>
+            <p className="text-white/30 text-xs mt-0.5">Move sounds, check alerts, and game events</p>
+          </div>
+          <Switch checked={soundEnabled} onCheckedChange={toggleSound} className="data-[state=checked]:bg-[#3AAFA9]" />
+        </div>
+        <div className="h-px bg-white/5" />
         <div className="flex items-center justify-between">
           <div>
             <p className="text-white text-sm font-medium">Battle Cutscenes</p>
