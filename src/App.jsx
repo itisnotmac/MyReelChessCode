@@ -126,6 +126,7 @@ const PUBLIC_PAGES = {
   'about': About,
   'tutorial': Tutorial,
   'contact': Contact,
+  'info': Info,
 };
 
 function AppRoutes() {

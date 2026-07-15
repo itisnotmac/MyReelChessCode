@@ -265,6 +265,7 @@ export default function InfoPage() {
       setHistoryLoading(true);
       base44.entities.GameHistory.list('-created_date', 50)
         .then(setHistory)
+        .catch(() => {})
         .finally(() => setHistoryLoading(false));
     }
   }, [section]);
