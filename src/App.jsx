@@ -20,6 +20,7 @@ import OnlineGame from './pages/OnlineGame';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import PremiumSuccess from './pages/PremiumSuccess';
 import Info from './pages/Info';
+import FAQ from './pages/FAQ';
 import Online2v2Game from './pages/Online2v2Game';
 import Profile from './pages/Profile';
 import Achievements from './pages/Achievements';
@@ -126,6 +127,7 @@ const PUBLIC_PAGES = {
   'about': About,
   'tutorial': Tutorial,
   'contact': Contact,
+  'faq': FAQ,
   'info': Info,
 };
 
