@@ -64,6 +64,10 @@
     "invite_code": {
       "type": "string",
       "description": "Short code for joining the game"
+    },
+    "tournament_id": {
+      "type": "string",
+      "description": "Tournament this game belongs to (nullable for regular PVP)"
     }
   },
   "required": [

@@ -19,6 +19,7 @@ const TEAL_BUTTON = "flex items-center justify-center px-6 py-2.5 rounded-full b
 function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
   const [items, setItems] = useState([
     { id: 'settings',   label: 'Settings',     icon: Settings },
+    { id: 'tournament', label: 'Tournaments',  icon: Trophy },
     { id: 'faq',       label: 'FAQ',          icon: HelpCircle },
     { id: 'chat',      label: 'Community Chat', icon: MessageCircle },
     { id: 'profile',      label: 'Profile',       icon: UserCircle },
@@ -146,6 +147,7 @@ export default function Lobby() {
     if (section === 'dashboard') { navigate('/Dashboard'); return; }
     if (section === 'profile') { navigate('/Profile'); return; }
     if (section === 'achievements') { navigate('/Achievements'); return; }
+    if (section === 'tournament') { navigate('/Tournament'); return; }
     navigate(createPageUrl('Info') + `?section=${section}`);
   };
 

@@ -57,6 +57,8 @@ export default function OnlineGame() {
   const [gameOver, setGameOver] = useState(null);
   const [moveCount, setMoveCount] = useState(0);
   const [battleInfo, setBattleInfo] = useState(null);
+  const [tournamentRules, setTournamentRules] = useState(null);
+  const tournamentRulesRef = useRef(null);
   const pendingMoveRef = useRef(null);
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('chessSound') !== 'off');
 
@@ -259,6 +261,21 @@ export default function OnlineGame() {
     return unsub;
   }, [gameDoc?.id]);
 
+  // Load tournament rules for tournament games — drives competitive restrictions
+  // (cutscenes, move hints, last-move indicator, 3D) all forced off by default.
+  useEffect(() => {
+    const tid = gameDoc?.tournament_id;
+    if (!tid) { setTournamentRules(null); tournamentRulesRef.current = null; return; }
+    let cancelled = false;
+    base44.entities.Tournament.filter({ id: tid }).then(results => {
+      if (!cancelled && results[0]) {
+        setTournamentRules(results[0].rules);
+        tournamentRulesRef.current = results[0].rules;
+      }
+    }).catch(e => console.error('Failed to load tournament rules:', e));
+    return () => { cancelled = true; };
+  }, [gameDoc?.tournament_id]);
+
   // ── CHESS LOGIC ──
   const findKingPosition = useCallback((boardState, white) => {
     const king = white ? 'K' : 'k';
@@ -342,7 +359,8 @@ export default function OnlineGame() {
     const capturedByEP = isEP ? currentBoard[fromR][toC] : null;
     const captured = targetPiece || capturedByEP;
 
-    const showCutscene = localStorage.getItem('chessBattleCutscene') !== 'off';
+    const showCutscene = localStorage.getItem('chessBattleCutscene') !== 'off' &&
+      (!tournamentRulesRef.current || tournamentRulesRef.current.cutscenes);
     if (captured && showCutscene) {
       pendingMoveRef.current = { fromR, fromC, toR, toC, currentBoard, currentEnPassant, currentCastling, captured };
       setBattleInfo({ attacker: piece, defender: captured });
@@ -540,6 +558,7 @@ export default function OnlineGame() {
             isCheck={isInCheck(board, isWhiteTurn)}
             checkSquare={checkSquare}
             flipped={shouldFlip}
+            tournamentMode={!!tournamentRules}
           />
         </div>
       </div>

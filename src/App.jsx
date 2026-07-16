@@ -30,6 +30,7 @@ import { hasProfile } from './lib/profileUtils';
 import LandingPage from './pages/LandingPage';
 import Store from './pages/Store';
 import DailyChallenges from './pages/DailyChallenges';
+import Tournament from './pages/Tournament';
 import { SkinProvider } from '@/lib/skinContext';
 
 
@@ -114,6 +115,7 @@ const AuthenticatedApp = () => {
           <Route path="/Achievements" element={<LayoutWrapper currentPageName="Achievements"><Achievements /></LayoutWrapper>} />
           <Route path="/Store" element={<LayoutWrapper currentPageName="Store"><Store /></LayoutWrapper>} />
           <Route path="/DailyChallenges" element={<LayoutWrapper currentPageName="DailyChallenges"><DailyChallenges /></LayoutWrapper>} />
+          <Route path="/Tournament" element={<LayoutWrapper currentPageName="Tournament"><Tournament /></LayoutWrapper>} />
           <Route path="/Chat" element={<LayoutWrapper currentPageName="Chat"><Chat /></LayoutWrapper>} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>

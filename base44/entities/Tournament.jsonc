@@ -1,0 +1,102 @@
+{
+  "name": "Tournament",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Tournament display name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Tournament description / rules text shown to players"
+    },
+    "buy_in_amount": {
+      "type": "number",
+      "default": 1000,
+      "description": "Buy-in in cents (1000 = $10.00)"
+    },
+    "min_players": {
+      "type": "number",
+      "default": 200,
+      "description": "Minimum paid entries required to run the tournament; below this, all buy-ins are refunded"
+    },
+    "max_players": {
+      "type": "number",
+      "description": "Optional player cap"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "registration",
+        "active",
+        "completed",
+        "cancelled"
+      ],
+      "default": "draft",
+      "description": "draft = wired but inert; registration = open for buy-ins; active = running; completed/cancelled = ended"
+    },
+    "start_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Scheduled tournament start time"
+    },
+    "paid_entries": {
+      "type": "number",
+      "default": 0,
+      "description": "Count of paid entries (incremented atomically by the webhook)"
+    },
+    "prize_pool": {
+      "type": "number",
+      "default": 0,
+      "description": "Total prize pool in cents (set when the tournament starts = buy_in * paid_entries)"
+    },
+    "prize_structure": {
+      "type": "string",
+      "description": "JSON describing payout split per placement (filled in by admin)"
+    },
+    "rules": {
+      "type": "object",
+      "properties": {
+        "cutscenes": {
+          "type": "boolean",
+          "default": false
+        },
+        "move_hints": {
+          "type": "boolean",
+          "default": false
+        },
+        "last_move_indicator": {
+          "type": "boolean",
+          "default": false
+        },
+        "three_d": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "description": "Tournament feature toggles \u2014 all off by default for competitive integrity"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

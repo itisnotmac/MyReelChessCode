@@ -21,7 +21,7 @@ function getPathSquares(from, to) {
   return squares;
 }
 
-export default function ChessBoard({ board, selectedSquare, legalMoves, onSquareClick, lastMove, isCheck, checkSquare, flipped = false }) {
+export default function ChessBoard({ board, selectedSquare, legalMoves, onSquareClick, lastMove, isCheck, checkSquare, flipped = false, tournamentMode = false }) {
   const boardRef = useRef(null);
   const [animPiece, setAnimPiece] = useState(null);
   const [pulseKey, setPulseKey] = useState(0); // increment to re-trigger pulse animations
@@ -126,7 +126,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                   {/* LAST MOVE TRAIL OVERLAYS */}
 
                   {/* Origin square — soft gold pulse */}
-                  {fromSq && (
+                  {fromSq && !tournamentMode && (
                     <motion.div
                       key={`from-${pulseKey}`}
                       className="absolute inset-0 pointer-events-none z-[1]"
@@ -138,7 +138,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                   )}
 
                   {/* Path squares — faint footprint dots */}
-                  {pathSq && (
+                  {pathSq && !tournamentMode && (
                     <motion.div
                       key={`path-${pulseKey}-${row}-${col}`}
                       className="absolute inset-0 flex items-center justify-center pointer-events-none z-[1]"
@@ -159,7 +159,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                   )}
 
                   {/* Destination square — heavy pulsing glow */}
-                  {toSq && (
+                  {toSq && !tournamentMode && (
                     <motion.div
                       key={`to-${pulseKey}`}
                       className="absolute inset-0 pointer-events-none z-[1]"
@@ -178,7 +178,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                   )}
 
                   {/* Legal move indicator */}
-                  {isLegal && !hasCapture && (
+                  {isLegal && !hasCapture && !tournamentMode && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                       <div className="w-[28%] h-[28%] rounded-full"
                         style={{ background: 'rgba(58,175,169,0.55)', boxShadow: '0 0 10px rgba(58,175,169,0.8), 0 0 20px rgba(58,175,169,0.3)' }} />
@@ -186,7 +186,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                   )}
 
                   {/* Capture indicator */}
-                  {hasCapture && (
+                  {hasCapture && !tournamentMode && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                       <div className="absolute inset-0 rounded-none"
                         style={{ boxShadow: 'inset 0 0 0 3px rgba(58,175,169,0.7), inset 0 0 16px rgba(58,175,169,0.25)' }} />
