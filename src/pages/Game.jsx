@@ -78,13 +78,17 @@ export default function Game() {
     base44.analytics.track({ eventName: 'game_started', properties: { mode } });
   }, []);
 
-  // Track game result for daily challenges
+  // Track game start time for duration stats
+  const gameStartTimeRef = useRef(Date.now());
+
+  // Track game result for daily challenges + GameHistory stats
   useEffect(() => {
     if (!gameOver) return;
     const date = new Date().toLocaleDateString('en-CA');
-    base44.functions.invoke('recordGameResult', { mode, result: gameOver, date })
+    const duration_seconds = Math.round((Date.now() - gameStartTimeRef.current) / 1000);
+    base44.functions.invoke('recordGameResult', { mode, result: gameOver, date, moves_count: moveCount, duration_seconds })
       .catch(e => console.error('Failed to record game result:', e));
-  }, [gameOver, mode]);
+  }, [gameOver, mode, moveCount]);
 
   // Battle cutscene state
   const [battleInfo, setBattleInfo] = useState(null);
@@ -333,6 +337,7 @@ export default function Game() {
     setMoveHistory([]);
     setMoveData([]);
     setShowAnalysis(false);
+    gameStartTimeRef.current = Date.now();
     base44.analytics.track({ eventName: 'game_started', properties: { mode } });
   };
 

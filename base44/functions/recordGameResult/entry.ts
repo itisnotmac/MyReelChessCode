@@ -6,10 +6,21 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { mode, result, date } = await req.json();
+    const { mode, result, date, moves_count, duration_seconds } = await req.json();
     if (!mode || !result || !date) {
       return Response.json({ error: 'Missing mode, result, or date' }, { status: 400 });
     }
+
+    // Persist a GameHistory record the user can read back on Dashboard/History.
+    // Use the user-scoped client so created_by_id is the user (read RLS requires it).
+    // GameHistory.mode only allows "ai"/"local"; map any other mode to "local".
+    const historyMode = mode === 'ai' ? 'ai' : 'local';
+    await base44.entities.GameHistory.create({
+      mode: historyMode,
+      result,
+      moves_count: Number(moves_count) || 0,
+      duration_seconds: Number(duration_seconds) || 0,
+    }).catch(e => console.error('GameHistory create failed:', e.message));
 
     // Get or create PlayerAccount
     let accounts = await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: user.id });
