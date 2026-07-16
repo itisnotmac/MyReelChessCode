@@ -22,6 +22,11 @@
     "avatar_url": {
       "type": "string",
       "description": "URL to the user's avatar image"
+    },
+    "premium_until": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO datetime until which the user has comped Premium (e.g. a tournament consolation grant). Honored at auth time alongside is_premium."
     }
   },
   "required": [

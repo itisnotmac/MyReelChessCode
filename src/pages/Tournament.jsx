@@ -186,22 +186,27 @@ export default function Tournament() {
                   <p className="text-xs text-white/60">Cutscenes, move hints, last-move indicator & 3D view are disabled for competitive play.</p>
                 </div>
 
-                {/* Payout split + finalized winners */}
+                {/* Payout split + finalized winners (Top 8) */}
                 {(() => {
                   const split = safeParse(t.prize_structure);
                   const results = safeParse(t.results);
                   if (!split) return null;
                   const started = (t.prize_pool || 0) > 0;
-                  const labels = { 1: '1st Place', 2: '2nd Place', 3: '3rd Place' };
+                  const labels = { 1: '1st Place', 2: '2nd Place', 3: '3rd Place', 4: '4th Place' };
                   const val = (pct) => started
                     ? money(Math.round((pct / 100) * t.prize_pool))
                     : `${pct}%`;
+                  const tierPct = split['5_8'] || 0;
+                  const tierEach = started
+                    ? money(Math.round((tierPct / 4 / 100) * t.prize_pool))
+                    : `${(tierPct / 4).toFixed(tierPct % 4 ? 1 : 0)}%`;
+                  const tierNames = results?.['5_8'];
                   return (
                     <div className="rounded-xl bg-[#D4AF37]/5 border border-[#D4AF37]/20 p-3 space-y-2">
                       <p className="text-[10px] text-[#D4AF37] uppercase tracking-wider">
-                        {started ? 'Payouts' : 'Payout Split'}
+                        {started ? 'Payouts (Top 8)' : 'Payout Split (Top 8)'}
                       </p>
-                      {[1, 2, 3].map(p => (
+                      {[1, 2, 3, 4].map(p => (
                         <div key={p} className="flex items-center justify-between text-xs">
                           <span className="text-white/60">
                             {labels[p]}{results?.[p]?.name ? <span className="text-white/40"> — {results[p].name}</span> : null}
@@ -209,10 +214,21 @@ export default function Tournament() {
                           <span className="text-[#D4AF37] font-bold">{val(split[p] || 0)}</span>
                         </div>
                       ))}
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-white/60">
+                          5th–8th{tierNames?.length ? <span className="text-white/40"> — {tierNames.map(n => n.name).join(', ')}</span> : null}
+                        </span>
+                        <span className="text-[#D4AF37] font-bold">
+                          {tierEach}<span className="text-white/30 font-normal text-[10px]"> each</span>
+                        </span>
+                      </div>
                       <div className="flex items-center justify-between text-[10px] pt-1.5 border-t border-white/5">
                         <span className="text-white/30">House (platform)</span>
                         <span className="text-white/40">{val(split.house || 0)}</span>
                       </div>
+                      <p className="text-[10px] text-white/30 pt-0.5">
+                        All non-cashing players receive 3 months of Reel Chess Premium.
+                      </p>
                     </div>
                   );
                 })()}

@@ -53,8 +53,8 @@
     },
     "prize_structure": {
       "type": "string",
-      "default": "{\"house\": 30, \"1\": 40, \"2\": 20, \"3\": 10}",
-      "description": "Payout split as percentages of the total prize pool: house=30%, 1st=40%, 2nd=20%, 3rd=10%"
+      "default": "{\"house\": 30, \"1\": 32, \"2\": 16, \"3\": 8, \"4\": 6, \"5_8\": 8}",
+      "description": "Payout split as percentages of the total prize pool: house=30%, 1st=32%, 2nd=16%, 3rd=8%, 4th=6%, 5th-8th split 8% equally"
     },
     "results": {
       "type": "string",
