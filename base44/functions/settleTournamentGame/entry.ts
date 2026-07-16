@@ -23,48 +23,96 @@ Deno.serve(async (req) => {
       return Response.json({ ok: true, message: 'Game not finished' });
     }
 
-    // Determine the loser (white_wins -> guest loses; black_wins -> host loses;
-    // draw -> higher seed, i.e. lower bracket_position, advances)
-    let loserUserId;
-    if (game.result === 'white_wins') {
-      loserUserId = game.guest_id;
-    } else if (game.result === 'black_wins') {
-      loserUserId = game.host_id;
-    } else {
-      const entries = await base44.asServiceRole.entities.TournamentEntry.filter({
-        tournament_id: game.tournament_id,
-        payment_status: 'paid',
-      });
-      const hostEntry = entries.find(e => e.user_id === game.host_id);
-      const guestEntry = entries.find(e => e.user_id === game.guest_id);
-      const hostPos = hostEntry?.bracket_position ?? Infinity;
-      const guestPos = guestEntry?.bracket_position ?? Infinity;
-      loserUserId = hostPos <= guestPos ? game.guest_id : game.host_id;
-    }
-
-    // Eliminate the loser
-    const loserEntries = await base44.asServiceRole.entities.TournamentEntry.filter({
-      tournament_id: game.tournament_id,
-      user_id: loserUserId,
+    const tournamentId = game.tournament_id;
+    const round = game.tournament_round || 0;
+    const entries = await base44.asServiceRole.entities.TournamentEntry.filter({
+      tournament_id: tournamentId,
       payment_status: 'paid',
     });
-    for (const e of loserEntries) {
-      await base44.asServiceRole.entities.TournamentEntry.update(e.id, { eliminated: true });
+    const hostEntry = entries.find(e => e.user_id === game.host_id);
+    const guestEntry = entries.find(e => e.user_id === game.guest_id);
+
+    // Decide winner & loser (draw -> higher seed / lower bracket_position advances)
+    let winnerId, loserId;
+    if (game.result === 'white_wins') {
+      winnerId = game.host_id; loserId = game.guest_id;
+    } else if (game.result === 'black_wins') {
+      winnerId = game.guest_id; loserId = game.host_id;
+    } else {
+      const hostPos = hostEntry?.bracket_position ?? Infinity;
+      const guestPos = guestEntry?.bracket_position ?? Infinity;
+      winnerId = hostPos <= guestPos ? game.host_id : game.guest_id;
+      loserId = winnerId === game.host_id ? game.guest_id : game.host_id;
     }
 
-    // Mark the game settled (idempotency guard)
+    // 3rd-place playoff: both players are already eliminated; winner takes 3rd.
+    if (game.is_third_place) {
+      const winnerEntry = entries.find(e => e.user_id === winnerId);
+      if (winnerEntry) {
+        await base44.asServiceRole.entities.TournamentEntry.update(winnerEntry.id, { placement: 3 });
+      }
+      await base44.asServiceRole.entities.OnlineGame.update(game_id, { tournament_settled: true });
+      await updateResults(base44, tournamentId, { 3: winnerId });
+      return Response.json({ ok: true, settled: true, third_place: winnerId });
+    }
+
+    // Normal bracket game: eliminate the loser and record the round of elimination
+    const loserEntry = entries.find(e => e.user_id === loserId);
+    if (loserEntry && !loserEntry.eliminated) {
+      await base44.asServiceRole.entities.TournamentEntry.update(loserEntry.id, {
+        eliminated: true,
+        eliminated_round: round,
+      });
+    }
     await base44.asServiceRole.entities.OnlineGame.update(game_id, { tournament_settled: true });
 
-    // Advance the bracket — pairs the next round once the current round is complete
+    // Re-read to see if this was the final (one survivor remains = champion)
+    const refreshed = await base44.asServiceRole.entities.TournamentEntry.filter({
+      tournament_id: tournamentId,
+      payment_status: 'paid',
+    });
+    const survivors = refreshed.filter(e => !e.eliminated);
+
+    if (survivors.length === 1) {
+      const championEntry = survivors[0];
+      await base44.asServiceRole.entities.TournamentEntry.update(championEntry.id, { placement: 1 });
+      if (loserEntry) {
+        await base44.asServiceRole.entities.TournamentEntry.update(loserEntry.id, { placement: 2 });
+      }
+      await base44.asServiceRole.entities.Tournament.update(tournamentId, { status: 'completed' });
+      await updateResults(base44, tournamentId, { 1: championEntry.user_id, 2: loserId });
+      return Response.json({ ok: true, settled: true, champion: championEntry.user_id, runner_up: loserId });
+    }
+
+    // Otherwise advance the bracket (pairs the next round, and stages the 3rd-place
+    // match once the finalists are determined).
     try {
-      await base44.functions.invoke('pairTournamentRound', { tournament_id: game.tournament_id });
+      await base44.functions.invoke('pairTournamentRound', { tournament_id: tournamentId });
     } catch (e) {
       console.error('pairTournamentRound invoke failed:', e.message);
     }
 
-    return Response.json({ ok: true, settled: true, loser: loserUserId });
+    return Response.json({ ok: true, settled: true, loser: loserId });
   } catch (error) {
     console.error('settleTournamentGame error:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
+
+// Merge placements into the tournament's results JSON (id + display name), so the
+// page can show winners without per-user lookups from the client.
+async function updateResults(base44, tournamentId, placements) {
+  try {
+    const t = (await base44.asServiceRole.entities.Tournament.filter({ id: tournamentId }))[0];
+    let results = {};
+    try { results = t?.results ? JSON.parse(t.results) : {}; } catch {}
+    for (const [place, userId] of Object.entries(placements)) {
+      const users = await base44.asServiceRole.entities.User.filter({ id: userId });
+      const name = users[0]?.full_name || users[0]?.email || 'Player';
+      results[place] = { id: userId, name };
+    }
+    await base44.asServiceRole.entities.Tournament.update(tournamentId, { results: JSON.stringify(results) });
+  } catch (e) {
+    console.error('updateResults failed:', e.message);
+  }
+}

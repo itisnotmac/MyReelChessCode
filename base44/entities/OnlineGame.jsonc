@@ -78,6 +78,11 @@
       "type": "boolean",
       "default": false,
       "description": "Whether this tournament game's result has been processed into the bracket"
+    },
+    "is_third_place": {
+      "type": "boolean",
+      "default": false,
+      "description": "True for the 3rd-place playoff match (excluded from main-bracket advancement)"
     }
   },
   "required": [

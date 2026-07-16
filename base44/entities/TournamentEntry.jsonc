@@ -27,6 +27,14 @@
       "type": "boolean",
       "default": false
     },
+    "eliminated_round": {
+      "type": "number",
+      "description": "Bracket round in which this player was eliminated (used to stage the 3rd-place match)"
+    },
+    "placement": {
+      "type": "number",
+      "description": "Final standing: 1 = champion, 2 = runner-up, 3 = third place"
+    },
     "refunded": {
       "type": "boolean",
       "default": false

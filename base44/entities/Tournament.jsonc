@@ -53,7 +53,12 @@
     },
     "prize_structure": {
       "type": "string",
-      "description": "JSON describing payout split per placement (filled in by admin)"
+      "default": "{\"1\": 75000, \"2\": 40000, \"3\": 25000}",
+      "description": "JSON map of placement -> payout in cents (1st=$750, 2nd=$400, 3rd=$250)"
+    },
+    "results": {
+      "type": "string",
+      "description": "JSON map of placement -> {id, name} for finalized placements, written as the bracket resolves"
     },
     "current_round": {
       "type": "number",
