@@ -186,23 +186,33 @@ export default function Tournament() {
                   <p className="text-xs text-white/60">Cutscenes, move hints, last-move indicator & 3D view are disabled for competitive play.</p>
                 </div>
 
-                {/* Payout breakdown + finalized winners */}
+                {/* Payout split + finalized winners */}
                 {(() => {
-                  const payouts = safeParse(t.prize_structure);
+                  const split = safeParse(t.prize_structure);
                   const results = safeParse(t.results);
-                  if (!payouts) return null;
+                  if (!split) return null;
+                  const started = (t.prize_pool || 0) > 0;
                   const labels = { 1: '1st Place', 2: '2nd Place', 3: '3rd Place' };
+                  const val = (pct) => started
+                    ? money(Math.round((pct / 100) * t.prize_pool))
+                    : `${pct}%`;
                   return (
                     <div className="rounded-xl bg-[#D4AF37]/5 border border-[#D4AF37]/20 p-3 space-y-2">
-                      <p className="text-[10px] text-[#D4AF37] uppercase tracking-wider">Top 3 Payouts</p>
+                      <p className="text-[10px] text-[#D4AF37] uppercase tracking-wider">
+                        {started ? 'Payouts' : 'Payout Split'}
+                      </p>
                       {[1, 2, 3].map(p => (
                         <div key={p} className="flex items-center justify-between text-xs">
                           <span className="text-white/60">
                             {labels[p]}{results?.[p]?.name ? <span className="text-white/40"> — {results[p].name}</span> : null}
                           </span>
-                          <span className="text-[#D4AF37] font-bold">{money(payouts[p] || 0)}</span>
+                          <span className="text-[#D4AF37] font-bold">{val(split[p] || 0)}</span>
                         </div>
                       ))}
+                      <div className="flex items-center justify-between text-[10px] pt-1.5 border-t border-white/5">
+                        <span className="text-white/30">House (platform)</span>
+                        <span className="text-white/40">{val(split.house || 0)}</span>
+                      </div>
                     </div>
                   );
                 })()}
