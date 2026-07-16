@@ -64,7 +64,40 @@ export default function OnlineGame() {
   const [isHost, setIsHost] = useState(false);
   const isMyTurnRef = useRef(false);
 
+  // Refs mirroring state so polling/subscription callbacks always read latest values
+  const moveCountRef = useRef(0);
+  const isWhiteTurnRef = useRef(true);
+  const battleInfoRef = useRef(null);
+
   useEffect(() => { stopMenuMusic(); }, []);
+
+  useEffect(() => { moveCountRef.current = moveCount; }, [moveCount]);
+  useEffect(() => { isWhiteTurnRef.current = isWhiteTurn; }, [isWhiteTurn]);
+  useEffect(() => { battleInfoRef.current = battleInfo; }, [battleInfo]);
+
+  // Polling fallback: reconcile from the server every few seconds to recover from
+  // missed real-time subscription events (the most common cause of online desync).
+  useEffect(() => {
+    if (phase !== 'playing' || !gameIdRef.current) return;
+    const interval = setInterval(async () => {
+      if (battleInfoRef.current) return; // don't resync during a cutscene
+      try {
+        const results = await base44.entities.OnlineGame.filter({ id: gameIdRef.current });
+        const g = results[0];
+        if (!g) return;
+        const serverMoves = g.move_count ?? 0;
+        const localMoves = moveCountRef.current ?? 0;
+        const serverTurn = g.is_white_turn ?? true;
+        // Only reconcile if the server is ahead (we missed a move) or the turn
+        // flag is out of sync — never revert a pending local move.
+        if (serverMoves > localMoves || (serverMoves === localMoves && serverTurn !== isWhiteTurnRef.current)) {
+          setGameDoc(g);
+          applyGameDoc(g);
+        }
+      } catch (e) { /* ignore transient polling errors */ }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [phase]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Timer while searching
   useEffect(() => {
@@ -240,18 +273,29 @@ export default function OnlineGame() {
 
   const pushMove = async (newBoard, newEnPassant, newCastling, newLastMove, newCapturedWhite, newCapturedBlack, newMoveCount, newIsWhiteTurn, newResult) => {
     if (!gameIdRef.current) return;
-    await base44.entities.OnlineGame.update(gameIdRef.current, {
-      board: JSON.stringify(newBoard),
-      is_white_turn: newIsWhiteTurn,
-      en_passant: newEnPassant ? JSON.stringify(newEnPassant) : null,
-      castling: JSON.stringify(newCastling),
-      last_move: JSON.stringify(newLastMove),
-      captured_white: JSON.stringify(newCapturedWhite),
-      captured_black: JSON.stringify(newCapturedBlack),
-      move_count: newMoveCount,
-      result: newResult,
-      status: newResult !== 'in_progress' ? 'finished' : 'active',
-    });
+    try {
+      await base44.entities.OnlineGame.update(gameIdRef.current, {
+        board: JSON.stringify(newBoard),
+        is_white_turn: newIsWhiteTurn,
+        en_passant: newEnPassant ? JSON.stringify(newEnPassant) : null,
+        castling: JSON.stringify(newCastling),
+        last_move: JSON.stringify(newLastMove),
+        captured_white: JSON.stringify(newCapturedWhite),
+        captured_black: JSON.stringify(newCapturedBlack),
+        move_count: newMoveCount,
+        result: newResult,
+        status: newResult !== 'in_progress' ? 'finished' : 'active',
+      });
+    } catch (e) {
+      // A failed push (e.g. RLS turn-check denial from a stale local turn) would
+      // silently desync the game. Resync from the server so the player can retry.
+      console.error('pushMove failed, resyncing:', e);
+      try {
+        const results = await base44.entities.OnlineGame.filter({ id: gameIdRef.current });
+        const g = results[0];
+        if (g) { setGameDoc(g); applyGameDoc(g); }
+      } catch (err) { console.error('resync failed:', err); }
+    }
   };
 
   const finishMove = useCallback((fromR, fromC, toR, toC, currentBoard, currentEnPassant, currentCastling, captured) => {
