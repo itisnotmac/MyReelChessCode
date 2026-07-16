@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Trophy, Users, DollarSign, Loader2, Crown, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Trophy, Users, DollarSign, Loader2, Crown, CheckCircle2, AlertTriangle, Swords } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
@@ -36,17 +36,26 @@ export default function Tournament() {
   const [paying, setPaying] = useState(null);
   const [adminMsg, setAdminMsg] = useState(null);
   const [starting, setStarting] = useState(null);
+  const [myGames, setMyGames] = useState({});
   const isAdmin = user?.role === 'admin';
 
   const fetchData = useCallback(async () => {
     const data = await base44.entities.Tournament.list('-created_date', 50);
     setTournaments(data);
     const mine = {};
+    const activeGames = {};
     if (user?.id) {
       const my = await base44.entities.TournamentEntry.filter({ user_id: user.id });
       for (const e of my) if (e.payment_status === 'paid') mine[e.tournament_id] = e;
+      // Find the user's live tournament match (host or guest, active, unsettled)
+      const asHost = await base44.entities.OnlineGame.filter({ host_id: user.id, status: 'active' });
+      const asGuest = await base44.entities.OnlineGame.filter({ guest_id: user.id, status: 'active' });
+      for (const g of [...asHost, ...asGuest]) {
+        if (g.tournament_id && !g.tournament_settled) activeGames[g.tournament_id] = g.id;
+      }
     }
     setMyEntries(mine);
+    setMyGames(activeGames);
   }, [user?.id]);
 
   useEffect(() => { fetchData().finally(() => setLoading(false)); }, [fetchData]);
@@ -172,6 +181,14 @@ export default function Tournament() {
                   <p className="text-[10px] text-white/40 uppercase tracking-wider mb-1">Tournament Rules</p>
                   <p className="text-xs text-white/60">Cutscenes, move hints, last-move indicator & 3D view are disabled for competitive play.</p>
                 </div>
+
+                {myGames[t.id] && (
+                  <button onClick={() => navigate(`/OnlineGame?game=${myGames[t.id]}`)}
+                    className="w-full py-3 rounded-xl font-black text-sm tracking-wider uppercase transition-all active:scale-95 flex items-center justify-center gap-2"
+                    style={{ background: 'linear-gradient(135deg, #D4AF37, #b8932f)', color: '#1a1a0f', boxShadow: '0 0 24px rgba(212,175,55,0.35)' }}>
+                    <Swords className="w-4 h-4" /> Join Your Match
+                  </button>
+                )}
 
                 <div className="flex gap-2">
                   {registered ? (

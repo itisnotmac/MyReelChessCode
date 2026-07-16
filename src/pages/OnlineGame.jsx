@@ -73,6 +73,28 @@ export default function OnlineGame() {
 
   useEffect(() => { stopMenuMusic(); }, []);
 
+  // Load a tournament game directly via ?game=ID (skips matchmaking)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const gid = params.get('game');
+    if (!gid || !user) return;
+    (async () => {
+      try {
+        const results = await base44.entities.OnlineGame.filter({ id: gid });
+        const g = results[0];
+        if (!g) return;
+        if (g.host_id !== user.id && g.guest_id !== user.id) return;
+        gameIdRef.current = g.id;
+        const host = g.host_id === user.id;
+        isHostRef.current = host; setIsHost(host);
+        roleRef.current = host ? 'host' : 'guest';
+        setGameDoc(g);
+        applyGameDoc(g);
+        setPhase('playing');
+      } catch (e) { console.error('Failed to load tournament game:', e); }
+    })();
+  }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => { moveCountRef.current = moveCount; }, [moveCount]);
   useEffect(() => { isWhiteTurnRef.current = isWhiteTurn; }, [isWhiteTurn]);
   useEffect(() => { battleInfoRef.current = battleInfo; }, [battleInfo]);
@@ -303,6 +325,12 @@ export default function OnlineGame() {
         result: newResult,
         status: newResult !== 'in_progress' ? 'finished' : 'active',
       });
+
+      // Settle the single-elimination bracket when a tournament game ends
+      if (newResult !== 'in_progress' && gameDoc?.tournament_id) {
+        try { await base44.functions.invoke('settleTournamentGame', { game_id: gameIdRef.current }); }
+        catch (se) { console.error('Tournament settle failed:', se); }
+      }
     } catch (e) {
       // A failed push (e.g. RLS turn-check denial from a stale local turn) would
       // silently desync the game. Resync from the server so the player can retry.

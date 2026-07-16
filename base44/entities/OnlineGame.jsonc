@@ -68,6 +68,16 @@
     "tournament_id": {
       "type": "string",
       "description": "Tournament this game belongs to (nullable for regular PVP)"
+    },
+    "tournament_round": {
+      "type": "number",
+      "default": 0,
+      "description": "Bracket round this game belongs to (1 = first round)"
+    },
+    "tournament_settled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this tournament game's result has been processed into the bracket"
     }
   },
   "required": [

@@ -62,7 +62,15 @@ Deno.serve(async (req) => {
     await base44.asServiceRole.entities.Tournament.update(tournament_id, {
       status: 'active',
       prize_pool: prizePool,
+      current_round: 0,
     });
+
+    // Seed round 1 of the single-elimination bracket
+    try {
+      await base44.functions.invoke('pairTournamentRound', { tournament_id });
+    } catch (e) {
+      console.error('Round 1 pairing failed:', e.message);
+    }
 
     return Response.json({
       success: true,

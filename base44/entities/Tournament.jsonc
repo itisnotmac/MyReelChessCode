@@ -55,6 +55,11 @@
       "type": "string",
       "description": "JSON describing payout split per placement (filled in by admin)"
     },
+    "current_round": {
+      "type": "number",
+      "default": 0,
+      "description": "Current bracket round (1 = first round); 0 before the tournament starts"
+    },
     "rules": {
       "type": "object",
       "properties": {
