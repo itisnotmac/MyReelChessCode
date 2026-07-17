@@ -6,6 +6,7 @@ import { ArrowLeft, BarChart2, Clock, Swords, Trophy, Bot, Users, TrendingUp, Re
 import { base44 } from '@/api/base44Client';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
 
 function formatDuration(secs) {
   if (!secs) return '—';
@@ -95,6 +96,12 @@ export default function Dashboard() {
   return (
     <div
       className="min-h-screen bg-[#0a0a0f] relative overflow-y-auto"
+      style={{
+        backgroundImage: `linear-gradient(rgba(10,10,15,0.45), rgba(10,10,15,0.68)), url(${HERO_BACKDROPS.warRoomHologram})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+      }}
       {...containerProps}
     >
       <div className="absolute inset-0 opacity-[0.018]"
