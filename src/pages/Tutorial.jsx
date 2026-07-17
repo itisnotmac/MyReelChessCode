@@ -57,9 +57,12 @@ export default function Tutorial() {
   if (showList) {
     return (
       <div className="min-h-screen bg-[#0a0a0f] relative overflow-y-auto">
-        {/* Background */}
-        <div className="absolute inset-0 opacity-[0.02]"
-          style={{ backgroundImage: `repeating-conic-gradient(#3AAFA9 0% 25%, transparent 0% 50%)`, backgroundSize: '40px 40px' }} />
+        {/* Cinematic backdrop — stone amphitheater */}
+        <div className="absolute inset-0 z-0">
+          <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/346b4ca43_generated_image.png" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0"
+            style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.55) 60%, rgba(10,10,15,0.9) 100%)' }} />
+        </div>
 
         {/* Header */}
         <div className="relative z-10 flex items-center gap-3 px-5 pt-6 pb-2">
@@ -115,7 +118,7 @@ export default function Tutorial() {
                   const doneCount = chapterLessons.filter(l => isCompleted(l.id)).length;
                   const isOpen = expandedChapter === chapter;
                   return (
-                    <div key={chapter} className="rounded-xl border border-white/6 bg-white/3 overflow-hidden">
+                    <div key={chapter} className="rounded-xl border border-white/15 bg-black/40 backdrop-blur-md overflow-hidden">
                 <button
                   onClick={() => setExpandedChapter(isOpen ? null : chapter)}
                   className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/5 transition-colors"
@@ -147,7 +150,7 @@ export default function Tutorial() {
                               transition={{ delay: li * 0.03 }}
                               whileTap={{ scale: 0.98 }}
                             >
-                              <div className={`relative rounded-lg px-3 py-2.5 border flex items-center gap-3 transition-all ${done ? 'border-[#3AAFA9]/25 bg-[#3AAFA9]/05' : 'border-white/5 bg-white/2'}`}>
+                              <div className={`relative rounded-lg px-3 py-2.5 border flex items-center gap-3 transition-all ${done ? 'border-[#3AAFA9]/30 bg-[#3AAFA9]/10' : 'border-white/10 bg-black/30'}`}>
                                 <span className="text-lg w-6 text-center">{l.icon}</span>
                                 <div className="flex-1 min-w-0">
                                   <p className="text-white/75 text-[13px] font-medium truncate">{l.title}</p>
@@ -181,9 +184,12 @@ export default function Tutorial() {
   // ── Single lesson view ────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex flex-col relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 opacity-[0.015]"
-        style={{ backgroundImage: `repeating-conic-gradient(#3AAFA9 0% 25%, transparent 0% 50%)`, backgroundSize: '40px 40px' }} />
+      {/* Cinematic backdrop — stone amphitheater */}
+      <div className="absolute inset-0 z-0">
+        <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/346b4ca43_generated_image.png" alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0"
+          style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.55) 60%, rgba(10,10,15,0.9) 100%)' }} />
+      </div>
 
       {/* Header */}
       <div className="relative z-10 flex items-center gap-3 px-5 pt-6 pb-2 shrink-0">
@@ -216,7 +222,7 @@ export default function Tutorial() {
           transition={{ duration: 0.25 }}
         >
           {/* Description card */}
-          <div className="rounded-2xl border border-white/6 bg-white/3 p-4 mb-4">
+          <div className="rounded-2xl border border-white/15 bg-black/40 backdrop-blur-md p-4 mb-4">
             <div className="flex items-start gap-3">
               <span className="text-2xl">{lesson.icon}</span>
               <p className="text-white/70 text-sm leading-relaxed">{lesson.description}</p>
@@ -253,12 +259,12 @@ export default function Tutorial() {
             </motion.div>
           )}
 
-          {/* Nav buttons */}
-          <div className="mt-auto flex gap-3">
+          {/* Nav buttons — sized to content, centered, so the backdrop stays visible */}
+          <div className="mt-auto flex items-center justify-center gap-3">
             <button
               onClick={goPrev}
               disabled={currentIndex === 0}
-              className="flex-1 py-3 rounded-xl border border-white/8 bg-white/3 text-white/40 text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-30 hover:bg-white/6 transition-colors"
+              className="px-5 py-2.5 rounded-xl border border-white/15 bg-black/40 backdrop-blur-md text-white/70 text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-30 hover:bg-black/60 transition-colors"
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
@@ -267,7 +273,7 @@ export default function Tutorial() {
             {!lesson.interactive || isCompleted(lesson.id) ? (
               <button
                 onClick={currentIndex < LESSONS.length - 1 ? goNext : () => setShowList(true)}
-                className="flex-[2] py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 text-[#0a0a0f] transition-all"
+                className="px-6 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 text-[#0a0a0f] transition-all"
                 style={{ background: 'linear-gradient(135deg, #3AAFA9, #2b8a85)' }}
               >
                 {currentIndex < LESSONS.length - 1 ? (
@@ -277,7 +283,7 @@ export default function Tutorial() {
                 )}
               </button>
             ) : (
-              <div className="flex-[2] py-3 rounded-xl border border-[#3AAFA9]/20 bg-[#3AAFA9]/05 text-[#3AAFA9]/50 text-sm font-medium flex items-center justify-center gap-2">
+              <div className="px-6 py-2.5 rounded-xl border border-[#3AAFA9]/25 bg-[#3AAFA9]/10 backdrop-blur-md text-[#3AAFA9]/70 text-sm font-medium flex items-center justify-center gap-2">
                 <span>Complete the exercise</span>
               </div>
             )}
