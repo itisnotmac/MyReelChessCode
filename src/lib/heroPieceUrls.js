@@ -8,7 +8,7 @@ export const HERO_PIECE_URLS = {
   k: 'https://media.base44.com/files/public/69ab30c24c8c7db2b8432adf/a8f90524c_KingThreeD.glb',
   q: 'https://media.base44.com/files/public/69ab30c24c8c7db2b8432adf/87dce560d_QueenThreeD.glb',
   n: 'https://media.base44.com/files/public/69ab30c24c8c7db2b8432adf/e595a24e9_KnightThreeD.glb',
-  r: null,
+  r: 'https://media.base44.com/files/public/69ab30c24c8c7db2b8432adf/14eeda496_RookThreeD.glb',
   p: 'https://media.base44.com/files/public/69ab30c24c8c7db2b8432adf/169e2a1e0_PawnThreeD.glb',
 };
 
