@@ -9,7 +9,7 @@ export const HERO_PIECE_URLS = {
   q: null,
   n: null,
   r: null,
-  p: null,
+  p: 'https://media.base44.com/files/public/69ab30c24c8c7db2b8432adf/169e2a1e0_PawnThreeD.glb',
 };
 
 // Display order for the rotating lineup (left -> right).
