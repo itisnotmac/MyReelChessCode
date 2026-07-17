@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Mail } from 'lucide-react';
 import { useSeo } from '@/lib/useSeo';
+import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
 
 export default function Contact() {
   const navigate = useNavigate();
@@ -11,7 +12,16 @@ export default function Contact() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col">
+    <div
+      className="min-h-screen text-white flex flex-col"
+      style={{
+        backgroundColor: '#0a0a0f',
+        backgroundImage: `linear-gradient(rgba(10,10,15,0.78), rgba(10,10,15,0.78)), url(${HERO_BACKDROPS.crystalPawnMacro})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+      }}
+    >
       {/* Header */}
       <div className="flex items-center gap-4 px-5 pt-6 pb-4 border-b border-[#3AAFA9]/10">
         <button

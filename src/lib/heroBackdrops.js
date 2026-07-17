@@ -8,6 +8,7 @@ export const HERO_BACKDROPS = {
   glassCommandCenter: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/9360f379c_generated_66b8012c.png',
   cutsceneTitleSequence: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/9c93ddf81_generated_5d11352f.png',
   cinematicKingPlate: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/e3e0cccba_generated_image.png',
+  crystalPawnMacro: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/db765a1db_generated_image.png',
 };
 
 export const DEFAULT_BACKDROP = HERO_BACKDROPS.cinematic3dHero;
