@@ -50,11 +50,16 @@ const CustomTooltip = ({ active, payload }) => {
 export default function Dashboard() {
   const navigate = useNavigate();
   const [history, setHistory] = useState([]);
+  const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
-    const data = await base44.entities.GameHistory.list('-created_date', 200);
+    const [data, accounts] = await Promise.all([
+      base44.entities.GameHistory.list('-created_date', 200),
+      base44.entities.PlayerAccount.list().catch(() => []),
+    ]);
     setHistory(data);
+    setAccount(accounts[0] || null);
   }, []);
 
   useEffect(() => {
@@ -159,6 +164,24 @@ export default function Dashboard() {
           </motion.div>
         ) : (
           <>
+            {account?.elo != null && (
+              <motion.div
+                className="rounded-2xl bg-white/5 border border-white/5 p-5 flex items-center gap-4"
+                initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+              >
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: '#3AAFA918', border: '1px solid #3AAFA930' }}>
+                  <Trophy className="w-6 h-6 text-[#3AAFA9]" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs text-white/30 tracking-wider uppercase">Rating (ELO)</p>
+                  <p className="text-4xl font-black text-white leading-none mt-1">{account.elo}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-white/30 tracking-wider uppercase">Peak</p>
+                  <p className="text-lg font-bold text-[#D4AF37] mt-1">{account.peak_elo ?? account.elo}</p>
+                </div>
+              </motion.div>
+            )}
             <div className="grid grid-cols-2 gap-3">
               <StatCard icon={Trophy} label="Total Games" value={total} sub={`${aiGames} vs AI · ${pvpGames} PvP`} color="#D4AF37" delay={0} />
               <StatCard icon={TrendingUp} label="Win Rate" value={`${winRate}%`} sub={`${wins}W · ${losses}L · ${draws}D`} color="#3AAFA9" delay={0.05} />

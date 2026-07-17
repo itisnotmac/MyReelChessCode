@@ -48,6 +48,16 @@
     "last_login_date": {
       "type": "string",
       "description": "YYYY-MM-DD of the last login day processed for streak"
+    },
+    "elo": {
+      "type": "number",
+      "default": 1200,
+      "description": "Competitive ELO rating, updated by settleElo on finished 1v1 online games"
+    },
+    "peak_elo": {
+      "type": "number",
+      "default": 1200,
+      "description": "Highest ELO rating the player has reached"
     }
   },
   "required": [

@@ -326,10 +326,15 @@ export default function OnlineGame() {
         status: newResult !== 'in_progress' ? 'finished' : 'active',
       });
 
-      // Settle the single-elimination bracket when a tournament game ends
-      if (newResult !== 'in_progress' && gameDoc?.tournament_id) {
-        try { await base44.functions.invoke('settleTournamentGame', { game_id: gameIdRef.current }); }
-        catch (se) { console.error('Tournament settle failed:', se); }
+      // Settle ELO for any finished 1v1 online game, then settle the bracket
+      // when this was a tournament game.
+      if (newResult !== 'in_progress') {
+        try { await base44.functions.invoke('settleElo', { game_id: gameIdRef.current }); }
+        catch (se) { console.error('ELO settle failed:', se); }
+        if (gameDoc?.tournament_id) {
+          try { await base44.functions.invoke('settleTournamentGame', { game_id: gameIdRef.current }); }
+          catch (se) { console.error('Tournament settle failed:', se); }
+        }
       }
     } catch (e) {
       // A failed push (e.g. RLS turn-check denial from a stale local turn) would

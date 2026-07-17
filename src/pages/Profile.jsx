@@ -17,6 +17,8 @@ export default function Profile() {
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [streak, setStreak] = useState(0);
+  const [elo, setElo] = useState(null);
+  const [peakElo, setPeakElo] = useState(null);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -32,7 +34,11 @@ export default function Profile() {
     }).catch(() => {}).finally(() => setLoading(false));
 
     base44.entities.PlayerAccount.list().then(accounts => {
-      if (accounts?.[0]) setStreak(accounts[0].login_streak || 0);
+      if (accounts?.[0]) {
+        setStreak(accounts[0].login_streak || 0);
+        setElo(accounts[0].elo ?? 1200);
+        setPeakElo(accounts[0].peak_elo ?? accounts[0].elo ?? 1200);
+      }
     }).catch(() => {});
   }, []);
 
@@ -143,6 +149,23 @@ export default function Profile() {
             <div>
               <p className="text-sm font-bold text-[#3AAFA9]">{getTierName(getStreakTier(streak))}</p>
               <p className="text-xs text-white/40">Day {streak} • Next reward: Day {getNextMilestone(streak).day}</p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ELO Rating */}
+        {elo != null && (
+          <motion.div
+            className="flex items-center justify-between rounded-2xl bg-white/5 border border-white/5 px-5 py-4"
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 }}
+          >
+            <div>
+              <p className="text-xs text-white/30 tracking-wider uppercase">Rating (ELO)</p>
+              <p className="text-3xl font-black text-white leading-none mt-1">{elo}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-white/30 tracking-wider uppercase">Peak</p>
+              <p className="text-lg font-bold text-[#D4AF37] mt-1">{peakElo}</p>
             </div>
           </motion.div>
         )}
