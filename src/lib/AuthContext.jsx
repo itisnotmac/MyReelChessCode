@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
+import { getLocalProfile } from '@/lib/profileUtils';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
 const AuthContext = createContext();
@@ -97,6 +98,20 @@ export const AuthProvider = ({ children }) => {
       if (currentUser?.premium_until && !currentUser.is_premium) {
         if (new Date(currentUser.premium_until) > new Date()) {
           currentUser.is_premium = true;
+        }
+      }
+      // Backfill: sync a profile created while signed out to the user's account
+      // so username/avatar are tracked server-side (fixes missing profile info).
+      if (currentUser && !currentUser.username) {
+        const local = getLocalProfile();
+        if (local?.username) {
+          try {
+            await base44.auth.updateMe({ username: local.username, avatar_url: local.avatar_url });
+            currentUser.username = local.username;
+            currentUser.avatar_url = local.avatar_url;
+          } catch (e) {
+            console.error('Profile backfill failed:', e);
+          }
         }
       }
       setUser(currentUser);
