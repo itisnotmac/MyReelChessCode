@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Check, Loader2, ChevronRight, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { PRESET_AVATARS, setLocalProfile, renderAvatarContent } from '@/lib/profileUtils';
-import FrostedPieceTile from '@/components/FrostedPieceTile';
+import FrostedAvatarImage from '@/components/FrostedAvatarImage';
 
 const HERO_BACKDROP = 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/3409ea109_generated_image.png';
 
@@ -234,7 +234,7 @@ export default function OnboardingProfile({ onComplete, isAuthenticated }) {
                       className="aspect-square rounded-xl overflow-hidden relative transition-all"
                       style={{ border: `2px solid ${isActive ? '#3AAFA9' : 'rgba(255,255,255,0.1)'}` }}
                     >
-                      <FrostedPieceTile preset={preset} size="md" />
+                      <FrostedAvatarImage preset={preset} />
                       {isActive && (
                         <div className="absolute inset-0 flex items-center justify-center bg-[#3AAFA9]/25">
                           <Check className="w-5 h-5 text-white" />

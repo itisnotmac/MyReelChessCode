@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, User as UserIcon, Camera, Check, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { PRESET_AVATARS, getLocalProfile, setLocalProfile, renderAvatarContent } from '@/lib/profileUtils';
-import FrostedPieceTile from '@/components/FrostedPieceTile';
+import FrostedAvatarImage from '@/components/FrostedAvatarImage';
 import StreakBadge from '../components/streak/StreakBadge';
 import { getTierName, getStreakTier, getNextMilestone } from '@/lib/streakTiers';
 
@@ -91,9 +91,12 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] relative overflow-y-auto">
-      <div className="absolute inset-0 opacity-[0.018]"
-        style={{ backgroundImage: `repeating-conic-gradient(#3AAFA9 0% 25%, transparent 0% 50%)`, backgroundSize: '44px 44px' }}
-      />
+      {/* Cinematic backdrop — empty throne room */}
+      <div className="absolute inset-0 z-0">
+        <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/433a8c3e7_generated_image.png" alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0"
+          style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.35) 0%, rgba(10,10,15,0.72) 60%, rgba(10,10,15,0.96) 100%)' }} />
+      </div>
 
       {/* Header */}
       <div className="relative z-10 flex items-center gap-3 px-5 pb-4"
@@ -204,7 +207,7 @@ export default function Profile() {
                   className="aspect-square rounded-xl overflow-hidden border-2 transition-all"
                   style={{ borderColor: isActive ? '#3AAFA9' : 'rgba(255,255,255,0.08)' }}
                 >
-                  <FrostedPieceTile preset={preset} size="md" />
+                  <FrostedAvatarImage preset={preset} />
                 </motion.button>
               );
             })}

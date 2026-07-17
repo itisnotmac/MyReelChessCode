@@ -1,16 +1,16 @@
 import React from 'react';
-import FrostedPieceTile from '@/components/FrostedPieceTile';
+import FrostedAvatarImage from '@/components/FrostedAvatarImage';
 
 const PROFILE_KEY = 'reelchess_profile';
 
-// Preset avatars: frosted-glass gradient (bg) + glowing piece color (fg).
+// Preset avatars: AI-rendered crystal chess pieces with a teal glow + frost overlay.
 export const PRESET_AVATARS = [
-  { label: 'King',   char: '♔', bg: 'linear-gradient(135deg, rgba(255,209,102,0.28), rgba(255,209,102,0.04))', fg: '#FFD166' },
-  { label: 'Queen',  char: '♕', bg: 'linear-gradient(135deg, rgba(210,200,255,0.26), rgba(210,200,255,0.04))', fg: '#D8D0FF' },
-  { label: 'Rook',   char: '♖', bg: 'linear-gradient(135deg, rgba(148,184,214,0.26), rgba(148,184,214,0.04))', fg: '#AFCBE8' },
-  { label: 'Bishop', char: '♗', bg: 'linear-gradient(135deg, rgba(58,175,169,0.32), rgba(58,175,169,0.05))',  fg: '#3AAFA9' },
-  { label: 'Knight', char: '♘', bg: 'linear-gradient(135deg, rgba(177,130,255,0.28), rgba(177,130,255,0.04))', fg: '#C9A6FF' },
-  { label: 'Pawn',   char: '♙', bg: 'linear-gradient(135deg, rgba(214,158,90,0.28), rgba(214,158,90,0.04))',  fg: '#E8B07A' },
+  { label: 'King',   char: '♔', image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/4ec93d6eb_generated_image.png' },
+  { label: 'Queen',  char: '♕', image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/adbaa2538_generated_image.png' },
+  { label: 'Rook',   char: '♖', image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/e44ddc9ea_generated_image.png' },
+  { label: 'Bishop', char: '♗', image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/712dc68a1_generated_image.png' },
+  { label: 'Knight', char: '♘', image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/3ffa66ff3_generated_image.png' },
+  { label: 'Pawn',   char: '♙', image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/ae22eb8b3_generated_image.png' },
 ];
 
 export function getLocalProfile() {
@@ -37,5 +37,5 @@ export function renderAvatarContent(avatarUrl) {
   }
   const presetChar = avatarUrl?.startsWith('preset:') ? avatarUrl.slice(7) : null;
   const preset = PRESET_AVATARS.find(p => p.char === presetChar) || PRESET_AVATARS[0];
-  return <FrostedPieceTile preset={preset} size="lg" />;
+  return <FrostedAvatarImage preset={preset} />;
 }
