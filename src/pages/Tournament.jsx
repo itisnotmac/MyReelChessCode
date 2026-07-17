@@ -100,7 +100,7 @@ export default function Tournament() {
       <div className="absolute inset-0 z-0">
         <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/bac81919d_generated_image.png" alt="" className="w-full h-full object-cover" />
         <div className="absolute inset-0"
-          style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.35) 0%, rgba(10,10,15,0.72) 60%, rgba(10,10,15,0.96) 100%)' }} />
+          style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.18) 0%, rgba(10,10,15,0.5) 60%, rgba(10,10,15,0.82) 100%)' }} />
       </div>
 
       <div className="relative z-10 flex items-center justify-center overflow-hidden transition-all duration-200"
