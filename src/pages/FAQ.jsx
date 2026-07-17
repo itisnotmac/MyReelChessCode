@@ -20,9 +20,16 @@ export default function FAQ() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col">
+    <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col relative">
+      {/* Cinematic backdrop — mystic hall of knowledge */}
+      <div className="absolute inset-0 z-0">
+        <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/5b315c3de_generated_image.png" alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0"
+          style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.18) 0%, rgba(10,10,15,0.5) 60%, rgba(10,10,15,0.82) 100%)' }} />
+      </div>
+
       {/* Header */}
-      <div className="flex items-center gap-4 px-5 pt-6 pb-4 border-b border-[#3AAFA9]/10">
+      <div className="relative z-10 flex items-center gap-4 px-5 pt-6 pb-4 border-b border-[#3AAFA9]/10">
         <button
           onClick={() => navigate(-1)}
           className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-[#3AAFA9] hover:bg-[#3AAFA9]/15 transition-colors"
@@ -33,7 +40,7 @@ export default function FAQ() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 max-w-2xl mx-auto px-6 py-10 w-full">
+      <div className="relative z-10 flex-1 max-w-2xl mx-auto px-6 py-10 w-full">
         <h1 className="text-3xl font-black tracking-[0.15em] uppercase mb-2"
           style={{
             backgroundImage: 'linear-gradient(135deg, #3AAFA9 0%, #A8E6E3 60%, #3AAFA9 100%)',
