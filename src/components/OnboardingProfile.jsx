@@ -222,23 +222,21 @@ export default function OnboardingProfile({ onComplete, isAuthenticated }) {
               <input ref={fileInputRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
 
               <p className="text-[11px] text-white/40 tracking-[0.18em] uppercase mb-3 text-center">Or pick a chess piece</p>
-              <div className="grid grid-cols-6 gap-2">
+              <div className="grid grid-cols-3 gap-3">
                 {PRESET_AVATARS.map((preset, i) => {
                   const isActive = isPreset && presetChar === preset.char;
                   return (
                     <motion.button
                       key={i}
                       onClick={() => { setAvatarUrl(`preset:${preset.char}`); setShowAvatarPicker(false); }}
-                      whileTap={{ scale: 0.9 }}
-                      className="aspect-square rounded-lg overflow-hidden transition-all relative"
-                      style={{ background: preset.bg, border: `2px solid ${isActive ? '#3AAFA9' : 'transparent'}` }}
+                      whileTap={{ scale: 0.92 }}
+                      className="aspect-square rounded-xl overflow-hidden relative transition-all"
+                      style={{ border: `2px solid ${isActive ? '#3AAFA9' : 'rgba(255,255,255,0.1)'}` }}
                     >
-                      <span className="flex items-center justify-center w-full h-full" style={{ color: preset.fg, fontSize: '1.3rem' }}>
-                        {preset.char}
-                      </span>
+                      <img src={preset.image} alt={preset.label} className="w-full h-full object-cover" />
                       {isActive && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-[#3AAFA9]/20">
-                          <Check className="w-4 h-4 text-white" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-[#3AAFA9]/25">
+                          <Check className="w-5 h-5 text-white" />
                         </div>
                       )}
                     </motion.button>
