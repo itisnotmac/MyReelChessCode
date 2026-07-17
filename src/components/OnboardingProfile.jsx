@@ -4,6 +4,8 @@ import { Camera, Check, Loader2, ChevronRight, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { PRESET_AVATARS, setLocalProfile, renderAvatarContent } from '@/lib/profileUtils';
 
+const HERO_BACKDROP = 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/3409ea109_generated_image.png';
+
 export default function OnboardingProfile({ onComplete, isAuthenticated }) {
   const [username, setUsername] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('preset:♔');
@@ -59,104 +61,145 @@ export default function OnboardingProfile({ onComplete, isAuthenticated }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#0a0a0f] z-[100] overflow-y-auto">
-      <div className="absolute inset-0 opacity-[0.018]"
-        style={{ backgroundImage: `repeating-conic-gradient(#3AAFA9 0% 25%, transparent 0% 50%)`, backgroundSize: '44px 44px' }}
-      />
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-72 h-72 rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(58,175,169,0.08) 0%, transparent 70%)' }} />
+    <div className="fixed inset-0 bg-[#0a0f12] z-[100] overflow-y-auto">
+      {/* Cinematic 3D rook backdrop */}
+      <div className="absolute inset-0">
+        <img src={HERO_BACKDROP} alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0" style={{ backdropFilter: 'blur(2px)' }} />
+        <div className="absolute inset-0"
+          style={{ background: 'radial-gradient(120% 90% at 50% 40%, rgba(10,15,18,0.35) 0%, rgba(10,15,18,0.78) 55%, rgba(10,15,18,0.96) 100%)' }} />
       </div>
 
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-10"
-        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 40px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 40px)' }}>
-        
-        <motion.div
-          className="text-center mb-8"
-          initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
-        >
-          <h1 className="text-2xl font-black tracking-[0.15em] uppercase text-[#3AAFA9] mb-2">
-            Welcome
-          </h1>
-          <p className="text-sm text-white/40 max-w-xs">
-            Create your profile to start playing
-          </p>
-        </motion.div>
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-5 py-10"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 32px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 32px)' }}>
 
-        {/* Avatar preview — tap to open picker */}
+        {/* Floating frosted-glass card */}
         <motion.div
-          className="flex flex-col items-center gap-3 mb-6"
-          initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 24, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full max-w-sm rounded-3xl p-7 flex flex-col items-center text-center"
+          style={{
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.14)',
+            boxShadow: '0 18px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08)',
+            backdropFilter: 'blur(22px)',
+            WebkitBackdropFilter: 'blur(22px)',
+          }}
         >
-          <button
-            onClick={() => setShowAvatarPicker(true)}
-            className="relative group"
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+            className="mb-6"
           >
-            <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-[#3AAFA9]/40 transition-all group-hover:border-[#3AAFA9]/70 group-active:scale-95"
-              style={{ boxShadow: '0 0 24px rgba(58,175,169,0.25)' }}>
-              {uploading ? (
-                <div className="w-full h-full flex items-center justify-center bg-[#1a1a2e]">
-                  <Loader2 className="w-6 h-6 text-[#3AAFA9] animate-spin" />
-                </div>
-              ) : renderAvatarContent(avatarUrl)}
-            </div>
-            <div className="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-[#3AAFA9] border-2 border-[#0a0a0f] flex items-center justify-center text-[#0a0a0f]">
-              <Camera className="w-4 h-4" />
-            </div>
-          </button>
-          <p className="text-xs text-white/30">Tap to change avatar</p>
-        </motion.div>
+            <h1 className="text-3xl font-black tracking-[0.18em] uppercase text-white mb-2"
+              style={{ textShadow: '0 0 22px rgba(58,175,169,0.35)' }}>
+              Welcome
+            </h1>
+            <p className="text-sm text-white/60 max-w-xs">
+              Create your profile to start playing
+            </p>
+          </motion.div>
 
-        {/* Username */}
-        <motion.div
-          className="w-full max-w-sm space-y-2 mb-8"
-          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-        >
-          <label className="text-xs text-white/30 tracking-wider uppercase">Choose a Username</label>
-          <input
-            type="text"
-            value={username}
-            onChange={e => { setUsername(e.target.value); setError(''); }}
-            maxLength={20}
-            autoFocus
-            placeholder="e.g. Grandmaster42"
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#3AAFA9]/50 placeholder:text-white/20 transition-colors text-center"
-            onKeyDown={e => { if (e.key === 'Enter') handleSave(); }}
-          />
-          {error && <p className="text-xs text-red-400 text-center">{error}</p>}
-        </motion.div>
+          {/* Avatar */}
+          <motion.div
+            className="flex flex-col items-center gap-2.5 mb-6"
+            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+          >
+            <button
+              onClick={() => setShowAvatarPicker(true)}
+              className="relative group"
+            >
+              <div className="w-24 h-24 rounded-full overflow-hidden transition-all group-active:scale-95"
+                style={{
+                  border: '1.5px solid rgba(58,175,169,0.55)',
+                  boxShadow: '0 0 26px rgba(58,175,169,0.35), inset 0 0 18px rgba(58,175,169,0.12)',
+                  background: 'rgba(255,255,255,0.04)',
+                }}>
+                {uploading ? (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Loader2 className="w-6 h-6 text-[#3AAFA9] animate-spin" />
+                  </div>
+                ) : renderAvatarContent(avatarUrl)}
+              </div>
+              <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full flex items-center justify-center"
+                style={{ background: '#3AAFA9', border: '2px solid #0a0f12', color: '#0a0f12' }}>
+                <Camera className="w-3.5 h-3.5" />
+              </div>
+            </button>
+            <p className="text-[11px] text-white/40 tracking-wide">Tap to change avatar</p>
+          </motion.div>
 
-        {/* Continue button */}
-        <motion.button
-          onClick={handleSave}
-          disabled={saving}
-          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-          className="flex items-center justify-center gap-2 px-10 py-3.5 rounded-xl font-bold text-sm tracking-wider uppercase transition-all active:scale-95 disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg, #3AAFA9 0%, #2d8a85 100%)', color: '#0a0a0f' }}
-        >
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
-          {saving ? 'Creating...' : 'Start Playing'}
-        </motion.button>
+          {/* Username */}
+          <motion.div
+            className="w-full space-y-2 mb-6"
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          >
+            <label className="text-[11px] text-white/40 tracking-[0.18em] uppercase">Choose a Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={e => { setUsername(e.target.value); setError(''); }}
+              maxLength={20}
+              autoFocus
+              placeholder="e.g. Grandmaster42"
+              className="rc-onboard-input w-full px-4 py-3 rounded-xl text-white text-sm text-center transition-colors focus:outline-none"
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.12)',
+              }}
+              onKeyDown={e => { if (e.key === 'Enter') handleSave(); }}
+            />
+            <style>{`
+              .rc-onboard-input::placeholder { color: rgba(58,175,169,0.6); }
+              .rc-onboard-input:focus { border-color: rgba(58,175,169,0.6) !important; box-shadow: 0 0 0 3px rgba(58,175,169,0.12); }
+            `}</style>
+            {error && <p className="text-xs text-red-400">{error}</p>}
+          </motion.div>
+
+          {/* CTA */}
+          <motion.button
+            onClick={handleSave}
+            disabled={saving}
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+            whileTap={{ scale: 0.97 }}
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full font-bold text-sm tracking-[0.16em] uppercase text-white transition-all disabled:opacity-60"
+            style={{
+              background: 'linear-gradient(180deg, #2d8a85 0%, #3AAFA9 100%)',
+              boxShadow: '0 10px 28px rgba(58,175,169,0.35), inset 0 1px 0 rgba(255,255,255,0.25)',
+            }}
+          >
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
+            {saving ? 'Creating...' : 'Start Playing'}
+          </motion.button>
+        </motion.div>
       </div>
 
-      {/* Avatar picker modal — only shows when user taps their avatar */}
+      {/* Avatar picker modal */}
       <AnimatePresence>
         {showAvatarPicker && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center"
+            className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-md flex items-end sm:items-center justify-center"
             onClick={() => setShowAvatarPicker(false)}
           >
             <motion.div
               initial={{ y: 40, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 40, opacity: 0 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              transition={{ type: 'spring', damping: 26, stiffness: 300 }}
               onClick={e => e.stopPropagation()}
-              className="w-full max-w-sm bg-[#111118] border border-[#3AAFA9]/20 rounded-t-3xl sm:rounded-2xl p-6"
-              style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 24px)' }}
+              className="w-full max-w-sm rounded-t-3xl sm:rounded-3xl p-6"
+              style={{
+                paddingBottom: 'calc(env(safe-area-inset-bottom) + 22px)',
+                background: 'rgba(18,20,24,0.85)',
+                border: '1px solid rgba(58,175,169,0.22)',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+              }}
             >
               <div className="flex items-center justify-between mb-5">
                 <h3 className="text-base font-bold text-white/90">Choose Avatar</h3>
@@ -168,17 +211,17 @@ export default function OnboardingProfile({ onComplete, isAuthenticated }) {
                 </button>
               </div>
 
-              {/* Upload option */}
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-[#3AAFA9]/20 text-[#3AAFA9] text-sm font-medium hover:bg-[#3AAFA9]/10 transition-colors mb-5"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium transition-colors mb-5"
+                style={{ border: '1px solid rgba(58,175,169,0.3)', color: '#3AAFA9', background: 'rgba(58,175,169,0.08)' }}
               >
                 <Camera className="w-4 h-4" />
                 Upload a photo
               </button>
               <input ref={fileInputRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
 
-              <p className="text-xs text-white/30 tracking-wider uppercase mb-3 text-center">Or pick a chess piece</p>
+              <p className="text-[11px] text-white/40 tracking-[0.18em] uppercase mb-3 text-center">Or pick a chess piece</p>
               <div className="grid grid-cols-6 gap-2">
                 {PRESET_AVATARS.map((preset, i) => {
                   const isActive = isPreset && presetChar === preset.char;
@@ -187,8 +230,8 @@ export default function OnboardingProfile({ onComplete, isAuthenticated }) {
                       key={i}
                       onClick={() => { setAvatarUrl(`preset:${preset.char}`); setShowAvatarPicker(false); }}
                       whileTap={{ scale: 0.9 }}
-                      className="aspect-square rounded-lg overflow-hidden border-2 transition-all relative"
-                      style={{ background: preset.bg, borderColor: isActive ? '#3AAFA9' : 'transparent' }}
+                      className="aspect-square rounded-lg overflow-hidden transition-all relative"
+                      style={{ background: preset.bg, border: `2px solid ${isActive ? '#3AAFA9' : 'transparent'}` }}
                     >
                       <span className="flex items-center justify-center w-full h-full" style={{ color: preset.fg, fontSize: '1.3rem' }}>
                         {preset.char}
