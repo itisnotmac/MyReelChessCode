@@ -228,7 +228,7 @@ export default function Store() {
     <div className="min-h-screen bg-[#0a0a0f] text-white pb-8">
       {/* Header */}
       <div className="flex items-center gap-3 px-4 pt-6 pb-4">
-        <button onClick={() => navigate('/')} className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
+        <button onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))} className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
           <ChevronLeft className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-2">
