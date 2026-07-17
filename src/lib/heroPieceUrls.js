@@ -5,7 +5,7 @@
 // entries are skipped.
 export const HERO_PIECE_URLS = {
   b: 'https://media.base44.com/files/public/69ab30c24c8c7db2b8432adf/41605d60e_BishopThreeD.glb',
-  k: null,
+  k: 'https://media.base44.com/files/public/69ab30c24c8c7db2b8432adf/a8f90524c_KingThreeD.glb',
   q: null,
   n: null,
   r: null,
