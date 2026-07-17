@@ -23,7 +23,7 @@ export default function FAQ() {
     <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col relative">
       {/* Cinematic backdrop — mystic hall of knowledge */}
       <div className="absolute inset-0 z-0">
-        <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/5b315c3de_generated_image.png" alt="" className="w-full h-full object-cover" />
+        <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/5cf0fd154_generated_image.png" alt="" className="w-full h-full object-cover" />
         <div className="absolute inset-0"
           style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.18) 0%, rgba(10,10,15,0.5) 60%, rgba(10,10,15,0.82) 100%)' }} />
       </div>
