@@ -97,28 +97,24 @@ export default function Tutorial() {
           <p className="text-[10px] text-white/20 mt-1 text-right">{progress}% complete</p>
         </div>
 
-        {/* Lesson list by section (grouped chapters) */}
-        <div className="relative z-10 px-5 space-y-5 pb-10">
-          {SECTIONS.map((section) => {
+        {/* Lesson list by section — three columns framing the backdrop */}
+        <div className="relative z-10 grid grid-cols-3 gap-2 px-2 pb-10 items-start">
+          {SECTIONS.map((section, sIdx) => {
             const sectionChapters = section.chapters.filter(ch => CHAPTERS.includes(ch));
             if (sectionChapters.length === 0) return null;
+            const colAlign = ['items-start', 'items-center', 'items-end'][sIdx];
             return (
-              <div key={section.name} className="space-y-2">
-                {/* Section divider */}
-                <div className="flex items-center gap-3 px-1 pt-1">
-                  <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#3AAFA9]/25" />
-                  <div className="text-center shrink-0">
-                    <p className="text-[11px] tracking-[0.25em] uppercase font-bold text-[#3AAFA9]">{section.name}</p>
-                    <p className="text-[9px] text-white/25 mt-0.5">{section.description}</p>
-                  </div>
-                  <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#3AAFA9]/25" />
+              <div key={section.name} className={`flex flex-col ${colAlign} gap-2`}>
+                {/* Section header */}
+                <div className="px-1 pt-1">
+                  <p className="text-[11px] tracking-[0.25em] uppercase font-bold text-[#3AAFA9]">{section.name}</p>
                 </div>
                 {sectionChapters.map((chapter) => {
                   const chapterLessons = LESSONS.filter(l => l.chapter === chapter);
                   const doneCount = chapterLessons.filter(l => isCompleted(l.id)).length;
                   const isOpen = expandedChapter === chapter;
                   return (
-                    <div key={chapter} className="flex flex-col items-center">
+                    <div key={chapter} className={`flex flex-col ${colAlign}`}>
                 <button
                   onClick={() => setExpandedChapter(isOpen ? null : chapter)}
                   className="w-fit flex items-center gap-3 px-4 py-3 rounded-xl border border-white/15 bg-black/40 backdrop-blur-md text-left hover:bg-white/5 transition-colors"
@@ -136,7 +132,7 @@ export default function Tutorial() {
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden"
                     >
-                      <div className="space-y-1.5 pb-3 pt-2 flex flex-col items-center">
+                      <div className={`space-y-1.5 pb-3 pt-2 flex flex-col ${colAlign}`}>
                         {chapterLessons.map((l, li) => {
                           const globalIdx = LESSONS.findIndex(x => x.id === l.id);
                           const done = isCompleted(l.id);
