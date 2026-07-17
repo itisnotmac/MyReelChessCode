@@ -43,50 +43,50 @@ function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
             onClick={onClose}
           />
           <motion.div
-            className="fixed right-0 top-0 bottom-0 w-72 bg-gradient-to-b from-[#1a1a2e] to-[#0f0f1a] z-50 shadow-2xl border-l border-[#3AAFA9]/15"
+            className="fixed right-0 top-0 bottom-0 w-72 flex flex-col bg-gradient-to-b from-[#1a1a2e] to-[#0f0f1a] z-50 shadow-2xl border-l border-[#3AAFA9]/15"
             initial={{ x: 300 }} animate={{ x: 0 }} exit={{ x: 300 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-10">
+            <div className="p-6 pb-4 flex-shrink-0">
+              <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-bold tracking-wider text-[#3AAFA9]">MENU</h2>
                 <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white transition-colors">
                   <X className="w-4 h-4" />
                 </button>
               </div>
-              <div className="space-y-2">
-                {items.map((item, i) => (
-                  <motion.button
-                    key={item.id}
-                    onClick={() => {
-                      if (item.id === 'logout') {
-                        onLogout();
-                      } else {
-                        onNavigate(item.id);
-                      }
-                      onClose();
-                    }}
-                    className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group ${
-                      item.isDanger
-                        ? 'text-red-400/70 hover:text-red-400 hover:bg-red-400/10'
-                        : 'text-white/70 hover:text-white hover:bg-white/5'
-                    }`}
-                    initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + i * 0.05 }}
-                  >
-                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center group-hover:transition-colors ${
-                      item.isDanger
-                        ? 'bg-red-400/10 group-hover:bg-red-400/20'
-                        : 'bg-[#3AAFA9]/10 group-hover:bg-[#3AAFA9]/20'
-                    }`}>
-                      <item.icon className={`w-4 h-4 ${item.isDanger ? 'text-red-400' : 'text-[#3AAFA9]'}`} />
-                    </div>
-                    <span className="text-sm tracking-wider font-medium">{item.label}</span>
-                  </motion.button>
-                ))}
-              </div>
             </div>
-            <div className="absolute bottom-8 left-0 right-0 text-center">
+            <div className="px-6 space-y-2 overflow-y-auto flex-1 pb-6 overscroll-contain">
+              {items.map((item, i) => (
+                <motion.button
+                  key={item.id}
+                  onClick={() => {
+                    if (item.id === 'logout') {
+                      onLogout();
+                    } else {
+                      onNavigate(item.id);
+                    }
+                    onClose();
+                  }}
+                  className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group ${
+                    item.isDanger
+                      ? 'text-red-400/70 hover:text-red-400 hover:bg-red-400/10'
+                      : 'text-white/70 hover:text-white hover:bg-white/5'
+                  }`}
+                  initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 + i * 0.05 }}
+                >
+                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center group-hover:transition-colors ${
+                    item.isDanger
+                      ? 'bg-red-400/10 group-hover:bg-red-400/20'
+                      : 'bg-[#3AAFA9]/10 group-hover:bg-[#3AAFA9]/20'
+                  }`}>
+                    <item.icon className={`w-4 h-4 ${item.isDanger ? 'text-red-400' : 'text-[#3AAFA9]'}`} />
+                  </div>
+                  <span className="text-sm tracking-wider font-medium">{item.label}</span>
+                </motion.button>
+              ))}
+            </div>
+            <div className="flex-shrink-0 p-4 text-center">
               <p className="text-[10px] tracking-[0.3em] uppercase text-white/15">Reel Chess v1.0</p>
             </div>
           </motion.div>
