@@ -5,7 +5,6 @@ import { ArrowLeft, Award, Loader2, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { ACHIEVEMENTS, computeStats, evaluateAchievements, AchievementBadge } from '@/lib/achievements';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
-import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
 
 export default function Achievements() {
   const navigate = useNavigate();
@@ -32,7 +31,7 @@ export default function Achievements() {
     <div
       className="min-h-screen bg-[#0a0a0f] relative overflow-y-auto"
       style={{
-        backgroundImage: `linear-gradient(rgba(10,10,15,0.45), rgba(10,10,15,0.68)), url(${HERO_BACKDROPS.hallOfRecords})`,
+        backgroundImage: `linear-gradient(rgba(10,10,15,0.45), rgba(10,10,15,0.68)), url(https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/af02e57a5_generated_image.png)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
