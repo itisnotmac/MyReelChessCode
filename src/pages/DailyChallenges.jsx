@@ -77,24 +77,35 @@ export default function DailyChallenges() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col items-center justify-center px-6">
-        <Coins className="w-12 h-12 text-[#D4AF37]/40 mb-4" />
-        <h1 className="text-xl font-bold mb-2">Daily Challenges</h1>
-        <p className="text-sm text-white/50 text-center mb-6 max-w-xs">
+      <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col items-center justify-center px-6 relative">
+        <div className="absolute inset-0 z-0">
+          <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/574c7d4b7_generated_image.png" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0"
+            style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.55) 60%, rgba(10,10,15,0.88) 100%)' }} />
+        </div>
+        <Coins className="relative z-10 w-12 h-12 text-[#D4AF37]/40 mb-4" />
+        <h1 className="relative z-10 text-xl font-bold mb-2">Daily Challenges</h1>
+        <p className="relative z-10 text-sm text-white/50 text-center mb-6 max-w-xs">
           Log in to earn coins by completing daily challenges and spend them in the store.
         </p>
         <button onClick={() => navigate('/login')}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#3AAFA9]/15 border border-[#3AAFA9]/60 text-[#3AAFA9] font-bold text-xs tracking-wider uppercase">
+          className="relative z-10 flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#3AAFA9]/15 border border-[#3AAFA9]/60 text-[#3AAFA9] font-bold text-xs tracking-wider uppercase">
           <LogIn className="w-4 h-4" /> Login
         </button>
-        <button onClick={() => navigate('/')} className="mt-3 text-xs text-white/40 hover:text-white/60">Back to Lobby</button>
+        <button onClick={() => navigate('/')} className="relative z-10 mt-3 text-xs text-white/40 hover:text-white/60">Back to Lobby</button>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white pb-8">
-      <div className="flex items-center gap-3 px-4 pt-6 pb-4">
+    <div className="min-h-screen bg-[#0a0a0f] text-white pb-8 relative">
+      {/* Cinematic backdrop — celestial observatory */}
+      <div className="absolute inset-0 z-0">
+        <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/574c7d4b7_generated_image.png" alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0"
+          style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.55) 60%, rgba(10,10,15,0.88) 100%)' }} />
+      </div>
+      <div className="relative z-10 flex items-center gap-3 px-4 pt-6 pb-4">
         <button onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))}
           className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
           <ChevronLeft className="w-5 h-5" />
@@ -106,8 +117,8 @@ export default function DailyChallenges() {
       </div>
 
       {/* Coin Balance */}
-      <div className="px-4 mb-4">
-        <div className="rounded-xl p-4 border border-[#D4AF37]/20 flex items-center justify-between"
+      <div className="relative z-10 px-4 mb-4">
+        <div className="rounded-xl p-4 border border-[#D4AF37]/30 backdrop-blur-md flex items-center justify-between"
           style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.10) 0%, rgba(212,175,55,0.03) 100%)' }}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-[#D4AF37]/15 flex items-center justify-center">
@@ -125,25 +136,25 @@ export default function DailyChallenges() {
         </div>
       </div>
 
-      <div className="px-4 mb-4 flex items-center justify-between">
+      <div className="relative z-10 px-4 mb-4 flex items-center justify-between">
         <p className="text-[10px] tracking-[0.2em] uppercase text-white/30">1 Challenge • {CHALLENGE_REWARD} Coins</p>
         <p className="text-[10px] tracking-wider text-white/30">Resets in {timeUntilReset}</p>
       </div>
 
       {claimResult && (
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-          className="mx-4 mb-4 p-3 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center gap-2">
+          className="relative z-10 mx-4 mb-4 p-3 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center gap-2">
           <Coins className="w-4 h-4 text-[#D4AF37]" />
           <span className="text-sm text-[#D4AF37]">{claimResult}</span>
         </motion.div>
       )}
 
       {loading ? (
-        <div className="flex justify-center py-12">
+        <div className="relative z-10 flex justify-center py-12">
           <Loader2 className="w-6 h-6 text-[#D4AF37]/50 animate-spin" />
         </div>
       ) : (
-        <div className="px-4 space-y-3">
+        <div className="relative z-10 px-4 space-y-3">
           {(() => {
             const ch = todaysChallenge;
             const progress = ch.getProgress(account);
@@ -153,10 +164,10 @@ export default function DailyChallenges() {
 
             return (
               <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                className={`rounded-xl p-5 border transition-all ${
-                  isClaimed ? 'border-[#3AAFA9]/30 bg-[#3AAFA9]/5'
-                  : isComplete ? 'border-[#D4AF37]/40 bg-[#D4AF37]/10'
-                  : 'border-white/10 bg-white/5'
+                className={`rounded-xl p-5 border backdrop-blur-md transition-all ${
+                  isClaimed ? 'border-[#3AAFA9]/40 bg-black/40'
+                  : isComplete ? 'border-[#D4AF37]/50 bg-black/40'
+                  : 'border-white/15 bg-black/40'
                 }`}>
                 <div className="flex items-center gap-3 mb-3">
                   <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
@@ -197,7 +208,7 @@ export default function DailyChallenges() {
       )}
 
       {!loading && (
-        <div className="px-4 mt-4">
+        <div className="relative z-10 px-4 mt-4">
           <button onClick={handleClaim} disabled={claiming || !hasUnclaimed}
             className={`w-full py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all flex items-center justify-center gap-2 ${
               hasUnclaimed
