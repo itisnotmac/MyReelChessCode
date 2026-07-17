@@ -16,7 +16,7 @@ export default function About() {
       className="min-h-screen text-white flex flex-col"
       style={{
         backgroundColor: '#0a0a0f',
-        backgroundImage: `linear-gradient(rgba(10,10,15,0.6), rgba(10,10,15,0.6)), url(${HERO_BACKDROPS.cinematicVideoLoop})`,
+        backgroundImage: `linear-gradient(rgba(10,10,15,0.6), rgba(10,10,15,0.6)), url(${HERO_BACKDROPS.cinematicKingPlate})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
