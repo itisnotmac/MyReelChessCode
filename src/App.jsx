@@ -65,6 +65,16 @@ const AuthenticatedApp = () => {
     }
   }
 
+  // Require login to enter the app. Public marketing pages (landing, about, faq,
+  // tutorial, contact, info, privacy) are rendered in AppRoutes before this
+  // component, so everything that reaches here is the app proper and needs a
+  // session. Anonymous visitors are redirected to the login page.
+  const AUTH_FREE_PATHS = ['/login', '/register', '/premium-success'];
+  if (!isAuthenticated && !AUTH_FREE_PATHS.includes(location.pathname)) {
+    navigateToLogin();
+    return null;
+  }
+
   // Gate: require profile creation on first app open
   if (!hasProfile()) {
     return <OnboardingProfile onComplete={() => window.location.reload()} isAuthenticated={isAuthenticated} />;
