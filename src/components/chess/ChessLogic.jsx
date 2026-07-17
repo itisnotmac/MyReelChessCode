@@ -365,6 +365,15 @@ export function getAIMove(board, enPassant, castling, difficulty = 2) {
       bestMove = move;
     }
   }
+
+  // Low difficulties sometimes skip the best move and play a random legal
+  // move instead — simulates a weak human who doesn't always grab material.
+  const blunderChance = difficulty === 1 ? 0.5 : difficulty === 2 ? 0.2 : 0;
+  if (blunderChance > 0 && Math.random() < blunderChance && moves.length > 1) {
+    const random = moves[Math.floor(Math.random() * moves.length)];
+    return random;
+  }
+
   return bestMove;
 }
 
