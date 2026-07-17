@@ -7,9 +7,13 @@ function getStreakReward(streak) {
 }
 
 function formatDate(d) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
+  // Use UTC so day boundaries are deterministic regardless of the runtime's
+  // local timezone (Deno Deploy runs in UTC). The date must NEVER be taken
+  // from the client — a trusted server date prevents users from forging
+  // consecutive days to inflate their streak and farm coins.
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
 }
 
@@ -25,9 +29,8 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { date } = await req.json();
-    if (!date) return Response.json({ error: 'Missing date' }, { status: 400 });
-
+    // Trust the server's current UTC date, never a client-supplied value.
+    const date = formatDate(new Date());
     const yesterday = getYesterday(date);
 
     let accounts = await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: user.id });
