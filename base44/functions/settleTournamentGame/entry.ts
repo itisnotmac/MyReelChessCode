@@ -135,6 +135,42 @@ function _hasAnyLegalMove(board, white, enPassantTarget, castlingRights) {
   }
   return false;
 }
+// Validate that a stored board is a *legal* chess position — not merely a
+// terminal one. A participant can write an arbitrary board string to their own
+// OnlineGame record, so before accepting a checkmate we must reject forged
+// positions: wrong king counts, pawns on the promotion ranks, adjacent kings,
+// impossible material, or the side that just moved being left in check (you can
+// never make a move that leaves your own king attacked). This closes the trivial
+// "write an impossible checkmate pattern" attack without needing full move
+// history replay.
+function _isLegalPosition(board, whiteToMove) {
+  if (!Array.isArray(board) || board.length !== 8) return false;
+  let wk = 0, bk = 0, wp = 0, bp = 0, wTotal = 0, bTotal = 0;
+  for (let r = 0; r < 8; r++) {
+    if (!Array.isArray(board[r]) || board[r].length !== 8) return false;
+    for (let c = 0; c < 8; c++) {
+      const p = board[r][c];
+      if (p === null || p === undefined) continue;
+      if (!/^[KQRBNPkqbnp]$/.test(p)) return false;
+      if (p === 'K') wk++;
+      else if (p === 'k') bk++;
+      else if (p === 'P') { wp++; if (r === 0 || r === 7) return false; }
+      else if (p === 'p') { bp++; if (r === 0 || r === 7) return false; }
+      if (_isWhite(p)) wTotal++; else bTotal++;
+    }
+  }
+  if (wk !== 1 || bk !== 1) return false;
+  if (wp > 8 || bp > 8) return false;
+  if (wTotal > 16 || bTotal > 16) return false;
+  const wkp = _findKing(board, true);
+  const bkp = _findKing(board, false);
+  if (!wkp || !bkp) return false;
+  if (Math.abs(wkp[0] - bkp[0]) <= 1 && Math.abs(wkp[1] - bkp[1]) <= 1) return false;
+  // The side that just moved (= !whiteToMove) can never be left in check.
+  if (_isInCheck(board, !whiteToMove)) return false;
+  return true;
+}
+
 // Recompute the game result from the stored post-move board. `whiteToMove` is the
 // side to move (the side that may be checkmated/stalemated).
 function verifyTerminalResult(board, whiteToMove, enPassant, castling) {
@@ -175,6 +211,11 @@ Deno.serve(async (req) => {
     try { castling = game.castling ? JSON.parse(game.castling) : null; } catch {}
     if (!castling) {
       castling = { whiteKingside: true, whiteQueenside: true, blackKingside: true, blackQueenside: true };
+    }
+    // Reject forged/unreachable terminal boards before trusting the result.
+    if (!_isLegalPosition(board, game.is_white_turn)) {
+      console.error('settleTournamentGame: illegal/forged terminal board rejected');
+      return Response.json({ error: 'Result could not be verified' }, { status: 403 });
     }
     const verifiedResult = verifyTerminalResult(board, game.is_white_turn, enPassant, castling);
     if (verifiedResult === 'in_progress') {

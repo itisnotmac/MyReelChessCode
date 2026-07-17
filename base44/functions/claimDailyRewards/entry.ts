@@ -7,6 +7,16 @@ const CHALLENGES = [
   { id: 'play_3', check: (a) => (a.daily_games_played || 0) >= 3, reward: 25 },
 ];
 
+// Use UTC so day boundaries are deterministic regardless of the runtime's local
+// timezone. The date must NEVER be taken from the client — a forged date would
+// let users reset daily progress and re-claim rewards to farm coins.
+function formatDate(d) {
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 // Must match lib/dailyChallenges.js getDayIndex exactly
 function getDayIndex(dateStr) {
   const d = new Date(dateStr + 'T00:00:00');
@@ -22,8 +32,8 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { date } = await req.json();
-    if (!date) return Response.json({ error: 'Missing date' }, { status: 400 });
+    // Trust the server's current UTC date, never a client-supplied value.
+    const date = formatDate(new Date());
 
     let accounts = await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: user.id });
     let account = accounts[0];
