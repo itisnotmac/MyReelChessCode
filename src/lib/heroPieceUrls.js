@@ -6,7 +6,7 @@
 export const HERO_PIECE_URLS = {
   b: 'https://media.base44.com/files/public/69ab30c24c8c7db2b8432adf/41605d60e_BishopThreeD.glb',
   k: 'https://media.base44.com/files/public/69ab30c24c8c7db2b8432adf/a8f90524c_KingThreeD.glb',
-  q: null,
+  q: 'https://media.base44.com/files/public/69ab30c24c8c7db2b8432adf/87dce560d_QueenThreeD.glb',
   n: null,
   r: null,
   p: 'https://media.base44.com/files/public/69ab30c24c8c7db2b8432adf/169e2a1e0_PawnThreeD.glb',
