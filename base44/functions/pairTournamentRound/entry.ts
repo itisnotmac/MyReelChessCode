@@ -61,10 +61,15 @@ Deno.serve(async (req) => {
       return Response.json({ ok: true, round: 1 });
     }
 
-    // Wait for the current main-bracket round to finish before advancing
+    // Only advance once every current-round game is fully settled — not merely
+    // "finished". A finished-but-unsettled game still has its loser un-eliminated,
+    // so pairing on `finished` alone could advance a player who actually lost.
+    // `tournament_settled` is set by settleTournamentGame only after it
+    // eliminates the loser and verifies the result, making it the only safe
+    // trigger for pairing the next round.
     const currentRoundGames = mainGames.filter(g => (g.tournament_round || 0) === maxRound);
-    const unfinished = currentRoundGames.filter(g => g.status !== 'finished');
-    if (unfinished.length > 0) {
+    const unsettled = currentRoundGames.filter(g => !g.tournament_settled);
+    if (unsettled.length > 0) {
       return Response.json({ ok: true, round: maxRound, message: 'Round in progress' });
     }
 
