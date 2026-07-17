@@ -13,10 +13,17 @@ export default function Chat() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col">
+    <div className="min-h-screen bg-[#0a0a0f] flex flex-col relative">
+      {/* Cinematic backdrop — teal-cracks obsidian throne hall */}
+      <div className="absolute inset-0 z-0">
+        <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/c75d09be6_generated_image.png" alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0"
+          style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.18) 0%, rgba(10,10,15,0.5) 60%, rgba(10,10,15,0.82) 100%)' }} />
+      </div>
+
       {/* Header */}
       <div
-        className="flex items-center gap-3 px-5 pb-4 shrink-0"
+        className="relative z-10 flex items-center gap-3 px-5 pb-4 shrink-0"
         style={{ paddingTop: 'calc(env(safe-area-inset-top) + 24px)' }}>
         <button
           onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))}
@@ -30,7 +37,7 @@ export default function Chat() {
       </div>
 
       {/* Chat */}
-      <div className="flex-1 px-5 pb-4 flex flex-col min-h-0">
+      <div className="relative z-10 flex-1 px-5 pb-4 flex flex-col min-h-0">
         {user ? (
           <ChatRoom roomId="global" user={user} />
         ) : (
