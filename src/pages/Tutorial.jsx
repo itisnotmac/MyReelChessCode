@@ -58,7 +58,7 @@ export default function Tutorial() {
     return (
       <div className="min-h-screen bg-[#0a0a0f] relative overflow-y-auto">
         {/* Cinematic backdrop — stone amphitheater */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 pointer-events-none">
           <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/346b4ca43_generated_image.png" alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0"
             style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.55) 60%, rgba(10,10,15,0.9) 100%)' }} />
@@ -181,7 +181,7 @@ export default function Tutorial() {
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex flex-col relative overflow-hidden">
       {/* Cinematic backdrop — stone amphitheater */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/346b4ca43_generated_image.png" alt="" className="w-full h-full object-cover" />
         <div className="absolute inset-0"
           style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.55) 60%, rgba(10,10,15,0.9) 100%)' }} />
