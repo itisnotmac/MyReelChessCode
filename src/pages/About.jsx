@@ -2,6 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useSeo } from '@/lib/useSeo';
+import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
+
+const BACKDROP_OPTIONS = [
+  { key: 'cinematic3dHero', label: '1. Cinematic 3D Hero' },
+  { key: 'cinematicVideoLoop', label: '2. Cinematic Video Loop' },
+  { key: 'glassCommandCenter', label: '3. Glass Command Center' },
+  { key: 'cutsceneTitleSequence', label: '4. Cutscene Title Sequence' },
+];
 
 export default function About() {
   const navigate = useNavigate();
@@ -21,6 +29,19 @@ export default function About() {
           <ArrowLeft className="w-4 h-4" />
         </button>
         <span className="text-xs tracking-[0.3em] uppercase text-[#3AAFA9]/60 font-medium">Reel Chess</span>
+      </div>
+
+      {/* Backdrop preview gallery (temporary — for picking the About background) */}
+      <div className="max-w-2xl mx-auto px-6 pt-8 w-full">
+        <p className="text-[#3AAFA9]/60 text-xs tracking-widest uppercase mb-3">Pick a backdrop — tell me the number</p>
+        <div className="grid grid-cols-2 gap-3">
+          {BACKDROP_OPTIONS.map((opt) => (
+            <div key={opt.key} className="rounded-xl overflow-hidden border border-[#3AAFA9]/20">
+              <img src={HERO_BACKDROPS[opt.key]} alt={opt.label} className="w-full h-32 object-cover" />
+              <div className="bg-white/5 px-2 py-1 text-[10px] tracking-widest uppercase text-[#3AAFA9]/70">{opt.label}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Content */}
