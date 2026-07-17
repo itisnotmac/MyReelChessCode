@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, User as UserIcon, Camera, Check, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { PRESET_AVATARS, getLocalProfile, setLocalProfile, renderAvatarContent } from '@/lib/profileUtils';
+import FrostedPieceTile from '@/components/FrostedPieceTile';
 import StreakBadge from '../components/streak/StreakBadge';
 import { getTierName, getStreakTier, getNextMilestone } from '@/lib/streakTiers';
 
@@ -201,11 +202,9 @@ export default function Profile() {
                   onClick={() => setAvatarUrl(`preset:${preset.char}`)}
                   whileTap={{ scale: 0.9 }}
                   className="aspect-square rounded-xl overflow-hidden border-2 transition-all"
-                  style={{ background: preset.bg, borderColor: isActive ? '#3AAFA9' : 'transparent' }}
+                  style={{ borderColor: isActive ? '#3AAFA9' : 'rgba(255,255,255,0.08)' }}
                 >
-                  <span className="flex items-center justify-center w-full h-full" style={{ color: preset.fg, fontSize: '1.8rem' }}>
-                    {preset.char}
-                  </span>
+                  <FrostedPieceTile preset={preset} size="md" />
                 </motion.button>
               );
             })}
