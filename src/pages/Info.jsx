@@ -50,9 +50,16 @@ export default function InfoPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] relative">
+      {/* Cinematic backdrop — command sanctum */}
+      <div className="absolute inset-0 z-0">
+        <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/98ae19c90_generated_image.png" alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0"
+          style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.18) 0%, rgba(10,10,15,0.5) 60%, rgba(10,10,15,0.82) 100%)' }} />
+      </div>
+
       {/* Header */}
       <div
-        className="flex items-center gap-3 px-5 pb-8"
+        className="relative z-10 flex items-center gap-3 px-5 pb-8"
         style={{ paddingTop: 'calc(env(safe-area-inset-top) + 24px)' }}>
         <button
           onClick={() => navigate(createPageUrl('Lobby'))}
@@ -67,7 +74,7 @@ export default function InfoPage() {
 
       {/* Content */}
       <motion.div
-        className="px-5 pb-8"
+        className="relative z-10 px-5 pb-8"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}>
         <div className="space-y-6">
