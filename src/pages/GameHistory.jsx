@@ -5,6 +5,7 @@ import { createPageUrl } from '@/utils';
 import { ArrowLeft, Trophy, Trash2, Bot, Users, Clock, Swords, RefreshCw, CheckSquare, Square, Filter, ChevronDown } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
 
 const resultLabel = (r) => ({ white_wins: 'White Won', black_wins: 'Black Won', draw: 'Draw', in_progress: 'Abandoned' }[r] || r);
 const resultColor = (r) => ({ white_wins: '#D4AF37', black_wins: '#9B59B6', draw: '#3AAFA9', in_progress: '#555' }[r] || '#888');
@@ -113,6 +114,12 @@ export default function GameHistoryPage() {
   return (
     <div
       className="min-h-screen bg-[#0a0a0f] relative overflow-y-auto"
+      style={{
+        backgroundImage: `linear-gradient(rgba(10,10,15,0.82), rgba(10,10,15,0.86)), url(${HERO_BACKDROPS.hallOfRecords})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+      }}
       {...containerProps}
     >
       {/* Subtle grid background */}
