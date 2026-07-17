@@ -21,7 +21,7 @@ function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
     { id: 'chat',      label: 'Community Chat', icon: MessageCircle },
     { id: 'profile',      label: 'Profile',       icon: UserCircle },
     { id: 'achievements', label: 'Achievements',  icon: Award },
-    { id: 'dashboard',    label: 'Dashboard',     icon: BarChart2 },
+    { id: 'dashboard',    label: 'Stats',         icon: BarChart2 },
     { id: 'history',      label: 'Game History',  icon: Trophy },
     { id: 'contact',  label: 'Contact',      icon: Mail },
     { id: 'about',    label: 'About',        icon: Info },

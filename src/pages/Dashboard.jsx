@@ -139,7 +139,7 @@ export default function Dashboard() {
         </button>
         <div className="flex items-center gap-2">
           <BarChart2 className="w-4 h-4 text-[#3AAFA9]" />
-          <h1 className="text-lg font-bold tracking-wider text-white">Dashboard</h1>
+          <h1 className="text-lg font-bold tracking-wider text-white">Stats</h1>
         </div>
       </div>
 
