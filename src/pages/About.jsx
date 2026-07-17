@@ -4,13 +4,6 @@ import { ArrowLeft } from 'lucide-react';
 import { useSeo } from '@/lib/useSeo';
 import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
 
-const BACKDROP_OPTIONS = [
-  { key: 'cinematic3dHero', label: '1. Cinematic 3D Hero' },
-  { key: 'cinematicVideoLoop', label: '2. Cinematic Video Loop' },
-  { key: 'glassCommandCenter', label: '3. Glass Command Center' },
-  { key: 'cutsceneTitleSequence', label: '4. Cutscene Title Sequence' },
-];
-
 export default function About() {
   const navigate = useNavigate();
   useSeo(
@@ -19,7 +12,15 @@ export default function About() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col">
+    <div
+      className="min-h-screen text-white flex flex-col"
+      style={{
+        backgroundColor: '#0a0a0f',
+        backgroundImage: `linear-gradient(rgba(10,10,15,0.6), rgba(10,10,15,0.6)), url(${HERO_BACKDROPS.cinematicVideoLoop})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
       {/* Header */}
       <div className="flex items-center gap-4 px-5 pt-6 pb-4 border-b border-[#3AAFA9]/10">
         <button
@@ -29,19 +30,6 @@ export default function About() {
           <ArrowLeft className="w-4 h-4" />
         </button>
         <span className="text-xs tracking-[0.3em] uppercase text-[#3AAFA9]/60 font-medium">Reel Chess</span>
-      </div>
-
-      {/* Backdrop preview gallery (temporary — for picking the About background) */}
-      <div className="max-w-2xl mx-auto px-6 pt-8 w-full">
-        <p className="text-[#3AAFA9]/60 text-xs tracking-widest uppercase mb-3">Pick a backdrop — tell me the number</p>
-        <div className="grid grid-cols-2 gap-3">
-          {BACKDROP_OPTIONS.map((opt) => (
-            <div key={opt.key} className="rounded-xl overflow-hidden border border-[#3AAFA9]/20">
-              <img src={HERO_BACKDROPS[opt.key]} alt={opt.label} className="w-full h-32 object-cover" />
-              <div className="bg-white/5 px-2 py-1 text-[10px] tracking-widest uppercase text-[#3AAFA9]/70">{opt.label}</div>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Content */}
