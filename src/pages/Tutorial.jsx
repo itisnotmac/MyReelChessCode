@@ -118,12 +118,12 @@ export default function Tutorial() {
                   const doneCount = chapterLessons.filter(l => isCompleted(l.id)).length;
                   const isOpen = expandedChapter === chapter;
                   return (
-                    <div key={chapter} className="rounded-xl border border-white/15 bg-black/40 backdrop-blur-md overflow-hidden">
+                    <div key={chapter} className="flex flex-col items-center">
                 <button
                   onClick={() => setExpandedChapter(isOpen ? null : chapter)}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/5 transition-colors"
+                  className="w-fit flex items-center gap-3 px-4 py-3 rounded-xl border border-white/15 bg-black/40 backdrop-blur-md text-left hover:bg-white/5 transition-colors"
                 >
-                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#3AAFA9]/60 font-semibold flex-1">{chapter}</span>
+                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#3AAFA9]/60 font-semibold">{chapter}</span>
                   <span className="text-[10px] text-white/20">{doneCount}/{chapterLessons.length}</span>
                   <ChevronRight className={`w-4 h-4 text-white/30 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
                 </button>
@@ -136,7 +136,7 @@ export default function Tutorial() {
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden"
                     >
-                      <div className="space-y-1.5 px-3 pb-3">
+                      <div className="space-y-1.5 pb-3 pt-2 flex flex-col items-center">
                         {chapterLessons.map((l, li) => {
                           const globalIdx = LESSONS.findIndex(x => x.id === l.id);
                           const done = isCompleted(l.id);
@@ -144,7 +144,7 @@ export default function Tutorial() {
                             <motion.button
                               key={l.id}
                               onClick={() => goToLesson(globalIdx)}
-                              className="w-full text-left"
+                              className="w-fit text-left"
                               initial={{ opacity: 0, y: 8 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: li * 0.03 }}
@@ -152,8 +152,8 @@ export default function Tutorial() {
                             >
                               <div className={`relative rounded-lg px-3 py-2.5 border flex items-center gap-3 transition-all ${done ? 'border-[#3AAFA9]/30 bg-[#3AAFA9]/10' : 'border-white/10 bg-black/30'}`}>
                                 <span className="text-lg w-6 text-center">{l.icon}</span>
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-white/75 text-[13px] font-medium truncate">{l.title}</p>
+                                <div className="min-w-0">
+                                  <p className="text-white/75 text-[13px] font-medium">{l.title}</p>
                                   {l.interactive && (
                                     <p className="text-[9px] text-[#3AAFA9]/40 mt-0.5">Interactive</p>
                                   )}
