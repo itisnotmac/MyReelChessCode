@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi, Crown, UserCircle, Award, ShoppingBag, Gift, MessageCircle } from 'lucide-react';
+import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi, Crown, UserCircle, Award, ShoppingBag, Gift, MessageCircle, Bot, Users, UsersRound, BookOpen, Menu as MenuIcon } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
 import PremiumModal from '../components/lobby/PremiumModal';
 import TwoVTwoModal from '../components/lobby/TwoVTwoModal';
@@ -11,10 +11,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import StreakBadge from '../components/streak/StreakBadge';
 import StreakPopup from '../components/streak/StreakPopup';
-
-const PAWN_IMAGE = 'https://raw.githubusercontent.com/itisnotmac/ChessAssets/main/BackgroundEraser_20260505_224913153.png';
-
-const TEAL_BUTTON = "flex items-center justify-center px-6 py-2.5 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase backdrop-blur-sm hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none";
+import Cinematic3DHero from '@/components/lobby/Cinematic3DHero';
 
 function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
   const [items, setItems] = useState([
@@ -61,17 +58,17 @@ function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
                 {items.map((item, i) => (
                   <motion.button
                     key={item.id}
-                    onClick={() => { 
+                    onClick={() => {
                       if (item.id === 'logout') {
                         onLogout();
                       } else {
                         onNavigate(item.id);
                       }
-                      onClose(); 
+                      onClose();
                     }}
                     className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group ${
-                      item.isDanger 
-                        ? 'text-red-400/70 hover:text-red-400 hover:bg-red-400/10' 
+                      item.isDanger
+                        ? 'text-red-400/70 hover:text-red-400 hover:bg-red-400/10'
                         : 'text-white/70 hover:text-white hover:bg-white/5'
                     }`}
                     initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
@@ -157,35 +154,37 @@ export default function Lobby() {
     navigate(createPageUrl('Game') + `?mode=ai`);
   };
 
+  const buttons = [
+    { label: 'vs AI',      icon: Bot,        onClick: () => setDifficultyOpen(true),                                                      span: false },
+    { label: 'Local PVP',  icon: Users,      onClick: () => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); },        span: false },
+    { label: '2v2',        icon: UsersRound,  onClick: () => setTwoVTwoOpen(true),                                                          span: false },
+    { label: 'R.C.U.',     icon: BookOpen,   onClick: () => navigate('/Tutorial'),                                                        span: false },
+    { label: 'Daily',      icon: Gift,       onClick: () => navigate('/DailyChallenges'),                                                  span: false },
+    { label: 'Store',      icon: ShoppingBag, onClick: () => navigate('/Store'),                                                            span: false },
+    { label: 'Menu',       icon: MenuIcon,   onClick: () => setMenuOpen(true),                                                             span: true  },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden flex flex-col items-center">
-      {/* Subtle background chess pattern */}
-      <div className="absolute inset-0 opacity-[0.018]"
-        style={{
-          backgroundImage: `repeating-conic-gradient(#3AAFA9 0% 25%, transparent 0% 50%)`,
-          backgroundSize: '44px 44px'
-        }}
-      />
+    <div className="relative min-h-screen bg-[#0a0a0f] text-white overflow-hidden flex flex-col items-center">
+      {/* Cinematic 3D hero backdrop */}
+      <Cinematic3DHero />
 
-      {/* Ambient glow behind pawn */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-72 h-72 rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(58,175,169,0.08) 0%, transparent 70%)' }} />
-      </div>
+      {/* Readability overlays */}
+      <div className="pointer-events-none absolute inset-0 z-[1]"
+        style={{ background: 'radial-gradient(120% 80% at 50% 16%, rgba(10,10,15,0.15) 0%, rgba(10,10,15,0.5) 58%, rgba(10,10,15,0.92) 100%)' }} />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 z-[1]"
+        style={{ background: 'linear-gradient(to top, #0a0a0f 10%, rgba(10,10,15,0.55) 45%, transparent 100%)' }} />
 
-      {/* ── TOP TITLE ── */}
+      {/* Title */}
       <motion.div
-        className="relative z-10 text-center pt-8 pb-1 w-full"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+        className="relative z-10 text-center pt-9 pb-1 w-full"
+        initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
       >
         <h1
           className="text-4xl font-black tracking-[0.22em] uppercase"
           style={{
             backgroundImage: 'linear-gradient(135deg, #3AAFA9 0%, #A8E6E3 50%, #3AAFA9 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             filter: 'drop-shadow(0 0 18px rgba(58,175,169,0.35))',
           }}
         >
@@ -193,32 +192,28 @@ export default function Lobby() {
         </h1>
       </motion.div>
 
-      {/* ── STREAK INDICATOR ── */}
+      {/* Streak indicator */}
       {isAuthenticated && streakData?.streak > 0 && (
         <motion.div
           className="relative z-10 flex justify-center pb-1"
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.14 }}
+          initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }}
         >
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-[#3AAFA9]/20">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-[#3AAFA9]/20 backdrop-blur-md">
             <StreakBadge streak={streakData.streak} size="xs" showNumber={false} />
             <span className="text-xs font-bold text-[#3AAFA9]">Day {streakData.streak}</span>
           </div>
         </motion.div>
       )}
 
-      {/* ── ONLINE PVP HERO BANNER ── */}
+      {/* Online PVP hero banner */}
       <motion.div
         className="relative z-10 flex justify-center pt-4 w-full px-4"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.18 }}
+        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
       >
         <motion.button
           onClick={() => user?.is_premium ? (stopMenuMusic(), navigate('/OnlineGame')) : setPremiumOpen(true)}
           whileTap={{ scale: 0.97 }}
-          className="relative overflow-hidden rounded-2xl px-6 py-4 text-left group w-full"
+          className="relative overflow-hidden rounded-2xl px-6 py-4 text-left group w-full backdrop-blur-md"
           style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', border: '1px solid rgba(58,175,169,0.4)', maxWidth: 480 }}
         >
           <div className="relative z-10 flex items-center justify-between gap-4">
@@ -248,7 +243,7 @@ export default function Lobby() {
         </motion.button>
       </motion.div>
 
-      {/* ── AUTH BUTTONS (if not logged in) ── */}
+      {/* Auth buttons (if not logged in) */}
       {!isAuthenticated && (
         <motion.div
           className="relative z-10 flex gap-2 px-4 pt-3 w-full justify-center"
@@ -256,7 +251,7 @@ export default function Lobby() {
         >
           <motion.button
             onClick={() => navigate('/login')}
-            className="flex items-center justify-center px-8 py-2 rounded-full border border-white/20 bg-white/5 text-white font-bold text-xs tracking-[0.18em] uppercase hover:bg-white/10 active:scale-95 transition-all select-none"
+            className="flex items-center justify-center px-8 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-white font-bold text-xs tracking-[0.18em] uppercase hover:bg-white/10 active:scale-95 transition-all select-none"
             whileTap={{ scale: 0.94 }}
           >
             <LogIn className="w-3.5 h-3.5 mr-1.5" />
@@ -264,7 +259,7 @@ export default function Lobby() {
           </motion.button>
           <motion.button
             onClick={() => navigate('/register')}
-            className="flex items-center justify-center px-8 py-2 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none"
+            className="flex items-center justify-center px-8 py-2 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 backdrop-blur-md text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none"
             whileTap={{ scale: 0.94 }}
           >
             Register
@@ -272,63 +267,34 @@ export default function Lobby() {
         </motion.div>
       )}
 
-      {/* ── PAWN ── */}
-      <motion.div
-        className="relative z-10 flex justify-center"
-        initial={{ opacity: 0, scale: 0.88 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.15, duration: 0.6 }}
-      >
-        <img
-          src={PAWN_IMAGE}
-          alt="3D Chess Pawn"
-          className="w-auto object-contain"
-          style={{ height: '30vh', maxHeight: 280, filter: 'drop-shadow(0 0 32px rgba(58,175,169,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))' }}
-        />
-      </motion.div>
+      {/* Flexible spacer so the 3D scene breathes in the middle */}
+      <div className="relative z-10 flex-1 min-h-[2vh]" />
 
-      {/* ── 2×2 BUTTON GRID ── */}
+      {/* Glass button grid */}
       <motion.div
         className="relative z-10 flex justify-center pb-4 px-4 w-full"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.28 }}
+        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28 }}
       >
-        <div
-          className="grid grid-cols-2 gap-3 w-full"
-          style={{ maxWidth: 480 }}
-        >
-          {[
-            { label: 'vs AI',     onClick: () => setDifficultyOpen(true),                                                           span: false },
-            { label: 'Local PVP', onClick: () => { stopMenuMusic(); navigate(createPageUrl('Game') + `?mode=local`); },             span: false },
-            { label: '2v2',       onClick: () => setTwoVTwoOpen(true),                                                               span: false },
-            { label: 'R.C.U.',   onClick: () => navigate('/Tutorial'),                                                              span: false },
-            { label: 'Daily',      onClick: () => navigate('/DailyChallenges'),                                                       span: false },
-            { label: 'Store',      onClick: () => navigate('/Store'),                                                                 span: false },
-            { label: 'Menu',      onClick: () => setMenuOpen(true),                                                                  span: true  },
-          ].map((btn, i) => (
+        <div className="grid grid-cols-2 gap-3 w-full" style={{ maxWidth: 480 }}>
+          {buttons.map((btn, i) => (
             <motion.button
               key={btn.label}
               onClick={btn.onClick}
               whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + i * 0.05 }}
-              className={`flex items-center justify-center rounded-2xl border border-[#3AAFA9]/40 py-4 text-[#3AAFA9] active:bg-[#3AAFA9]/20 transition-all select-none${btn.span ? ' col-span-2' : ''}`}
-              style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)' }}
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.05 }}
+              className={`flex items-center justify-center gap-2.5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md py-4 text-white/90 active:bg-white/10 transition-all select-none${btn.span ? ' col-span-2' : ''}`}
             >
+              <btn.icon className="w-4 h-4 text-[#3AAFA9]" />
               <span className="text-sm font-black tracking-[0.18em] uppercase">{btn.label}</span>
             </motion.button>
           ))}
         </div>
       </motion.div>
 
-      {/* ── BOTTOM TAGLINE ── */}
+      {/* Bottom tagline */}
       <motion.div
         className="relative z-10 text-center pb-5"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.45 }}
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
       >
         <p className="text-xs tracking-[0.45em] uppercase text-[#3AAFA9]/40 font-medium">
           Get Immersed
