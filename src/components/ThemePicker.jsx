@@ -31,10 +31,10 @@ export default function ThemePicker() {
             <button
               key={id}
               onClick={() => setTheme(id)}
-              className={`flex flex-col items-center gap-1.5 py-3 rounded-lg border transition-all ${
+              className={`flex flex-col items-center gap-1.5 py-3 rounded-lg border backdrop-blur-md transition-all ${
                 theme === id
-                  ? 'border-[#3AAFA9] bg-[#3AAFA9]/15 text-white'
-                  : 'border-white/10 bg-white/5 text-white/40 hover:text-white/60'
+                  ? 'border-[#3AAFA9] bg-[#3AAFA9]/25 text-white'
+                  : 'border-white/15 bg-black/40 text-white/70 hover:text-white hover:bg-black/55'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -57,10 +57,10 @@ export default function ThemePicker() {
             <button
               key={id}
               onClick={() => setColorBlind(id)}
-              className={`flex flex-col items-center gap-0.5 py-2.5 rounded-lg border transition-all ${
+              className={`flex flex-col items-center gap-0.5 py-2.5 rounded-lg border backdrop-blur-md transition-all ${
                 colorBlind === id
-                  ? 'border-[#3AAFA9] bg-[#3AAFA9]/15 text-white'
-                  : 'border-white/10 bg-white/5 text-white/40 hover:text-white/60'
+                  ? 'border-[#3AAFA9] bg-[#3AAFA9]/25 text-white'
+                  : 'border-white/15 bg-black/40 text-white/70 hover:text-white hover:bg-black/55'
               }`}
             >
               <span className="text-xs font-medium">{label}</span>
