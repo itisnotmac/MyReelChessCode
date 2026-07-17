@@ -14,6 +14,12 @@ const ORIGINAL_URLS = {
 
 Deno.serve(async (req) => {
   try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Admin access required' }, { status: 403 });
+    }
+
     const body = await req.json();
     const { piece_type } = body;
     const url = ORIGINAL_URLS[piece_type];
@@ -51,7 +57,6 @@ Deno.serve(async (req) => {
     const compressedSize = compressedBuffer.byteLength;
 
     // Upload compressed version to Base44 storage
-    const base44 = createClientFromRequest(req);
     const blob = new Blob([compressedBuffer], { type: 'model/gltf-binary' });
     const file = new File([blob], `${piece_type}_draco.glb`, { type: 'model/gltf-binary' });
     const result = await base44.asServiceRole.integrations.Core.UploadFile({ file });

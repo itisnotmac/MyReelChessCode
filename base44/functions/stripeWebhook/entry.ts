@@ -3,11 +3,23 @@ import Stripe from 'npm:stripe@14.21.0';
 
 Deno.serve(async (req) => {
   try {
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
+    const stripeKey = Deno.env.get('STRIPE_SECRET_KEY');
     const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET');
 
+    // Refuse to process if the signing secret is missing/empty — without it,
+    // signature verification cannot be trusted and the endpoint could accept
+    // forged or replayed Stripe events.
+    if (!stripeKey || !webhookSecret) {
+      console.error('Stripe webhook secrets not configured');
+      return Response.json({ error: 'Webhook not configured' }, { status: 500 });
+    }
+
+    const stripe = new Stripe(stripeKey);
     const body = await req.text();
     const signature = req.headers.get('stripe-signature');
+    if (!signature) {
+      return Response.json({ error: 'Missing signature' }, { status: 400 });
+    }
 
     let event;
     try {

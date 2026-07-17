@@ -3,6 +3,149 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.38';
 // Comped Premium duration granted to every non-cashing entrant when a tournament ends.
 const PREMIUM_COMP_DAYS = 90;
 
+// ── Server-side chess terminal-state verification ───────────────────────────
+// Replicates the frontend engine (ChessLogic.jsx) so the backend never trusts
+// the client-written `result` field when settling cash-prize tournament games.
+// Board encoding: 8x8 array of piece codes (uppercase = white). Row 0 = black
+// back rank, row 7 = white back rank. castling = {whiteKingside,...}. enPassant = [r,c] | null.
+function _isWhite(piece) { return piece && piece === piece.toUpperCase(); }
+function _pieceName(piece) {
+  if (!piece) return null;
+  return { K: 'king', Q: 'queen', R: 'rook', B: 'bishop', N: 'knight', P: 'pawn',
+           k: 'king', q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn' }[piece];
+}
+function _inBounds(r, c) { return r >= 0 && r < 8 && c >= 0 && c < 8; }
+function _isEnemy(piece, target) {
+  if (!piece || !target) return false;
+  return _isWhite(piece) !== _isWhite(target);
+}
+function _isFriendly(piece, target) {
+  if (!piece || !target) return false;
+  return _isWhite(piece) === _isWhite(target);
+}
+function _rawMoves(board, row, col, enPassantTarget, castlingRights) {
+  const piece = board[row][col];
+  if (!piece) return [];
+  const moves = [];
+  const name = _pieceName(piece);
+  const white = _isWhite(piece);
+  const dir = white ? -1 : 1;
+  if (name === 'pawn') {
+    const startRow = white ? 6 : 1;
+    if (_inBounds(row + dir, col) && !board[row + dir][col]) {
+      moves.push([row + dir, col]);
+      if (row === startRow && !board[row + 2 * dir][col]) moves.push([row + 2 * dir, col]);
+    }
+    for (const dc of [-1, 1]) {
+      const nr = row + dir, nc = col + dc;
+      if (_inBounds(nr, nc)) {
+        if (board[nr][nc] && _isEnemy(piece, board[nr][nc])) moves.push([nr, nc]);
+        if (enPassantTarget && enPassantTarget[0] === nr && enPassantTarget[1] === nc) moves.push([nr, nc]);
+      }
+    }
+  } else if (name === 'knight') {
+    for (const [dr, dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]) {
+      const nr = row + dr, nc = col + dc;
+      if (_inBounds(nr, nc) && !_isFriendly(piece, board[nr][nc])) moves.push([nr, nc]);
+    }
+  } else if (name === 'bishop' || name === 'rook' || name === 'queen') {
+    const dirs = [];
+    if (name === 'bishop' || name === 'queen') dirs.push([-1,-1],[-1,1],[1,-1],[1,1]);
+    if (name === 'rook' || name === 'queen') dirs.push([-1,0],[1,0],[0,-1],[0,1]);
+    for (const [dr, dc] of dirs) {
+      let nr = row + dr, nc = col + dc;
+      while (_inBounds(nr, nc)) {
+        if (board[nr][nc]) {
+          if (_isEnemy(piece, board[nr][nc])) moves.push([nr, nc]);
+          break;
+        }
+        moves.push([nr, nc]);
+        nr += dr; nc += dc;
+      }
+    }
+  } else if (name === 'king') {
+    for (let dr = -1; dr <= 1; dr++) {
+      for (let dc = -1; dc <= 1; dc++) {
+        if (dr === 0 && dc === 0) continue;
+        const nr = row + dr, nc = col + dc;
+        if (_inBounds(nr, nc) && !_isFriendly(piece, board[nr][nc])) moves.push([nr, nc]);
+      }
+    }
+    if (castlingRights) {
+      const color = white ? 'white' : 'black';
+      const homeRow = white ? 7 : 0;
+      if (row === homeRow && col === 4) {
+        if (castlingRights[color + 'Kingside'] && !board[homeRow][5] && !board[homeRow][6] && board[homeRow][7]) {
+          if (!_squareAttacked(board, homeRow, 4, !white) && !_squareAttacked(board, homeRow, 5, !white) && !_squareAttacked(board, homeRow, 6, !white)) {
+            moves.push([homeRow, 6]);
+          }
+        }
+        if (castlingRights[color + 'Queenside'] && !board[homeRow][3] && !board[homeRow][2] && !board[homeRow][1] && board[homeRow][0]) {
+          if (!_squareAttacked(board, homeRow, 4, !white) && !_squareAttacked(board, homeRow, 3, !white) && !_squareAttacked(board, homeRow, 2, !white)) {
+            moves.push([homeRow, 2]);
+          }
+        }
+      }
+    }
+  }
+  return moves;
+}
+function _squareAttacked(board, row, col, byWhite) {
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const p = board[r][c];
+      if (!p || _isWhite(p) !== byWhite) continue;
+      const moves = _rawMoves(board, r, c, null, null);
+      if (moves.some(([mr, mc]) => mr === row && mc === col)) return true;
+    }
+  }
+  return false;
+}
+function _findKing(board, white) {
+  const king = white ? 'K' : 'k';
+  for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) if (board[r][c] === king) return [r, c];
+  return null;
+}
+function _isInCheck(board, white) {
+  const kp = _findKing(board, white);
+  if (!kp) return false;
+  return _squareAttacked(board, kp[0], kp[1], !white);
+}
+function _getLegalMoves(board, row, col, enPassantTarget, castlingRights) {
+  const piece = board[row][col];
+  if (!piece) return [];
+  const white = _isWhite(piece);
+  return _rawMoves(board, row, col, enPassantTarget, castlingRights).filter(([toR, toC]) => {
+    const sim = board.map(r => [...r]);
+    sim[toR][toC] = sim[row][col];
+    sim[row][col] = null;
+    if (_pieceName(piece) === 'pawn' && enPassantTarget && toR === enPassantTarget[0] && toC === enPassantTarget[1]) {
+      sim[row][toC] = null;
+    }
+    return !_isInCheck(sim, white);
+  });
+}
+function _hasAnyLegalMove(board, white, enPassantTarget, castlingRights) {
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const piece = board[r][c];
+      if (!piece || _isWhite(piece) !== white) continue;
+      if (_getLegalMoves(board, r, c, enPassantTarget, castlingRights).length > 0) return true;
+    }
+  }
+  return false;
+}
+// Recompute the game result from the stored post-move board. `whiteToMove` is the
+// side to move (the side that may be checkmated/stalemated).
+function verifyTerminalResult(board, whiteToMove, enPassant, castling) {
+  if (!Array.isArray(board) || board.length !== 8) return 'in_progress';
+  const inCheck = _isInCheck(board, whiteToMove);
+  const hasMoves = _hasAnyLegalMove(board, whiteToMove, enPassant, castling);
+  if (inCheck && !hasMoves) return whiteToMove ? 'black_wins' : 'white_wins'; // sideToMove is mated
+  if (!inCheck && !hasMoves) return 'draw'; // stalemate
+  return 'in_progress';
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -22,8 +165,25 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Forbidden' }, { status: 403 });
     }
     if (game.tournament_settled) return Response.json({ ok: true, message: 'Already settled' });
-    if (game.result === 'in_progress' || game.status !== 'finished') {
+
+    // Recompute the terminal state from the stored board — never trust the
+    // client-written `result`/`status` (a participant can write those to their
+    // own record). Only settle if the board is genuinely checkmate/stalemate.
+    let board, enPassant = null, castling = null;
+    try { board = JSON.parse(game.board || '[]'); } catch { board = null; }
+    try { enPassant = game.en_passant ? JSON.parse(game.en_passant) : null; } catch {}
+    try { castling = game.castling ? JSON.parse(game.castling) : null; } catch {}
+    if (!castling) {
+      castling = { whiteKingside: true, whiteQueenside: true, blackKingside: true, blackQueenside: true };
+    }
+    const verifiedResult = verifyTerminalResult(board, game.is_white_turn, enPassant, castling);
+    if (verifiedResult === 'in_progress') {
       return Response.json({ ok: true, message: 'Game not finished' });
+    }
+    if (verifiedResult !== game.result) {
+      // Stored result doesn't match the server-verified outcome — reject.
+      console.error(`settleTournamentGame: result mismatch (stored=${game.result}, verified=${verifiedResult})`);
+      return Response.json({ error: 'Result could not be verified' }, { status: 403 });
     }
 
     const tournamentId = game.tournament_id;
