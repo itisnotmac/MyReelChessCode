@@ -7,7 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 const FAQS = [
   { q: "How do the battle cutscenes work?", a: "When a piece captures another piece, the game transitions to a cinematic battle scene showing the capturing piece defeating the captured piece in an animated showdown. You can skip these by tapping 'SKIP' or disable them in Settings." },
   { q: "How does Player vs AI work?", a: "You play as White and the AI plays as Black. The AI uses a minimax algorithm with alpha-beta pruning to calculate its moves. You can adjust difficulty in Settings." },
-  { q: "How does Player vs Player work?", a: "Both players share the same device. After each move, the board flips so each player sees from their perspective. This is a 'pass and play' style local multiplayer." },
+  { q: "How does Player vs Player work?", a: "Both players share the same device. After each move, the board flips so each player sees from their perspective. This is a 'pass and play' style local multiplayer.Alternatively one can find a match and play someone somewhere else in the world via the matchmaking pvp move. " },
   { q: "What are the chess rules?", a: "Standard chess rules apply including castling, en passant, and pawn promotion (auto-promotes to Queen). The game detects checkmate and stalemate automatically." },
   { q: "Can I undo a move?", a: "Currently there is no undo feature. Think carefully before making your move!" },
 ];
