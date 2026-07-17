@@ -7,7 +7,7 @@ export const HERO_BACKDROPS = {
   cinematicVideoLoop: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/62bec21db_generated_d2bb23c5.png',
   glassCommandCenter: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/9360f379c_generated_66b8012c.png',
   cutsceneTitleSequence: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/9c93ddf81_generated_5d11352f.png',
-  cinematicKingPlate: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/7e4f64dc0_generated_image.png',
+  cinematicKingPlate: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/e3e0cccba_generated_image.png',
 };
 
 export const DEFAULT_BACKDROP = HERO_BACKDROPS.cinematic3dHero;
