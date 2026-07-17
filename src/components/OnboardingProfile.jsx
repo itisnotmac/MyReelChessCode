@@ -67,7 +67,7 @@ export default function OnboardingProfile({ onComplete, isAuthenticated }) {
         <img src={HERO_BACKDROP} alt="" className="w-full h-full object-cover" />
         <div className="absolute inset-0" style={{ backdropFilter: 'blur(2px)' }} />
         <div className="absolute inset-0"
-          style={{ background: 'radial-gradient(120% 90% at 50% 40%, rgba(10,15,18,0.35) 0%, rgba(10,15,18,0.78) 55%, rgba(10,15,18,0.96) 100%)' }} />
+          style={{ background: 'radial-gradient(130% 95% at 50% 42%, rgba(10,15,18,0.08) 0%, rgba(10,15,18,0.34) 58%, rgba(10,15,18,0.8) 100%)' }} />
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center px-5 py-10"
@@ -80,11 +80,11 @@ export default function OnboardingProfile({ onComplete, isAuthenticated }) {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="w-full max-w-sm rounded-3xl p-7 flex flex-col items-center text-center"
           style={{
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.14)',
-            boxShadow: '0 18px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08)',
-            backdropFilter: 'blur(22px)',
-            WebkitBackdropFilter: 'blur(22px)',
+            background: 'rgba(255,255,255,0.045)',
+            border: '1px solid rgba(255,255,255,0.16)',
+            boxShadow: '0 18px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.1)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
           }}
         >
           {/* Header */}
