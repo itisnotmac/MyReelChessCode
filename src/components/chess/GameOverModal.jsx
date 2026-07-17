@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { Trophy, Handshake, RotateCcw, Home, Brain } from 'lucide-react';
 
-export default function GameOverModal({ result, onRematch, onHome, onAnalysis, mode }) {
+export default function GameOverModal({ result, onRematch, onHome, onAnalysis, mode, eloDelta }) {
   const isCheckmate = result === 'white_wins' || result === 'black_wins';
   const winner = result === 'white_wins'
     ? (mode === '2v2' ? 'Team A' : 'White')
@@ -54,6 +54,23 @@ export default function GameOverModal({ result, onRematch, onHome, onAnalysis, m
           >
             {isCheckmate ? `${winner} Wins` : "It's a Draw"}
           </motion.p>
+
+          {typeof eloDelta === 'number' && (
+            <motion.div
+              className="mb-6 flex items-center justify-center gap-2"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, type: 'spring', stiffness: 200 }}
+            >
+              <span className="text-xs text-white/40 tracking-[0.2em] uppercase">ELO</span>
+              <span
+                className="text-2xl font-black"
+                style={{ color: eloDelta > 0 ? '#4ADE80' : eloDelta < 0 ? '#F87171' : '#D4AF37' }}
+              >
+                {eloDelta > 0 ? `+${eloDelta}` : eloDelta}
+              </span>
+            </motion.div>
+          )}
 
           <div className="flex flex-col gap-3">
             <Button

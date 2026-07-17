@@ -24,7 +24,11 @@ Deno.serve(async (req) => {
       return Response.json({ settled: false, reason: 'in_progress' });
     }
     if (game.elo_settled) {
-      return Response.json({ settled: false, reason: 'already_settled' });
+      // Already settled — surface the previously computed deltas so both
+      // clients can still render the game-over delta badge.
+      let deltas = null;
+      try { deltas = game.elo_deltas ? JSON.parse(game.elo_deltas) : null; } catch (e) {}
+      return Response.json({ settled: false, reason: 'already_settled', deltas });
     }
 
     const hostId = game.host_id;   // plays white
@@ -56,6 +60,8 @@ Deno.serve(async (req) => {
 
     const newHostElo = Math.round(hostElo + K * (scoreHost - eHost));
     const newGuestElo = Math.round(guestElo + K * ((1 - scoreHost) - (1 - eHost)));
+    const hostDelta = newHostElo - hostElo;
+    const guestDelta = newGuestElo - guestElo;
 
     await base44.asServiceRole.entities.PlayerAccount.update(hostAccount.id, {
       elo: newHostElo,
@@ -66,10 +72,20 @@ Deno.serve(async (req) => {
       peak_elo: Math.max(guestAccount.peak_elo ?? newGuestElo, newGuestElo),
     });
 
-    // Mark settled so concurrent/duplicate calls don't double-apply.
-    await base44.asServiceRole.entities.OnlineGame.update(game.id, { elo_settled: true });
+    // Persist deltas on the game so both players (not just the one who made
+    // the final move) can display their rating change in the game-over modal.
+    await base44.asServiceRole.entities.OnlineGame.update(game.id, {
+      elo_settled: true,
+      elo_deltas: JSON.stringify({ host: hostDelta, guest: guestDelta }),
+    });
 
-    return Response.json({ settled: true, host_elo: newHostElo, guest_elo: newGuestElo });
+    return Response.json({
+      settled: true,
+      host_elo: newHostElo,
+      guest_elo: newGuestElo,
+      host_delta: hostDelta,
+      guest_delta: guestDelta,
+    });
   } catch (error) {
     console.error('settleElo error:', error);
     return Response.json({ error: error.message }, { status: 500 });

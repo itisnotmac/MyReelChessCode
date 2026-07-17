@@ -88,6 +88,10 @@
       "type": "boolean",
       "default": false,
       "description": "Whether this finished game's ELO has been applied to both players' ratings (idempotency guard)"
+    },
+    "elo_deltas": {
+      "type": "string",
+      "description": "JSON {host: n, guest: n} rating change applied to each player, written by settleElo so both clients can display the delta"
     }
   },
   "required": [

@@ -55,6 +55,7 @@ export default function OnlineGame() {
   const [capturedBlack, setCapturedBlack] = useState([]);
   const [lastMove, setLastMove] = useState(null);
   const [gameOver, setGameOver] = useState(null);
+  const [eloDelta, setEloDelta] = useState(null);
   const [moveCount, setMoveCount] = useState(0);
   const [battleInfo, setBattleInfo] = useState(null);
   const [tournamentRules, setTournamentRules] = useState(null);
@@ -130,6 +131,14 @@ export default function OnlineGame() {
     return () => clearInterval(t);
   }, [phase]);
 
+  const getMyEloDelta = (g) => {
+    if (!g?.elo_deltas) return null;
+    try {
+      const d = JSON.parse(g.elo_deltas);
+      return isHostRef.current ? d.host : d.guest;
+    } catch { return null; }
+  };
+
   function applyGameDoc(g) {
     setBoard(parseJSON(g.board, createInitialBoard()));
     setIsWhiteTurn(g.is_white_turn ?? true);
@@ -139,7 +148,11 @@ export default function OnlineGame() {
     setCapturedWhite(parseJSON(g.captured_white, []));
     setCapturedBlack(parseJSON(g.captured_black, []));
     setMoveCount(g.move_count ?? 0);
-    if (g.result && g.result !== 'in_progress') setGameOver(g.result);
+    if (g.result && g.result !== 'in_progress') {
+      setGameOver(g.result);
+      const d = getMyEloDelta(g);
+      if (d != null) setEloDelta(d);
+    }
   }
 
   // Derive approximate region from timezone — no GPS needed
@@ -329,8 +342,13 @@ export default function OnlineGame() {
       // Settle ELO for any finished 1v1 online game, then settle the bracket
       // when this was a tournament game.
       if (newResult !== 'in_progress') {
-        try { await base44.functions.invoke('settleElo', { game_id: gameIdRef.current }); }
-        catch (se) { console.error('ELO settle failed:', se); }
+        try {
+          const r = await base44.functions.invoke('settleElo', { game_id: gameIdRef.current });
+          const d = r?.data || {};
+          if (d.settled) {
+            setEloDelta(isHostRef.current ? d.host_delta : d.guest_delta);
+          }
+        } catch (se) { console.error('ELO settle failed:', se); }
         if (gameDoc?.tournament_id) {
           try { await base44.functions.invoke('settleTournamentGame', { game_id: gameIdRef.current }); }
           catch (se) { console.error('Tournament settle failed:', se); }
@@ -609,7 +627,7 @@ export default function OnlineGame() {
       </AnimatePresence>
 
       {gameOver && (
-        <GameOverModal result={gameOver} onRematch={() => navigate(createPageUrl('Lobby'))} onHome={() => navigate(createPageUrl('Lobby'))} />
+        <GameOverModal result={gameOver} eloDelta={eloDelta} onRematch={() => navigate(createPageUrl('Lobby'))} onHome={() => navigate(createPageUrl('Lobby'))} />
       )}
     </div>
   );
