@@ -43,12 +43,12 @@ function StoreCard({ item, owned, selected, onSelect, onPurchase, purchasing, co
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`relative rounded-xl p-3 pb-14 border transition-all ${
+      className={`relative rounded-xl p-3 pb-14 border backdrop-blur-md transition-all ${
         selected
-          ? 'border-[#3AAFA9] bg-[#3AAFA9]/10'
+          ? 'border-[#3AAFA9] bg-[#3AAFA9]/15'
           : owned
-            ? 'border-white/10 bg-white/5'
-            : 'border-white/10 bg-white/5'
+            ? 'border-white/15 bg-black/40'
+            : 'border-white/15 bg-black/40'
       }`}
       style={{ minHeight: 140 }}
     >
@@ -225,9 +225,16 @@ export default function Store() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white pb-8">
+    <div className="min-h-screen bg-[#0a0a0f] text-white pb-8 relative">
+      {/* Cinematic backdrop — treasure vault */}
+      <div className="absolute inset-0 z-0">
+        <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/7579a6cd0_generated_image.png" alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0"
+          style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.55) 60%, rgba(10,10,15,0.85) 100%)' }} />
+      </div>
+
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 pt-6 pb-4">
+      <div className="relative z-10 flex items-center gap-3 px-4 pt-6 pb-4">
         <button onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))} className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -249,7 +256,7 @@ export default function Store() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mx-4 mb-4 p-3 rounded-xl bg-[#3AAFA9]/10 border border-[#3AAFA9]/30 flex items-center gap-2"
+          className="relative z-10 mx-4 mb-4 p-3 rounded-xl bg-[#3AAFA9]/10 border border-[#3AAFA9]/30 flex items-center gap-2"
         >
           <Check className="w-4 h-4 text-[#3AAFA9]" />
           <span className="text-sm text-[#3AAFA9]">Purchase successful! Your item is now available.</span>
@@ -258,14 +265,14 @@ export default function Store() {
 
       {/* Login prompt */}
       {!isAuthenticated && (
-        <div className="mx-4 mb-4 p-3 rounded-xl bg-[#D4AF37]/5 border border-[#D4AF37]/20 flex items-center gap-2">
+        <div className="relative z-10 mx-4 mb-4 p-3 rounded-xl bg-[#D4AF37]/5 border border-[#D4AF37]/20 flex items-center gap-2">
           <Crown className="w-4 h-4 text-[#D4AF37]/60" />
           <span className="text-xs text-[#D4AF37]/70">Log in to purchase and save your cosmetics.</span>
         </div>
       )}
 
       {/* Board Styles */}
-      <div className="px-4 mb-8">
+      <div className="relative z-10 px-4 mb-8">
         <h2 className="text-sm font-bold tracking-wider text-[#3AAFA9]/70 mb-3 flex items-center gap-2">
           <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
           BOARD STYLES
@@ -298,7 +305,7 @@ export default function Store() {
       </div>
 
       {/* Piece Sets */}
-      <div className="px-4 mb-8">
+      <div className="relative z-10 px-4 mb-8">
         <h2 className="text-sm font-bold tracking-wider text-[#3AAFA9]/70 mb-3 flex items-center gap-2">
           <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
           PIECE SETS
@@ -331,7 +338,7 @@ export default function Store() {
       </div>
 
       {/* Footer note */}
-      <div className="px-4 text-center">
+      <div className="relative z-10 px-4 text-center">
         <p className="text-[10px] text-white/20 tracking-wider">
           All cosmetics are one-time purchases. $0.99 each, or can be purchased with in-game currency, earned from playing the game.
         </p>
