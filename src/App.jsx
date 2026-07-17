@@ -26,7 +26,7 @@ import Online2v2Game from './pages/Online2v2Game';
 import Profile from './pages/Profile';
 import Achievements from './pages/Achievements';
 import OnboardingProfile from './components/OnboardingProfile';
-import { hasProfile } from './lib/profileUtils';
+import { getLocalProfile, setLocalProfile } from './lib/profileUtils';
 import LandingPage from './pages/LandingPage';
 import Store from './pages/Store';
 import DailyChallenges from './pages/DailyChallenges';
@@ -43,7 +43,7 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   : <>{children}</>;
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, isAuthenticated } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, isAuthenticated, user } = useAuth();
   const location = useLocation();
 
   // Show loading spinner while checking app public settings or auth
@@ -75,9 +75,19 @@ const AuthenticatedApp = () => {
     return null;
   }
 
-  // Gate: require profile creation on first app open
-  if (!hasProfile()) {
+  // Gate: require profile creation on first app open.
+  // Authenticated users who already saved a username to their account are
+  // considered onboarded — onboarding never repeats across logins, cleared
+  // storage, or new devices.
+  const localProfile = getLocalProfile();
+  const accountOnboarded = isAuthenticated && !!user?.username;
+  if (!localProfile?.username && !accountOnboarded) {
     return <OnboardingProfile onComplete={() => window.location.reload()} isAuthenticated={isAuthenticated} />;
+  }
+  // Hydrate the local profile cache from the account when missing so
+  // username/avatar display correctly app-wide without re-onboarding.
+  if (!localProfile?.username && accountOnboarded) {
+    setLocalProfile({ username: user.username, avatar_url: user.avatar_url || 'preset:♔' });
   }
 
   // Render the main app
