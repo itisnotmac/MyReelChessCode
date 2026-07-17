@@ -115,7 +115,7 @@ export default function GameHistoryPage() {
     <div
       className="min-h-screen bg-[#0a0a0f] relative overflow-y-auto"
       style={{
-        backgroundImage: `linear-gradient(rgba(10,10,15,0.82), rgba(10,10,15,0.86)), url(${HERO_BACKDROPS.hallOfRecords})`,
+        backgroundImage: `linear-gradient(rgba(10,10,15,0.45), rgba(10,10,15,0.68)), url(${HERO_BACKDROPS.hallOfRecords})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
