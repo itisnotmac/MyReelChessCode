@@ -76,7 +76,7 @@ export default function InfoPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white text-sm font-medium">Sound Effects</p>
-                <p className="text-white/30 text-xs mt-0.5 [font-family:'Architects_Daughter',_system-ui]">Move sounds, check alerts, and game events</p>
+                <p className="text-white/30 text-xs mt-0.5">Move sounds, check alerts, and game events</p>
               </div>
               <Switch checked={soundEnabled} onCheckedChange={toggleSound} className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
@@ -92,7 +92,7 @@ export default function InfoPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white text-sm font-medium">Board Flip</p>
-                <p className="text-white/30 text-xs font-semibold [font-family:'Cormorant',_serif] opacity-100 py-1">Rotate board for Player 2 in local mode</p>
+                <p className="text-white/30 text-xs mt-0.5">Rotate board for Player 2 in local mode</p>
               </div>
               <Switch defaultChecked className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
