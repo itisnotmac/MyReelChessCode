@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { COMPRESSED_GLB_URLS } from '@/lib/compressedPieceUrls';
+import { HERO_PIECE_URLS } from '@/lib/heroPieceUrls';
 
 const SQUARE_SIZE = 1;
 const BOARD_SIZE = 8;
@@ -74,6 +75,59 @@ function applyMaterial(object3D, color, isWhite) {
       child.castShadow = true;
       child.receiveShadow = true;
     }
+  });
+}
+
+// High-detail originals: keep each model's own geometry + normal/roughness maps
+// (sculpted detail), drop only the baked diffuse so the white/black tint reads
+// cleanly, then add the fresnel edge glow on top.
+function enhanceMaterial(object3D, isWhite) {
+  const tint = isWhite ? 0xf0ece4 : 0x1b2a2a;
+  const glowColor = isWhite ? WHITE_GLOW : TEAL_GLOW;
+  const glowIntensity = isWhite ? 1.5 : 2.0;
+  const glowPower = 2.2;
+  const cacheKey = isWhite ? 'orig_glow_white' : 'orig_glow_black';
+
+  object3D.traverse(child => {
+    if (!child.isMesh) return;
+    const src = Array.isArray(child.material) ? child.material : [child.material];
+    const newMats = src.map(orig => {
+      const mat = orig.clone();
+      mat.color = new THREE.Color(tint);
+      mat.map = null; // remove baked diffuse (copper) so the tint shows
+      mat.emissive = new THREE.Color(glowColor);
+      mat.emissiveIntensity = 0;
+      mat.customProgramCacheKey = () => cacheKey;
+      mat.onBeforeCompile = (shader) => {
+        shader.uniforms.uGlowColor = { value: glowColor };
+        shader.uniforms.uGlowIntensity = { value: glowIntensity };
+        shader.uniforms.uGlowPower = { value: glowPower };
+        shader.vertexShader =
+          'varying vec3 vGlowNormal;\nvarying vec3 vGlowViewPos;\n' +
+          shader.vertexShader;
+        shader.vertexShader = shader.vertexShader.replace(
+          '#include <project_vertex>',
+          `#include <project_vertex>
+           vGlowNormal = normalize(normalMatrix * normal);
+           vGlowViewPos = mvPosition.xyz;`
+        );
+        shader.fragmentShader =
+          'uniform vec3 uGlowColor;\nuniform float uGlowIntensity;\nuniform float uGlowPower;\n' +
+          'varying vec3 vGlowNormal;\nvarying vec3 vGlowViewPos;\n' +
+          shader.fragmentShader;
+        shader.fragmentShader = shader.fragmentShader.replace(
+          '#include <emissivemap_fragment>',
+          `#include <emissivemap_fragment>
+           vec3 glowViewDir = normalize(-vGlowViewPos);
+           float glowFresnel = pow(1.0 - max(0.0, dot(normalize(vGlowNormal), glowViewDir)), uGlowPower);
+           totalEmissiveRadiance += uGlowColor * uGlowIntensity * glowFresnel;`
+        );
+      };
+      return mat;
+    });
+    child.material = newMats.length === 1 ? newMats[0] : newMats;
+    child.castShadow = true;
+    child.receiveShadow = true;
   });
 }
 
@@ -376,6 +430,12 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
     loader.setDRACOLoader(dracoLoader);
 
+    // Desktop loads the original high-detail sculpts (CDN-hosted, no GitHub
+    // fetch); mobile keeps the Draco-compressed set for performance.
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && window.innerWidth < 1024);
+    const useOriginal = !isMobile;
+    const urlSet = useOriginal ? HERO_PIECE_URLS : COMPRESSED_GLB_URLS;
+
     const keys = ['p', 'r', 'n', 'b', 'q', 'k'];
 
     const processTemplate = (gltfScene, key) => {
@@ -386,7 +446,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
 
       // White variant — face -Z (towards black at row 0)
       const wTmpl = gltfScene.clone(true);
-      applyMaterial(wTmpl, WHITE_PIECE, true);
+      if (useOriginal) enhanceMaterial(wTmpl, true); else applyMaterial(wTmpl, WHITE_PIECE, true);
       wTmpl.rotation.y = wRotY;
       const wBox = new THREE.Box3().setFromObject(wTmpl);
       const wSize = new THREE.Vector3();
@@ -399,7 +459,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
 
       // Black variant — face +Z (towards white at row 7)
       const bTmpl = gltfScene.clone(true);
-      applyMaterial(bTmpl, BLACK_PIECE, false);
+      if (useOriginal) enhanceMaterial(bTmpl, false); else applyMaterial(bTmpl, BLACK_PIECE, false);
       bTmpl.rotation.y = bRotY;
       const bBox = new THREE.Box3().setFromObject(bTmpl);
       const bSize = new THREE.Vector3();
@@ -413,7 +473,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
 
     Promise.all(keys.map(key =>
       new Promise((resolve, reject) => {
-        loader.load(COMPRESSED_GLB_URLS[key], (gltf) => resolve({ key, scene: gltf.scene }), undefined, reject);
+        loader.load(urlSet[key], (gltf) => resolve({ key, scene: gltf.scene }), undefined, reject);
       })
     )).then(results => {
       if (cancelled) return;
