@@ -15,16 +15,16 @@ import Cinematic3DHero from '@/components/lobby/Cinematic3DHero';
 
 function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
   const [items, setItems] = useState([
-    { id: 'settings',   label: 'Settings',     icon: Settings },
-    { id: 'tournament', label: 'Tournaments',  icon: Trophy },
-    { id: 'faq',       label: 'FAQ',          icon: HelpCircle },
-    { id: 'chat',      label: 'Community Chat', icon: MessageCircle },
     { id: 'profile',      label: 'Profile',       icon: UserCircle },
-    { id: 'achievements', label: 'Achievements',  icon: Award },
+    { id: 'settings',     label: 'Settings',      icon: Settings },
+    { id: 'chat',         label: 'Community Chat', icon: MessageCircle },
     { id: 'dashboard',    label: 'Stats',         icon: BarChart2 },
+    { id: 'achievements', label: 'Achievements',  icon: Award },
     { id: 'history',      label: 'Game History',  icon: Trophy },
-    { id: 'contact',  label: 'Contact',      icon: Mail },
-    { id: 'about',    label: 'About',        icon: Info },
+    { id: 'tournament',  label: 'Tournaments',   icon: Trophy },
+    { id: 'faq',          label: 'FAQ',           icon: HelpCircle },
+    { id: 'contact',      label: 'Contact',       icon: Mail },
+    { id: 'about',        label: 'About',         icon: Info },
   ]);
 
   useEffect(() => {
