@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi, Crown, UserCircle, Award, ShoppingBag, Gift, MessageCircle, Bot, Users, UsersRound, BookOpen, Menu as MenuIcon } from 'lucide-react';
+import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi, Crown, UserCircle, Award, ShoppingBag, Gift, MessageCircle, Bot, Users, UsersRound, BookOpen, Menu as MenuIcon, Volume2 } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
 import PremiumModal from '../components/lobby/PremiumModal';
 import TwoVTwoModal from '../components/lobby/TwoVTwoModal';
-import { startMenuMusic, stopMenuMusic } from '@/lib/menuMusic';
+import { startMenuMusic, stopMenuMusic, getMenuMusicVolume, setMenuMusicVolume } from '@/lib/menuMusic';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import StreakBadge from '../components/streak/StreakBadge';
@@ -105,6 +105,13 @@ export default function Lobby() {
   const [twoVTwoOpen, setTwoVTwoOpen] = useState(false);
   const [streakData, setStreakData] = useState(null);
   const [showStreakPopup, setShowStreakPopup] = useState(false);
+  const [volume, setVolume] = useState(() => getMenuMusicVolume());
+
+  const handleVolumeChange = (e) => {
+    const v = parseFloat(e.target.value);
+    setVolume(v);
+    setMenuMusicVolume(v);
+  };
 
   useEffect(() => {
     startMenuMusic();
@@ -204,6 +211,27 @@ export default function Lobby() {
           </div>
         </motion.div>
       )}
+
+      {/* Volume control */}
+      <motion.div
+        className="relative z-10 flex justify-center pb-1 w-full"
+        initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}
+      >
+        <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/5 border border-[#3AAFA9]/20 backdrop-blur-md">
+          <Volume2 className="w-3.5 h-3.5 text-[#3AAFA9] shrink-0" />
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={volume}
+            onChange={handleVolumeChange}
+            aria-label="Menu music volume"
+            className="rcu-volume-slider w-28 h-1.5"
+          />
+          <span className="text-[10px] font-bold text-[#3AAFA9] tabular-nums w-7 text-right">{Math.round(volume * 100)}</span>
+        </div>
+      </motion.div>
 
       {/* Online PVP hero banner */}
       <motion.div

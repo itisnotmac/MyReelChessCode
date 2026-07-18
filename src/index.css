@@ -236,3 +236,40 @@ html.cb-tritanopia { filter: url(#cb-tritanopia); }
 .rcu-glow {
   box-shadow: 0 0 0 1px rgba(58, 175, 169, 0.55), 0 0 8px rgba(58, 175, 169, 0.2);
 }
+
+/* === Lobby volume slider === */
+.rcu-volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+.rcu-volume-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.rcu-volume-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.rcu-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -4px;
+  border-radius: 9999px;
+  background: #3AAFA9;
+  box-shadow: 0 0 6px rgba(58, 175, 169, 0.6);
+  border: none;
+}
+.rcu-volume-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: #3AAFA9;
+  box-shadow: 0 0 6px rgba(58, 175, 169, 0.6);
+  border: none;
+}
