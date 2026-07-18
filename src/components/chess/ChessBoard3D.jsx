@@ -93,7 +93,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
   const rebuildPiecesRef = useRef(null);
   const isDragging = useRef(false);
   const lastMouse = useRef({ x: 0, y: 0 });
-  const orbitRef = useRef({ theta: Math.PI / 6, phi: Math.PI / 3.2, radius: 11 });
+  const orbitRef = useRef({ theta: Math.PI / 6, phi: Math.PI / 3.2, radius: 11, tx: 0, tz: 0 });
   const onSquareClickRef = useRef(onSquareClick);
 
   // Keep ref in sync with latest prop so the stable Three.js listener always calls the current callback
@@ -192,15 +192,17 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     // Animate
     const animate = () => {
       frameRef.current = requestAnimationFrame(animate);
-      const { theta, phi, radius } = orbitRef.current;
+      const { theta, phi, radius, tx, tz } = orbitRef.current;
       const cx = (BOARD_SIZE - 1) / 2;
       const cz = (BOARD_SIZE - 1) / 2;
+      const targetX = cx + tx;
+      const targetZ = cz + tz;
       camera.position.set(
-        cx + radius * Math.sin(phi) * Math.sin(theta),
+        targetX + radius * Math.sin(phi) * Math.sin(theta),
         radius * Math.cos(phi),
-        cz + radius * Math.sin(phi) * Math.cos(theta)
+        targetZ + radius * Math.sin(phi) * Math.cos(theta)
       );
-      camera.lookAt(cx, 0, cz);
+      camera.lookAt(targetX, 0, targetZ);
       renderer.render(scene, camera);
     };
     animate();
@@ -283,8 +285,30 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
       lastTouchDist = null;
     };
 
+    const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    const hitPoint = new THREE.Vector3();
     const onWheel = (e) => {
-      orbitRef.current.radius = Math.max(6, Math.min(18, orbitRef.current.radius + e.deltaY * 0.02));
+      const t = orbitRef.current;
+      const oldRadius = t.radius;
+      const newRadius = Math.max(6, Math.min(18, oldRadius + e.deltaY * 0.02));
+      if (newRadius === oldRadius) return;
+      // Project the mouse onto the board plane and keep that world point
+      // stationary as the camera zoomes — the view zooms toward the cursor.
+      const rect = container.getBoundingClientRect();
+      const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const ny = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera({ x: nx, y: ny }, camera);
+      if (raycaster.ray.intersectPlane(groundPlane, hitPoint)) {
+        const cx = (BOARD_SIZE - 1) / 2;
+        const cz = (BOARD_SIZE - 1) / 2;
+        const ratio = newRadius / oldRadius;
+        t.tx = (hitPoint.x - cx) + (cx + t.tx - hitPoint.x) * ratio;
+        t.tz = (hitPoint.z - cz) + (cz + t.tz - hitPoint.z) * ratio;
+        // Keep the orbit target within the board so we don't pan off into space
+        t.tx = Math.max(-3, Math.min(3, t.tx));
+        t.tz = Math.max(-3, Math.min(3, t.tz));
+      }
+      t.radius = newRadius;
     };
 
     container.addEventListener('mousedown', onMouseDown);
