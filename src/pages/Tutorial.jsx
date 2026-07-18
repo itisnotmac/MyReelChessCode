@@ -117,7 +117,7 @@ export default function Tutorial() {
                     <div key={chapter} className={`flex flex-col ${colAlign}`}>
                 <button
                   onClick={() => setExpandedChapter(isOpen ? null : chapter)}
-                  className="w-fit flex items-center gap-3 px-4 py-3 rounded-xl border border-white/15 bg-black/40 backdrop-blur-md text-left hover:bg-white/5 transition-colors"
+                  className="rcu-glow w-fit flex items-center gap-3 px-4 py-3 rounded-xl border border-white/15 bg-black/40 backdrop-blur-md text-left hover:bg-white/5 transition-colors"
                 >
                   <span className="text-[10px] tracking-[0.2em] uppercase text-[#3AAFA9]/60 font-semibold">{chapter}</span>
                   <span className="text-[10px] text-white/20">{doneCount}/{chapterLessons.length}</span>
@@ -146,7 +146,7 @@ export default function Tutorial() {
                               transition={{ delay: li * 0.03 }}
                               whileTap={{ scale: 0.98 }}
                             >
-                              <div className={`relative rounded-lg px-3 py-2.5 border flex items-center gap-3 transition-all ${done ? 'border-[#3AAFA9]/30 bg-[#3AAFA9]/10' : 'border-white/10 bg-black/30'}`}>
+                              <div className={`rcu-glow relative rounded-lg px-3 py-2.5 border flex items-center gap-3 transition-all ${done ? 'border-[#3AAFA9]/30 bg-[#3AAFA9]/10' : 'border-white/10 bg-black/30'}`}>
                                 <span className="text-lg w-6 text-center">{l.icon}</span>
                                 <div className="min-w-0">
                                   <p className="text-white/75 text-[13px] font-medium">{l.title}</p>
@@ -218,7 +218,7 @@ export default function Tutorial() {
           transition={{ duration: 0.25 }}
         >
           {/* Description card */}
-          <div className="rounded-2xl border border-white/15 bg-black/40 backdrop-blur-md p-4 mb-4">
+          <div className="rcu-glow rounded-2xl border border-white/15 bg-black/40 backdrop-blur-md p-4 mb-4">
             <div className="flex items-start gap-3">
               <span className="text-2xl">{lesson.icon}</span>
               <p className="text-white/70 text-sm leading-relaxed">{lesson.description}</p>

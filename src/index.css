@@ -231,3 +231,8 @@ html.theme-high-contrast .bg-white\/10 { background-color: rgba(255,255,255,0.18
 html.cb-deuteranopia { filter: url(#cb-deuteranopia); }
 html.cb-protanopia { filter: url(#cb-protanopia); }
 html.cb-tritanopia { filter: url(#cb-tritanopia); }
+
+/* === RCU (Reel Chess University) module teal glow === */
+.rcu-glow {
+  box-shadow: 0 0 0 1px rgba(58, 175, 169, 0.55), 0 0 8px rgba(58, 175, 169, 0.2);
+}
