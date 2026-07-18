@@ -14,7 +14,10 @@ export function getMenuMusicVolume() {
 export function setMenuMusicVolume(volume) {
   const v = Math.min(1, Math.max(0, volume));
   localStorage.setItem(VOLUME_KEY, String(v));
-  if (audio) audio.volume = v;
+  if (audio) {
+    audio.volume = v;
+    audio.muted = v === 0;
+  }
 }
 
 function clearPendingHandlers() {
@@ -35,6 +38,10 @@ export function startMenuMusic() {
   const tryPlay = () => {
     // By the time this fires, stopped may already be true (set by stopMenuMusic)
     if (stopped) return;
+    // Re-apply the latest saved volume so a deferred start honours 0 = silent
+    const v = getMenuMusicVolume();
+    audio.volume = v;
+    audio.muted = v === 0;
     audio.play().catch(() => {});
   };
 
