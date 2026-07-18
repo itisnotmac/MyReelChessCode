@@ -415,7 +415,7 @@ export default function Game() {
       <div className="flex-1 flex items-center justify-center px-4 py-2">
         <motion.div
           animate={shakeControls}
-          style={{ width: 'min(92vw, 92vh, 480px)', height: 'min(92vw, 92vh, 480px)' }}
+          className="aspect-square w-[min(92vw,82vh)] max-w-[480px] sm:max-w-[600px] md:max-w-[720px] lg:max-w-[800px]"
         >
           {is3D ? (
             <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-[#3AAFA9]/40 text-xs tracking-widest">LOADING 3D…</div>}>
