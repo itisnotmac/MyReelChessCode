@@ -132,9 +132,24 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     scene.add(ambient);
 
     const dirLight = new THREE.DirectionalLight(0xfff5e0, 1.6);
-    dirLight.position.set(6, 12, 8);
+    dirLight.position.set(6, 14, 8);
     dirLight.castShadow = true;
     dirLight.shadow.mapSize.set(isMobile ? 512 : 1024, isMobile ? 512 : 1024);
+    // Aim the shadow frustum at the board center (default target is the origin,
+    // which is a board corner — pieces on the far side fell outside the default
+    // ±5 ortho frustum and cast no shadow). Widen it to cover the full 8×8 board.
+    const lightTarget = new THREE.Object3D();
+    lightTarget.position.set((BOARD_SIZE - 1) / 2, 0, (BOARD_SIZE - 1) / 2);
+    scene.add(lightTarget);
+    dirLight.target = lightTarget;
+    dirLight.shadow.camera.left = -7;
+    dirLight.shadow.camera.right = 7;
+    dirLight.shadow.camera.top = 7;
+    dirLight.shadow.camera.bottom = -7;
+    dirLight.shadow.camera.near = 1;
+    dirLight.shadow.camera.far = 40;
+    dirLight.shadow.bias = -0.0005;
+    dirLight.shadow.camera.updateProjectionMatrix();
     scene.add(dirLight);
 
     const fillLight = new THREE.DirectionalLight(0x8888ff, 0.3);
