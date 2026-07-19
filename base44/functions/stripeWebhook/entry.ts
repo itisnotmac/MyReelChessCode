@@ -44,31 +44,6 @@ Deno.serve(async (req) => {
       }
 
       if (userId && session.mode === 'payment') {
-        // Tournament buy-in
-        if (session.metadata?.type === 'tournament_buyin') {
-          const tournamentId = session.metadata?.tournament_id;
-          if (tournamentId) {
-            const existing = await base44.asServiceRole.entities.TournamentEntry.filter({
-              tournament_id: tournamentId,
-              user_id: userId,
-            });
-            if (!existing.some(e => e.payment_status === 'paid')) {
-              await base44.asServiceRole.entities.TournamentEntry.create({
-                tournament_id: tournamentId,
-                user_id: userId,
-                payment_status: 'paid',
-                checkout_session_id: session.id,
-                stripe_payment_intent: session.payment_intent,
-              });
-              await base44.asServiceRole.entities.Tournament.updateMany(
-                { id: tournamentId },
-                { $inc: { paid_entries: 1 } }
-              );
-              console.log(`Tournament entry: user=${userId}, tournament=${tournamentId}`);
-            }
-          }
-        }
-
         // Cosmetic purchase
         const itemId = session.metadata?.item_id;
         const itemType = session.metadata?.item_type;

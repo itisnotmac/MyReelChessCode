@@ -67,13 +67,14 @@ export default function Tournament() {
 
   const handleRegister = async (t) => {
     if (!isAuthenticated) { navigate('/login'); return; }
-    if (window.self !== window.top) { alert('Checkout works only from the published app.'); return; }
+    // Premium subscribers register instantly via the Tournament Pass model
+    if (!user?.is_premium) { navigate('/Store'); return; }
     setPaying(t.id);
     try {
-      const res = await base44.functions.invoke('createTournamentCheckout', { tournament_id: t.id });
-      if (res.data?.url) window.location.href = res.data.url;
+      await base44.functions.invoke('registerForTournament', { tournament_id: t.id });
+      fetchData();
     } catch (e) {
-      alert(e.response?.data?.error || e.message || 'Failed to start checkout');
+      alert(e.response?.data?.error || e.message || 'Failed to register');
     } finally {
       setPaying(null);
     }
@@ -254,7 +255,9 @@ export default function Tournament() {
                     <button onClick={() => handleRegister(t)} disabled={paying === t.id}
                       className="flex-1 py-3 rounded-xl font-black text-sm tracking-wider uppercase transition-all active:scale-95 disabled:opacity-50"
                       style={{ background: 'linear-gradient(135deg, #3AAFA9, #2d8c87)', color: '#000', boxShadow: '0 0 24px rgba(58,175,169,0.3)' }}>
-                      {paying === t.id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : `Enter — ${money(t.buy_in_amount || 1000)}`}
+                      {paying === t.id
+                        ? <Loader2 className="w-4 h-4 animate-spin mx-auto" />
+                        : (user?.is_premium ? 'Enter Tournament' : 'Unlock with Premium')}
                     </button>
                   ) : (
                     <div className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white/40 text-sm text-center">
