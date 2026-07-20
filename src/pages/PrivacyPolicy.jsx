@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useSeo } from '@/lib/useSeo';
 
@@ -168,8 +168,11 @@ export default function PrivacyPolicy() {
 
       </div>
 
-      <div className="mt-12 pt-6 border-t border-white/10 text-center text-gray-500 text-xs">
-        © 2026 Reel Chess. All rights reserved.
+      <div className="mt-12 pt-6 border-t border-white/10 text-center text-gray-500 text-xs space-y-2">
+        <p>© 2026 Reel Chess. All rights reserved.</p>
+        <Link to="/terms-of-service" className="text-teal-400 hover:text-teal-300 transition-colors">
+          Terms &amp; Conditions
+        </Link>
       </div>
     </div>
   );

@@ -20,6 +20,7 @@ import GameHistory from './pages/GameHistory';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 import OnlineGame from './pages/OnlineGame';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 import PremiumSuccess from './pages/PremiumSuccess';
 import Info from './pages/Info';
 import FAQ from './pages/FAQ';
@@ -131,6 +132,7 @@ const AuthenticatedApp = () => {
           <Route path="/Dashboard" element={<Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-[#3AAFA9]/30 border-t-[#3AAFA9] rounded-full animate-spin" /></div>}><LayoutWrapper currentPageName="Dashboard"><Dashboard /></LayoutWrapper></Suspense>} />
           <Route path="/OnlineGame" element={<LayoutWrapper currentPageName="OnlineGame"><OnlineGame /></LayoutWrapper>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/delete-account" element={<LayoutWrapper currentPageName="Info"><Info /></LayoutWrapper>} />
           <Route path="/delete-data" element={<LayoutWrapper currentPageName="Info"><Info /></LayoutWrapper>} />
           <Route path="/premium-success" element={<LayoutWrapper currentPageName="PremiumSuccess"><PremiumSuccess /></LayoutWrapper>} />
@@ -152,6 +154,7 @@ const AuthenticatedApp = () => {
 // Pages accessible without login — gives search engines crawlable content
 const PUBLIC_PAGES = {
   'privacypolicy': PrivacyPolicy,
+  'termsofservice': TermsOfService,
   'about': About,
   'tutorial': Tutorial,
   'contact': Contact,

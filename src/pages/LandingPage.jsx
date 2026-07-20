@@ -84,6 +84,12 @@ export default function LandingPage() {
             >
               Privacy
             </Link>
+            <Link
+              to="/terms-of-service"
+              className="text-xs text-white/40 hover:text-[#3AAFA9] transition-colors"
+            >
+              Terms
+            </Link>
           </nav>
         </div>
         <p className="text-center text-white/20 text-xs mt-6">
