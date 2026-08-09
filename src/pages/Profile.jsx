@@ -1,12 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, User as UserIcon, Camera, Check, Loader2 } from 'lucide-react';
+import { ArrowLeft, User as UserIcon, Camera, Check, Loader2, Trash2, AlertTriangle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { PRESET_AVATARS, getLocalProfile, setLocalProfile, renderAvatarContent } from '@/lib/profileUtils';
 import FrostedAvatarImage from '@/components/FrostedAvatarImage';
 import StreakBadge from '../components/streak/StreakBadge';
 import { getTierName, getStreakTier, getNextMilestone } from '@/lib/streakTiers';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -20,6 +29,10 @@ export default function Profile() {
   const [streak, setStreak] = useState(0);
   const [elo, setElo] = useState(null);
   const [peakElo, setPeakElo] = useState(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteDataDialog, setShowDeleteDataDialog] = useState(false);
+  const [deletingData, setDeletingData] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -55,6 +68,27 @@ export default function Profile() {
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    try {
+      await base44.functions.invoke('deleteUserAccount');
+    } catch (e) {
+      console.error('Account deletion failed:', e);
+      setDeleting(false);
+      return;
+    }
+    await base44.auth.logout('/');
+  };
+
+  const handleDeleteData = async () => {
+    setDeletingData(true);
+    const history = await base44.entities.GameHistory.list('-created_date', 200);
+    await Promise.all(history.map((r) => base44.entities.GameHistory.delete(r.id)));
+    setDeletingData(false);
+    setShowDeleteDataDialog(false);
+    alert('All your game data has been deleted.');
   };
 
   const handleSave = async () => {
@@ -225,6 +259,88 @@ export default function Profile() {
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : null}
           {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Profile'}
         </motion.button>
+
+        {/* Danger zone */}
+        <motion.div
+          className="space-y-4 pt-6 mt-6 border-t border-white/10"
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+        >
+          <p className="text-xs tracking-widest uppercase text-red-400/60 font-semibold">Danger Zone</p>
+
+          {/* Delete Data */}
+          <div className="rounded-xl bg-orange-500/5 border border-orange-500/20 p-4">
+            <div className="flex items-start gap-3 mb-4">
+              <Trash2 className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-white text-sm font-medium">Delete My Data</p>
+                <p className="text-white/30 text-xs mt-0.5 leading-relaxed">
+                  Permanently delete all your game history and statistics. Your account will remain active.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowDeleteDataDialog(true)}
+              className="w-full py-2.5 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400 text-sm font-semibold tracking-wider hover:bg-orange-500/20 transition-colors">
+              DELETE MY DATA
+            </button>
+          </div>
+
+          {/* Delete Account */}
+          <div className="rounded-xl bg-red-500/5 border border-red-500/20 p-4">
+            <div className="flex items-start gap-3 mb-4">
+              <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-white text-sm font-medium">Delete Account</p>
+                <p className="text-white/30 text-xs mt-0.5 leading-relaxed">
+                  Permanently delete your account and all associated game history. This action cannot be undone.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowDeleteDialog(true)}
+              className="w-full py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold tracking-wider hover:bg-red-500/20 transition-colors">
+              DELETE ACCOUNT
+            </button>
+          </div>
+        </motion.div>
+
+        <AlertDialog open={showDeleteDataDialog} onOpenChange={setShowDeleteDataDialog}>
+          <AlertDialogContent className="bg-[#12121a] border border-white/10 text-white">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-white">Delete Your Data?</AlertDialogTitle>
+              <AlertDialogDescription className="text-white/50">
+                This will permanently delete all your game history and statistics. Your account will remain active. This cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={deletingData} className="bg-white/5 border-white/10 text-white hover:bg-white/10">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction disabled={deletingData} onClick={handleDeleteData} className="bg-orange-600 hover:bg-orange-700 text-white border-0">
+                {deletingData ? 'Deleting...' : 'Yes, Delete Data'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <AlertDialogContent className="bg-[#12121a] border border-white/10 text-white">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-white">Delete Account?</AlertDialogTitle>
+              <AlertDialogDescription className="text-white/50">
+                This will permanently delete your account and all game history. You cannot undo this action.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={deleting} className="bg-white/5 border-white/10 text-white hover:bg-white/10">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction disabled={deleting} onClick={handleDeleteAccount} className="bg-red-600 hover:bg-red-700 text-white border-0">
+                {deleting ? 'Deleting...' : 'Yes, Delete'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
