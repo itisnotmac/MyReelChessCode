@@ -9,7 +9,6 @@ import TwoVTwoModal from '../components/lobby/TwoVTwoModal';
 import { startMenuMusic, stopMenuMusic, getMenuMusicVolume, setMenuMusicVolume } from '@/lib/menuMusic';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
-import StreakBadge from '../components/streak/StreakBadge';
 import StreakPopup from '../components/streak/StreakPopup';
 import Cinematic3DHero from '@/components/lobby/Cinematic3DHero';
 
@@ -198,19 +197,6 @@ export default function Lobby() {
           REEL CHESS
         </h1>
       </motion.div>
-
-      {/* Streak indicator */}
-      {isAuthenticated && streakData?.streak > 0 && (
-        <motion.div
-          className="relative z-10 flex justify-center pb-1"
-          initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }}
-        >
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-[#3AAFA9]/20 backdrop-blur-md">
-            <StreakBadge streak={streakData.streak} size="xs" showNumber={false} />
-            <span className="text-xs font-bold text-[#3AAFA9]">Day {streakData.streak}</span>
-          </div>
-        </motion.div>
-      )}
 
       {/* Volume control */}
       <motion.div

@@ -86,7 +86,7 @@ export default function DailyChallenges() {
       if (res.data?.account) setAccount(res.data.account);
       else await loadAccount();
       if (res.data?.newRewards > 0) {
-        setRefreshMsg(`+${res.data.newRewards} Reels recovered!`);
+        setRefreshMsg(`+${res.data.newRewards} Tempo recovered!`);
       } else {
         setRefreshMsg('Report synced — all caught up');
       }
@@ -114,7 +114,7 @@ export default function DailyChallenges() {
         <ClipboardList className="relative z-10 w-12 h-12 text-[#3AAFA9]/40 mb-4" />
         <h1 className="relative z-10 text-xl font-bold mb-2">Daily Report Card</h1>
         <p className="relative z-10 text-sm text-white/50 text-center mb-6 max-w-xs">
-          Log in to track your daily activities and earn Reels by completing challenges.
+          Log in to track your daily activities and earn Tempo by completing challenges.
         </p>
         <button onClick={() => navigate('/login')}
           className="relative z-10 flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#3AAFA9]/15 border border-[#3AAFA9]/60 text-[#3AAFA9] font-bold text-xs tracking-wider uppercase">
@@ -152,7 +152,7 @@ export default function DailyChallenges() {
         </div>
       </div>
 
-      {/* Reels Balance */}
+      {/* Tempo Balance */}
       <div className="relative z-10 px-4 mb-4">
         <div className="rounded-xl p-4 border border-[#D4AF37]/30 backdrop-blur-md flex items-center justify-between"
           style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.10) 0%, rgba(212,175,55,0.03) 100%)' }}>
@@ -162,7 +162,7 @@ export default function DailyChallenges() {
             </div>
             <div>
               <p className="text-2xl font-black text-[#D4AF37]">{coinBalance}</p>
-              <p className="text-[10px] tracking-wider text-white/40 uppercase">Reels</p>
+              <p className="text-[10px] tracking-wider text-white/40 uppercase">Tempo</p>
             </div>
           </div>
           <button onClick={() => navigate('/Store')}
@@ -174,7 +174,7 @@ export default function DailyChallenges() {
 
       {/* Today's Challenge */}
       <div className="relative z-10 px-4 mb-4">
-        <p className="text-[10px] tracking-[0.2em] uppercase text-white/30 mb-2">Today's Challenge • {CHALLENGE_REWARD} Reels</p>
+        <p className="text-[10px] tracking-[0.2em] uppercase text-white/30 mb-2">Today's Challenge • {CHALLENGE_REWARD} Tempo</p>
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           className={`rounded-xl p-5 border backdrop-blur-md transition-all ${
             isClaimed ? 'border-[#3AAFA9]/40 bg-black/40'
@@ -216,7 +216,7 @@ export default function DailyChallenges() {
           {isClaimed && (
             <div className="flex items-center gap-1.5 mt-2.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-[#3AAFA9]" />
-              <span className="text-xs text-[#3AAFA9]/80">+{ch.reward} Reels auto-applied</span>
+              <span className="text-xs text-[#3AAFA9]/80">+{ch.reward} Tempo auto-applied</span>
             </div>
           )}
         </motion.div>

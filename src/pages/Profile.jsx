@@ -5,8 +5,6 @@ import { ArrowLeft, User as UserIcon, Camera, Check, Loader2, Trash2, AlertTrian
 import { base44 } from '@/api/base44Client';
 import { PRESET_AVATARS, getLocalProfile, setLocalProfile, renderAvatarContent } from '@/lib/profileUtils';
 import FrostedAvatarImage from '@/components/FrostedAvatarImage';
-import StreakBadge from '../components/streak/StreakBadge';
-import { getTierName, getStreakTier, getNextMilestone } from '@/lib/streakTiers';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -147,6 +145,17 @@ export default function Profile() {
       </div>
 
       <div className="relative z-10 px-5 pb-10 space-y-6 max-w-md mx-auto">
+        {/* Consecutive days logged in */}
+        {streak > 0 && (
+          <motion.div
+            className="flex flex-col items-center pt-2 pb-2"
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+          >
+            <p className="text-2xl font-black text-[#3AAFA9] leading-none">{streak}</p>
+            <p className="text-xs text-white/40 tracking-wider mt-1">consecutive days logged in</p>
+          </motion.div>
+        )}
+
         {/* Avatar preview */}
         <motion.div
           className="flex flex-col items-center gap-3 pt-2"
@@ -175,22 +184,6 @@ export default function Profile() {
             </button>
           )}
         </motion.div>
-
-        {/* Streak Badge */}
-        {streak > 0 && (
-          <motion.div
-            className="flex items-center justify-center gap-4 py-2"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.08 }}
-          >
-            <StreakBadge streak={streak} size="md" />
-            <div>
-              <p className="text-sm font-bold text-[#3AAFA9]">{getTierName(getStreakTier(streak))}</p>
-              <p className="text-xs text-white/40">Day {streak} • Next reward: Day {getNextMilestone(streak).day}</p>
-            </div>
-          </motion.div>
-        )}
 
         {/* ELO Rating */}
         {elo != null && (

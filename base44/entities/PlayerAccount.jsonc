@@ -9,7 +9,7 @@
     "currency_balance": {
       "type": "number",
       "default": 0,
-      "description": "In-game Reels balance in cents (100 = $1.00)"
+      "description": "In-game Tempo balance in cents (100 = $1.00)"
     },
     "last_challenge_date": {
       "type": "string",

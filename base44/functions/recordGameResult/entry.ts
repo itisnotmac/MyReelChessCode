@@ -97,7 +97,7 @@ export default async function(req: Request): Promise<Response> {
       // Append challenge activity
       let challengeActivities = [];
       try { challengeActivities = JSON.parse(account.daily_activities || '[]'); } catch { challengeActivities = []; }
-      challengeActivities.push({ type: 'challenge', label: `Daily Challenge Complete (+${autoClaimed} Reels)`, time: new Date().toISOString() });
+      challengeActivities.push({ type: 'challenge', label: `Daily Challenge Complete (+${autoClaimed} Tempo)`, time: new Date().toISOString() });
 
       account = await base44.asServiceRole.entities.PlayerAccount.update(account.id, {
         currency_balance: (account.currency_balance || 0) + autoClaimed,

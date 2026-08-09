@@ -98,7 +98,7 @@ function StoreCard({ item, owned, selected, onSelect, onPurchase, purchasing, co
               onClick={() => onCoinPurchase(item)}
               disabled={coinPurchasing || !canAffordCoins}
               className="flex-1 py-2 rounded-lg bg-[#3AAFA9]/15 border border-[#3AAFA9]/40 text-[#3AAFA9] text-[11px] font-bold tracking-wider hover:bg-[#3AAFA9]/25 transition-colors flex items-center justify-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
-              title={canAffordCoins ? `Buy with ${ITEM_COST_COINS} coins` : `Need ${ITEM_COST_COINS} coins`}
+              title={canAffordCoins ? `Buy with ${ITEM_COST_COINS} Tempo` : `Need ${ITEM_COST_COINS} Tempo`}
             >
               {coinPurchasing ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -218,7 +218,7 @@ export default function Store() {
       }
     } catch (e) {
       console.error('Coin purchase error:', e);
-      const msg = e?.response?.data?.error || 'Failed to purchase with coins.';
+      const msg = e?.response?.data?.error || 'Failed to purchase with Tempo.';
       alert(msg);
     }
     setCoinPurchasing(null);
@@ -340,7 +340,7 @@ export default function Store() {
       {/* Footer note */}
       <div className="relative z-10 px-4 text-center">
         <p className="text-[10px] text-white/20 tracking-wider">
-          All cosmetics are one-time purchases. $0.99 each, or can be purchased with in-game currency, earned from playing the game.
+          All cosmetics are one-time purchases. $0.99 each, or can be purchased with Tempo, earned from playing the game.
         </p>
       </div>
     </div>
