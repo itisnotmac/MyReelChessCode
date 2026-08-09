@@ -187,7 +187,7 @@ export default function Lobby() {
         initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
         
         <h1
-          className="text-4xl tracking-[0.22em] uppercase [font-family:'Old_Standard_TT',_serif] font-bold"
+          className="tracking-[0.22em] uppercase [font-family:'Old_Standard_TT',_serif] font-bold text-8xl"
           style={{
             backgroundImage: 'linear-gradient(135deg, #3AAFA9 0%, #A8E6E3 50%, #3AAFA9 100%)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
