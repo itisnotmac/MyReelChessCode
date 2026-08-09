@@ -77,7 +77,7 @@ export default function About() {
         </div>
 
         {/* Footer links */}
-        <div className="mt-10 pt-6 border-t border-[#3AAFA9]/10 flex gap-6">
+        <div className="mt-10 pt-6 border-t border-[#3AAFA9]/10 flex flex-wrap gap-6">
           <button
             onClick={() => navigate('/Contact')}
             className="text-xs tracking-widest uppercase text-[#3AAFA9]/60 hover:text-[#3AAFA9] transition-colors"
@@ -89,6 +89,18 @@ export default function About() {
             className="text-xs tracking-widest uppercase text-[#3AAFA9]/60 hover:text-[#3AAFA9] transition-colors"
           >
             Play Now
+          </button>
+          <button
+            onClick={() => navigate('/privacy-policy')}
+            className="text-xs tracking-widest uppercase text-[#3AAFA9]/60 hover:text-[#3AAFA9] transition-colors"
+          >
+            Privacy Policy
+          </button>
+          <button
+            onClick={() => navigate('/terms-of-service')}
+            className="text-xs tracking-widest uppercase text-[#3AAFA9]/60 hover:text-[#3AAFA9] transition-colors"
+          >
+            Terms &amp; Conditions
           </button>
         </div>
       </div>
