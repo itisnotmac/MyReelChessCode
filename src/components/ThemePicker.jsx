@@ -1,6 +1,11 @@
 import React from 'react';
 import { Moon, Sun, Contrast, Eye } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
+import { base44 } from '@/api/base44Client';
+
+function logActivity(type, label) {
+  base44.functions.invoke('logActivity', { type, label }).catch(() => {});
+}
 
 const THEMES = [
   { id: 'dark', label: 'Dark', icon: Moon },
@@ -30,7 +35,7 @@ export default function ThemePicker() {
           {THEMES.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
-              onClick={() => setTheme(id)}
+              onClick={() => { setTheme(id); logActivity('settings', `Theme: ${label}`); }}
               className={`flex flex-col items-center gap-1.5 py-3 rounded-lg border backdrop-blur-md transition-all ${
                 theme === id
                   ? 'border-[#3AAFA9] bg-[#3AAFA9]/25 text-white'
@@ -56,7 +61,7 @@ export default function ThemePicker() {
           {CB_MODES.map(({ id, label, desc }) => (
             <button
               key={id}
-              onClick={() => setColorBlind(id)}
+              onClick={() => { setColorBlind(id); logActivity('settings', `Color Blind: ${label}`); }}
               className={`flex flex-col items-center gap-0.5 py-2.5 rounded-lg border backdrop-blur-md transition-all ${
                 colorBlind === id
                   ? 'border-[#3AAFA9] bg-[#3AAFA9]/25 text-white'

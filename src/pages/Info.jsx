@@ -5,6 +5,7 @@ import { createPageUrl } from '@/utils';
 import { ArrowLeft, Settings } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
 import ThemePicker from '@/components/ThemePicker';
+import { base44 } from '@/api/base44Client';
 
 export default function InfoPage() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export default function InfoPage() {
     const next = !soundEnabled;
     setSoundEnabled(next);
     localStorage.setItem('chessSound', next ? 'on' : 'off');
+    base44.functions.invoke('logActivity', { type: 'settings', label: `Sound: ${next ? 'On' : 'Off'}` }).catch(() => {});
   };
 
   return (

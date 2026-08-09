@@ -9,11 +9,11 @@
     "currency_balance": {
       "type": "number",
       "default": 0,
-      "description": "In-game coin balance in cents (100 = $1.00)"
+      "description": "In-game Reels balance in cents (100 = $1.00)"
     },
     "last_challenge_date": {
       "type": "string",
-      "description": "YYYY-MM-DD of the last day progress was tracked"
+      "description": "YYYY-MM-DD (UTC) of the last day progress was tracked"
     },
     "daily_wins": {
       "type": "number",
@@ -39,6 +39,11 @@
       "type": "string",
       "default": "[]",
       "description": "JSON array of challenge IDs claimed today"
+    },
+    "daily_activities": {
+      "type": "string",
+      "default": "[]",
+      "description": "JSON array of {type, label, time} activity entries for today's report card"
     },
     "login_streak": {
       "type": "number",

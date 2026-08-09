@@ -13,13 +13,9 @@ export default async function(req: Request): Promise<Response> {
     }
 
     // Trust the server's UTC date — never a client-supplied value.
-    // A client date in a different timezone would desync from claimDailyRewards
-    // (which also uses UTC), causing daily progress resets and lost rewards.
     const date = formatDate(new Date());
 
-    // Persist a GameHistory record the user can read back on Dashboard/History.
-    // Use the user-scoped client so created_by_id is the user (read RLS requires it).
-    // GameHistory.mode only allows "ai"/"local"; map any other mode to "local".
+    // Persist a GameHistory record.
     const historyMode = mode === 'ai' ? 'ai' : 'local';
     await base44.entities.GameHistory.create({
       mode: historyMode,
@@ -42,6 +38,7 @@ export default async function(req: Request): Promise<Response> {
         daily_local_wins: 0,
         daily_games_played: 0,
         claimed_today: '[]',
+        daily_activities: '[]',
       });
     }
 
@@ -52,14 +49,24 @@ export default async function(req: Request): Promise<Response> {
       account.daily_local_wins = 0;
       account.daily_games_played = 0;
       account.claimed_today = '[]';
+      account.daily_activities = '[]';
       account.last_challenge_date = date;
     }
 
-    // Update progress
+    // Build activity entries for the report card
+    let activities = [];
+    try { activities = JSON.parse(account.daily_activities || '[]'); } catch { activities = []; }
+
     const isWin = result === 'white_wins' || result === 'black_wins';
+    const resultLabel = isWin ? 'Victory' : result === 'draw' ? 'Draw' : 'Defeat';
+    const modeLabel = mode === 'ai' ? 'AI Match' : mode === 'local' ? 'Local Match' : '2v2 Match';
+    activities.push({ type: 'match', label: `${modeLabel} — ${resultLabel}`, time: new Date().toISOString() });
+
+    // Build progress updates + activities in one write
     const updates = {
       daily_games_played: (account.daily_games_played || 0) + 1,
       last_challenge_date: date,
+      daily_activities: JSON.stringify(activities.slice(-50)),
     };
 
     if (isWin) {
@@ -77,8 +84,7 @@ export default async function(req: Request): Promise<Response> {
     account = await base44.asServiceRole.entities.PlayerAccount.update(account.id, updates);
 
     // Auto-claim: if today's challenge is now complete and unclaimed, award
-    // coins immediately so users never lose rewards to a day rollover they
-    // forgot to claim.
+    // Reels immediately and log the activity.
     let autoClaimed = 0;
     const todaysChallenge = CHALLENGES[getDayIndex(date)];
     let claimed = [];
@@ -87,9 +93,16 @@ export default async function(req: Request): Promise<Response> {
     if (!claimed.includes(todaysChallenge.id) && todaysChallenge.check(account)) {
       claimed.push(todaysChallenge.id);
       autoClaimed = todaysChallenge.reward;
+
+      // Append challenge activity
+      let challengeActivities = [];
+      try { challengeActivities = JSON.parse(account.daily_activities || '[]'); } catch { challengeActivities = []; }
+      challengeActivities.push({ type: 'challenge', label: `Daily Challenge Complete (+${autoClaimed} Reels)`, time: new Date().toISOString() });
+
       account = await base44.asServiceRole.entities.PlayerAccount.update(account.id, {
         currency_balance: (account.currency_balance || 0) + autoClaimed,
         claimed_today: JSON.stringify(claimed),
+        daily_activities: JSON.stringify(challengeActivities.slice(-50)),
       });
     }
 

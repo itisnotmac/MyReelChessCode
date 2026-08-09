@@ -104,6 +104,7 @@ export default function Profile() {
         }
       }
       setSaved(true);
+      base44.functions.invoke('logActivity', { type: 'profile', label: 'Profile Updated' }).catch(() => {});
       setTimeout(() => setSaved(false), 2000);
     } catch (err) {
       console.error(err);
