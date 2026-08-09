@@ -1,15 +1,21 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { CHALLENGES, formatDate, getDayIndex } from '../../shared/dailyChallenges.ts';
 
-Deno.serve(async (req) => {
+export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { mode, result, date, moves_count, duration_seconds } = await req.json();
-    if (!mode || !result || !date) {
-      return Response.json({ error: 'Missing mode, result, or date' }, { status: 400 });
+    const { mode, result, moves_count, duration_seconds } = await req.json();
+    if (!mode || !result) {
+      return Response.json({ error: 'Missing mode or result' }, { status: 400 });
     }
+
+    // Trust the server's UTC date — never a client-supplied value.
+    // A client date in a different timezone would desync from claimDailyRewards
+    // (which also uses UTC), causing daily progress resets and lost rewards.
+    const date = formatDate(new Date());
 
     // Persist a GameHistory record the user can read back on Dashboard/History.
     // Use the user-scoped client so created_by_id is the user (read RLS requires it).
@@ -70,9 +76,26 @@ Deno.serve(async (req) => {
 
     account = await base44.asServiceRole.entities.PlayerAccount.update(account.id, updates);
 
-    return Response.json({ success: true, account });
+    // Auto-claim: if today's challenge is now complete and unclaimed, award
+    // coins immediately so users never lose rewards to a day rollover they
+    // forgot to claim.
+    let autoClaimed = 0;
+    const todaysChallenge = CHALLENGES[getDayIndex(date)];
+    let claimed = [];
+    try { claimed = JSON.parse(account.claimed_today || '[]'); } catch { claimed = []; }
+
+    if (!claimed.includes(todaysChallenge.id) && todaysChallenge.check(account)) {
+      claimed.push(todaysChallenge.id);
+      autoClaimed = todaysChallenge.reward;
+      account = await base44.asServiceRole.entities.PlayerAccount.update(account.id, {
+        currency_balance: (account.currency_balance || 0) + autoClaimed,
+        claimed_today: JSON.stringify(claimed),
+      });
+    }
+
+    return Response.json({ success: true, account, autoClaimed });
   } catch (error) {
     console.error('recordGameResult error:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
-});
+}

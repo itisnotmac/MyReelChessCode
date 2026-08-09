@@ -50,8 +50,7 @@ export default function DailyChallenges() {
   const handleClaim = async () => {
     setClaiming(true);
     try {
-      const date = new Date().toLocaleDateString('en-CA');
-      const res = await base44.functions.invoke('claimDailyRewards', { date });
+      const res = await base44.functions.invoke('claimDailyRewards', {});
       if (res.data?.account) setAccount(res.data.account);
       if (res.data?.newRewards > 0) {
         setClaimResult(`+${res.data.newRewards} coins claimed!`);
@@ -68,7 +67,7 @@ export default function DailyChallenges() {
   };
 
   const coinBalance = account?.currency_balance || 0;
-  const todayStr = new Date().toLocaleDateString('en-CA');
+  const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'UTC' });
   const todaysChallenge = getTodaysChallenge(todayStr);
   const hasUnclaimed = (() => {
     const progress = todaysChallenge.getProgress(account);

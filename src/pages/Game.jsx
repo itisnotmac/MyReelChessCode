@@ -81,12 +81,13 @@ export default function Game() {
   // Track game start time for duration stats
   const gameStartTimeRef = useRef(Date.now());
 
-  // Track game result for daily challenges + GameHistory stats
+  // Track game result for daily challenges + GameHistory stats.
+  // The backend computes the date server-side (UTC) — sending a client date
+  // caused timezone mismatches that reset daily progress and lost rewards.
   useEffect(() => {
     if (!gameOver) return;
-    const date = new Date().toLocaleDateString('en-CA');
     const duration_seconds = Math.round((Date.now() - gameStartTimeRef.current) / 1000);
-    base44.functions.invoke('recordGameResult', { mode, result: gameOver, date, moves_count: moveCount, duration_seconds })
+    base44.functions.invoke('recordGameResult', { mode, result: gameOver, moves_count: moveCount, duration_seconds })
       .catch(e => console.error('Failed to record game result:', e));
   }, [gameOver, mode, moveCount]);
 
