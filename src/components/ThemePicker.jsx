@@ -14,10 +14,10 @@ const THEMES = [
 ];
 
 const CB_MODES = [
-  { id: 'none', label: 'None', desc: 'Normal vision' },
-  { id: 'deuteranopia', label: 'Deuteranopia', desc: 'Green-blind' },
-  { id: 'protanopia', label: 'Protanopia', desc: 'Red-blind' },
-  { id: 'tritanopia', label: 'Tritanopia', desc: 'Blue-blind' },
+  { id: 'none', label: 'None' },
+  { id: 'deuteranopia', label: 'Deuteranopia' },
+  { id: 'protanopia', label: 'Protanopia' },
+  { id: 'tritanopia', label: 'Tritanopia' },
 ];
 
 export default function ThemePicker() {
@@ -69,7 +69,6 @@ export default function ThemePicker() {
               }`}
             >
               <span className="text-xs font-medium">{label}</span>
-              {desc && <span className="text-[10px] opacity-60">{desc}</span>}
             </button>
           ))}
         </div>
