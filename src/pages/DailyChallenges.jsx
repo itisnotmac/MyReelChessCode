@@ -45,7 +45,16 @@ export default function DailyChallenges() {
     if (!isAuthenticated) { setLoading(false); return; }
     try {
       const res = await base44.entities.PlayerAccount.list();
-      setAccount(res?.[0] || null);
+      let acct = res?.[0] || null;
+      // If the daily progress hasn't been reset for today yet (e.g. the user
+      // hasn't played since yesterday), sync with the server to trigger the
+      // reset so stale wins/claims from a previous day don't show as completed.
+      const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'UTC' });
+      if (acct && acct.last_challenge_date !== todayStr) {
+        const syncRes = await base44.functions.invoke('claimDailyRewards', {});
+        if (syncRes.data?.account) acct = syncRes.data.account;
+      }
+      setAccount(acct);
     } catch (e) {
       console.error('Failed to load account:', e);
     }
