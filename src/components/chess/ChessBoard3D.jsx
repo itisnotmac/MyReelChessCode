@@ -82,14 +82,14 @@ function applyMaterial(object3D, color, isWhite) {
 // detail, normal/roughness maps, baked diffuse) and apply a subtle white/black
 // tint on top, then add the fresnel teal edge glow.
 function enhanceMaterial(object3D, isWhite) {
-  const tint = isWhite ? 0xf0ece4 : 0x1b2a2a;
-  // Both sides get the signature teal edge glow — white pieces glow teal,
-  // black pieces glow teal. Textures stay fully intact. Low intensity + high
-  // power keeps the glow concentrated on silhouette edges only.
+  // Neutral tint — let the texture's own coloring define white vs black.
+  // Multiplying dark tints kills sculpted detail on the black set.
+  const tint = 0xffffff;
+  // Faint teal edge glow on silhouette edges only.
   const glowColor = TEAL_GLOW;
-  const glowIntensity = isWhite ? 0.35 : 0.55;
+  const glowIntensity = 0.3;
   const glowPower = 4.5;
-  const cacheKey = isWhite ? 'orig_glow_white_teal' : 'orig_glow_black_teal';
+  const cacheKey = isWhite ? 'orig_glow_white_v2' : 'orig_glow_black_v2';
 
   object3D.traverse(child => {
     if (!child.isMesh) return;
