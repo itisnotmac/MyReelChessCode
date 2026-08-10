@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, User as UserIcon, Camera, Check, Loader2, Trash2, AlertTriangle, Coins } from 'lucide-react';
+import { ArrowLeft, User as UserIcon, Camera, Check, Loader2, Trash2, AlertTriangle, Coins, Trophy, History, BarChart2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { PRESET_AVATARS, getLocalProfile, setLocalProfile, renderAvatarContent } from '@/lib/profileUtils';
 import FrostedAvatarImage from '@/components/FrostedAvatarImage';
@@ -224,6 +224,28 @@ export default function Profile() {
             </div>
           </motion.div>
         )}
+
+        {/* Profile sections — Achievements, History, Stats */}
+        <motion.div
+          className="grid grid-cols-3 gap-3"
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}
+        >
+          <button onClick={() => navigate('/Achievements')}
+            className="flex flex-col items-center gap-2 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+            <Trophy className="w-5 h-5 text-[#D4AF37]" />
+            <span className="text-[10px] text-white/50 tracking-wider uppercase">Achievements</span>
+          </button>
+          <button onClick={() => navigate('/GameHistory')}
+            className="flex flex-col items-center gap-2 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+            <History className="w-5 h-5 text-[#3AAFA9]" />
+            <span className="text-[10px] text-white/50 tracking-wider uppercase">History</span>
+          </button>
+          <button onClick={() => navigate('/Dashboard')}
+            className="flex flex-col items-center gap-2 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+            <BarChart2 className="w-5 h-5 text-[#3AAFA9]" />
+            <span className="text-[10px] text-white/50 tracking-wider uppercase">Stats</span>
+          </button>
+        </motion.div>
 
         {/* Username */}
         <motion.div
