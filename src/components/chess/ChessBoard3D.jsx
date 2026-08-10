@@ -84,10 +84,11 @@ function applyMaterial(object3D, color, isWhite) {
 function enhanceMaterial(object3D, isWhite) {
   const tint = isWhite ? 0xf0ece4 : 0x1b2a2a;
   // Both sides get the signature teal edge glow — white pieces glow teal,
-  // black pieces glow teal. Textures stay fully intact.
+  // black pieces glow teal. Textures stay fully intact. Low intensity + high
+  // power keeps the glow concentrated on silhouette edges only.
   const glowColor = TEAL_GLOW;
-  const glowIntensity = isWhite ? 1.5 : 2.0;
-  const glowPower = 2.2;
+  const glowIntensity = isWhite ? 0.35 : 0.55;
+  const glowPower = 4.5;
   const cacheKey = isWhite ? 'orig_glow_white_teal' : 'orig_glow_black_teal';
 
   object3D.traverse(child => {
