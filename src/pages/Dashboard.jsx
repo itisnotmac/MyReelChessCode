@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 import { ArrowLeft, BarChart2, Clock, Swords, Trophy, Bot, Users, TrendingUp, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -137,7 +136,7 @@ export default function Dashboard() {
         style={{ paddingTop: 'calc(env(safe-area-inset-top) + 24px)' }}
       >
         <button
-          onClick={() => navigate(createPageUrl('Lobby'))}
+          onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/Profile'))}
           className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
