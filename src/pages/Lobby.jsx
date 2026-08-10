@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { X, Settings, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, BarChart2, Wifi, Crown, UserCircle, Award, ShoppingBag, Gift, MessageCircle, Bot, Users, UsersRound, BookOpen, Menu as MenuIcon, Volume2 } from 'lucide-react';
+import { X, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, Gift, MessageCircle, BookOpen, Menu as MenuIcon, Volume2, Swords } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
 import PremiumModal from '../components/lobby/PremiumModal';
 import TwoVTwoModal from '../components/lobby/TwoVTwoModal';
+import PlayChessModal from '../components/lobby/PlayChessModal';
 import { startMenuMusic, stopMenuMusic, getMenuMusicVolume, setMenuMusicVolume } from '@/lib/menuMusic';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -14,8 +15,6 @@ import Cinematic3DHero from '@/components/lobby/Cinematic3DHero';
 
 function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
   const [items, setItems] = useState([
-  { id: 'profile', label: 'Profile', icon: UserCircle },
-  { id: 'settings', label: 'Settings', icon: Settings },
   { id: 'chat', label: 'Community Chat', icon: MessageCircle },
   { id: 'tournament', label: 'Tournaments', icon: Trophy },
   { id: 'faq', label: 'FAQ', icon: HelpCircle },
@@ -99,6 +98,7 @@ export default function Lobby() {
   const [difficultyOpen, setDifficultyOpen] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [twoVTwoOpen, setTwoVTwoOpen] = useState(false);
+  const [playChessOpen, setPlayChessOpen] = useState(false);
   const [streakData, setStreakData] = useState(null);
   const [showStreakPopup, setShowStreakPopup] = useState(false);
   const [volume, setVolume] = useState(() => getMenuMusicVolume());
@@ -158,13 +158,9 @@ export default function Lobby() {
   };
 
   const buttons = [
-  { label: 'vs AI', icon: Bot, onClick: () => setDifficultyOpen(true), span: false },
-  { label: 'Local PVP', icon: Users, onClick: () => {stopMenuMusic();navigate(createPageUrl('Game') + `?mode=local`);}, span: false },
-  { label: '2v2', icon: UsersRound, onClick: () => setTwoVTwoOpen(true), span: false },
+  { label: 'Play Chess', icon: Swords, onClick: () => setPlayChessOpen(true), span: true },
   { label: 'R.C.U.', icon: BookOpen, onClick: () => navigate('/Tutorial'), span: false },
-  { label: 'Daily', icon: Gift, onClick: () => navigate('/DailyChallenges'), span: false },
-  { label: 'Store', icon: ShoppingBag, onClick: () => navigate('/Store'), span: false },
-  { label: 'Menu', icon: MenuIcon, onClick: () => setMenuOpen(true), span: true }];
+  { label: 'Daily', icon: Gift, onClick: () => navigate('/DailyChallenges'), span: false }];
 
 
   return (
@@ -216,43 +212,13 @@ export default function Lobby() {
         </div>
       </motion.div>
 
-      {/* Online PVP hero banner */}
-      <motion.div
-        className="relative z-10 flex justify-center pt-4 w-full px-4"
-        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}>
-        
-        <motion.button
-          onClick={() => user?.is_premium ? (stopMenuMusic(), navigate('/OnlineGame')) : setPremiumOpen(true)}
-          whileTap={{ scale: 0.97 }}
-          className="relative overflow-hidden rounded-2xl px-6 py-4 text-left group w-full backdrop-blur-md"
-          style={{ background: 'linear-gradient(135deg, rgba(58,175,169,0.18) 0%, rgba(58,175,169,0.06) 100%)', border: '1px solid rgba(58,175,169,0.4)', maxWidth: 480 }}>
-          
-          <div className="relative z-10 flex items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                {user?.is_premium ?
-                <Wifi className="w-3.5 h-3.5 text-[#3AAFA9]" /> :
-                <Crown className="w-3.5 h-3.5 text-[#3AAFA9]" />}
-                <span className="text-[9px] tracking-[0.3em] uppercase font-semibold text-[#3AAFA9]/70">
-                  {user?.is_premium ? 'Live Match' : 'Premium Feature'}
-                </span>
-              </div>
-              <p className="text-lg font-black tracking-wider text-[#3AAFA9]">
-                Play Online PVP
-              </p>
-              <p className="text-[10px] mt-0.5 text-[#3AAFA9]/50">
-                {user?.is_premium ? 'Challenge anyone, anywhere' : 'Subscribe for $4.99/mo to unlock'}
-              </p>
-            </div>
-            {!user?.is_premium &&
-            <div className="shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase text-[#3AAFA9]"
-            style={{ background: 'rgba(58,175,169,0.15)', border: '1px solid rgba(58,175,169,0.3)' }}>
-                Unlock
-              </div>
-            }
-          </div>
-        </motion.button>
-      </motion.div>
+      {/* Hamburger menu icon (top-right) */}
+      <button
+        onClick={() => setMenuOpen(true)}
+        className="fixed z-30 w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-colors backdrop-blur-md"
+        style={{ top: 'calc(env(safe-area-inset-top) + 16px)', right: 'calc(env(safe-area-inset-right) + 16px)' }}>
+        <MenuIcon className="w-5 h-5" />
+      </button>
 
       {/* Auth buttons (if not logged in) */}
       {!isAuthenticated &&
@@ -314,6 +280,14 @@ export default function Lobby() {
 
       {/* Modals */}
       <MenuModal isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavigate={handleNavigate} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+      <PlayChessModal
+        isOpen={playChessOpen}
+        onClose={() => setPlayChessOpen(false)}
+        onOnlinePvp={() => user?.is_premium ? (stopMenuMusic(), navigate('/OnlineGame')) : setPremiumOpen(true)}
+        onVsAI={() => setDifficultyOpen(true)}
+        onLocalPvp={() => {stopMenuMusic();navigate(createPageUrl('Game') + '?mode=local');}}
+        on2v2={() => setTwoVTwoOpen(true)}
+        isPremium={user?.is_premium} />
       <PremiumModal isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} isAuthenticated={isAuthenticated} />
       <TwoVTwoModal
         isOpen={twoVTwoOpen}
