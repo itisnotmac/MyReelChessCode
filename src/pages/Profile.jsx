@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, User as UserIcon, Camera, Check, Loader2, Trash2, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, User as UserIcon, Camera, Check, Loader2, Trash2, AlertTriangle, Coins } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { PRESET_AVATARS, getLocalProfile, setLocalProfile, renderAvatarContent } from '@/lib/profileUtils';
 import FrostedAvatarImage from '@/components/FrostedAvatarImage';
@@ -25,6 +25,7 @@ export default function Profile() {
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [streak, setStreak] = useState(0);
+  const [tempoBalance, setTempoBalance] = useState(0);
   const [elo, setElo] = useState(null);
   const [peakElo, setPeakElo] = useState(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -48,6 +49,7 @@ export default function Profile() {
     base44.entities.PlayerAccount.list().then(accounts => {
       if (accounts?.[0]) {
         setStreak(accounts[0].login_streak || 0);
+        setTempoBalance(accounts[0].currency_balance || 0);
         setElo(accounts[0].elo ?? 1200);
         setPeakElo(accounts[0].peak_elo ?? accounts[0].elo ?? 1200);
       }
@@ -155,6 +157,27 @@ export default function Profile() {
             <p className="text-xs text-white/40 tracking-wider mt-1">consecutive days logged in</p>
           </motion.div>
         )}
+
+        {/* Tempo balance */}
+        <motion.div
+          className="flex items-center justify-between rounded-2xl px-5 py-4 border border-[#D4AF37]/30 backdrop-blur-md"
+          style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.04) 100%)' }}
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 }}
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#D4AF37]/15 flex items-center justify-center">
+              <Coins className="w-5 h-5 text-[#D4AF37]" />
+            </div>
+            <div>
+              <p className="text-xs text-white/40 tracking-wider uppercase">Tempo Balance</p>
+              <p className="text-2xl font-black text-[#D4AF37] leading-none mt-0.5">{tempoBalance}</p>
+            </div>
+          </div>
+          <button onClick={() => navigate('/Store')}
+            className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/60 text-[11px] font-bold tracking-wider hover:bg-white/10 transition-colors">
+            STORE
+          </button>
+        </motion.div>
 
         {/* Avatar preview */}
         <motion.div
