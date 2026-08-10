@@ -78,24 +78,26 @@ function applyMaterial(object3D, color, isWhite) {
   });
 }
 
-// High-detail originals: keep each model's own geometry + normal/roughness maps
-// (sculpted detail), drop only the baked diffuse so the white/black tint reads
-// cleanly, then add the fresnel edge glow on top.
+// High-detail originals: keep each model's own geometry + textures (sculpted
+// detail, normal/roughness maps, baked diffuse) and apply a subtle white/black
+// tint on top, then add the fresnel teal edge glow.
 function enhanceMaterial(object3D, isWhite) {
   const tint = isWhite ? 0xf0ece4 : 0x1b2a2a;
-  const glowColor = isWhite ? WHITE_GLOW : TEAL_GLOW;
+  // Both sides get the signature teal edge glow — white pieces glow teal,
+  // black pieces glow teal. Textures stay fully intact.
+  const glowColor = TEAL_GLOW;
   const glowIntensity = isWhite ? 1.5 : 2.0;
   const glowPower = 2.2;
-  const cacheKey = isWhite ? 'orig_glow_white' : 'orig_glow_black';
+  const cacheKey = isWhite ? 'orig_glow_white_teal' : 'orig_glow_black_teal';
 
   object3D.traverse(child => {
     if (!child.isMesh) return;
     const src = Array.isArray(child.material) ? child.material : [child.material];
     const newMats = src.map(orig => {
       const mat = orig.clone();
+      // Tint multiplies on top of the original texture map (kept intact)
       mat.color = new THREE.Color(tint);
-      mat.map = null; // remove baked diffuse (copper) so the tint shows
-      mat.emissive = new THREE.Color(glowColor);
+      mat.emissive = new THREE.Color(TEAL_GLOW);
       mat.emissiveIntensity = 0;
       mat.customProgramCacheKey = () => cacheKey;
       mat.onBeforeCompile = (shader) => {
