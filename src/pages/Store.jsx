@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useSkin } from '@/lib/skinContext';
 import { BOARD_SKINS, PIECE_SETS } from '@/lib/storeCatalog';
 import { renderPieceSet } from '@/components/chess/PieceSets';
+import PremiumBanner from '@/components/store/PremiumBanner';
 
 function BoardPreview({ skin }) {
   return (
@@ -119,7 +120,7 @@ function StoreCard({ item, owned, selected, onSelect, onPurchase, purchasing, co
 export default function Store() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { boardSkin, pieceSet, setBoardSkin, setPieceSet } = useSkin();
   const [purchases, setPurchases] = useState([]);
   const [coinBalance, setCoinBalance] = useState(0);
@@ -164,7 +165,7 @@ export default function Store() {
     }
   }, [location.search]);
 
-  const isOwned = (itemId) => itemId === 'classic' || purchases.some(p => p.item_id === itemId);
+  const isOwned = () => true; // All cosmetics are currently free
 
   const handlePurchase = async (item) => {
     if (!isAuthenticated) {
@@ -271,6 +272,11 @@ export default function Store() {
         </div>
       )}
 
+      {/* Premium subscription banner */}
+      <div className="relative z-10 px-4 mb-6">
+        <PremiumBanner isPremium={user?.is_premium} />
+      </div>
+
       {/* Board Styles */}
       <div className="relative z-10 px-4 mb-8">
         <h2 className="text-sm font-bold tracking-wider text-[#3AAFA9]/70 mb-3 flex items-center gap-2">
@@ -284,7 +290,7 @@ export default function Store() {
         ) : (
           <div className="grid grid-cols-2 gap-3">
             {Object.values(BOARD_SKINS).map(skin => {
-              const item = { ...skin, category: 'board', price: skin.id === 'classic' ? 0 : 99 };
+              const item = { ...skin, category: 'board', price: 0 };
               return (
                 <StoreCard
                   key={skin.id}
@@ -317,7 +323,7 @@ export default function Store() {
         ) : (
           <div className="grid grid-cols-2 gap-3">
             {Object.values(PIECE_SETS).map(set => {
-              const item = { ...set, category: 'pieces', price: set.id === 'classic' ? 0 : 99 };
+              const item = { ...set, category: 'pieces', price: 0 };
               return (
                 <StoreCard
                   key={set.id}
@@ -340,7 +346,7 @@ export default function Store() {
       {/* Footer note */}
       <div className="relative z-10 px-4 text-center">
         <p className="text-[10px] text-white/20 tracking-wider">
-          All cosmetics are one-time purchases. $0.99 each, or can be purchased with Tempo, earned from playing the game.
+          All board themes and piece sets are currently free. Equip any item instantly — no purchase required.
         </p>
       </div>
     </div>

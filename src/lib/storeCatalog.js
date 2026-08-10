@@ -47,6 +47,6 @@ export const PIECE_SETS = {
 };
 
 export const STORE_ITEMS = [
-  ...Object.values(BOARD_SKINS).map(s => ({ ...s, category: 'board', price: s.id === 'classic' ? 0 : 99 })),
-  ...Object.values(PIECE_SETS).map(s => ({ ...s, category: 'pieces', price: s.id === 'classic' ? 0 : 99 })),
+  ...Object.values(BOARD_SKINS).map(s => ({ ...s, category: 'board', price: 0 })),
+  ...Object.values(PIECE_SETS).map(s => ({ ...s, category: 'pieces', price: 0 })),
 ];
