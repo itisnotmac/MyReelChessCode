@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, CheckCircle2, BookOpen, Lock } from 'lucide-react';
 import { LESSONS, CHAPTERS, SECTIONS } from '../lib/tutorialLessons';
 import TutorialBoard from '../components/tutorial/TutorialBoard';
+import LessonSphere from '../components/tutorial/LessonSphere';
 import { useSeo } from '@/lib/useSeo';
 
 export default function Tutorial() {
@@ -20,6 +21,7 @@ export default function Tutorial() {
   const [showList, setShowList] = useState(true);
   const [expandedChapter, setExpandedChapter] = useState(null);
   const [boardKey, setBoardKey] = useState(0);
+  const [selectedSection, setSelectedSection] = useState(null);
 
   const lesson = LESSONS[currentIndex];
 
@@ -65,6 +67,13 @@ export default function Tutorial() {
   const isCompleted = (id) => completed.includes(id);
   const progress = Math.round(completed.length / LESSONS.length * 100);
 
+  const getSectionProgress = (section) => {
+    const sectionChapters = section.chapters.filter((ch) => CHAPTERS.includes(ch));
+    const sectionLessons = LESSONS.filter((l) => sectionChapters.includes(l.chapter));
+    const done = sectionLessons.filter((l) => isCompleted(l.id)).length;
+    return { done, total: sectionLessons.length, percent: sectionLessons.length ? Math.round(done / sectionLessons.length * 100) : 0 };
+  };
+
   if (showList) {
     return (
       <div className="min-h-screen bg-[#0a0a0f] relative overflow-y-auto">
@@ -77,7 +86,7 @@ export default function Tutorial() {
 
         {/* Header */}
         <div className="relative z-10 flex items-center gap-3 px-5 pt-6 pb-2">
-          <button onClick={() => navigate(-1)}
+          <button onClick={() => selectedSection !== null ? setSelectedSection(null) : navigate(-1)}
           className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors shrink-0">
             <ChevronLeft className="w-5 h-5" />
           </button>
@@ -108,82 +117,92 @@ export default function Tutorial() {
           <p className="text-[10px] text-white/20 mt-1 text-right">{progress}% complete</p>
         </div>
 
-        {/* Lesson list by section — three columns framing the backdrop */}
-        <div className="relative z-10 grid grid-cols-3 gap-2 px-2 pb-10 items-start">
-          {SECTIONS.map((section, sIdx) => {
-            const sectionChapters = section.chapters.filter((ch) => CHAPTERS.includes(ch));
-            if (sectionChapters.length === 0) return null;
-            const colAlign = ['items-start', 'items-center', 'items-end'][sIdx];
-            return (
-              <div key={section.name} className={`flex flex-col ${colAlign} gap-2`}>
-                {/* Section header */}
-                <div className="px-1 pt-1">
-                  <p className="text-[11px] tracking-[0.25em] uppercase font-bold text-[#3AAFA9]">{section.name}</p>
-                </div>
-                {sectionChapters.map((chapter) => {
+        {/* Module sphere or section lessons */}
+        <AnimatePresence mode="wait">
+          {selectedSection === null ? (
+            <motion.div
+              key="sphere"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              className="relative z-10 flex justify-center pb-10"
+            >
+              <LessonSphere
+                sections={SECTIONS}
+                onSelect={(index) => setSelectedSection(SECTIONS[index].name)}
+                getSectionProgress={getSectionProgress}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key={selectedSection}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="relative z-10 flex flex-col items-center gap-2 px-3 pb-10"
+            >
+              {(() => {
+                const section = SECTIONS.find((s) => s.name === selectedSection);
+                if (!section) return null;
+                const sectionChapters = section.chapters.filter((ch) => CHAPTERS.includes(ch));
+                return sectionChapters.map((chapter) => {
                   const chapterLessons = LESSONS.filter((l) => l.chapter === chapter);
                   const doneCount = chapterLessons.filter((l) => isCompleted(l.id)).length;
                   const isOpen = expandedChapter === chapter;
                   return (
-                    <div key={chapter} className={`flex flex-col ${colAlign}`}>
-                <button
+                    <div key={chapter} className="flex flex-col items-center">
+                      <button
                         onClick={() => setExpandedChapter(isOpen ? null : chapter)}
                         className="rcu-glow w-fit flex items-center gap-3 px-4 py-3 rounded-xl border border-white/15 bg-black/40 backdrop-blur-md text-left hover:bg-white/5 transition-colors">
-                        
-                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#3AAFA9]/60 font-semibold">{chapter}</span>
-                  <span className="text-[10px] text-white/20">{doneCount}/{chapterLessons.length}</span>
-                  <ChevronRight className={`w-4 h-4 text-white/30 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
-                </button>
-                <AnimatePresence>
-                  {isOpen &&
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden">
-                          
-                      <div className={`space-y-1.5 pb-3 pt-2 flex flex-col ${colAlign}`}>
-                        {chapterLessons.map((l, li) => {
-                              const globalIdx = LESSONS.findIndex((x) => x.id === l.id);
-                              const done = isCompleted(l.id);
-                              return (
-                                <motion.button
-                                  key={l.id}
-                                  onClick={() => goToLesson(globalIdx)}
-                                  className="w-fit text-left"
-                                  initial={{ opacity: 0, y: 8 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ delay: li * 0.03 }}
-                                  whileTap={{ scale: 0.98 }}>
-                                  
-                              <div className={`rcu-glow relative rounded-lg px-3 py-2.5 border flex items-center gap-3 transition-all ${done ? 'border-[#3AAFA9]/30 bg-[#3AAFA9]/10' : 'border-white/10 bg-black/30'}`}>
-                                <span className="text-lg w-6 text-center">{l.icon}</span>
-                                <div className="min-w-0">
-                                  <p className="text-white/75 text-[13px] font-medium">{l.title}</p>
-                                  {l.interactive &&
-                                      <p className="text-[9px] text-[#3AAFA9]/40 mt-0.5">Interactive</p>
-                                      }
-                                </div>
-                                {done ?
-                                    <CheckCircle2 className="w-3.5 h-3.5 text-[#3AAFA9] shrink-0" /> :
-                                    <ChevronRight className="w-3.5 h-3.5 text-white/15 shrink-0" />
-                                    }
-                              </div>
-                            </motion.button>);
-
-                            })}
-                      </div>
-                    </motion.div>
-                        }
-                </AnimatePresence>
-              </div>);
-
-                })}
-            </div>);
-
-          })}
-        </div>
+                        <span className="text-[10px] tracking-[0.2em] uppercase text-[#3AAFA9]/60 font-semibold">{chapter}</span>
+                        <span className="text-[10px] text-white/20">{doneCount}/{chapterLessons.length}</span>
+                        <ChevronRight className={`w-4 h-4 text-white/30 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
+                      </button>
+                      <AnimatePresence>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden">
+                            <div className="space-y-1.5 pb-3 pt-2 flex flex-col items-center">
+                              {chapterLessons.map((l, li) => {
+                                const globalIdx = LESSONS.findIndex((x) => x.id === l.id);
+                                const done = isCompleted(l.id);
+                                return (
+                                  <motion.button
+                                    key={l.id}
+                                    onClick={() => goToLesson(globalIdx)}
+                                    className="w-fit text-left"
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: li * 0.03 }}
+                                    whileTap={{ scale: 0.98 }}>
+                                    <div className={`rcu-glow relative rounded-lg px-3 py-2.5 border flex items-center gap-3 transition-all ${done ? 'border-[#3AAFA9]/30 bg-[#3AAFA9]/10' : 'border-white/10 bg-black/30'}`}>
+                                      <span className="text-lg w-6 text-center">{l.icon}</span>
+                                      <div className="min-w-0">
+                                        <p className="text-white/75 text-[13px] font-medium">{l.title}</p>
+                                        {l.interactive && <p className="text-[9px] text-[#3AAFA9]/40 mt-0.5">Interactive</p>}
+                                      </div>
+                                      {done ? <CheckCircle2 className="w-3.5 h-3.5 text-[#3AAFA9] shrink-0" /> : <ChevronRight className="w-3.5 h-3.5 text-white/15 shrink-0" />}
+                                    </div>
+                                  </motion.button>
+                                );
+                              })}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                });
+              })()}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>);
 
   }
