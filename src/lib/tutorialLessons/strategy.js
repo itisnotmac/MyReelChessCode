@@ -160,10 +160,10 @@ export const STRATEGY_LESSONS = [
     chapter: 'Intermediate Strategy',
     title: 'Seize the Open File',
     icon: '🛣️',
-    description: 'The d-file is completely open — no pawns on it at all. Slide your rook to d1 to seize control of this critical file. From d1 your rook controls the entire d-file and can eventually penetrate to d7 or d8, attacking Black\'s position from behind.',
+    description: 'The c-file is completely open — no pawns on it at all. Slide your rook to c1 to seize control of this critical file. From c1 your rook controls the entire c-file and can eventually penetrate to c7 or c8, attacking Black\'s position from behind.',
     board: [
       ['r','n','b','q','k','b','n','r'],
-      ['p','p',null,'p','p','p','p','p'],
+      ['p','p','p',null,'p','p','p','p'],
       [null,null,null,null,null,null,null,null],
       [null,null,null,null,null,null,null,null],
       [null,null,null,null,null,null,null,null],
@@ -174,8 +174,8 @@ export const STRATEGY_LESSONS = [
     interactive: true,
     playerColor: 'white',
     movingPiece: 'R',
-    expectedMoves: [[7,0,7,3]],
-    hint: 'Click your rook on a1 and slide it to d1. You now control the open d-file — this gives you a long-term positional advantage and invasion routes into Black\'s camp.',
+    expectedMoves: [[7,0,7,2]],
+    hint: 'Click your rook on a1 and slide it to c1. You now control the open c-file — this gives you a long-term positional advantage and invasion routes into Black\'s camp.',
   },
 
   // ─── Piece Coordination ────────────────────────────────────────────────────
@@ -193,7 +193,7 @@ export const STRATEGY_LESSONS = [
       [null,null,null,null,'P',null,null,null],
       [null,null,null,null,null,'N',null,null],
       ['P','P','P','P',null,'P','P','P'],
-      [null,'B',null,null,'R','K',null,null],
+      [null,null,'B',null,'R','K',null,null],
     ],
     interactive: false,
   },
