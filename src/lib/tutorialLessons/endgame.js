@@ -6,9 +6,9 @@ export const ENDGAME_LESSONS = [
     chapter: 'Check & Checkmate',
     title: 'Putting the King in Check',
     icon: '⚔️',
-    description: 'When your piece directly threatens the enemy King, that\'s "Check!" The opponent must immediately deal with the threat. Give check by moving the Queen!',
+    description: 'When your piece directly threatens the enemy King, that\'s "Check!" The opponent must immediately deal with the threat — by moving the King, blocking the check, or capturing the attacking piece. Move the Queen to d8 to give check from a safe distance — the King can\'t capture the Queen because they\'re not adjacent!',
     board: [
-      [null,null,null,null,'k',null,null,null],
+      ['k',null,null,null,null,null,null,null],
       [null,null,null,null,null,null,null,null],
       [null,null,null,null,null,null,null,null],
       [null,null,null,null,null,null,null,null],
@@ -19,8 +19,8 @@ export const ENDGAME_LESSONS = [
     ],
     interactive: true,
     playerColor: 'white',
-    expectedMoves: [[6,3,0,3],[6,3,1,3],[6,3,2,3],[6,3,3,3],[6,3,4,3],[6,3,5,3]],
-    hint: 'Move the Queen up the d-file to give check to the black King.',
+    expectedMoves: [[6,3,0,3]],
+    hint: 'Move the Queen up the d-file to d8. From d8 she attacks along the 8th rank directly at the King on a8 — that\'s check! The King can\'t capture the Queen because they\'re three squares apart.',
   },
   {
     id: 'checkmate',
