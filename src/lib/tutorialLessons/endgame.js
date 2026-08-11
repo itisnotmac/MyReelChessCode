@@ -3,7 +3,7 @@
 export const ENDGAME_LESSONS = [
   {
     id: 'check',
-    chapter: 'Check & Checkmate',
+    chapter: 'Finishers',
     title: 'Putting the King in Check',
     icon: '⚔️',
     description: 'When your piece directly threatens the enemy King, that\'s "Check!" The opponent must immediately deal with the threat — by moving the King, blocking the check, or capturing the attacking piece. Move the Queen to d8 to give check from a safe distance — the King can\'t capture the Queen because they\'re not adjacent!',
@@ -24,7 +24,7 @@ export const ENDGAME_LESSONS = [
   },
   {
     id: 'checkmate',
-    chapter: 'Check & Checkmate',
+    chapter: 'Finishers',
     title: 'Checkmate in One!',
     icon: '♛',
     description: 'Checkmate ends the game immediately. The black King is trapped in the corner — his own pawns block his escape. Slide the Queen to c8 to deliver checkmate!',
@@ -45,7 +45,7 @@ export const ENDGAME_LESSONS = [
   },
   {
     id: 'stalemate',
-    chapter: 'Stalemate & Draws',
+    chapter: 'Finishers',
     title: 'Stalemate',
     icon: '🤝',
     description: 'Stalemate is a draw that happens when the player whose turn it is has NO legal moves — but their King is NOT in check. It\'s not checkmate because the King isn\'t attacked. In this position, it\'s Black\'s turn. The Black King on h8 has no safe squares: g8 and g7 are covered by the white Queen, and h7 is covered diagonally. Since the King isn\'t in check, this is stalemate — a draw, not a win!',
@@ -63,7 +63,7 @@ export const ENDGAME_LESSONS = [
   },
   {
     id: 'threefold-repetition',
-    chapter: 'Stalemate & Draws',
+    chapter: 'Finishers',
     title: 'Threefold Repetition',
     icon: '🔁',
     description: 'If the exact same position occurs three times in a game (with the same player to move and the same castling/en passant rights), either player can claim a draw. This prevents endless shuffling of pieces back and forth. It\'s a safety valve — if nobody is making progress, the game ends in a draw. You\'ll see this often when players repeat moves to avoid risk or secure a result.',
@@ -72,7 +72,7 @@ export const ENDGAME_LESSONS = [
   },
   {
     id: 'insufficient-material',
-    chapter: 'Stalemate & Draws',
+    chapter: 'Finishers',
     title: 'Insufficient Material',
     icon: '⚖️',
     description: 'A draw is automatic when neither side has enough pieces to deliver checkmate. King vs King can never produce checkmate — neither King can attack the other. King + Bishop vs King and King + Knight vs King are also draws, since a single minor piece can\'t force checkmate. In this position, only the two Kings remain — the game is a draw by insufficient material.',

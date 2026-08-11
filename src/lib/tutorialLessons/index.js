@@ -22,7 +22,7 @@ export const SECTIONS = [
   {
     name: 'Beginner',
     description: 'Board rules, piece movement & special moves',
-    chapters: ['The Board', 'Pieces', 'Special Moves', 'Check & Checkmate', 'Stalemate & Draws', 'Opening Principles'],
+    chapters: ['The Board', 'Pieces', 'Special Moves', 'Finishers', 'Opening Principles'],
   },
   {
     name: 'Intermediate',
