@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, CheckCircle2, BookOpen, Lock } from 'lucide-react';
@@ -22,6 +22,14 @@ export default function Tutorial() {
   const [boardKey, setBoardKey] = useState(0);
 
   const lesson = LESSONS[currentIndex];
+
+  // Non-interactive lessons (informational only, no puzzle) are marked
+  // complete automatically when viewed.
+  useEffect(() => {
+    if (!lesson.interactive) {
+      markComplete(lesson.id);
+    }
+  }, [lesson.id, lesson.interactive]);
 
   const markComplete = (id) => {
     const next = completed.includes(id) ? completed : [...completed, id];
