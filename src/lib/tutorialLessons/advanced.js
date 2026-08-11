@@ -18,7 +18,7 @@ export const ADVANCED_LESSONS = [
     chapter: 'Advanced Concepts',
     title: 'Zugzwang',
     icon: '😵',
-    description: 'Zugzwang is a German word meaning "compulsion to move." It\'s a situation where having to move is actually a disadvantage — any move you make weakens your position. In the endgame, kings and pawns often reach zugzwang: whoever must move loses. Here, it\'s Black\'s turn and Black is in zugzwang. If the black King moves off e7, white\'s King advances. If Black plays ...Kf8, white\'s King reaches e6 and queens first. Black is lost because every move is bad!',
+    description: 'Zugzwang is a German word meaning "compulsion to move." It\'s a situation where having to move is actually a disadvantage — any move you make weakens your position. In the endgame, kings and pawns often reach zugzwang: whoever must move loses. Here, it\'s Black\'s turn and Black is in zugzwang. If the black King steps off e7, White\'s King advances to e6, gets in front of the pawn, and escorts it up the board to promotion. Black has no pawns of his own and can never stop the march — every move loses!',
     board: [
       [null,null,null,null,null,null,null,null],
       [null,null,null,null,'k',null,null,null],
