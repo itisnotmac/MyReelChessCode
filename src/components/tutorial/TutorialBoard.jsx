@@ -121,7 +121,18 @@ export default function TutorialBoard({ board: initialBoard, lesson, onSuccess }
   };
 
   return (
-    <div className="relative w-full aspect-square">
+    <div className="relative w-full">
+      <div className="flex gap-1">
+      {/* Row numbers (1–8) */}
+      <div style={{ display: 'grid', gridTemplateRows: 'repeat(8, 1fr)' }} className="w-2.5">
+        {[...Array(8).keys()].map(row => (
+          <div key={row} className="flex items-center justify-center">
+            <span className="text-[9px] text-white/25 font-mono leading-none">{8 - row}</span>
+          </div>
+        ))}
+      </div>
+      {/* Board */}
+      <div className="flex-1 relative aspect-square">
       <div
         className={`rounded-lg overflow-hidden w-full h-full transition-all duration-500 ${succeeded ? 'ring-2 ring-emerald-400/60' : ''}`}
         style={{ boxShadow: `0 0 40px ${skin.glow}, 0 8px 32px rgba(0,0,0,0.7)`, border: `1px solid ${skin.border}` }}
@@ -176,6 +187,19 @@ export default function TutorialBoard({ board: initialBoard, lesson, onSuccess }
           <div className="text-4xl animate-bounce">✓</div>
         </div>
       )}
+      </div>
+      </div>
+      {/* Column letters (a–h) */}
+      <div className="flex gap-1 mt-0.5">
+        <div className="w-2.5" />
+        <div className="flex-1 grid grid-cols-8">
+          {['a','b','c','d','e','f','g','h'].map(col => (
+            <div key={col} className="flex items-center justify-center">
+              <span className="text-[9px] text-white/25 font-mono leading-none">{col}</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
