@@ -82,11 +82,11 @@ export const ADVANCED_LESSONS = [
     icon: '⚔️',
     description: 'One weakness can be defended. Two weaknesses on opposite sides of the board cannot — the defender can\'t be everywhere at once. The principle: create a second weakness far from the first, then switch your attack between them. The defender scrambles to cover both and eventually collapses. Here, Black has a weak pawn on a7 (attacked by the rook) and a weak King on g8. White can attack the queenside, then swing to the kingside — Black can\'t defend both fronts.',
     board: [
-      [null,null,null,null,'k',null,null,'r'],
-      [null,null,null,null,'p','p','p','p'],
+      [null,null,null,null,null,null,'k','r'],
+      ['p',null,null,null,null,'p','p','p'],
       [null,null,null,null,null,null,null,null],
       [null,null,null,null,null,null,null,null],
-      ['P',null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
       [null,null,null,null,null,null,null,null],
       [null,null,null,null,null,null,null,null],
       ['R',null,null,null,'K',null,null,null],
@@ -100,7 +100,7 @@ export const ADVANCED_LESSONS = [
     icon: '⚔️',
     description: 'Black\'s King on g8 is well-defended, but the a7 pawn on the far side of the board is weak and undefended. Your rook on a1 already eyes it. March your King toward the center — kings are powerful in the endgame! Move your King to d2, heading toward the queenside to support the rook\'s attack on the a7 pawn. You\'re creating a second front that Black can\'t defend.',
     board: [
-      [null,null,null,null,'k',null,null,null],
+      [null,null,null,null,null,null,'k',null],
       ['p',null,null,null,'p','p','p','p'],
       [null,null,null,null,null,null,null,null],
       [null,null,null,null,null,null,null,null],
