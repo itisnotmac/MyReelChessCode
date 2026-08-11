@@ -142,9 +142,9 @@ export const TACTICS_LESSONS = [
     chapter: 'Chess Tactics',
     title: 'The Skewer',
     icon: '🍢',
-    description: 'A skewer is the mirror image of a pin. In a pin, the weaker piece is in front. In a skewer, the stronger piece is in front — when it moves out of the way, the piece behind is captured. Think of it like a shish kebab: the King is forced off the skewer, and the piece behind gets taken! Here, the black King on a8 is in front of the black Queen on d8 on the same rank. A rook checks the King, the King steps aside, and the Queen is captured.',
+    description: 'A skewer is the mirror image of a pin. In a pin, the weaker piece is in front. In a skewer, the stronger piece is in front — when it moves out of the way, the piece behind is captured. Think of it like a shish kebab: the King is forced off the skewer, and the piece behind gets taken! Here, the black King on d8 is in front of the black Queen on h8 on the same rank. A rook checks the King, the King steps aside, and the Queen is captured.',
     board: [
-      [null,null,null,'q',null,null,null,'k'],
+      [null,null,null,'k',null,null,null,'q'],
       [null,null,null,null,null,null,null,null],
       [null,null,null,null,null,null,null,null],
       [null,null,null,null,null,null,null,null],
