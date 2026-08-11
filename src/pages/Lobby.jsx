@@ -7,6 +7,7 @@ import DifficultyModal from '../components/lobby/DifficultyModal';
 import PremiumModal from '../components/lobby/PremiumModal';
 import TwoVTwoModal from '../components/lobby/TwoVTwoModal';
 import PlayChessModal from '../components/lobby/PlayChessModal';
+import QrScannerModal from '../components/lobby/QrScannerModal';
 import { startMenuMusic, stopMenuMusic, getMenuMusicVolume, setMenuMusicVolume } from '@/lib/menuMusic';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -99,6 +100,7 @@ export default function Lobby() {
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [twoVTwoOpen, setTwoVTwoOpen] = useState(false);
   const [playChessOpen, setPlayChessOpen] = useState(false);
+  const [qrScannerOpen, setQrScannerOpen] = useState(false);
   const [streakData, setStreakData] = useState(null);
   const [showStreakPopup, setShowStreakPopup] = useState(false);
   const [volume, setVolume] = useState(() => getMenuMusicVolume());
@@ -137,6 +139,33 @@ export default function Lobby() {
     await base44.auth.logout();
     stopMenuMusic();
   };
+
+  // Auto-join when arriving via ?join=CODE (e.g. from scanning the QR with a phone camera)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const joinCode = params.get('join');
+    if (!joinCode) return;
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    (async () => {
+      try {
+        const res = await base44.functions.invoke('joinWifiGame', { invite_code: joinCode.toUpperCase() });
+        if (res.data?.game_id) {
+          stopMenuMusic();
+          navigate(createPageUrl('OnlineGame') + `?game=${res.data.game_id}`);
+        } else {
+          // Game doesn't exist — clean the URL and inform via console
+          console.warn('Join failed:', res.data?.error);
+          window.history.replaceState({}, '', window.location.pathname);
+        }
+      } catch (e) {
+        console.warn('Join failed:', e);
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    })();
+  }, [isAuthenticated]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleNavigate = (section) => {
     if (section === 'about') {navigate('/About');return;}
@@ -287,6 +316,8 @@ export default function Lobby() {
         onVsAI={() => setDifficultyOpen(true)}
         onLocalPvp={() => {stopMenuMusic();navigate(createPageUrl('Game') + '?mode=local');}}
         on2v2={() => setTwoVTwoOpen(true)}
+        onWifiMatch={() => {stopMenuMusic();navigate(createPageUrl('WifiMatch'));}}
+        onJoinQr={() => setQrScannerOpen(true)}
         isPremium={user?.is_premium} />
       <PremiumModal isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} isAuthenticated={isAuthenticated} />
       <TwoVTwoModal
@@ -313,6 +344,10 @@ export default function Lobby() {
         isOpen={difficultyOpen}
         onClose={() => setDifficultyOpen(false)}
         onConfirm={handleDifficultyConfirm} />
+
+      <QrScannerModal
+        isOpen={qrScannerOpen}
+        onClose={() => setQrScannerOpen(false)} />
       
     </div>);
 

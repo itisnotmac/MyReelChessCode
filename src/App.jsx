@@ -33,6 +33,7 @@ import LandingPage from './pages/LandingPage';
 import Store from './pages/Store';
 import DailyChallenges from './pages/DailyChallenges';
 import Tournament from './pages/Tournament';
+import WifiMatch from './pages/WifiMatch';
 import { SkinProvider } from '@/lib/skinContext';
 
 
@@ -141,6 +142,7 @@ const AuthenticatedApp = () => {
           <Route path="/Store" element={<LayoutWrapper currentPageName="Store"><Store /></LayoutWrapper>} />
           <Route path="/DailyChallenges" element={<LayoutWrapper currentPageName="DailyChallenges"><DailyChallenges /></LayoutWrapper>} />
           <Route path="/Tournament" element={<LayoutWrapper currentPageName="Tournament"><Tournament /></LayoutWrapper>} />
+          <Route path="/WifiMatch" element={<LayoutWrapper currentPageName="WifiMatch"><WifiMatch /></LayoutWrapper>} />
           <Route path="/Chat" element={<LayoutWrapper currentPageName="Chat"><Chat /></LayoutWrapper>} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
