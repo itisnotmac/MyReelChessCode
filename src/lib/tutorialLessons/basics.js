@@ -53,7 +53,7 @@ export const BASICS_LESSONS = [
   // ─── Chapter 2: The Pawns ────────────────────────────────────────────────────
   {
     id: 'pawn-move',
-    chapter: 'The Pawn',
+    chapter: 'Pieces',
     title: 'How Pawns Move',
     icon: '♙',
     description: 'Pawns move forward one square at a time — but on their very first move they can advance two squares. Move the pawn forward to continue.',
@@ -74,7 +74,7 @@ export const BASICS_LESSONS = [
   },
   {
     id: 'pawn-capture',
-    chapter: 'The Pawn',
+    chapter: 'Pieces',
     title: 'How the Pawn Captures',
     icon: '♙',
     description: 'Pawns capture one square diagonally forward — they cannot capture straight ahead. Capture the black pawn!',
@@ -97,7 +97,7 @@ export const BASICS_LESSONS = [
   // ─── Chapter 3: The Rook ─────────────────────────────────────────────────────
   {
     id: 'rook-move',
-    chapter: 'The Rook',
+    chapter: 'Pieces',
     title: 'How the Rook Moves',
     icon: '♖',
     description: 'The Rook slides any number of squares horizontally or vertically. It cannot jump over other pieces. Move the rook anywhere to continue.',
@@ -119,7 +119,7 @@ export const BASICS_LESSONS = [
   },
   {
     id: 'rook-capture',
-    chapter: 'The Rook',
+    chapter: 'Pieces',
     title: 'How the Rook Captures',
     icon: '♖',
     description: 'The Rook captures by moving to an enemy piece\'s square along its line of attack — horizontally or vertically. It cannot jump. Capture the black pawn!',
@@ -143,7 +143,7 @@ export const BASICS_LESSONS = [
   // ─── Chapter 4: The Bishop ───────────────────────────────────────────────────
   {
     id: 'bishop-move',
-    chapter: 'The Bishop',
+    chapter: 'Pieces',
     title: 'How the Bishop Moves',
     icon: '♗',
     description: 'The Bishop slides any number of squares diagonally. Each bishop stays on its own color for the entire game. Move the bishop to continue.',
@@ -165,7 +165,7 @@ export const BASICS_LESSONS = [
   },
   {
     id: 'bishop-capture',
-    chapter: 'The Bishop',
+    chapter: 'Pieces',
     title: 'How the Bishop Captures',
     icon: '♗',
     description: 'The Bishop captures by sliding diagonally onto an enemy piece\'s square. It stays on its own color forever. Capture the black pawn!',
@@ -189,7 +189,7 @@ export const BASICS_LESSONS = [
   // ─── Chapter 5: The Knight ───────────────────────────────────────────────────
   {
     id: 'knight-move',
-    chapter: 'The Knight',
+    chapter: 'Pieces',
     title: 'How the Knight Moves',
     icon: '♘',
     description: 'The Knight moves in an "L" shape: two squares in one direction, then one square perpendicular. It\'s the only piece that can jump over others!',
@@ -211,7 +211,7 @@ export const BASICS_LESSONS = [
   },
   {
     id: 'knight-capture',
-    chapter: 'The Knight',
+    chapter: 'Pieces',
     title: 'How the Knight Captures',
     icon: '♘',
     description: 'The Knight captures by landing on an enemy piece\'s square with its L-shaped jump. Unlike other pieces, it can leap over anything to get there! Capture the black pawn!',
@@ -235,7 +235,7 @@ export const BASICS_LESSONS = [
   // ─── Chapter 6: The Queen ────────────────────────────────────────────────────
   {
     id: 'queen-move',
-    chapter: 'The Queen',
+    chapter: 'Pieces',
     title: 'How the Queen Moves',
     icon: '♕',
     description: 'The Queen is the most powerful piece — she can move any number of squares in any direction (horizontal, vertical, or diagonal). Use her wisely!',
@@ -257,7 +257,7 @@ export const BASICS_LESSONS = [
   },
   {
     id: 'queen-capture',
-    chapter: 'The Queen',
+    chapter: 'Pieces',
     title: 'How the Queen Captures',
     icon: '♕',
     description: 'The Queen captures by moving onto an enemy piece\'s square — in any direction (horizontal, vertical, or diagonal). She is devastating on open lines! Capture the black pawn!',
@@ -281,7 +281,7 @@ export const BASICS_LESSONS = [
   // ─── Chapter 7: The King ─────────────────────────────────────────────────────
   {
     id: 'king-move',
-    chapter: 'The King',
+    chapter: 'Pieces',
     title: 'How the King Moves',
     icon: '♔',
     description: 'The King can move one square in any direction. Protect your King at all costs — if he is trapped with no escape (checkmate), you lose!',
@@ -303,7 +303,7 @@ export const BASICS_LESSONS = [
   },
   {
     id: 'king-capture',
-    chapter: 'The King',
+    chapter: 'Pieces',
     title: 'How the King Captures',
     icon: '♔',
     description: 'The King captures by stepping one square onto an enemy piece\'s square in any direction. But be careful — never capture a piece that is defended, or your King will be in danger! Capture the black pawn!',
