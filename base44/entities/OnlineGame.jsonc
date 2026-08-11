@@ -99,12 +99,29 @@
   ],
   "rls": {
     "create": {
-      "$and": [
+      "$or": [
         {
-          "created_by_id": "{{user.id}}"
+          "$and": [
+            {
+              "created_by_id": "{{user.id}}"
+            },
+            {
+              "data.guest_id": "{{user.id}}"
+            }
+          ]
         },
         {
-          "data.guest_id": "{{user.id}}"
+          "$and": [
+            {
+              "created_by_id": "{{user.id}}"
+            },
+            {
+              "data.host_id": "{{user.id}}"
+            },
+            {
+              "data.status": "waiting"
+            }
+          ]
         }
       ]
     },
