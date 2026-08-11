@@ -94,7 +94,7 @@ function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
 
 export default function Lobby() {
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, navigateToLogin } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [difficultyOpen, setDifficultyOpen] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
@@ -146,7 +146,7 @@ export default function Lobby() {
     const joinCode = params.get('join');
     if (!joinCode) return;
     if (!isAuthenticated) {
-      navigate('/login');
+      navigateToLogin();
       return;
     }
     (async () => {

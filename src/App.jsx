@@ -165,7 +165,7 @@ const PUBLIC_PAGES = {
 
 function AppRoutes() {
   const location = useLocation();
-  const { isAuthenticated, isLoadingAuth } = useAuth();
+  const { isAuthenticated, isLoadingAuth, navigateToLogin } = useAuth();
   const normalizedPath = location.pathname.toLowerCase().replace(/-/g, '').replace(/\//g, '');
   const PublicPage = PUBLIC_PAGES[normalizedPath];
   if (PublicPage) {
@@ -175,8 +175,15 @@ function AppRoutes() {
       </LayoutWrapper>
     );
   }
-  // Public landing page for unauthenticated visitors at root — gives search engines rich crawlable content
+  // Public landing page for unauthenticated visitors at root — gives search engines rich crawlable content.
+  // BUT: if arriving via ?join=CODE (QR scan), redirect to login preserving the full URL
+  // so the join happens automatically after sign-in.
   if (normalizedPath === '' && !isAuthenticated && !isLoadingAuth) {
+    const joinCode = new URLSearchParams(window.location.search).get('join');
+    if (joinCode) {
+      navigateToLogin();
+      return null;
+    }
     return <LandingPage />;
   }
   return <AuthenticatedApp />;
