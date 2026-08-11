@@ -120,7 +120,7 @@ function ThemedSet({ piece, isWhite, theme, fontSize }) {
       lineHeight: 1,
       color,
       fontFamily: t.fontFamily,
-      textShadow: `0 0 8px ${glow}, 0 0 3px ${glow}, 0 1px 2px rgba(0,0,0,0.8)`,
+      textShadow: `0 0 4px ${glow}, 0 1px 2px rgba(0,0,0,0.8)`,
       fontWeight: 700,
       display: 'inline-block',
     }}>
@@ -151,9 +151,12 @@ export function renderPieceSet(setId, { piece, isWhite, size }) {
       content = <MinimalistSet piece={piece} isWhite={isWhite} />;
   }
 
-  const glowStyle = isWhite
-    ? { filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.9)) drop-shadow(0 0 2px rgba(255,255,255,0.6))' }
-    : { filter: 'drop-shadow(0 0 5px rgba(0,229,204,0.9)) drop-shadow(0 0 2px rgba(0,229,204,0.6))' };
+  const isThemed = setId === 'roman' || setId === 'greek' || setId === 'modern';
+  const glowStyle = isThemed
+    ? {}
+    : (isWhite
+      ? { filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.9)) drop-shadow(0 0 2px rgba(255,255,255,0.6))' }
+      : { filter: 'drop-shadow(0 0 5px rgba(0,229,204,0.9)) drop-shadow(0 0 2px rgba(0,229,204,0.6))' });
 
   return (
     <span
