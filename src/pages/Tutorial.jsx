@@ -32,9 +32,12 @@ export default function Tutorial() {
   }, [lesson.id, lesson.interactive]);
 
   const markComplete = (id) => {
-    const next = completed.includes(id) ? completed : [...completed, id];
-    setCompleted(next);
-    localStorage.setItem('tutorialCompleted', JSON.stringify(next));
+    setCompleted(prev => {
+      if (prev.includes(id)) return prev;
+      const next = [...prev, id];
+      localStorage.setItem('tutorialCompleted', JSON.stringify(next));
+      return next;
+    });
   };
 
   const handleSuccess = () => {
