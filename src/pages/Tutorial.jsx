@@ -121,8 +121,14 @@ export default function Tutorial() {
                   const chapterLessons = LESSONS.filter((l) => l.chapter === chapter);
                   const doneCount = chapterLessons.filter((l) => isCompleted(l.id)).length;
                   const isOpen = expandedChapter === chapter;
+                  const moduleHeader = section.moduleHeaders?.[chapter];
                   return (
                     <div key={chapter} className={`flex flex-col ${colAlign}`}>
+                {moduleHeader &&
+                  <div className="px-1 pt-2">
+                    <p className="text-[10px] tracking-[0.25em] uppercase font-bold text-white/30">{moduleHeader}</p>
+                  </div>
+                }
                 <button
                         onClick={() => setExpandedChapter(isOpen ? null : chapter)}
                         className="rcu-glow w-fit flex items-center gap-3 px-4 py-3 rounded-xl border border-white/15 bg-black/40 backdrop-blur-md text-left hover:bg-white/5 transition-colors">

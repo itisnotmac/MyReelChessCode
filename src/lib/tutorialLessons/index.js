@@ -23,6 +23,7 @@ export const SECTIONS = [
     name: 'Beginner',
     description: 'Board rules, piece movement & special moves',
     chapters: ['The Board', 'The Pawn', 'The Rook', 'The Bishop', 'The Knight', 'The Queen', 'The King', 'Special Moves', 'Check & Checkmate', 'Stalemate & Draws', 'Opening Principles'],
+    moduleHeaders: { 'The Pawn': 'Pieces' },
   },
   {
     name: 'Intermediate',

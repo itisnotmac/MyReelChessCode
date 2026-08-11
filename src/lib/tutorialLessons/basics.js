@@ -31,6 +31,24 @@ export const BASICS_LESSONS = [
     ],
     interactive: false,
   },
+  {
+    id: 'board-terminology',
+    chapter: 'The Board',
+    title: 'Ranks, Files & Coordinates',
+    icon: '📐',
+    description: 'The horizontal rows are called ranks — numbered 1 through 8, starting from White\'s side at the bottom. The vertical columns are called files — labeled a through h, from left to right. Together they give every square a unique name: the White King starts on e1, and the Black Queen starts on d8. Look at the labels around the board — the numbers on the left mark each rank, and the letters along the bottom mark each file. Throughout these lessons, you can use these coordinates to pinpoint any square on the board!',
+    board: [
+      [null,null,null,'q',null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,'K',null,null,null],
+    ],
+    interactive: false,
+  },
 
   // ─── Chapter 2: The Pawns ────────────────────────────────────────────────────
   {
