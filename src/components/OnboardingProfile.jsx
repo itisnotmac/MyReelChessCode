@@ -43,20 +43,18 @@ export default function OnboardingProfile({ onComplete, isAuthenticated }) {
     setSaving(true);
     setError('');
     try {
+      // Save to the account first — it's the source of truth. Only persist
+      // locally once the server confirms, so a failed save doesn't leave a
+      // phantom profile that gets wiped on logout and re-triggers onboarding.
+      if (isAuthenticated) {
+        await base44.auth.updateMe({ username: trimmed, avatar_url: avatarUrl });
+      }
       const profile = { username: trimmed, avatar_url: avatarUrl };
       setLocalProfile(profile);
-      if (isAuthenticated) {
-        try {
-          await base44.auth.updateMe({ username: trimmed, avatar_url: avatarUrl });
-        } catch (e) {
-          console.error('Failed to sync profile to account:', e);
-        }
-      }
       onComplete(profile);
     } catch (err) {
-      console.error(err);
-      setError('Something went wrong. Please try again.');
-    } finally {
+      console.error('Failed to save profile:', err);
+      setError('Could not save your profile. Please try again.');
       setSaving(false);
     }
   };

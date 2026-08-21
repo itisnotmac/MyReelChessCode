@@ -78,18 +78,16 @@ const AuthenticatedApp = () => {
     return null;
   }
 
-  // Gate: require profile creation on first app open.
-  // Authenticated users who already saved a username to their account are
-  // considered onboarded — onboarding never repeats across logins, cleared
-  // storage, or new devices.
-  const localProfile = getLocalProfile();
-  const accountOnboarded = isAuthenticated && !!user?.username;
-  if (!localProfile?.username && !accountOnboarded) {
+  // Gate: username is created exactly once and lives on the account — the
+  // single source of truth. Once set, onboarding never repeats across logouts,
+  // cleared storage, or new devices (standard app behavior).
+  if (isAuthenticated && !user?.username) {
     return <OnboardingProfile onComplete={() => window.location.reload()} isAuthenticated={isAuthenticated} />;
   }
-  // Hydrate the local profile cache from the account when missing so
-  // username/avatar display correctly app-wide without re-onboarding.
-  if (!localProfile?.username && accountOnboarded) {
+  // Hydrate the local profile cache from the account so username/avatar
+  // display correctly app-wide without re-onboarding.
+  const localProfile = getLocalProfile();
+  if (!localProfile?.username && user?.username) {
     setLocalProfile({ username: user.username, avatar_url: user.avatar_url || 'preset:♔' });
   }
 
