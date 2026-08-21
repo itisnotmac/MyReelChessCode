@@ -22,8 +22,7 @@ function generateInviteCode() {
 }
 
 function buildJoinUrl(code) {
-  const origin = window.location.origin;
-  return `${origin}/?join=${code}`;
+  return `https://reelchess.org/?join=${code}`;
 }
 
 export default function WifiMatch() {
