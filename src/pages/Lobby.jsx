@@ -287,7 +287,7 @@ export default function Lobby() {
             key={btn.label}
             onClick={btn.onClick}
             whileHover={{ scale: 2 }}
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 2 }}
             initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.05 }}
             style={{ boxShadow: '0 0 8px rgba(58,175,169,0.7), 0 0 16px rgba(58,175,169,0.4), 0 0 24px rgba(58,175,169,0.15), inset 0 0 6px rgba(58,175,169,0.1)' }}
             className={`flex items-center justify-center gap-2.5 rounded-2xl border border-[#3AAFA9]/50 bg-white/5 backdrop-blur-md py-4 text-white/90 active:bg-white/10 transition-all select-none${btn.span ? ' col-span-2' : ''}`}>
