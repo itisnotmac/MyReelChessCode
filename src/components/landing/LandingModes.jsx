@@ -16,7 +16,7 @@ const MODES = [
   {
     icon: Wifi,
     title: 'Online Multiplayer',
-    desc: 'Create a game with a unique invite code and play chess online with friends anywhere in the world. Premium members can also play 2v2 team chess.',
+    desc: 'Create a game with a unique invite code and play chess online with friends anywhere in the world. You can also host 2v2 team chess matches with a one-time unlock.',
   },
   {
     icon: BookOpen,

@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Users, Wifi, Monitor, Crown } from 'lucide-react';
+import { X, Users, Wifi, Monitor, Lock } from 'lucide-react';
 
-export default function TwoVTwoModal({ isOpen, onClose, onLocal, onOnline, isAuthenticated, isPremium }) {
+export default function TwoVTwoModal({ isOpen, onClose, onLocal, onOnline, isAuthenticated, has2v2Unlock }) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -59,10 +59,10 @@ export default function TwoVTwoModal({ isOpen, onClose, onLocal, onOnline, isAut
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <p className="text-white font-bold tracking-wider text-sm">Online 2v2</p>
-                      {!isPremium && <Crown className="w-3 h-3 text-[#3AAFA9]" />}
+                      {!has2v2Unlock && <Lock className="w-3 h-3 text-[#3AAFA9]/70" />}
                     </div>
                     <p className="text-white/35 text-xs mt-0.5">
-                      {isPremium ? 'Create a room · Invite 3 friends with a code' : 'Premium feature · $4.99/mo'}
+                      {has2v2Unlock ? 'Create a room · Invite 3 friends with a code' : 'Host matches · One-time $1.99'}
                     </p>
                   </div>
                 </button>

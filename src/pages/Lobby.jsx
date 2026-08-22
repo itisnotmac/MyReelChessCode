@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { X, HelpCircle, Mail, Info, LogOut, LogIn, Trophy, Gift, MessageCircle, BookOpen, Menu as MenuIcon, Volume2, Swords } from 'lucide-react';
+import { X, HelpCircle, Mail, Info, LogOut, LogIn, Gift, MessageCircle, BookOpen, Menu as MenuIcon, Volume2, Swords } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
-import PremiumModal from '../components/lobby/PremiumModal';
 import TwoVTwoModal from '../components/lobby/TwoVTwoModal';
 import PlayChessModal from '../components/lobby/PlayChessModal';
 import QrScannerModal from '../components/lobby/QrScannerModal';
+import FeatureUnlockModal from '../components/lobby/FeatureUnlockModal';
+import { useFeatureUnlocks } from '@/hooks/useFeatureUnlocks';
 import { startMenuMusic, stopMenuMusic, getMenuMusicVolume, setMenuMusicVolume } from '@/lib/menuMusic';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -17,7 +18,6 @@ import Cinematic3DHero from '@/components/lobby/Cinematic3DHero';
 function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
   const [items, setItems] = useState([
   { id: 'chat', label: 'Community Chat', icon: MessageCircle },
-  { id: 'tournament', label: 'Tournaments', icon: Trophy },
   { id: 'faq', label: 'FAQ', icon: HelpCircle },
   { id: 'contact', label: 'Contact', icon: Mail },
   { id: 'about', label: 'About', icon: Info }]
@@ -95,10 +95,11 @@ function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
 export default function Lobby() {
   const navigate = useNavigate();
   const { isAuthenticated, user, navigateToLogin } = useAuth();
+  const { hasUnlock } = useFeatureUnlocks(user?.id);
   const [menuOpen, setMenuOpen] = useState(false);
   const [difficultyOpen, setDifficultyOpen] = useState(false);
-  const [premiumOpen, setPremiumOpen] = useState(false);
   const [twoVTwoOpen, setTwoVTwoOpen] = useState(false);
+  const [featureUnlock, setFeatureUnlock] = useState({ open: false, id: null });
   const [playChessOpen, setPlayChessOpen] = useState(false);
   const [qrScannerOpen, setQrScannerOpen] = useState(false);
   const [streakData, setStreakData] = useState(null);
@@ -176,7 +177,6 @@ export default function Lobby() {
     if (section === 'dashboard') {navigate('/Dashboard');return;}
     if (section === 'profile') {navigate('/Profile');return;}
     if (section === 'achievements') {navigate('/Achievements');return;}
-    if (section === 'tournament') {navigate('/Tournament');return;}
     navigate(createPageUrl('Info') + `?section=${section}`);
   };
 
@@ -314,25 +314,40 @@ export default function Lobby() {
       <PlayChessModal
         isOpen={playChessOpen}
         onClose={() => setPlayChessOpen(false)}
-        onOnlinePvp={() => user?.is_premium ? (stopMenuMusic(), navigate('/OnlineGame')) : setPremiumOpen(true)}
+        onOnlinePvp={() => {stopMenuMusic();navigate('/OnlineGame');}}
         onVsAI={() => setDifficultyOpen(true)}
         onLocalPvp={() => {stopMenuMusic();navigate(createPageUrl('Game') + '?mode=local');}}
         on2v2={() => setTwoVTwoOpen(true)}
-        onWifiMatch={() => {stopMenuMusic();navigate(createPageUrl('WifiMatch'));}}
+        onWifiMatch={() => {
+          if (!hasUnlock('qr_host_unlock')) {
+            setFeatureUnlock({ open: true, id: 'qr_host_unlock' });
+            return;
+          }
+          stopMenuMusic();
+          navigate(createPageUrl('WifiMatch'));
+        }}
         onJoinQr={() => setQrScannerOpen(true)}
-        isPremium={user?.is_premium} />
-      <PremiumModal isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} isAuthenticated={isAuthenticated} />
+        hasQrUnlock={hasUnlock('qr_host_unlock')} />
       <TwoVTwoModal
         isOpen={twoVTwoOpen}
         onClose={() => setTwoVTwoOpen(false)}
         onLocal={() => {setTwoVTwoOpen(false);stopMenuMusic();navigate(createPageUrl('Game') + '?mode=2v2');}}
         onOnline={() => {
           setTwoVTwoOpen(false);
-          if (!user?.is_premium) {setPremiumOpen(true);return;}
+          if (!hasUnlock('2v2_host_unlock')) {
+            setFeatureUnlock({ open: true, id: '2v2_host_unlock' });
+            return;
+          }
           if (!isAuthenticated) {navigate('/login');return;}
           navigate(createPageUrl('Online2v2Game'));
         }}
-        isPremium={user?.is_premium}
+        has2v2Unlock={hasUnlock('2v2_host_unlock')}
+        isAuthenticated={isAuthenticated} />
+
+      <FeatureUnlockModal
+        isOpen={featureUnlock.open}
+        onClose={() => setFeatureUnlock({ open: false, id: null })}
+        featureId={featureUnlock.id}
         isAuthenticated={isAuthenticated} />
       
       <StreakPopup

@@ -1,22 +1,22 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Wifi, Bot, Users, UsersRound, Crown, QrCode, ScanLine } from 'lucide-react';
+import { X, Wifi, Bot, Users, UsersRound, QrCode, ScanLine, Lock } from 'lucide-react';
 
-export default function PlayChessModal({ isOpen, onClose, onOnlinePvp, onVsAI, onLocalPvp, on2v2, onWifiMatch, onJoinQr, isPremium }) {
+export default function PlayChessModal({ isOpen, onClose, onOnlinePvp, onVsAI, onLocalPvp, on2v2, onWifiMatch, onJoinQr, hasQrUnlock }) {
   const modes = [
     {
       id: 'online',
       label: 'Online PVP',
       icon: Wifi,
-      desc: isPremium ? 'Challenge anyone, anywhere' : 'Premium feature',
-      locked: !isPremium,
+      desc: 'Challenge anyone, anywhere',
       onClick: onOnlinePvp
     },
     {
       id: 'wifi',
       label: 'WiFi Match',
       icon: QrCode,
-      desc: 'Create a game · Share a QR code',
+      desc: hasQrUnlock ? 'Create a game · Share a QR code' : 'Host matches · One-time $1.99',
+      locked: !hasQrUnlock,
       onClick: onWifiMatch
     },
     {
@@ -84,7 +84,7 @@ export default function PlayChessModal({ isOpen, onClose, onOnlinePvp, onVsAI, o
                       <p className="text-sm font-bold tracking-wider text-white">{mode.label}</p>
                       <p className="text-[11px] text-white/40 mt-0.5">{mode.desc}</p>
                     </div>
-                    {mode.locked && <Crown className="w-4 h-4 text-[#D4AF37]" />}
+                    {mode.locked && <Lock className="w-4 h-4 text-[#3AAFA9]/70" />}
                   </motion.button>
                 ))}
               </div>

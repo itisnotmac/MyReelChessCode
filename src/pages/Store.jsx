@@ -8,7 +8,6 @@ import { useAuth } from '@/lib/AuthContext';
 import { useSkin } from '@/lib/skinContext';
 import { BOARD_SKINS, PIECE_SETS } from '@/lib/storeCatalog';
 import { renderPieceSet } from '@/components/chess/PieceSets';
-import PremiumBanner from '@/components/store/PremiumBanner';
 
 function BoardPreview({ skin }) {
   return (
@@ -271,11 +270,6 @@ export default function Store() {
           <span className="text-xs text-[#D4AF37]/70">Log in to purchase and save your cosmetics.</span>
         </div>
       )}
-
-      {/* Premium subscription banner */}
-      <div className="relative z-10 px-4 mb-6">
-        <PremiumBanner isPremium={user?.is_premium} />
-      </div>
 
       {/* Board Styles */}
       <div className="relative z-10 px-4 mb-8">

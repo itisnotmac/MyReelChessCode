@@ -9,7 +9,7 @@ const FAQS = [
   },
   {
     q: 'Is Reel Chess free to play?',
-    a: 'Yes, Reel Chess is free to play in your web browser. A premium subscription is available for additional features like online 2v2 multiplayer.',
+    a: 'Yes, Reel Chess is free to play — including online PvP. Hosting WiFi matches and 2v2 team matches is a small one-time unlock, but joining is always free for everyone.',
   },
   {
     q: 'Can I learn chess with Reel Chess?',
