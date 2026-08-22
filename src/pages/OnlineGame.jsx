@@ -74,26 +74,40 @@ export default function OnlineGame() {
 
   useEffect(() => { stopMenuMusic(); }, []);
 
-  // Load a tournament game directly via ?game=ID (skips matchmaking)
+  // Load a game directly via ?game=ID (skips matchmaking). Retries a few
+  // times because the joinWifiGame backend function updates the game via
+  // the service role — the guest_id may take a moment to be visible to the
+  // client SDK's RLS-filtered read.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const gid = params.get('game');
     if (!gid || !user) return;
-    (async () => {
+    let cancelled = false;
+    let attempt = 0;
+    const loadGame = async () => {
       try {
         const results = await base44.entities.OnlineGame.filter({ id: gid });
         const g = results[0];
-        if (!g) return;
-        if (g.host_id !== user.id && g.guest_id !== user.id) return;
-        gameIdRef.current = g.id;
-        const host = g.host_id === user.id;
-        isHostRef.current = host; setIsHost(host);
-        roleRef.current = host ? 'host' : 'guest';
-        setGameDoc(g);
-        applyGameDoc(g);
-        setPhase('playing');
-      } catch (e) { console.error('Failed to load tournament game:', e); }
-    })();
+        if (cancelled) return;
+        if (g && (g.host_id === user.id || g.guest_id === user.id)) {
+          gameIdRef.current = g.id;
+          const host = g.host_id === user.id;
+          isHostRef.current = host; setIsHost(host);
+          roleRef.current = host ? 'host' : 'guest';
+          setGameDoc(g);
+          applyGameDoc(g);
+          setPhase('playing');
+          return;
+        }
+        // Game not visible yet — retry up to 10 times (5 seconds total)
+        if (attempt < 10 && !cancelled) {
+          attempt++;
+          setTimeout(loadGame, 500);
+        }
+      } catch (e) { console.error('Failed to load game:', e); }
+    };
+    loadGame();
+    return () => { cancelled = true; };
   }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => { moveCountRef.current = moveCount; }, [moveCount]);

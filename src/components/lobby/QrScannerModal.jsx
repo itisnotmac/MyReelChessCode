@@ -32,6 +32,18 @@ export default function QrScannerModal({ isOpen, onClose }) {
     return null;
   }, []);
 
+  const stopCamera = useCallback(() => {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current = null;
+    }
+    setCameraReady(false);
+  }, []);
+
   const handleJoin = useCallback(async (code) => {
     setJoining(true);
     setError('');
@@ -49,19 +61,13 @@ export default function QrScannerModal({ isOpen, onClose }) {
     } finally {
       setJoining(false);
     }
-  }, [navigate, onClose]);
+  }, [navigate, onClose, stopCamera]);
 
-  const stopCamera = useCallback(() => {
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-    }
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(t => t.stop());
-      streamRef.current = null;
-    }
-    setCameraReady(false);
-  }, []);
+  // Store handleJoin in a ref so the camera effect doesn't restart when
+  // onClose changes (inline fn from parent changes every render, which
+  // would otherwise tear down and restart the camera endlessly).
+  const handleJoinRef = useRef(handleJoin);
+  useEffect(() => { handleJoinRef.current = handleJoin; }, [handleJoin]);
 
   // Start camera when in camera mode
   useEffect(() => {
@@ -99,7 +105,7 @@ export default function QrScannerModal({ isOpen, onClose }) {
               const code = extractInviteCode(codes[0].rawValue);
               if (code) {
                 stopCamera();
-                handleJoin(code);
+                handleJoinRef.current(code);
                 return;
               }
             }
@@ -121,7 +127,7 @@ export default function QrScannerModal({ isOpen, onClose }) {
       cancelled = true;
       stopCamera();
     };
-  }, [isOpen, mode, extractInviteCode, handleJoin, stopCamera]);
+  }, [isOpen, mode, extractInviteCode, stopCamera]);
 
   // Cleanup on close
   useEffect(() => {
