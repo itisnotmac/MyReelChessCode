@@ -476,6 +476,9 @@ export default function Store() {
           <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
           PARTICLE EFFECTS
         </h2>
+        <p className="text-[11px] text-white/50 mb-3 leading-relaxed">
+          A burst of glowing particles erupts at the board square whenever you capture a piece. Equipped effect plays in classic AI and local games.
+        </p>
         {loading ? (
           <div className="grid grid-cols-2 gap-3">
             {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
@@ -548,6 +551,9 @@ export default function Store() {
           <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
           AMBIENT EFFECTS
         </h2>
+        <p className="text-[11px] text-white/50 mb-3 leading-relaxed">
+          An animated atmospheric layer — rain, snow, embers, fireflies, aurora, or stardust — drifts behind the board during classic AI and local games.
+        </p>
         {loading ? (
           <div className="grid grid-cols-2 gap-3">
             {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}

@@ -78,9 +78,15 @@ export default function EffectPreview({ item, variant }) {
         {style === 'aurora' && (
           <>
             <motion.div
-              className="absolute inset-x-0 top-0 h-3/4"
-              style={{ background: `linear-gradient(180deg, ${color}60, transparent)`, filter: 'blur(8px)' }}
-              animate={{ opacity: [0.4, 0.8, 0.4], x: [-10, 10, -10] }}
+              className="absolute inset-x-[-20%] top-0 h-full"
+              style={{ background: `linear-gradient(120deg, transparent 20%, ${color}80 45%, ${color}40 60%, transparent 80%)`, filter: 'blur(10px)' }}
+              animate={{ opacity: [0.5, 0.9, 0.5], x: [-30, 30, -30] }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            <motion.div
+              className="absolute inset-x-[-20%] top-0 h-full"
+              style={{ background: `linear-gradient(60deg, transparent 30%, ${color}50 50%, transparent 70%)`, filter: 'blur(6px)' }}
+              animate={{ opacity: [0.3, 0.6, 0.3], x: [20, -20, 20] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             />
             {dots.map(p => (
