@@ -14,6 +14,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import StreakPopup from '../components/streak/StreakPopup';
 import Cinematic3DHero from '@/components/lobby/Cinematic3DHero';
+import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
 
 function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
   const [items, setItems] = useState([
@@ -196,7 +197,12 @@ export default function Lobby() {
 
   return (
     <div className="relative min-h-screen bg-[#0a0a0f] text-white overflow-hidden flex flex-col items-center">
-      {/* Cinematic 3D hero backdrop */}
+      {/* Cinematic backdrop image — matches the generated graphics on every other page */}
+      <div className="absolute inset-0 z-0">
+        <img src={HERO_BACKDROPS.lobbySpotlightStage} alt="" className="w-full h-full object-cover" />
+      </div>
+
+      {/* 3D hero pieces composited on top of the backdrop (transparent canvas) */}
       <Cinematic3DHero />
 
       {/* Readability overlays */}
