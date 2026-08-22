@@ -1,19 +1,14 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import ChessBoard from '../components/chess/ChessBoard';
-import CapturedPieces from '../components/chess/CapturedPieces';
-import BattleCutscene from '../components/chess/BattleCutscene';
-import GameOverModal from '../components/chess/GameOverModal';
-import TurnIndicator from '../components/chess/TurnIndicator';
-import GameMenu from '../components/chess/GameMenu';
-import BlitzTimer from '../components/chess/BlitzTimer';
 import { stopMenuMusic } from '@/lib/menuMusic';
 import { startBlitzAudio, stopBlitzAudio } from '@/lib/blitzAudio';
 import { getBlitzTimeLimit } from '@/lib/blitzClock';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
+import { Button } from '@/components/ui/button';
+import BlitzGameView from '../components/chess/BlitzGameView';
 import {
   createInitialBoard,
   getLegalMoves,
@@ -22,10 +17,11 @@ import {
   isCheckmate,
   isStalemate,
   getPieceColor,
+  getAIMove,
   isWhite as isWhitePiece,
   INITIAL_CASTLING
 } from '../components/chess/ChessLogic';
-import { Zap, Wifi, Loader2 } from 'lucide-react';
+import { Zap, Wifi, Bot, Users, Loader2 } from 'lucide-react';
 
 function parseJSON(str, fallback) {
   try { return str ? JSON.parse(str) : fallback; } catch { return fallback; }
@@ -35,6 +31,15 @@ export default function BlitzSchach() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  // Mode: 'online' | 'ai' | 'local'
+  const [mode, setMode] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('mode') || 'online';
+  });
+  const modeRef = useRef(mode);
+  useEffect(() => { modeRef.current = mode; }, [mode]);
+
+  // ── Online-only state ──
   const gameIdRef = useRef(null);
   const roleRef = useRef(null);
   const queueIdRef = useRef(null);
@@ -46,6 +51,7 @@ export default function BlitzSchach() {
   const [searchSeconds, setSearchSeconds] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  // ── Shared game state ──
   const [board, setBoard] = useState(createInitialBoard());
   const [isWhiteTurn, setIsWhiteTurn] = useState(true);
   const [selectedSquare, setSelectedSquare] = useState(null);
@@ -58,22 +64,26 @@ export default function BlitzSchach() {
   const [gameOver, setGameOver] = useState(null);
   const [eloDelta, setEloDelta] = useState(null);
   const [moveCount, setMoveCount] = useState(0);
-  const [battleInfo, setBattleInfo] = useState(null);
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('chessSound') !== 'off');
   const [timeRemaining, setTimeRemaining] = useState(null);
 
+  // ── AI/local: client-side turn timer ──
+  const [localTurnStartedAt, setLocalTurnStartedAt] = useState(null);
+
+  // ── AI state ──
+  const [isThinking, setIsThinking] = useState(false);
+  const aiRunningRef = useRef(false);
+
+  // ── Online host state ──
   const isHostRef = useRef(false);
   const [isHost, setIsHost] = useState(false);
 
   const moveCountRef = useRef(0);
   const isWhiteTurnRef = useRef(true);
-  const battleInfoRef = useRef(null);
-  const pendingMoveRef = useRef(null);
 
   useEffect(() => { stopMenuMusic(); }, []);
   useEffect(() => { moveCountRef.current = moveCount; }, [moveCount]);
   useEffect(() => { isWhiteTurnRef.current = isWhiteTurn; }, [isWhiteTurn]);
-  useEffect(() => { battleInfoRef.current = battleInfo; }, [battleInfo]);
 
   // Start/stop stress audio with game phase
   useEffect(() => {
@@ -81,10 +91,12 @@ export default function BlitzSchach() {
     return () => stopBlitzAudio();
   }, [phase, gameOver]);
 
-  // Cleanup audio on unmount
   useEffect(() => () => stopBlitzAudio(), []);
 
-  // Load a blitz game directly via ?game=ID
+  // Unified turn-start timestamp: server (online) or client (ai/local)
+  const turnStartedAt = mode === 'online' ? gameDoc?.turn_started_at : localTurnStartedAt;
+
+  // Load a blitz game directly via ?game=ID (online only)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const gid = params.get('game');
@@ -113,11 +125,20 @@ export default function BlitzSchach() {
     return () => { cancelled = true; };
   }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Polling fallback for sync recovery
+  // Auto-start for ?mode=ai or ?mode=local deep links
   useEffect(() => {
-    if (phase !== 'playing' || !gameIdRef.current) return;
+    const params = new URLSearchParams(window.location.search);
+    const urlMode = params.get('mode');
+    if (params.get('game')) return; // ?game=ID handled above
+    if (urlMode === 'ai' || urlMode === 'local') {
+      startLocalGame(urlMode);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Polling fallback for sync recovery (online only)
+  useEffect(() => {
+    if (mode !== 'online' || phase !== 'playing' || !gameIdRef.current) return;
     const interval = setInterval(async () => {
-      if (battleInfoRef.current) return;
       try {
         const results = await base44.entities.OnlineGame.filter({ id: gameIdRef.current });
         const g = results[0];
@@ -132,15 +153,15 @@ export default function BlitzSchach() {
       } catch (e) { /* ignore */ }
     }, 3000);
     return () => clearInterval(interval);
-  }, [phase]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [phase, mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── BLITZ TIMER ──
+  // ── BLITZ TIMER (unified: server timestamp or client timestamp) ──
   useEffect(() => {
-    if (phase !== 'playing' || !gameDoc?.turn_started_at || gameOver || battleInfo) return;
+    if (phase !== 'playing' || !turnStartedAt || gameOver) return;
     timeoutHandledRef.current = false;
 
-    const turnStart = new Date(gameDoc.turn_started_at).getTime();
-    const white = gameDoc.is_white_turn;
+    const turnStart = new Date(turnStartedAt).getTime();
+    const white = isWhiteTurn;
     const lostPieces = white ? capturedWhite.length : capturedBlack.length;
     const limit = getBlitzTimeLimit(lostPieces);
 
@@ -156,7 +177,7 @@ export default function BlitzSchach() {
     tick();
     const interval = setInterval(tick, 200);
     return () => clearInterval(interval);
-  }, [phase, gameDoc?.turn_started_at, gameDoc?.is_white_turn, gameOver, battleInfo, capturedWhite.length, capturedBlack.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [phase, turnStartedAt, isWhiteTurn, gameOver, capturedWhite.length, capturedBlack.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (phase !== 'searching') return;
@@ -199,32 +220,79 @@ export default function BlitzSchach() {
     return 'unknown';
   };
 
+  // ── START LOCAL GAME (ai or local mode) ──
+  const startLocalGame = useCallback((gameMode) => {
+    setMode(gameMode);
+    modeRef.current = gameMode;
+    setBoard(createInitialBoard());
+    setIsWhiteTurn(true);
+    setSelectedSquare(null);
+    setLegalMoves([]);
+    setEnPassant(null);
+    setCastling({ ...INITIAL_CASTLING });
+    setCapturedWhite([]);
+    setCapturedBlack([]);
+    setLastMove(null);
+    setGameOver(null);
+    setEloDelta(null);
+    setMoveCount(0);
+    setIsThinking(false);
+    aiRunningRef.current = false;
+    timeoutHandledRef.current = false;
+    setIsHost(true);
+    setLocalTurnStartedAt(new Date().toISOString());
+    setPhase('playing');
+  }, []);
+
+  const resetToLobby = () => {
+    setBoard(createInitialBoard());
+    setIsWhiteTurn(true);
+    setSelectedSquare(null);
+    setLegalMoves([]);
+    setEnPassant(null);
+    setCastling({ ...INITIAL_CASTLING });
+    setCapturedWhite([]);
+    setCapturedBlack([]);
+    setLastMove(null);
+    setGameOver(null);
+    setEloDelta(null);
+    setMoveCount(0);
+    setTimeRemaining(null);
+    setLocalTurnStartedAt(null);
+    setIsThinking(false);
+    aiRunningRef.current = false;
+    timeoutHandledRef.current = false;
+    setPhase('lobby');
+  };
+
   // ── TIMEOUT HANDLING ──
   const handleTimeout = async () => {
-    if (!gameIdRef.current) return;
-    const myTurn = isHostRef.current ? isWhiteTurnRef.current : !isWhiteTurnRef.current;
-    stopBlitzAudio();
-
-    if (myTurn) {
-      // I timed out — push my own loss
-      const result = isHostRef.current ? 'black_wins' : 'white_wins';
-      try {
-        await base44.entities.OnlineGame.update(gameIdRef.current, {
-          result, status: 'finished',
-        });
-        setGameOver(result);
-        await settleElo();
-      } catch (e) { console.error('Self-timeout push failed:', e); }
-    } else {
-      // Opponent timed out — claim the win via backend
-      try {
-        const r = await base44.functions.invoke('claimBlitzTimeout', { game_id: gameIdRef.current });
-        const d = r?.data || r || {};
-        if (d.claimed) {
-          setGameOver(d.result);
+    if (modeRef.current === 'online') {
+      if (!gameIdRef.current) return;
+      const myTurn = isHostRef.current ? isWhiteTurnRef.current : !isWhiteTurnRef.current;
+      stopBlitzAudio();
+      if (myTurn) {
+        const result = isHostRef.current ? 'black_wins' : 'white_wins';
+        try {
+          await base44.entities.OnlineGame.update(gameIdRef.current, { result, status: 'finished' });
+          setGameOver(result);
           await settleElo();
-        }
-      } catch (e) { console.error('Opponent timeout claim failed:', e); }
+        } catch (e) { console.error('Self-timeout push failed:', e); }
+      } else {
+        try {
+          const r = await base44.functions.invoke('claimBlitzTimeout', { game_id: gameIdRef.current });
+          const d = r?.data || r || {};
+          if (d.claimed) {
+            setGameOver(d.result);
+            await settleElo();
+          }
+        } catch (e) { console.error('Opponent timeout claim failed:', e); }
+      }
+    } else {
+      // ai/local: the player whose turn it is times out and loses
+      stopBlitzAudio();
+      const result = isWhiteTurnRef.current ? 'black_wins' : 'white_wins';
+      setGameOver(result);
     }
   };
 
@@ -236,11 +304,13 @@ export default function BlitzSchach() {
     } catch (e) { console.error('ELO settle failed:', e); }
   };
 
-  // ── MATCHMAKING (blitz mode) ──
+  // ── MATCHMAKING (online mode) ──
   const handleFindMatch = async () => {
     if (!user) { navigate('/login'); return; }
     setLoading(true);
     setSearchSeconds(0);
+    setMode('online');
+    modeRef.current = 'online';
     const region = getRegion();
 
     const stale = await base44.entities.MatchQueue.filter({ user_id: user.id, status: 'waiting', mode: 'blitz' });
@@ -321,9 +391,9 @@ export default function BlitzSchach() {
 
   useEffect(() => () => clearInterval(pollingRef.current), []);
 
-  // Subscribe to real-time game updates
+  // Subscribe to real-time game updates (online only)
   useEffect(() => {
-    if (!gameDoc?.id) return;
+    if (mode !== 'online' || !gameDoc?.id) return;
     const unsub = base44.entities.OnlineGame.subscribe(event => {
       if (event.id !== gameDoc.id) return;
       if (event.type === 'update' && event.data) {
@@ -332,7 +402,7 @@ export default function BlitzSchach() {
       }
     });
     return unsub;
-  }, [gameDoc?.id]);
+  }, [gameDoc?.id, mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── CHESS LOGIC ──
   const findKingPosition = useCallback((boardState, white) => {
@@ -344,7 +414,11 @@ export default function BlitzSchach() {
   }, []);
 
   const checkSquare = isInCheck(board, isWhiteTurn) ? findKingPosition(board, isWhiteTurn) : null;
-  const isMyTurn = isHost ? isWhiteTurn : !isWhiteTurn;
+
+  // isMyTurn: online (host=white, guest=black); ai (human=white); local (always — both players on device)
+  const isMyTurn = mode === 'online' ? (isHost ? isWhiteTurn : !isWhiteTurn)
+    : mode === 'ai' ? isWhiteTurn
+    : true;
 
   const pushMove = async (newBoard, newEnPassant, newCastling, newLastMove, newCapturedWhite, newCapturedBlack, newMoveCount, newIsWhiteTurn, newResult) => {
     if (!gameIdRef.current) return;
@@ -410,7 +484,12 @@ export default function BlitzSchach() {
     setIsWhiteTurn(nextWhite);
     if (newResult !== 'in_progress') { setGameOver(newResult); stopBlitzAudio(); }
 
-    pushMove(result.board, result.enPassant, result.castling, newLastMove, newCapturedWhite, newCapturedBlack, newMoveCount, nextWhite, newResult);
+    if (modeRef.current === 'online') {
+      pushMove(result.board, result.enPassant, result.castling, newLastMove, newCapturedWhite, newCapturedBlack, newMoveCount, nextWhite, newResult);
+    } else {
+      // ai/local: reset client-side timer for the next turn
+      setLocalTurnStartedAt(new Date().toISOString());
+    }
   }, [capturedWhite, capturedBlack, moveCount]);
 
   const executeMove = useCallback((fromR, fromC, toR, toC, currentBoard, currentEnPassant, currentCastling) => {
@@ -422,28 +501,15 @@ export default function BlitzSchach() {
     const captured = targetPiece || capturedByEP;
 
     // Cutscenes off in blitz — no time for cinematics
-    const showCutscene = false;
-    if (captured && showCutscene) {
-      pendingMoveRef.current = { fromR, fromC, toR, toC, currentBoard, currentEnPassant, currentCastling, captured };
-      setBattleInfo({ attacker: piece, defender: captured });
-      return;
-    }
     finishMove(fromR, fromC, toR, toC, currentBoard, currentEnPassant, currentCastling, captured);
   }, [finishMove]);
 
-  const handleBattleComplete = useCallback(() => {
-    const pending = pendingMoveRef.current;
-    if (pending) {
-      finishMove(pending.fromR, pending.fromC, pending.toR, pending.toC, pending.currentBoard, pending.currentEnPassant, pending.currentCastling, pending.captured);
-      pendingMoveRef.current = null;
-    }
-    setBattleInfo(null);
-  }, [finishMove]);
-
   const handleSquareClick = useCallback((row, col) => {
-    if (gameOver || battleInfo || !isMyTurn) return;
+    if (gameOver || !isMyTurn) return;
     const piece = board[row][col];
-    const myColor = isHost ? 'white' : 'black';
+    const myColor = mode === 'online' ? (isHost ? 'white' : 'black')
+      : mode === 'ai' ? 'white'
+      : (isWhiteTurn ? 'white' : 'black');
 
     if (selectedSquare) {
       const [selR, selC] = selectedSquare;
@@ -465,9 +531,48 @@ export default function BlitzSchach() {
       setSelectedSquare([row, col]);
       setLegalMoves(getLegalMoves(board, row, col, enPassant, castling));
     }
-  }, [board, selectedSquare, legalMoves, isMyTurn, gameOver, battleInfo, enPassant, castling, isHost, executeMove]);
+  }, [board, selectedSquare, legalMoves, isMyTurn, gameOver, enPassant, castling, isHost, mode, isWhiteTurn, executeMove]);
 
-  const shouldFlip = !isHost;
+  // AI move (ai mode only) — fires when it's black's turn
+  useEffect(() => {
+    if (mode !== 'ai' || isWhiteTurn || gameOver) return;
+    if (aiRunningRef.current) return;
+
+    aiRunningRef.current = true;
+    setIsThinking(true);
+
+    const currentBoard = board;
+    const currentEnPassant = enPassant;
+    const currentCastling = castling;
+
+    const difficultyDepth = {
+      novice: 0,
+      'yellow-belt': 1,
+      'tough-guy': 2,
+      'getting-serious': 3,
+      'brick-top': 4,
+      'final-boss': 5,
+    };
+    const storedDiff = localStorage.getItem('chessDifficulty') || 'tough-guy';
+    const depth = difficultyDepth[storedDiff] ?? 2;
+
+    const timer = setTimeout(() => {
+      const aiMove = getAIMove(currentBoard, currentEnPassant, currentCastling, depth);
+      setIsThinking(false);
+      aiRunningRef.current = false;
+      if (aiMove) {
+        executeMove(aiMove.from[0], aiMove.from[1], aiMove.to[0], aiMove.to[1], currentBoard, currentEnPassant, currentCastling);
+      }
+    }, 600);
+
+    return () => {
+      clearTimeout(timer);
+      aiRunningRef.current = false;
+      setIsThinking(false);
+    };
+  }, [isWhiteTurn, gameOver, mode]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const shouldFlip = mode === 'online' ? !isHost : mode === 'local' ? !isWhiteTurn : false;
   const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
   // Compute timer limits for display
@@ -481,7 +586,7 @@ export default function BlitzSchach() {
     return (
       <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center justify-center px-6">
         <div className="absolute inset-0 opacity-[0.025]" style={{ backgroundImage: `repeating-conic-gradient(#ef4444 0% 25%, transparent 0% 50%)`, backgroundSize: '44px 44px' }} />
-        <motion.div className="relative z-10 w-full max-w-sm text-center space-y-8" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
+        <motion.div className="relative z-10 w-full max-w-sm text-center space-y-6" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
           <div>
             <div className="w-20 h-20 rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center mx-auto mb-5">
               <Zap className="w-10 h-10 text-red-400" />
@@ -490,18 +595,44 @@ export default function BlitzSchach() {
             <p className="text-white/30 text-sm">30 seconds per move. Lose pieces, lose time. Floor: 15s.</p>
           </div>
 
-          <button
-            onClick={handleFindMatch}
-            disabled={loading}
-            className="w-full py-4 rounded-2xl font-black text-base tracking-[0.15em] uppercase transition-all active:scale-95 disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff', boxShadow: '0 0 32px rgba(239,68,68,0.3)' }}
-          >
-            {loading ? (
+          <div className="space-y-3">
+            <Button
+              onClick={handleFindMatch}
+              disabled={loading}
+              variant="chess-primary"
+              className="w-full py-4 rounded-2xl font-black text-base tracking-[0.15em] uppercase active:scale-95 disabled:opacity-50 shadow-[0_0_32px_rgba(58,175,169,0.3)]"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" /> Connecting…
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-2">
+                  <Wifi className="w-4 h-4" /> Online PVP
+                </span>
+              )}
+            </Button>
+
+            <Button
+              onClick={() => startLocalGame('ai')}
+              variant="chess-secondary"
+              className="w-full py-3.5 rounded-2xl font-bold text-sm tracking-[0.15em] uppercase active:scale-95"
+            >
               <span className="flex items-center justify-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" /> Connecting…
+                <Bot className="w-4 h-4" /> vs AI
               </span>
-            ) : 'Find Match'}
-          </button>
+            </Button>
+
+            <Button
+              onClick={() => startLocalGame('local')}
+              variant="chess-secondary"
+              className="w-full py-3.5 rounded-2xl font-bold text-sm tracking-[0.15em] uppercase active:scale-95"
+            >
+              <span className="flex items-center justify-center gap-2">
+                <Users className="w-4 h-4" /> Local PVP
+              </span>
+            </Button>
+          </div>
 
           <button onClick={() => navigate(createPageUrl('Lobby'))} className="text-white/25 text-xs hover:text-white/50 transition-colors">
             ← Back to Lobby
@@ -527,12 +658,12 @@ export default function BlitzSchach() {
 
           <div>
             <h2 className="text-xl font-black text-white mb-2">Searching for opponent…</h2>
-            <p className="text-red-400 font-mono text-2xl font-bold">{formatTime(searchSeconds)}</p>
+            <p className="text-red-400 font-mono text-2xl font-bold tabular-nums">{formatTime(searchSeconds)}</p>
           </div>
 
-          <button onClick={handleCancelSearch} className="w-full py-3 rounded-xl border border-white/10 bg-white/5 text-white/50 text-sm hover:text-white hover:bg-white/10 transition-all">
+          <Button onClick={handleCancelSearch} variant="chess-secondary" className="w-full py-3 rounded-xl">
             Cancel
-          </button>
+          </Button>
         </motion.div>
       </div>
     );
@@ -553,70 +684,38 @@ export default function BlitzSchach() {
   }
 
   // ── PLAYING ──
+  const RoleIcon = mode === 'online' ? Wifi : mode === 'ai' ? Bot : Users;
+  const roleLabel = mode === 'online' ? (isHost ? 'White' : 'Black') : mode === 'ai' ? 'vs AI' : 'Local';
+  const turnIndicatorMode = mode === 'online' ? 'online' : mode === 'ai' ? 'ai' : 'local';
+
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col">
-      <div className="flex items-center justify-between px-4 pt-4 pb-2">
-        <GameMenu
-          onHome={() => navigate(createPageUrl('Lobby'))}
-          onReset={() => {}}
-          soundEnabled={soundEnabled}
-          onToggleSound={() => setSoundEnabled(p => { const n = !p; localStorage.setItem('chessSound', n ? 'on' : 'off'); return n; })}
-        />
-        <div className="text-center">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-red-400/60 font-medium">BLITZSCHACH</p>
-          <p className="text-[10px] text-white/20">Move {moveCount}</p>
-        </div>
-        <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/5 border border-white/10">
-          <Wifi className="w-3 h-3 text-red-400" />
-          <span className="text-[10px] text-white/40 tracking-wider">{isHost ? 'White' : 'Black'}</span>
-        </div>
-      </div>
-
-      <div className="px-4 py-1">
-        <CapturedPieces pieces={shouldFlip ? capturedBlack : capturedWhite} color={shouldFlip ? 'black' : 'white'} />
-      </div>
-
-      {/* Blitz Timers */}
-      <div className="px-4 pb-1 flex justify-between gap-2">
-        <BlitzTimer remaining={shouldFlip ? whiteRemaining : blackRemaining} limit={shouldFlip ? whiteLimit : blackLimit} isActive={shouldFlip ? isWhiteTurn : !isWhiteTurn} label={shouldFlip ? 'White' : 'Black'} />
-        <BlitzTimer remaining={shouldFlip ? blackRemaining : whiteRemaining} limit={shouldFlip ? blackLimit : whiteLimit} isActive={shouldFlip ? !isWhiteTurn : isWhiteTurn} label={shouldFlip ? 'Black' : 'White'} />
-      </div>
-
-      <div className="px-4 py-2">
-        <TurnIndicator isWhiteTurn={isWhiteTurn} isCheck={isInCheck(board, isWhiteTurn)} mode="online" isThinking={!isMyTurn && !gameOver} />
-      </div>
-
-      <div className="flex-1 flex items-center justify-center px-4 py-2">
-        <div style={{ width: 'min(92vw, 92vh, 480px)', height: 'min(92vw, 92vh, 480px)' }}>
-          <ChessBoard
-            board={board}
-            selectedSquare={selectedSquare}
-            legalMoves={legalMoves}
-            onSquareClick={handleSquareClick}
-            lastMove={lastMove}
-            isCheck={isInCheck(board, isWhiteTurn)}
-            checkSquare={checkSquare}
-            flipped={shouldFlip}
-            tournamentMode={true}
-          />
-        </div>
-      </div>
-
-      <div className="px-4 py-1">
-        <CapturedPieces pieces={shouldFlip ? capturedWhite : capturedBlack} color={shouldFlip ? 'white' : 'black'} />
-      </div>
-
-      <div className="h-6" />
-
-      <AnimatePresence mode="wait">
-        {battleInfo && (
-          <BattleCutscene key={moveCount} attacker={battleInfo.attacker} defender={battleInfo.defender} onComplete={handleBattleComplete} />
-        )}
-      </AnimatePresence>
-
-      {gameOver && (
-        <GameOverModal result={gameOver} eloDelta={eloDelta} onRematch={() => navigate(createPageUrl('Lobby'))} onHome={() => navigate(createPageUrl('Lobby'))} />
-      )}
-    </div>
+    <BlitzGameView
+      board={board}
+      selectedSquare={selectedSquare}
+      legalMoves={legalMoves}
+      onSquareClick={handleSquareClick}
+      lastMove={lastMove}
+      isWhiteTurn={isWhiteTurn}
+      checkSquare={checkSquare}
+      shouldFlip={shouldFlip}
+      capturedWhite={capturedWhite}
+      capturedBlack={capturedBlack}
+      moveCount={moveCount}
+      whiteRemaining={whiteRemaining}
+      blackRemaining={blackRemaining}
+      whiteLimit={whiteLimit}
+      blackLimit={blackLimit}
+      gameOver={gameOver}
+      eloDelta={mode === 'online' ? eloDelta : null}
+      onRematch={resetToLobby}
+      onHome={() => navigate(createPageUrl('Lobby'))}
+      soundEnabled={soundEnabled}
+      onToggleSound={() => setSoundEnabled(p => { const n = !p; localStorage.setItem('chessSound', n ? 'on' : 'off'); return n; })}
+      isThinking={isThinking}
+      roleIcon={RoleIcon}
+      roleLabel={roleLabel}
+      turnIndicatorMode={turnIndicatorMode}
+      mode={mode}
+    />
   );
 }
