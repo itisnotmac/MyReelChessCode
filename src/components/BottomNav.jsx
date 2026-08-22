@@ -3,11 +3,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Gamepad2, User, Settings, ShoppingBag } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { label: 'Play', icon: Gamepad2, path: '/Lobby' },
-  { label: 'Store', icon: ShoppingBag, path: '/Store' },
-  { label: 'Profile', icon: User, path: '/Profile' },
-  { label: 'Settings', icon: Settings, path: '/Info?section=settings' },
-];
+{ label: 'Play', icon: Gamepad2, path: '/Lobby' },
+{ label: 'Store', icon: ShoppingBag, path: '/Store' },
+{ label: 'Profile', icon: User, path: '/Profile' },
+{ label: 'Settings', icon: Settings, path: '/Info?section=settings' }];
+
 
 // Persist scroll positions per tab path
 const scrollPositions = {};
@@ -33,7 +33,7 @@ export default function BottomNav() {
 
   // Restore scroll position when arriving at a tab
   useEffect(() => {
-    const isTabPath = NAV_ITEMS.some(item => {
+    const isTabPath = NAV_ITEMS.some((item) => {
       const base = item.path.split('?')[0];
       return base === location.pathname;
     });
@@ -65,9 +65,9 @@ export default function BottomNav() {
         paddingBottom: 'calc(env(safe-area-inset-bottom) + 8px)',
         paddingTop: '8px',
         backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-      }}
-    >
+        WebkitBackdropFilter: 'blur(16px)'
+      }}>
+      
       {NAV_ITEMS.map(({ label, icon: Icon, path }) => {
         const active = isActive(path);
         return (
@@ -79,22 +79,22 @@ export default function BottomNav() {
             role="tab"
             aria-selected={active}
             className="flex flex-col items-center gap-1 px-4 transition-opacity"
-            style={{ minWidth: 56, minHeight: 48 }}
-          >
+            style={{ minWidth: 56, minHeight: 48 }}>
+            
             <Icon
-              className="w-5 h-5 transition-colors"
+              className="w-5 h-5 transition-colors text-teal-200"
               style={{ color: active ? '#3AAFA9' : 'rgba(255,255,255,0.3)' }}
-              aria-hidden="true"
-            />
+              aria-hidden="true" />
+            
             <span
               className="text-[11px] font-medium tracking-wider transition-colors"
-              style={{ color: active ? '#3AAFA9' : 'rgba(255,255,255,0.25)' }}
-            >
+              style={{ color: active ? '#3AAFA9' : 'rgba(255,255,255,0.25)' }}>
+              
               {label}
             </span>
-          </button>
-        );
+          </button>);
+
       })}
-    </nav>
-  );
+    </nav>);
+
 }
