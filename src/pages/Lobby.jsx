@@ -248,7 +248,7 @@ export default function Lobby() {
         onClick={() => setMenuOpen(true)}
         className="fixed z-30 w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-colors backdrop-blur-md"
         style={{ top: 'calc(env(safe-area-inset-top) + 16px)', right: 'calc(env(safe-area-inset-right) + 16px)' }}>
-        <MenuIcon className="w-5 h-5" />
+        <MenuIcon className="w-5 h-5 text-green-400" />
       </button>
 
       {/* Auth buttons (if not logged in) */}
