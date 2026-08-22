@@ -52,23 +52,21 @@ export default function Cinematic3DHero() {
 
     const configureCamera = (w, h) => {
       const aspect = w / h;
-      if (aspect < 1) {
-        // Portrait: fill screen with the front pieces, circle extends beyond edges
-        camera.fov = 55;
-        camBaseY = 1.6;
-        camLookY = 0.6;
-        camera.position.set(0, camBaseY, 3.5);
-      } else {
-        // Landscape: fit the circle into the frame, cinematic
-        camera.fov = 38;
-        const vFovRad = THREE.MathUtils.degToRad(38);
-        const hFovRad = 2 * Math.atan(Math.tan(vFovRad / 2) * aspect);
-        let camZ = CIRCLE_R / (Math.tan(hFovRad / 2) * 0.82);
-        camZ = Math.min(Math.max(camZ, 4), 7);
-        camBaseY = 1.8;
-        camLookY = 0.5;
-        camera.position.set(0, camBaseY, camZ);
-      }
+      // Wider vertical FOV on portrait so pieces are as large as possible while
+      // still fitting the full circle; tighter FOV on landscape for a cinematic feel.
+      const vFovDeg = aspect < 1 ? 55 : 38;
+      camera.fov = vFovDeg;
+      const vFovRad = THREE.MathUtils.degToRad(vFovDeg);
+      const hFovRad = 2 * Math.atan(Math.tan(vFovRad / 2) * aspect);
+      // Fit the full circle (diameter 2*CIRCLE_R) into the frame on every device.
+      // Portrait can fill more (88%) since the camera is far; landscape uses 78%
+      // so the close front pieces don't spill off the edges.
+      const fill = aspect < 1 ? 0.88 : 0.78;
+      let camZ = CIRCLE_R / (Math.tan(hFovRad / 2) * fill);
+      camZ = Math.min(Math.max(camZ, 4.5), 12);
+      camBaseY = 1.8;
+      camLookY = 0.5;
+      camera.position.set(0, camBaseY, camZ);
       camera.aspect = aspect;
       camera.lookAt(0, camLookY, 0);
       camera.updateProjectionMatrix();
