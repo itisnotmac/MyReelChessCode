@@ -13,16 +13,20 @@ import { getLocalProfile, setLocalProfile } from '@/lib/profileUtils';
 import { useToast } from "@/components/ui/use-toast";
 import StoreCardSkeleton from '@/components/StoreCardSkeleton';
 import TempoBundles from '@/components/store/TempoBundles';
+import BoardAnimation from '@/components/effects/BoardAnimation';
 
 function BoardPreview({ skin }) {
   return (
-    <div className="grid grid-cols-4 grid-rows-4 rounded-md overflow-hidden" style={{ width: 72, height: 72, border: `1px solid ${skin.border}`, boxShadow: `0 0 12px ${skin.glow}` }}>
-      {Array.from({ length: 16 }).map((_, i) => {
-        const row = Math.floor(i / 4);
-        const col = i % 4;
-        const isLight = (row + col) % 2 === 0;
-        return <div key={i} style={{ backgroundColor: isLight ? skin.light : skin.dark }} />;
-      })}
+    <div className="relative rounded-md overflow-hidden" style={{ width: 72, height: 72, border: `1px solid ${skin.border}`, boxShadow: `0 0 12px ${skin.glow}` }}>
+      {skin.animation && <BoardAnimation animation={skin.animation} />}
+      <div className="relative grid grid-cols-4 grid-rows-4 w-full h-full">
+        {Array.from({ length: 16 }).map((_, i) => {
+          const row = Math.floor(i / 4);
+          const col = i % 4;
+          const isLight = (row + col) % 2 === 0;
+          return <div key={i} style={{ backgroundColor: isLight ? skin.light : skin.dark }} />;
+        })}
+      </div>
     </div>
   );
 }
@@ -338,6 +342,9 @@ export default function Store() {
           <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
           BOARD STYLES
         </h2>
+        <p className="text-[11px] text-white/50 mb-3 leading-relaxed">
+          Choose your board's look. Cosmic, Lava, Ocean, and Neon Grid skins feature live animated backgrounds during gameplay.
+        </p>
         {loading ? (
           <div className="grid grid-cols-2 gap-3">
             {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}

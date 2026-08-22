@@ -35,6 +35,34 @@ export const BOARD_SKINS = {
     border: 'rgba(52,211,153,0.3)', glow: 'rgba(52,211,153,0.2)',
     coords: 'rgba(52,211,153,0.5)',
   },
+  cosmic: {
+    id: 'cosmic', name: 'Cosmic',
+    light: 'rgba(30,20,60,0.55)', dark: 'rgba(10,5,25,0.75)',
+    border: 'rgba(157,78,221,0.4)', glow: 'rgba(157,78,221,0.2)',
+    coords: 'rgba(157,78,221,0.6)',
+    animation: { type: 'stars', color: '#9D4EDD' },
+  },
+  lava: {
+    id: 'lava', name: 'Lava',
+    light: 'rgba(80,20,0,0.55)', dark: 'rgba(30,5,0,0.75)',
+    border: 'rgba(255,107,53,0.4)', glow: 'rgba(255,107,53,0.2)',
+    coords: 'rgba(255,107,53,0.6)',
+    animation: { type: 'lava', color: '#FF6B35' },
+  },
+  ocean: {
+    id: 'ocean', name: 'Ocean',
+    light: 'rgba(0,40,80,0.5)', dark: 'rgba(0,15,40,0.7)',
+    border: 'rgba(126,200,227,0.4)', glow: 'rgba(126,200,227,0.2)',
+    coords: 'rgba(126,200,227,0.6)',
+    animation: { type: 'waves', color: '#7EC8E3' },
+  },
+  neonGrid: {
+    id: 'neonGrid', name: 'Neon Grid',
+    light: 'rgba(0,30,30,0.4)', dark: 'rgba(0,10,10,0.6)',
+    border: 'rgba(58,175,169,0.5)', glow: 'rgba(58,175,169,0.3)',
+    coords: 'rgba(58,175,169,0.7)',
+    animation: { type: 'pulse', color: '#3AAFA9' },
+  },
 };
 
 export const PIECE_SETS = {

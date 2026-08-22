@@ -4,6 +4,7 @@ import PieceRenderer from './PieceRenderer';
 import { useSkin } from '@/lib/skinContext';
 import { BOARD_SKINS, BOARD_BORDERS, PARTICLE_EFFECTS } from '@/lib/storeCatalog';
 import ParticleBurst from '@/components/effects/ParticleBurst';
+import BoardAnimation from '@/components/effects/BoardAnimation';
 
 // Returns the squares a piece travels through between from→to (exclusive of endpoints)
 function getPathSquares(from, to) {
@@ -126,13 +127,14 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
 
   return (
     <div className="relative w-full h-full" ref={boardRef}>
-      <div className="rounded-lg overflow-hidden w-full h-full" style={{
+      <div className="rounded-lg overflow-hidden w-full h-full relative" style={{
         boxShadow: borderItem
           ? `0 0 24px ${borderItem.color}80, 0 8px 32px rgba(0,0,0,0.7)` + (borderItem.style === 'glow' ? `, inset 0 0 12px ${borderItem.color}40` : '')
           : `0 0 40px ${skin.glow}, 0 8px 32px rgba(0,0,0,0.7)`,
         border: borderItem ? `3px solid ${borderItem.color}` : `1px solid ${skin.border}`,
       }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gridTemplateRows: 'repeat(8, 1fr)', width: '100%', height: '100%' }}>
+        {skin.animation && <BoardAnimation animation={skin.animation} />}
+        <div className="relative" style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gridTemplateRows: 'repeat(8, 1fr)', width: '100%', height: '100%' }}>
           {displayRows.map((row) =>
             displayCols.map((col) => {
               const piece = board[row][col];
