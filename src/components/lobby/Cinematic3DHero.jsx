@@ -86,8 +86,9 @@ export default function Cinematic3DHero() {
       const box2 = new THREE.Box3().setFromObject(obj);
       const center = new THREE.Vector3(); box2.getCenter(center);
 
-      // Arrange in a circle (revolver cylinder) — piece 0 at front (closest to camera)
-      const angle = (index / total) * Math.PI * 2;
+      // Arrange in a circle (revolver cylinder) — offset by 30° so no two
+      // opposite pieces sit on the same line from the camera (prevents blocking)
+      const angle = (index / total) * Math.PI * 2 + Math.PI / 6;
       const x = CIRCLE_R * Math.sin(angle);
       const z = CIRCLE_R * Math.cos(angle);
 
