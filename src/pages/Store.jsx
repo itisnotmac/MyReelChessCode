@@ -6,8 +6,10 @@ import { ITEM_COST_COINS } from '@/lib/dailyChallenges';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useSkin } from '@/lib/skinContext';
-import { BOARD_SKINS, PIECE_SETS } from '@/lib/storeCatalog';
+import { BOARD_SKINS, PIECE_SETS, USERNAME_GLOW_COLORS, MOVE_TRAIL_COLORS, GRANDMASTER_AVATARS } from '@/lib/storeCatalog';
 import { renderPieceSet } from '@/components/chess/PieceSets';
+import CosmeticGrid from '@/components/store/CosmeticGrid';
+import { getLocalProfile, setLocalProfile } from '@/lib/profileUtils';
 import { useToast } from "@/components/ui/use-toast";
 import StoreCardSkeleton from '@/components/StoreCardSkeleton';
 import TempoBundles from '@/components/store/TempoBundles';
@@ -40,7 +42,7 @@ function PiecePreview({ setId }) {
 
 function StoreCard({ item, owned, selected, onSelect, onPurchase, purchasing, coinBalance, onCoinPurchase, coinPurchasing }) {
   const isFree = item.price === 0;
-  const canAffordCoins = (coinBalance || 0) >= ITEM_COST_COINS;
+  const canAffordCoins = (coinBalance || 0) >= (item.price || ITEM_COST_COINS);
 
   return (
     <motion.div
@@ -82,37 +84,21 @@ function StoreCard({ item, owned, selected, onSelect, onPurchase, purchasing, co
             SELECT
           </button>
         ) : (
-          <div className="flex gap-1.5">
-            <button
-              onClick={() => onPurchase(item)}
-              disabled={purchasing}
-              className="flex-1 py-2 rounded-lg bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-[11px] font-bold tracking-wider hover:bg-[#D4AF37]/25 transition-colors flex items-center justify-center gap-1"
-            >
-              {purchasing ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <>
-                  <Lock className="w-3 h-3" />
-                  $0.99
-                </>
-              )}
-            </button>
-            <button
-              onClick={() => onCoinPurchase(item)}
-              disabled={coinPurchasing || !canAffordCoins}
-              className="flex-1 py-2 rounded-lg bg-[#3AAFA9]/15 border border-[#3AAFA9]/40 text-[#3AAFA9] text-[11px] font-bold tracking-wider hover:bg-[#3AAFA9]/25 transition-colors flex items-center justify-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
-              title={canAffordCoins ? `Buy with ${ITEM_COST_COINS} Tempo` : `Need ${ITEM_COST_COINS} Tempo`}
-            >
-              {coinPurchasing ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <>
-                  <Coins className="w-3 h-3" />
-                  {ITEM_COST_COINS}
-                </>
-              )}
-            </button>
-          </div>
+          <button
+            onClick={() => onCoinPurchase(item)}
+            disabled={coinPurchasing || !canAffordCoins}
+            className="w-full py-2 rounded-lg bg-[#3AAFA9]/15 border border-[#3AAFA9]/40 text-[#3AAFA9] text-[11px] font-bold tracking-wider hover:bg-[#3AAFA9]/25 transition-colors flex items-center justify-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
+            title={canAffordCoins ? `Buy with ${item.price || ITEM_COST_COINS} Tempo` : `Need ${item.price || ITEM_COST_COINS} Tempo`}
+          >
+            {coinPurchasing ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <>
+                <Coins className="w-3 h-3" />
+                {item.price || ITEM_COST_COINS}
+              </>
+            )}
+          </button>
         )}
       </div>
     </motion.div>
@@ -123,7 +109,7 @@ export default function Store() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, user } = useAuth();
-  const { boardSkin, pieceSet, setBoardSkin, setPieceSet } = useSkin();
+  const { boardSkin, pieceSet, setBoardSkin, setPieceSet, usernameGlow, moveTrailColor, setUsernameGlow, setMoveTrailColor } = useSkin();
   const { toast } = useToast();
   const [purchases, setPurchases] = useState([]);
   const [coinBalance, setCoinBalance] = useState(0);
@@ -208,6 +194,32 @@ export default function Store() {
     if (!isOwned(item.id)) return;
     if (item.category === 'board') setBoardSkin(item.id);
     else setPieceSet(item.id);
+  };
+
+  const handleEquipGlow = (item) => {
+    setUsernameGlow(item.color);
+    toast({ title: 'Glow equipped', description: item.name });
+  };
+
+  const handleEquipTrail = (item) => {
+    setMoveTrailColor(item.color);
+    toast({ title: 'Trail equipped', description: item.name });
+  };
+
+  const handleEquipAvatar = async (item) => {
+    if (!item.image) {
+      toast({ title: 'Coming soon', description: 'This avatar is not yet available.' });
+      return;
+    }
+    try {
+      await base44.auth.updateMe({ avatar_url: item.image });
+      const profile = getLocalProfile();
+      if (profile) setLocalProfile({ ...profile, avatar_url: item.image });
+      toast({ title: 'Avatar equipped', description: item.name });
+    } catch (e) {
+      console.error('Avatar equip error:', e);
+      toast({ title: 'Failed to equip avatar', description: 'Please try again.' });
+    }
   };
 
   const handleCoinPurchase = async (item) => {
@@ -366,10 +378,82 @@ export default function Store() {
         )}
       </div>
 
+      {/* Username Glow */}
+      <div className="relative z-10 px-4 mb-8">
+        <h2 className="text-sm font-bold tracking-wider text-[#3AAFA9]/70 mb-3 flex items-center gap-2">
+          <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
+          USERNAME GLOW
+        </h2>
+        {loading ? (
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
+          </div>
+        ) : (
+          <CosmeticGrid
+            items={USERNAME_GLOW_COLORS}
+            ownedIds={new Set(purchases.filter(p => p.item_type === 'username_glow').map(p => p.item_id))}
+            equippedId={usernameGlow}
+            onEquip={handleEquipGlow}
+            onPurchase={handleCoinPurchase}
+            purchasingId={coinPurchasing}
+            coinBalance={coinBalance}
+            variant="color"
+          />
+        )}
+      </div>
+
+      {/* Move Trail */}
+      <div className="relative z-10 px-4 mb-8">
+        <h2 className="text-sm font-bold tracking-wider text-[#3AAFA9]/70 mb-3 flex items-center gap-2">
+          <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
+          MOVE TRAIL
+        </h2>
+        {loading ? (
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
+          </div>
+        ) : (
+          <CosmeticGrid
+            items={MOVE_TRAIL_COLORS}
+            ownedIds={new Set(purchases.filter(p => p.item_type === 'move_trail').map(p => p.item_id))}
+            equippedId={moveTrailColor}
+            onEquip={handleEquipTrail}
+            onPurchase={handleCoinPurchase}
+            purchasingId={coinPurchasing}
+            coinBalance={coinBalance}
+            variant="color"
+          />
+        )}
+      </div>
+
+      {/* Grandmaster Avatars */}
+      <div className="relative z-10 px-4 mb-8">
+        <h2 className="text-sm font-bold tracking-wider text-[#3AAFA9]/70 mb-3 flex items-center gap-2">
+          <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
+          GRANDMASTER AVATARS
+        </h2>
+        {loading ? (
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
+          </div>
+        ) : (
+          <CosmeticGrid
+            items={GRANDMASTER_AVATARS}
+            ownedIds={new Set(purchases.filter(p => p.item_type === 'avatar').map(p => p.item_id))}
+            equippedId={user?.avatar_url}
+            onEquip={handleEquipAvatar}
+            onPurchase={handleCoinPurchase}
+            purchasingId={coinPurchasing}
+            coinBalance={coinBalance}
+            variant="avatar"
+          />
+        )}
+      </div>
+
       {/* Footer note */}
       <div className="relative z-10 px-4 text-center">
         <p className="text-[10px] text-white/50 tracking-wider">
-          All board themes and piece sets are currently free. Equip any item instantly — no purchase required.
+          All cosmetics are purchased with Tempo. Earn Tempo through daily challenges or buy bundles above.
         </p>
       </div>
     </div>

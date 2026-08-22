@@ -14,7 +14,10 @@
       "type": "string",
       "enum": [
         "board",
-        "pieces"
+        "pieces",
+        "username_glow",
+        "move_trail",
+        "avatar"
       ],
       "description": "Category of cosmetic"
     },

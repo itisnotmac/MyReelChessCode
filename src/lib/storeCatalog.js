@@ -46,7 +46,43 @@ export const PIECE_SETS = {
   modern:     { id: 'modern',     name: 'Modern Combat',    description: 'Tactical military units' },
 };
 
+export const USERNAME_GLOW_COLORS = [
+  { id: 'glow_teal',    name: 'Teal',     color: '#3AAFA9', price: 200 },
+  { id: 'glow_gold',    name: 'Gold',     color: '#FFD700', price: 200 },
+  { id: 'glow_pink',    name: 'Hot Pink', color: '#FF1493', price: 200 },
+  { id: 'glow_purple',  name: 'Purple',   color: '#9D4EDD', price: 200 },
+  { id: 'glow_crimson', name: 'Crimson',  color: '#DC143C', price: 300 },
+  { id: 'glow_cyan',    name: 'Cyan',     color: '#00FFFF', price: 200 },
+  { id: 'glow_lime',    name: 'Lime',     color: '#32CD32', price: 200 },
+  { id: 'glow_orange',  name: 'Orange',   color: '#FF8C00', price: 200 },
+];
+
+export const MOVE_TRAIL_COLORS = [
+  { id: 'trail_teal',    name: 'Teal',     color: '#3AAFA9', price: 200 },
+  { id: 'trail_gold',    name: 'Gold',     color: '#FFD700', price: 200 },
+  { id: 'trail_pink',    name: 'Hot Pink', color: '#FF1493', price: 200 },
+  { id: 'trail_purple',  name: 'Purple',   color: '#9D4EDD', price: 200 },
+  { id: 'trail_crimson', name: 'Crimson',  color: '#DC143C', price: 300 },
+  { id: 'trail_cyan',    name: 'Cyan',     color: '#00FFFF', price: 200 },
+  { id: 'trail_lime',    name: 'Lime',     color: '#32CD32', price: 200 },
+  { id: 'trail_orange',  name: 'Orange',   color: '#FF8C00', price: 200 },
+];
+
+export const GRANDMASTER_AVATARS = [
+  { id: 'gm_kasparov',    name: 'Kasparov',    image: '', price: 500 },
+  { id: 'gm_carlsen',     name: 'Carlsen',     image: '', price: 500 },
+  { id: 'gm_fischer',     name: 'Fischer',     image: '', price: 500 },
+  { id: 'gm_karpov',      name: 'Karpov',      image: '', price: 500 },
+  { id: 'gm_tal',         name: 'Tal',         image: '', price: 500 },
+  { id: 'gm_capablanca',  name: 'Capablanca',  image: '', price: 500 },
+  { id: 'gm_lasker',      name: 'Lasker',       image: '', price: 500 },
+  { id: 'gm_anand',       name: 'Anand',        image: '', price: 500 },
+];
+
 export const STORE_ITEMS = [
   ...Object.values(BOARD_SKINS).map(s => ({ ...s, category: 'board', price: 0 })),
   ...Object.values(PIECE_SETS).map(s => ({ ...s, category: 'pieces', price: 0 })),
+  ...USERNAME_GLOW_COLORS.map(s => ({ ...s, category: 'username_glow' })),
+  ...MOVE_TRAIL_COLORS.map(s => ({ ...s, category: 'move_trail' })),
+  ...GRANDMASTER_AVATARS.map(s => ({ ...s, category: 'avatar' })),
 ];
