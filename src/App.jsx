@@ -37,6 +37,7 @@ import DailyChallenges from './pages/DailyChallenges';
 import Tournament from './pages/Tournament';
 import WifiMatch from './pages/WifiMatch';
 import BlitzSchach from './pages/BlitzSchach';
+import BackButtonHandler from '@/components/BackButtonHandler';
 import { SkinProvider } from '@/lib/skinContext';
 
 
@@ -205,6 +206,7 @@ function App() {
             ) : (
               <>
               <AppRoutes />
+              <BackButtonHandler />
               <Toaster />
               </>
             )}

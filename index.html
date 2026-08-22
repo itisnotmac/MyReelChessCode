@@ -2,6 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- Dark background from first paint — prevents the white flash that occurs
+         before CSS loads and React mounts. Critical for TWA/Play Store app-like feel. -->
+    <style>html,body{background:#0a0a0f;margin:0;padding:0;}</style>
     <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
