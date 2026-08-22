@@ -218,7 +218,7 @@ export default function Store() {
       }
     } catch (e) {
       console.error('Coin purchase error:', e);
-      const msg = e?.response?.data?.error || 'Failed to purchase with Tempo.';
+      const msg = e?.data?.error || e?.message || 'Failed to purchase with Tempo.';
       alert(msg);
     }
     setCoinPurchasing(null);

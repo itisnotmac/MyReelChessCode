@@ -52,7 +52,7 @@ export default function DailyChallenges() {
       const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'UTC' });
       if (acct && acct.last_challenge_date !== todayStr) {
         const syncRes = await base44.functions.invoke('claimDailyRewards', {});
-        if (syncRes.data?.account) acct = syncRes.data.account;
+        if (syncRes?.account) acct = syncRes.account;
       }
       setAccount(acct);
     } catch (e) {
