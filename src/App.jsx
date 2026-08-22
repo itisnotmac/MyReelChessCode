@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
+import BrandIntro from '@/components/BrandIntro'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
@@ -188,14 +190,22 @@ function AppRoutes() {
 }
 
 function App() {
+  const [introDone, setIntroDone] = useState(false);
+
   return (
     <QueryClientProvider client={queryClientInstance}>
       <Router>
         <ThemeProvider>
           <SkinProvider>
             <AuthProvider>
-            <AppRoutes />
-            <Toaster />
+            {!introDone ? (
+              <BrandIntro onComplete={() => setIntroDone(true)} />
+            ) : (
+              <>
+              <AppRoutes />
+              <Toaster />
+              </>
+            )}
             </AuthProvider>
           </SkinProvider>
         </ThemeProvider>
