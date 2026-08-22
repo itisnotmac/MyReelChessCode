@@ -18,6 +18,14 @@ export default function InfoPage() {
     base44.functions.invoke('logActivity', { type: 'settings', label: `Sound: ${next ? 'On' : 'Off'}` }).catch(() => {});
   };
 
+  const [coordsEnabled, setCoordsEnabled] = useState(() => localStorage.getItem('chessCoords') !== 'off');
+  const toggleCoords = () => {
+    const next = !coordsEnabled;
+    setCoordsEnabled(next);
+    localStorage.setItem('chessCoords', next ? 'on' : 'off');
+    base44.functions.invoke('logActivity', { type: 'settings', label: `Coords: ${next ? 'On' : 'Off'}` }).catch(() => {});
+  };
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] relative">
       {/* Cinematic backdrop — command sanctum */}
@@ -80,6 +88,14 @@ export default function InfoPage() {
                 <p className="text-white/30 text-xs mt-0.5">Show legal move indicators</p>
               </div>
               <Switch defaultChecked className="data-[state=checked]:bg-[#3AAFA9]" />
+            </div>
+            <div className="h-px bg-white/5" />
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white text-sm font-medium">Rank &amp; File Labels</p>
+                <p className="text-white/30 text-xs mt-0.5">Show a–h / 1–8 coordinates on the board edges</p>
+              </div>
+              <Switch checked={coordsEnabled} onCheckedChange={toggleCoords} className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
           </div>
 

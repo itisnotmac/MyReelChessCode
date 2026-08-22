@@ -32,6 +32,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
 
   const { boardSkin } = useSkin();
   const skin = BOARD_SKINS[boardSkin] || BOARD_SKINS.classic;
+  const showCoords = localStorage.getItem('chessCoords') !== 'off';
 
   const getSquareBg = (row, col) => {
     const isLight = (row + col) % 2 === 0;
@@ -112,12 +113,12 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                   onClick={() => onSquareClick(row, col)}
                 >
                   {/* Coordinates */}
-                  {col === (flipped ? 7 : 0) && (
+                  {showCoords && col === (flipped ? 7 : 0) && (
                     <span className="absolute top-0.5 left-0.5 font-bold select-none" style={{ fontSize: 10, color: skin.coords, textShadow: `0 0 6px ${skin.glow}` }}>
                       {ranks[row]}
                     </span>
                   )}
-                  {row === (flipped ? 0 : 7) && (
+                  {showCoords && row === (flipped ? 0 : 7) && (
                     <span className="absolute bottom-0.5 right-0.5 font-bold select-none" style={{ fontSize: 10, color: skin.coords, textShadow: `0 0 6px ${skin.glow}` }}>
                       {files[col]}
                     </span>
