@@ -164,7 +164,7 @@ export default function Lobby() {
           window.history.replaceState({}, '', window.location.pathname);
         }
       } catch (e) {
-        console.warn('Join failed:', e?.data?.error || e?.message);
+        console.warn('Join failed:', e?.response?.data?.error || e?.data?.error || e?.message);
         window.history.replaceState({}, '', window.location.pathname);
       }
     })();
