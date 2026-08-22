@@ -26,6 +26,8 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
   const [animPiece, setAnimPiece] = useState(null);
   const [pulseKey, setPulseKey] = useState(0); // increment to re-trigger pulse animations
   const prevLastMove = useRef(null);
+  const prevBoardRef = useRef(board);
+  const prevCheckRef = useRef(false);
 
   const pathSquares = lastMove ? getPathSquares(lastMove.from, lastMove.to) : [];
   const pathSet = new Set(pathSquares.map(([r, c]) => `${r}-${c}`));
@@ -33,6 +35,9 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
   const { boardSkin } = useSkin();
   const skin = BOARD_SKINS[boardSkin] || BOARD_SKINS.classic;
   const showCoords = localStorage.getItem('chessCoords') !== 'off';
+  const showLastMove = localStorage.getItem('chessLastMove') !== 'off';
+  const showMoveAnim = localStorage.getItem('chessMoveAnim') !== 'off';
+  const hapticsEnabled = localStorage.getItem('chessHaptics') !== 'off';
 
   const getSquareBg = (row, col) => {
     const isLight = (row + col) % 2 === 0;
@@ -77,6 +82,18 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
     prevLastMove.current = lastMove;
     setPulseKey(k => k + 1);
 
+    // Haptic feedback on capture
+    if (hapticsEnabled) {
+      const prevBoard = prevBoardRef.current;
+      const [tr, tc] = lastMove.to;
+      if (prevBoard[tr] && prevBoard[tc] && prevBoard[tr][tc]) {
+        navigator.vibrate?.(30);
+      }
+    }
+    prevBoardRef.current = board;
+
+    if (!showMoveAnim) return;
+
     const from = getSquarePx(lastMove.from[0], lastMove.from[1]);
     const to = getSquarePx(lastMove.to[0], lastMove.to[1]);
     if (!from || !to) return;
@@ -86,6 +103,14 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
 
     setAnimPiece({ piece, from, to });
   }, [lastMove]);
+
+  // Haptic feedback when king enters check
+  useEffect(() => {
+    if (hapticsEnabled && isCheck && !prevCheckRef.current) {
+      navigator.vibrate?.([40, 30, 40]);
+    }
+    prevCheckRef.current = isCheck;
+  }, [isCheck]);
 
   const isFromSq = (row, col) => lastMove && lastMove.from[0] === row && lastMove.from[1] === col;
   const isToSq = (row, col) => lastMove && lastMove.to[0] === row && lastMove.to[1] === col;
@@ -127,7 +152,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                   {/* LAST MOVE TRAIL OVERLAYS */}
 
                   {/* Origin square — soft gold pulse */}
-                  {fromSq && !tournamentMode && (
+                  {fromSq && !tournamentMode && showLastMove && (
                     <motion.div
                       key={`from-${pulseKey}`}
                       className="absolute inset-0 pointer-events-none z-[1]"
@@ -139,7 +164,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                   )}
 
                   {/* Path squares — faint footprint dots */}
-                  {pathSq && !tournamentMode && (
+                  {pathSq && !tournamentMode && showLastMove && (
                     <motion.div
                       key={`path-${pulseKey}-${row}-${col}`}
                       className="absolute inset-0 flex items-center justify-center pointer-events-none z-[1]"
@@ -160,7 +185,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                   )}
 
                   {/* Destination square — heavy pulsing glow */}
-                  {toSq && !tournamentMode && (
+                  {toSq && !tournamentMode && showLastMove && (
                     <motion.div
                       key={`to-${pulseKey}`}
                       className="absolute inset-0 pointer-events-none z-[1]"

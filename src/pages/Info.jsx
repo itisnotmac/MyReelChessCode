@@ -26,6 +26,30 @@ export default function InfoPage() {
     base44.functions.invoke('logActivity', { type: 'settings', label: `Coords: ${next ? 'On' : 'Off'}` }).catch(() => {});
   };
 
+  const [lastMoveEnabled, setLastMoveEnabled] = useState(() => localStorage.getItem('chessLastMove') !== 'off');
+  const toggleLastMove = () => {
+    const next = !lastMoveEnabled;
+    setLastMoveEnabled(next);
+    localStorage.setItem('chessLastMove', next ? 'on' : 'off');
+    base44.functions.invoke('logActivity', { type: 'settings', label: `LastMove: ${next ? 'On' : 'Off'}` }).catch(() => {});
+  };
+
+  const [moveAnimEnabled, setMoveAnimEnabled] = useState(() => localStorage.getItem('chessMoveAnim') !== 'off');
+  const toggleMoveAnim = () => {
+    const next = !moveAnimEnabled;
+    setMoveAnimEnabled(next);
+    localStorage.setItem('chessMoveAnim', next ? 'on' : 'off');
+    base44.functions.invoke('logActivity', { type: 'settings', label: `MoveAnim: ${next ? 'On' : 'Off'}` }).catch(() => {});
+  };
+
+  const [hapticsEnabled, setHapticsEnabled] = useState(() => localStorage.getItem('chessHaptics') !== 'off');
+  const toggleHaptics = () => {
+    const next = !hapticsEnabled;
+    setHapticsEnabled(next);
+    localStorage.setItem('chessHaptics', next ? 'on' : 'off');
+    base44.functions.invoke('logActivity', { type: 'settings', label: `Haptics: ${next ? 'On' : 'Off'}` }).catch(() => {});
+  };
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] relative">
       {/* Cinematic backdrop — command sanctum */}
@@ -96,6 +120,30 @@ export default function InfoPage() {
                 <p className="text-white/30 text-xs mt-0.5">Show a–h / 1–8 coordinates on the board edges</p>
               </div>
               <Switch checked={coordsEnabled} onCheckedChange={toggleCoords} className="data-[state=checked]:bg-[#3AAFA9]" />
+            </div>
+            <div className="h-px bg-white/5" />
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white text-sm font-medium">Last Move Highlight</p>
+                <p className="text-white/30 text-xs mt-0.5">Glow the previous move's from and to squares</p>
+              </div>
+              <Switch checked={lastMoveEnabled} onCheckedChange={toggleLastMove} className="data-[state=checked]:bg-[#3AAFA9]" />
+            </div>
+            <div className="h-px bg-white/5" />
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white text-sm font-medium">Move Animation</p>
+                <p className="text-white/30 text-xs mt-0.5">Slide pieces smoothly to their destination</p>
+              </div>
+              <Switch checked={moveAnimEnabled} onCheckedChange={toggleMoveAnim} className="data-[state=checked]:bg-[#3AAFA9]" />
+            </div>
+            <div className="h-px bg-white/5" />
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white text-sm font-medium">Haptic Feedback</p>
+                <p className="text-white/30 text-xs mt-0.5">Vibrate on captures and check alerts (mobile)</p>
+              </div>
+              <Switch checked={hapticsEnabled} onCheckedChange={toggleHaptics} className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
           </div>
 
