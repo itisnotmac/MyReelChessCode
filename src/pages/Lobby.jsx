@@ -295,7 +295,7 @@ export default function Lobby() {
             className={`flex items-center justify-center gap-2.5 rounded-2xl border border-[#3AAFA9]/50 bg-white/5 backdrop-blur-md py-4 text-white/90 active:bg-white/10 transition-all select-none${btn.span ? ' col-span-2' : ''}`}>
             
               <btn.icon className="w-4 h-4 text-[#3AAFA9]" />
-              <span className="text-sm tracking-[0.18em] uppercase font-bold [font-family:'Fascinate_Inline',_system-ui]">{btn.label}</span>
+              <span className="text-sm tracking-[0.18em] uppercase font-bold [font-family:'Abril_Fatface',_system-ui]">{btn.label}</span>
             </motion.button>
           )}
         </div>
