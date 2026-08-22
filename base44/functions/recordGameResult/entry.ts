@@ -7,7 +7,7 @@ export default async function(req: Request): Promise<Response> {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { mode, result, moves_count, duration_seconds } = await req.json();
+    const { mode, result, moves_count, duration_seconds, variant } = await req.json();
     if (!mode || !result) {
       return Response.json({ error: 'Missing mode or result' }, { status: 400 });
     }
@@ -22,6 +22,7 @@ export default async function(req: Request): Promise<Response> {
       result,
       moves_count: Number(moves_count) || 0,
       duration_seconds: Number(duration_seconds) || 0,
+      variant: variant === 'blitz' ? 'blitz' : 'classic',
     }).catch(e => console.error('GameHistory create failed:', e.message));
 
     // Get or create PlayerAccount

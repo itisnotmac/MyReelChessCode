@@ -3,18 +3,27 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Award, Loader2, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { ACHIEVEMENTS, computeStats, evaluateAchievements, AchievementBadge } from '@/lib/achievements';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 export default function Achievements() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [history, setHistory] = useState([]);
+  const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
     const data = await base44.entities.GameHistory.list('-created_date', 200);
     setHistory(data);
-  }, []);
+    if (user) {
+      try {
+        const accounts = await base44.entities.PlayerAccount.filter({ user_id: user.id });
+        setAccount(accounts[0] || null);
+      } catch (e) { console.error('Failed to fetch account:', e); }
+    }
+  }, [user?.id]);
 
   useEffect(() => {
     fetchData().finally(() => setLoading(false));
@@ -22,7 +31,7 @@ export default function Achievements() {
 
   const { refreshing, pullProgress, containerProps } = usePullToRefresh(fetchData);
 
-  const stats = computeStats(history);
+  const stats = computeStats(history, account);
   const earned = evaluateAchievements(stats);
   const earnedCount = Object.values(earned).filter(Boolean).length;
   const totalCount = ACHIEVEMENTS.length;

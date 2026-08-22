@@ -73,6 +73,7 @@ export default function BlitzSchach() {
   // ── AI state ──
   const [isThinking, setIsThinking] = useState(false);
   const aiRunningRef = useRef(false);
+  const gameStartTimeRef = useRef(null);
 
   // ── Online host state ──
   const isHostRef = useRef(false);
@@ -241,6 +242,7 @@ export default function BlitzSchach() {
     timeoutHandledRef.current = false;
     setIsHost(true);
     setLocalTurnStartedAt(new Date().toISOString());
+    gameStartTimeRef.current = Date.now();
     setPhase('playing');
   }, []);
 
@@ -293,6 +295,13 @@ export default function BlitzSchach() {
       stopBlitzAudio();
       const result = isWhiteTurnRef.current ? 'black_wins' : 'white_wins';
       setGameOver(result);
+      base44.functions.invoke('recordGameResult', {
+        mode: modeRef.current,
+        result,
+        moves_count: moveCountRef.current,
+        duration_seconds: Math.round((Date.now() - (gameStartTimeRef.current || Date.now())) / 1000),
+        variant: 'blitz',
+      }).catch(e => console.error('Failed to record blitz result:', e));
     }
   };
 
@@ -482,7 +491,19 @@ export default function BlitzSchach() {
     setCapturedWhite(newCapturedWhite);
     setCapturedBlack(newCapturedBlack);
     setIsWhiteTurn(nextWhite);
-    if (newResult !== 'in_progress') { setGameOver(newResult); stopBlitzAudio(); }
+    if (newResult !== 'in_progress') {
+      setGameOver(newResult);
+      stopBlitzAudio();
+      if (modeRef.current === 'ai' || modeRef.current === 'local') {
+        base44.functions.invoke('recordGameResult', {
+          mode: modeRef.current,
+          result: newResult,
+          moves_count: newMoveCount,
+          duration_seconds: Math.round((Date.now() - (gameStartTimeRef.current || Date.now())) / 1000),
+          variant: 'blitz',
+        }).catch(e => console.error('Failed to record blitz result:', e));
+      }
+    }
 
     if (modeRef.current === 'online') {
       pushMove(result.board, result.enPassant, result.castling, newLastMove, newCapturedWhite, newCapturedBlack, newMoveCount, nextWhite, newResult);

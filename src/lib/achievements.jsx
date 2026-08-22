@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import {
   Trophy, Target, Swords, Bot, Clock, Zap, Crown, Star,
-  Award, Flame, Shield, TrendingUp, Handshake, Gamepad2, BookOpen
+  Award, Flame, Shield, TrendingUp, Handshake, Gamepad2, BookOpen, Gauge
 } from 'lucide-react';
 import { LESSONS } from './tutorialLessons';
 
@@ -129,6 +129,84 @@ export const ACHIEVEMENTS = [
     hidden: true,
     check: s => s.tutorialCompleted >= s.tutorialTotal,
   },
+  // === Achievements for content added since the trophy system ===
+  {
+    id: 'blitz_veteran',
+    title: 'Blitz Veteran',
+    description: 'Win 5 BlitzSchach games',
+    icon: Zap,
+    color: '#ef4444',
+    check: s => s.blitzWins >= 5,
+  },
+  {
+    id: 'blitz_master',
+    title: 'Blitz Master',
+    description: 'Win 15 BlitzSchach games',
+    icon: Zap,
+    color: '#ef4444',
+    hidden: true,
+    check: s => s.blitzWins >= 15,
+  },
+  {
+    id: 'elo_riser',
+    title: 'Rising Tactician',
+    description: 'Reach 1300 ELO rating',
+    icon: TrendingUp,
+    color: '#3AAFA9',
+    check: s => s.peakElo >= 1300,
+  },
+  {
+    id: 'elo_elite',
+    title: 'Tactical Elite',
+    description: 'Reach 1500 ELO rating',
+    icon: Crown,
+    color: '#9B59B6',
+    hidden: true,
+    check: s => s.peakElo >= 1500,
+  },
+  {
+    id: 'weekly_warrior',
+    title: 'Weekly Warrior',
+    description: 'Maintain a 7-day login streak',
+    icon: Flame,
+    color: '#E67E22',
+    check: s => s.loginStreak >= 7,
+  },
+  {
+    id: 'iron_will',
+    title: 'Iron Will',
+    description: 'Maintain a 30-day login streak',
+    icon: Flame,
+    color: '#9B59B6',
+    hidden: true,
+    check: s => s.loginStreak >= 30,
+  },
+  {
+    id: 'speed_demon',
+    title: 'Speed Demon',
+    description: 'Win a game in under 30 seconds',
+    icon: Gauge,
+    color: '#E67E22',
+    check: s => s.fastestWinSec !== null && s.fastestWinSec <= 30,
+  },
+  {
+    id: 'centurion',
+    title: 'Centurion',
+    description: 'Play 100 games',
+    icon: Swords,
+    color: '#9B59B6',
+    hidden: true,
+    check: s => s.totalGames >= 100,
+  },
+  {
+    id: 'underdog',
+    title: 'Underdog',
+    description: 'Win 5 local games playing as Black',
+    icon: Shield,
+    color: '#3AAFA9',
+    hidden: true,
+    check: s => s.blackWinsLocal >= 5,
+  },
 ];
 
 // Read tutorial completion from localStorage
@@ -142,13 +220,23 @@ function getTutorialCompletedCount() {
 }
 
 // Compute stats from GameHistory records
-export function computeStats(history) {
+export function computeStats(history, account = null) {
   const completed = history.filter(r => r.result !== 'in_progress');
   const wins = history.filter(r => r.result === 'white_wins');
   const draws = history.filter(r => r.result === 'draw').length;
 
   const aiWins = history.filter(r => r.mode === 'ai' && r.result === 'white_wins').length;
   const pvpWins = history.filter(r => r.mode === 'local' && r.result === 'white_wins').length;
+
+  // Blitz wins — player is white in AI mode, plays both sides in local mode
+  const blitzWins = history.filter(r =>
+    r.variant === 'blitz' &&
+    ((r.mode === 'ai' && r.result === 'white_wins') ||
+     (r.mode === 'local' && (r.result === 'white_wins' || r.result === 'black_wins')))
+  ).length;
+
+  // Local wins as Black (pass-and-play — the player controlling black won)
+  const blackWinsLocal = history.filter(r => r.mode === 'local' && r.result === 'black_wins').length;
 
   const winDurations = wins
     .map(r => r.duration_seconds)
@@ -168,11 +256,16 @@ export function computeStats(history) {
     draws,
     aiWins,
     pvpWins,
+    blitzWins,
+    blackWinsLocal,
     fastestWinSec,
     longestGameMoves,
     winRate,
     tutorialCompleted: getTutorialCompletedCount(),
     tutorialTotal: LESSONS.length,
+    elo: account?.elo ?? 1200,
+    peakElo: account?.peak_elo ?? 1200,
+    loginStreak: account?.login_streak ?? 0,
   };
 }
 

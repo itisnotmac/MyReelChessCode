@@ -10,6 +10,15 @@
       ],
       "description": "Game mode - AI or local multiplayer"
     },
+    "variant": {
+      "type": "string",
+      "enum": [
+        "classic",
+        "blitz"
+      ],
+      "default": "classic",
+      "description": "Game variant \u2014 'classic' for standard chess, 'blitz' for BlitzSchach"
+    },
     "result": {
       "type": "string",
       "enum": [
