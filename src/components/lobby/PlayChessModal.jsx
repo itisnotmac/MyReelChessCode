@@ -1,9 +1,16 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Wifi, Bot, Users, UsersRound, QrCode, ScanLine, Lock } from 'lucide-react';
+import { X, Wifi, Bot, Users, UsersRound, QrCode, ScanLine, Lock, Zap } from 'lucide-react';
 
-export default function PlayChessModal({ isOpen, onClose, onOnlinePvp, onVsAI, onLocalPvp, on2v2, onWifiMatch, onJoinQr, hasQrUnlock }) {
+export default function PlayChessModal({ isOpen, onClose, onOnlinePvp, onVsAI, onLocalPvp, on2v2, onWifiMatch, onJoinQr, onBlitzSchach, hasQrUnlock }) {
   const modes = [
+    {
+      id: 'blitz',
+      label: 'BlitzSchach',
+      icon: Zap,
+      desc: '30s per move · Lose pieces, lose time',
+      onClick: onBlitzSchach
+    },
     {
       id: 'online',
       label: 'Online PVP',

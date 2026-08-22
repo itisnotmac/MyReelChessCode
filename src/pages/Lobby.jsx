@@ -329,6 +329,7 @@ export default function Lobby() {
           navigate(createPageUrl('WifiMatch'));
         }}
         onJoinQr={() => setQrScannerOpen(true)}
+        onBlitzSchach={() => {stopMenuMusic();navigate('/BlitzSchach');}}
         hasQrUnlock={hasUnlock('qr_host_unlock')} />
       <TwoVTwoModal
         isOpen={twoVTwoOpen}

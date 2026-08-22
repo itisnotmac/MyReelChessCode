@@ -92,6 +92,19 @@
     "elo_deltas": {
       "type": "string",
       "description": "JSON {host: n, guest: n} rating change applied to each player, written by settleElo so both clients can display the delta"
+    },
+    "game_mode": {
+      "type": "string",
+      "enum": [
+        "classic",
+        "blitz"
+      ],
+      "default": "classic",
+      "description": "Game mode \u2014 'classic' for standard PVP, 'blitz' for BlitzSchach"
+    },
+    "turn_started_at": {
+      "type": "string",
+      "description": "ISO timestamp when the current turn started (used for BlitzSchach per-move timer)"
     }
   },
   "required": [

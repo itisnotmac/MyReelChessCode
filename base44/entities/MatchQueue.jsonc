@@ -40,6 +40,15 @@
       ],
       "default": "unknown",
       "description": "Approximate geographic region used for matchmaking quality \u2014 derived from coarse timezone/locale, not GPS"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "classic",
+        "blitz"
+      ],
+      "default": "classic",
+      "description": "Matchmaking mode \u2014 'classic' for standard PVP, 'blitz' for BlitzSchach"
     }
   },
   "required": [
