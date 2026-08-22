@@ -294,7 +294,7 @@ export default function Lobby() {
             style={{ boxShadow: '0 0 8px rgba(58,175,169,0.7), 0 0 16px rgba(58,175,169,0.4), 0 0 24px rgba(58,175,169,0.15), inset 0 0 6px rgba(58,175,169,0.1)' }}
             className={`flex items-center justify-center gap-2.5 rounded-2xl border border-[#3AAFA9]/50 bg-white/5 backdrop-blur-md py-4 text-white/90 active:bg-white/10 transition-all select-none${btn.span ? ' col-span-2' : ''}`}>
             
-              <btn.icon className="w-4 h-4 text-[#3AAFA9]" />
+              <btn.icon className="w-4 h-4 text-[#3AAFA9] opacity-100" />
               <span className="text-sm tracking-[0.18em] uppercase [font-family:'Old_Standard_TT',_serif] font-bold">{btn.label}</span>
             </motion.button>
           )}
