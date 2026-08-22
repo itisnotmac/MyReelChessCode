@@ -95,7 +95,7 @@ function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
 export default function Lobby() {
   const navigate = useNavigate();
   const { isAuthenticated, user, navigateToLogin } = useAuth();
-  const { hasUnlock } = useFeatureUnlocks(user?.id);
+  const { hasUnlock } = useFeatureUnlocks(user);
   const [menuOpen, setMenuOpen] = useState(false);
   const [difficultyOpen, setDifficultyOpen] = useState(false);
   const [twoVTwoOpen, setTwoVTwoOpen] = useState(false);

@@ -10,11 +10,6 @@
         "user"
       ]
     },
-    "is_premium": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether the user has an active Premium subscription"
-    },
     "username": {
       "type": "string",
       "description": "Display name shown to other players"
@@ -23,10 +18,9 @@
       "type": "string",
       "description": "URL to the user's avatar image"
     },
-    "premium_until": {
+    "feature_unlocks": {
       "type": "string",
-      "format": "date-time",
-      "description": "ISO datetime until which the user has comped Premium (e.g. a tournament consolation grant). Honored at auth time alongside is_premium."
+      "description": "Comma-separated feature unlock IDs granted to this user without payment (e.g. 'qr_host_unlock,2v2_host_unlock'). Admins can edit this in the user management dashboard to manually grant unlocks."
     }
   },
   "required": [

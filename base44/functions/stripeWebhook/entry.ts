@@ -36,11 +36,8 @@ Deno.serve(async (req) => {
       const userId = session.metadata?.user_id;
 
       if (userId && session.mode === 'subscription') {
-        const users = await base44.asServiceRole.entities.User.filter({ id: userId });
-        if (users.length > 0) {
-          await base44.asServiceRole.entities.User.update(userId, { is_premium: true });
-          console.log(`Upgraded user ${userId} to premium`);
-        }
+        // Premium subscription model retired — structure kept for future repurposing.
+        console.log(`Subscription completed for user ${userId} (premium model retired)`);
       }
 
       if (userId && session.mode === 'payment') {
@@ -75,8 +72,8 @@ Deno.serve(async (req) => {
       if (customer.email) {
         const users = await base44.asServiceRole.entities.User.filter({ email: customer.email });
         if (users.length > 0) {
-          await base44.asServiceRole.entities.User.update(users[0].id, { is_premium: false });
-          console.log(`Downgraded user ${users[0].id} from premium`);
+          // Premium subscription model retired — structure kept for future repurposing.
+          console.log(`Subscription deleted for user ${users[0].id} (premium model retired)`);
         }
       }
     }

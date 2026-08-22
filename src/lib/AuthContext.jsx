@@ -93,13 +93,6 @@ export const AuthProvider = ({ children }) => {
       // Now check if the user is authenticated
       setIsLoadingAuth(true);
       const currentUser = await base44.auth.me();
-      // Honor comped Premium (tournament consolation grant) until its expiry, so
-      // existing is_premium checks across the app treat comps as active Premium.
-      if (currentUser?.premium_until && !currentUser.is_premium) {
-        if (new Date(currentUser.premium_until) > new Date()) {
-          currentUser.is_premium = true;
-        }
-      }
       // Backfill: sync a profile created while signed out to the user's account
       // so username/avatar are tracked server-side (fixes missing profile info).
       if (currentUser && !currentUser.username) {
