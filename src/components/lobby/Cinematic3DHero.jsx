@@ -40,10 +40,10 @@ export default function Cinematic3DHero() {
 
     const scene = new THREE.Scene();
 
-    // Camera: elevated, looking down into the "cylinder" at a ~40° angle
+    // Camera: person's eye level, looking at the pieces standing on the floor
     const camera = new THREE.PerspectiveCamera(38, W / H, 0.1, 100);
-    camera.position.set(0, 3.8, 4.5);
-    camera.lookAt(0, 0.3, 0);
+    camera.position.set(0, 1.8, 6);
+    camera.lookAt(0, 0.5, 0);
 
     renderer.setSize(W, H);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
@@ -157,8 +157,8 @@ export default function Cinematic3DHero() {
       }
 
       // Gentle camera breathing — keeps the scene alive
-      camera.position.y = 3.8 + Math.sin(t * 0.25) * 0.06;
-      camera.lookAt(0, 0.3, 0);
+      camera.position.y = 1.8 + Math.sin(t * 0.25) * 0.06;
+      camera.lookAt(0, 0.5, 0);
       renderer.render(scene, camera);
     };
     animate();
