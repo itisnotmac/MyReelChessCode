@@ -16,5 +16,50 @@ export default defineConfig({
       visualEditAgent: true
     }),
     react(),
-  ]
+  ],
+  build: {
+    // ⚡ Minification & compression
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
+    // 📦 Code splitting for better caching
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'radix-ui': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-select',
+            '@radix-ui/react-accordion',
+            '@radix-ui/react-popover'
+          ],
+          'three': ['three', 'draco3d', 'meshoptimizer'],
+          'charts': ['recharts'],
+          'vendor': ['react', 'react-dom', 'react-router-dom', '@tanstack/react-query']
+        }
+      }
+    },
+    // 🎯 CSS code splitting
+    cssCodeSplit: true,
+    // 📊 Report bundle size
+    reportCompressedSize: true,
+    chunkSizeWarningLimit: 1000,
+    // No source maps in production (saves space)
+    sourcemap: false
+  },
+  // 🚀 Pre-bundle heavy dependencies
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      '@tanstack/react-query',
+      'framer-motion',
+      'react-router-dom',
+      'three',
+      'recharts'
+    ]
+  }
 });
