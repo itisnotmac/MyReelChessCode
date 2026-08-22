@@ -8,6 +8,7 @@ import BattleCutscene from '../components/chess/BattleCutscene';
 import GameOverModal from '../components/chess/GameOverModal';
 import TurnIndicator from '../components/chess/TurnIndicator';
 import PlayerTimer from '../components/chess/PlayerTimer';
+import { Button } from '@/components/ui/button';
 import GameMenu from '../components/chess/GameMenu';
 import { stopMenuMusic } from '@/lib/menuMusic';
 import { base44 } from '@/api/base44Client';
@@ -487,18 +488,18 @@ export default function OnlineGame() {
             <p className="text-white/30 text-sm">Get matched with a random opponent instantly</p>
           </div>
 
-          <button
+          <Button
             onClick={handleFindMatch}
             disabled={loading}
-            className="w-full py-4 rounded-2xl font-black text-base tracking-[0.15em] uppercase transition-all active:scale-95 disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg, #3AAFA9, #2d8c87)', color: '#000', boxShadow: '0 0 32px rgba(58,175,169,0.3)' }}
+            variant="chess-primary"
+            className="w-full py-4 rounded-2xl font-black text-base tracking-[0.15em] uppercase active:scale-95 disabled:opacity-50 shadow-[0_0_32px_rgba(58,175,169,0.3)]"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin" /> Connecting…
               </span>
             ) : 'Find Match'}
-          </button>
+          </Button>
 
           <button onClick={() => navigate(createPageUrl('Lobby'))} className="text-white/25 text-xs hover:text-white/50 transition-colors">
             ← Back to Lobby

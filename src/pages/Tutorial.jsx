@@ -6,6 +6,7 @@ import { LESSONS, CHAPTERS, SECTIONS } from '../lib/tutorialLessons';
 import TutorialBoard from '../components/tutorial/TutorialBoard';
 import LessonSphere from '../components/tutorial/LessonSphere';
 import { useSeo } from '@/lib/useSeo';
+import { Button } from '@/components/ui/button';
 
 export default function Tutorial() {
   const navigate = useNavigate();
@@ -297,17 +298,17 @@ export default function Tutorial() {
             </button>
 
             {!lesson.interactive || isCompleted(lesson.id) ?
-            <button
+            <Button
               onClick={currentIndex < LESSONS.length - 1 ? goNext : () => setShowList(true)}
-              className="px-6 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 text-[#0a0a0f] transition-all"
-              style={{ background: 'linear-gradient(135deg, #3AAFA9, #2b8a85)' }}>
+              variant="chess-primary"
+              className="px-6 py-2.5 rounded-xl text-sm font-bold">
               
                 {currentIndex < LESSONS.length - 1 ?
               <>Next Lesson <ChevronRight className="w-4 h-4" /></> :
 
               'All Done! 🎉'
               }
-              </button> :
+              </Button> :
 
             <div className="px-6 py-2.5 rounded-xl border border-[#3AAFA9]/25 bg-[#3AAFA9]/10 backdrop-blur-md text-[#3AAFA9]/70 text-sm font-medium flex items-center justify-center gap-2">
                 <span>Complete the exercise</span>
