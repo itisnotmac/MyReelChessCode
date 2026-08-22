@@ -78,7 +78,7 @@ export default function BottomNav() {
             aria-current={active ? 'page' : undefined}
             role="tab"
             aria-selected={active}
-            className="flex flex-col items-center gap-1 px-4 transition-opacity"
+            className="flex flex-col items-center gap-1 px-4 transition-opacity text-teal-300"
             style={{ minWidth: 56, minHeight: 48 }}>
             
             <Icon
