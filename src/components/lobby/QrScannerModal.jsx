@@ -49,16 +49,19 @@ export default function QrScannerModal({ isOpen, onClose }) {
     setJoining(true);
     setError('');
     try {
+      // Functions use a separate axios client with interceptResponses: false,
+      // so the response is NOT unwrapped — the JSON body lives in res.data.
       const res = await base44.functions.invoke('joinWifiGame', { invite_code: code });
-      if (res?.game_id) {
+      const body = res?.data || res;
+      if (body?.game_id) {
         stopCamera();
         onClose();
-        navigate(createPageUrl('OnlineGame') + `?game=${res.game_id}`);
+        navigate(createPageUrl('OnlineGame') + `?game=${body.game_id}`);
       } else {
-        setError(res?.error || 'Failed to join game');
+        setError(body?.error || 'Failed to join game');
       }
     } catch (e) {
-      setError(e?.data?.error || e?.message || 'Failed to join game');
+      setError(e?.response?.data?.error || e?.data?.error || e?.message || 'Failed to join game');
     } finally {
       setJoining(false);
     }
