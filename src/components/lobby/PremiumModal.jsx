@@ -23,13 +23,14 @@ export default function PremiumModal({ isOpen, onClose, isAuthenticated }) {
     setError(null);
     try {
       const response = await base44.functions.invoke('createCheckoutSession', {});
-      if (response?.url) {
-        window.location.href = response.url;
+      const body = response?.data || response;
+      if (body?.url) {
+        window.location.href = body.url;
       } else {
         setError('Could not start checkout. Please try again.');
       }
     } catch (err) {
-      setError(err?.data?.error || err?.message || 'Something went wrong. Please try again.');
+      setError(err?.response?.data?.error || err?.data?.error || err?.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }

@@ -358,7 +358,7 @@ export default function OnlineGame() {
       if (newResult !== 'in_progress') {
         try {
           const r = await base44.functions.invoke('settleElo', { game_id: gameIdRef.current });
-          const d = r || {};
+          const d = r?.data || r || {};
           if (d.settled) {
             setEloDelta(isHostRef.current ? d.host_delta : d.guest_delta);
           }

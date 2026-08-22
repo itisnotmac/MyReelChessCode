@@ -123,9 +123,10 @@ export default function Lobby() {
       try {
         const date = new Date().toLocaleDateString('en-CA');
         const res = await base44.functions.invoke('processLoginStreak', { date });
-        if (res) {
-          setStreakData(res);
-          if (res.isNewDay && res.rewardAwarded > 0) {
+        const body = res?.data || res;
+        if (body) {
+          setStreakData(body);
+          if (body.isNewDay && body.rewardAwarded > 0) {
             setShowStreakPopup(true);
           }
         }
@@ -153,12 +154,13 @@ export default function Lobby() {
     (async () => {
       try {
         const res = await base44.functions.invoke('joinWifiGame', { invite_code: joinCode.toUpperCase() });
-        if (res?.game_id) {
+        const body = res?.data || res;
+        if (body?.game_id) {
           stopMenuMusic();
-          navigate(createPageUrl('OnlineGame') + `?game=${res.game_id}`);
+          navigate(createPageUrl('OnlineGame') + `?game=${body.game_id}`);
         } else {
           // Game doesn't exist — clean the URL and inform via console
-          console.warn('Join failed:', res?.error);
+          console.warn('Join failed:', body?.error);
           window.history.replaceState({}, '', window.location.pathname);
         }
       } catch (e) {

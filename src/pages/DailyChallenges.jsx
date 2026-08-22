@@ -52,7 +52,8 @@ export default function DailyChallenges() {
       const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'UTC' });
       if (acct && acct.last_challenge_date !== todayStr) {
         const syncRes = await base44.functions.invoke('claimDailyRewards', {});
-        if (syncRes?.account) acct = syncRes.account;
+        const syncBody = syncRes?.data || syncRes;
+        if (syncBody?.account) acct = syncBody.account;
       }
       setAccount(acct);
     } catch (e) {
@@ -92,10 +93,11 @@ export default function DailyChallenges() {
       // Safety valve: catches any rewards missed if the user dropped offline
       // at the exact moment a game ended.
       const res = await base44.functions.invoke('claimDailyRewards', {});
-      if (res?.account) setAccount(res.account);
+      const body = res?.data || res;
+      if (body?.account) setAccount(body.account);
       else await loadAccount();
-      if (res?.newRewards > 0) {
-        setRefreshMsg(`+${res.newRewards} Tempo recovered!`);
+      if (body?.newRewards > 0) {
+        setRefreshMsg(`+${body.newRewards} Tempo recovered!`);
       } else {
         setRefreshMsg('Report synced — all caught up');
       }
