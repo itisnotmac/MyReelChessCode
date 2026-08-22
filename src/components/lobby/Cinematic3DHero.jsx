@@ -40,10 +40,40 @@ export default function Cinematic3DHero() {
 
     const scene = new THREE.Scene();
 
-    // Camera: person's eye level, looking at the pieces standing on the floor
+    const TARGET_H = 1.6;
+    const CIRCLE_R = 2.3;
+
+    // Camera: person's eye level, looking at the pieces standing on the floor.
+    // Distance/FOV adapt to the aspect ratio so the pieces fill the screen on
+    // PC (landscape), tablet, and mobile (portrait).
     const camera = new THREE.PerspectiveCamera(38, W / H, 0.1, 100);
-    camera.position.set(0, 1.8, 6);
-    camera.lookAt(0, 0.5, 0);
+    let camBaseY = 1.8;
+    let camLookY = 0.5;
+
+    const configureCamera = (w, h) => {
+      const aspect = w / h;
+      if (aspect < 1) {
+        // Portrait: fill screen with the front pieces, circle extends beyond edges
+        camera.fov = 55;
+        camBaseY = 1.6;
+        camLookY = 0.6;
+        camera.position.set(0, camBaseY, 3.5);
+      } else {
+        // Landscape: fit the circle into the frame, cinematic
+        camera.fov = 38;
+        const vFovRad = THREE.MathUtils.degToRad(38);
+        const hFovRad = 2 * Math.atan(Math.tan(vFovRad / 2) * aspect);
+        let camZ = CIRCLE_R / (Math.tan(hFovRad / 2) * 0.82);
+        camZ = Math.min(Math.max(camZ, 4), 7);
+        camBaseY = 1.8;
+        camLookY = 0.5;
+        camera.position.set(0, camBaseY, camZ);
+      }
+      camera.aspect = aspect;
+      camera.lookAt(0, camLookY, 0);
+      camera.updateProjectionMatrix();
+    };
+    configureCamera(W, H);
 
     renderer.setSize(W, H);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
@@ -74,8 +104,6 @@ export default function Cinematic3DHero() {
     scene.add(group);
 
     const pieces = [];
-    const TARGET_H = 1.6;
-    const CIRCLE_R = 2.3;
     const HOLD_TIME = 2.2; // seconds each piece holds the spotlight
     const SNAP_SPEED = 0.35; // fast lerp — aggressive sweep to next piece
 
@@ -158,8 +186,8 @@ export default function Cinematic3DHero() {
       }
 
       // Gentle camera breathing — keeps the scene alive
-      camera.position.y = 1.8 + Math.sin(t * 0.25) * 0.06;
-      camera.lookAt(0, 0.5, 0);
+      camera.position.y = camBaseY + Math.sin(t * 0.25) * 0.06;
+      camera.lookAt(0, camLookY, 0);
       renderer.render(scene, camera);
     };
     animate();
@@ -167,8 +195,7 @@ export default function Cinematic3DHero() {
     const handleResize = () => {
       const w = container.clientWidth || window.innerWidth;
       const h = container.clientHeight || window.innerHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
+      configureCamera(w, h);
       renderer.setSize(w, h);
     };
     window.addEventListener('resize', handleResize);
