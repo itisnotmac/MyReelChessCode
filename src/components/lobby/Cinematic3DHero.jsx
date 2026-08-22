@@ -49,19 +49,20 @@ export default function Cinematic3DHero() {
     container.appendChild(renderer.domElement);
 
     // ── LIGHTS ──
-    // Low ambient so inactive pieces read as dark silhouettes but aren't pure black.
-    scene.add(new THREE.AmbientLight(0xffffff, 0.18));
+    // Zero ambient — ONLY the piece under the spotlight is visible; all
+    // others are swallowed by darkness.
+    scene.add(new THREE.AmbientLight(0xffffff, 0));
 
-    // Key spotlight that follows the active piece — the signature of the
-    // "Spotlight Cycle" direction. High intensity + wider cone for a
-    // dramatic, clearly visible beam on the lit piece.
-    const spot = new THREE.SpotLight(0xfff5e0, 45, 16, Math.PI / 4, 0.5, 1.5);
-    spot.position.set(0, 4, 2);
+    // Key spotlight with a very tight cone that tracks the active piece.
+    // The narrow angle + hard penumbra keeps the beam from spilling onto
+    // neighbouring pieces, so exactly one piece is lit at any moment.
+    const spot = new THREE.SpotLight(0xfff5e0, 90, 20, Math.PI / 11, 0.2, 1.2);
+    spot.position.set(0, 6, 3);
     scene.add(spot);
     scene.add(spot.target);
 
-    // Teal rim light that also follows the active piece for the brand glow.
-    const tealRim = new THREE.PointLight(0x3aafa9, 15, 14);
+    // Teal rim light that follows the active piece for the brand glow.
+    const tealRim = new THREE.PointLight(0x3aafa9, 20, 8);
     tealRim.position.set(-2, 2.5, 1.5);
     scene.add(tealRim);
 
@@ -104,6 +105,7 @@ export default function Cinematic3DHero() {
         baseX, baseZ, baseY: -box2.min.y, baseRotY: theta,
         activeness: index === 0 ? 1 : 0, // first piece starts lit
         rotAccum: 0,
+        rotSpeed: 0.004 + Math.random() * 0.01, // each piece rotates independently
       };
       group.add(obj);
       pieces.push(obj);
@@ -137,8 +139,8 @@ export default function Cinematic3DHero() {
         lastSwitch = t;
       }
 
-      // Per-piece activeness lerp + spotlight follow
-      let activeX = 0;
+      // Per-piece: independent rotation + activeness lerp for step-forward
+      let activePiece = null;
       for (let i = 0; i < pieces.length; i++) {
         const piece = pieces[i];
         const target = (i === activeIndex) ? 1 : 0;
@@ -149,18 +151,18 @@ export default function Cinematic3DHero() {
         piece.position.z = piece.userData.baseZ + a * STEP_FORWARD;
         // Slight lift
         piece.position.y = piece.userData.baseY + a * 0.08;
-        // Accumulate rotation only while active (no snap-back when dimming)
-        piece.userData.rotAccum += a * ROT_SPEED;
+        // Every piece rotates independently at its own speed — visible or not
+        piece.userData.rotAccum += piece.userData.rotSpeed;
         piece.rotation.y = piece.userData.baseRotY + piece.userData.rotAccum;
 
-        if (i === activeIndex) activeX = piece.position.x;
+        if (i === activeIndex) activePiece = piece;
       }
 
-      // Spotlight + teal rim follow the active piece's x position
-      if (pieces.length > 0) {
-        spot.position.x = THREE.MathUtils.lerp(spot.position.x, activeX, 0.05);
-        spot.target.position.set(activeX, 0.8, 0);
-        tealRim.position.x = THREE.MathUtils.lerp(tealRim.position.x, activeX - 1.8, 0.05);
+      // Spotlight target follows the active piece's actual position (tight beam)
+      if (activePiece) {
+        spot.position.x = THREE.MathUtils.lerp(spot.position.x, activePiece.position.x, 0.06);
+        spot.target.position.lerp(activePiece.position, 0.06);
+        tealRim.position.x = THREE.MathUtils.lerp(tealRim.position.x, activePiece.position.x - 1.5, 0.06);
       }
 
       // Gentle camera breathing — keeps the scene alive without spinning

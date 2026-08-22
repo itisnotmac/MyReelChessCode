@@ -14,10 +14,10 @@ export default function StormOverlay() {
       timeoutRef.current = setTimeout(() => {
         if (cancelled) return;
         // Quick double-flicker — a bright flash, brief dark, second dimmer flash
-        setFlashOpacity(0.14);
-        setTimeout(() => { if (!cancelled) setFlashOpacity(0); }, 70);
-        setTimeout(() => { if (!cancelled) setFlashOpacity(0.09); }, 140);
-        setTimeout(() => { if (!cancelled) setFlashOpacity(0); }, 230);
+        setFlashOpacity(0.3);
+        setTimeout(() => { if (!cancelled) setFlashOpacity(0); }, 80);
+        setTimeout(() => { if (!cancelled) setFlashOpacity(0.2); }, 160);
+        setTimeout(() => { if (!cancelled) setFlashOpacity(0); }, 260);
         scheduleFlash();
       }, delay);
     };
@@ -27,12 +27,12 @@ export default function StormOverlay() {
   }, []);
 
   // Pre-generate rain drops with randomized properties
-  const drops = Array.from({ length: 80 }, () => ({
+  const drops = Array.from({ length: 120 }, () => ({
     left: Math.random() * 100,
     delay: Math.random() * 2,
-    duration: 0.5 + Math.random() * 0.5,
-    opacity: 0.08 + Math.random() * 0.22,
-    height: 25 + Math.random() * 35,
+    duration: 0.4 + Math.random() * 0.4,
+    opacity: 0.15 + Math.random() * 0.35,
+    height: 30 + Math.random() * 40,
   }));
 
   return (
@@ -41,11 +41,12 @@ export default function StormOverlay() {
       {drops.map((d, i) => (
         <div
           key={i}
-          className="absolute top-0 w-px"
+          className="absolute top-0"
           style={{
             left: `${d.left}%`,
+            width: '2px',
             height: `${d.height}px`,
-            background: 'linear-gradient(to bottom, transparent, rgba(168,230,227,0.45), transparent)',
+            background: 'linear-gradient(to bottom, transparent, rgba(180,210,235,0.7), transparent)',
             opacity: d.opacity,
             animation: `rain-fall ${d.duration}s linear infinite`,
             animationDelay: `${d.delay}s`,
@@ -53,13 +54,22 @@ export default function StormOverlay() {
         />
       ))}
 
-      {/* Lightning flash — radial glow from upper sky */}
+      {/* Lightning flash — full-screen illumination */}
       <div
         className="absolute inset-0"
         style={{
-          background: 'radial-gradient(ellipse at 50% 25%, rgba(200,225,255,0.55), transparent 70%)',
+          background: 'rgba(210,225,255,1)',
           opacity: flashOpacity,
-          transition: flashOpacity > 0 ? 'opacity 0.03s' : 'opacity 0.4s',
+          transition: flashOpacity > 0 ? 'opacity 0.03s' : 'opacity 0.5s',
+        }}
+      />
+      {/* Lightning radial glow from upper sky */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 20%, rgba(200,225,255,0.8), transparent 65%)',
+          opacity: flashOpacity * 1.5,
+          transition: flashOpacity > 0 ? 'opacity 0.03s' : 'opacity 0.5s',
         }}
       />
     </div>
