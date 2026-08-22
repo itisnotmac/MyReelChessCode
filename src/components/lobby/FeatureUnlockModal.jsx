@@ -37,13 +37,13 @@ export default function FeatureUnlockModal({ isOpen, onClose, featureId, isAuthe
     setError(null);
     try {
       const response = await base44.functions.invoke('createFeatureCheckout', { feature_id: featureId });
-      if (response.data?.url) {
-        window.location.href = response.data.url;
+      if (response?.url) {
+        window.location.href = response.url;
       } else {
-        setError(response.data?.error || 'Could not start checkout. Please try again.');
+        setError(response?.error || 'Could not start checkout. Please try again.');
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Something went wrong. Please try again.');
+      setError(err?.data?.error || err?.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }

@@ -182,8 +182,8 @@ export default function Store() {
         item_type: item.category,
         item_name: item.name,
       });
-      if (res.data?.url) {
-        window.location.href = res.data.url;
+      if (res?.url) {
+        window.location.href = res.url;
       }
     } catch (e) {
       console.error('Checkout error:', e);
@@ -210,8 +210,8 @@ export default function Store() {
         item_type: item.category,
         item_name: item.name,
       });
-      if (res.data?.success) {
-        setCoinBalance(res.data.new_balance);
+      if (res?.success) {
+        setCoinBalance(res.new_balance);
         setJustPurchased(item.id);
         setTimeout(() => loadPurchases(), 500);
         setTimeout(() => setJustPurchased(null), 4000);

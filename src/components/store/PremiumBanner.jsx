@@ -24,8 +24,8 @@ export default function PremiumBanner({ isPremium }) {
     setError(null);
     try {
       const res = await base44.functions.invoke('createCheckoutSession', {});
-      if (res.data?.url) {
-        window.location.href = res.data.url;
+      if (res?.url) {
+        window.location.href = res.url;
       } else {
         setError('Could not start checkout. Please try again.');
       }

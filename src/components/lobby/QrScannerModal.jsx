@@ -49,15 +49,15 @@ export default function QrScannerModal({ isOpen, onClose }) {
     setError('');
     try {
       const res = await base44.functions.invoke('joinWifiGame', { invite_code: code });
-      if (res.data?.game_id) {
+      if (res?.game_id) {
         stopCamera();
         onClose();
-        navigate(createPageUrl('OnlineGame') + `?game=${res.data.game_id}`);
+        navigate(createPageUrl('OnlineGame') + `?game=${res.game_id}`);
       } else {
-        setError(res.data?.error || 'Failed to join game');
+        setError(res?.error || 'Failed to join game');
       }
     } catch (e) {
-      setError(e.response?.data?.error || e.message || 'Failed to join game');
+      setError(e?.data?.error || e?.message || 'Failed to join game');
     } finally {
       setJoining(false);
     }

@@ -92,10 +92,10 @@ export default function DailyChallenges() {
       // Safety valve: catches any rewards missed if the user dropped offline
       // at the exact moment a game ended.
       const res = await base44.functions.invoke('claimDailyRewards', {});
-      if (res.data?.account) setAccount(res.data.account);
+      if (res?.account) setAccount(res.account);
       else await loadAccount();
-      if (res.data?.newRewards > 0) {
-        setRefreshMsg(`+${res.data.newRewards} Tempo recovered!`);
+      if (res?.newRewards > 0) {
+        setRefreshMsg(`+${res.newRewards} Tempo recovered!`);
       } else {
         setRefreshMsg('Report synced — all caught up');
       }
