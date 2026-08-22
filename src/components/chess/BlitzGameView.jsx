@@ -1,5 +1,6 @@
 import React from 'react';
 import ChessBoard from './ChessBoard';
+import AmbientOverlay from '@/components/effects/AmbientOverlay';
 import CapturedPieces from './CapturedPieces';
 import GameOverModal from './GameOverModal';
 import TurnIndicator from './TurnIndicator';
@@ -25,7 +26,9 @@ export default function BlitzGameView({
   const inCheck = isInCheck(board, isWhiteTurn);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col">
+    <div className="min-h-screen bg-[#0a0a0f] flex flex-col relative">
+      <AmbientOverlay />
+      <div className="relative z-10 flex flex-col flex-1">
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <GameMenu
           onHome={onHome}
@@ -102,6 +105,7 @@ export default function BlitzGameView({
           mode={mode}
         />
       )}
+      </div>
     </div>
   );
 }

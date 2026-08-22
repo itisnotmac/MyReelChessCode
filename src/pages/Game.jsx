@@ -15,6 +15,7 @@ import MoveHistory from '../components/chess/MoveHistory';
 import PostGameAnalysis from '../components/chess/PostGameAnalysis';
 import { toAlgebraicNotation } from '../lib/chessNotation';
 import { stopMenuMusic } from '@/lib/menuMusic';
+import AmbientOverlay from '@/components/effects/AmbientOverlay';
 import { base44 } from '@/api/base44Client';
 import { playMoveSound, playCheckSound, playGameOverSound, unlockAudio } from '@/lib/chessSound';
 import {
@@ -345,7 +346,9 @@ export default function Game() {
   const shouldFlip = (mode === 'local' || mode === '2v2') && !isWhiteTurn;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col">
+    <div className="min-h-screen bg-[#0a0a0f] flex flex-col relative">
+      <AmbientOverlay />
+      <div className="relative z-10 flex flex-col flex-1">
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <GameMenu
@@ -487,6 +490,7 @@ export default function Game() {
 
       {/* Move History Panel */}
       <MoveHistory moves={moveHistory} open={showHistory} onClose={() => setShowHistory(false)} />
+      </div>
     </div>
   );
 }

@@ -2,7 +2,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PieceRenderer from './PieceRenderer';
 import { useSkin } from '@/lib/skinContext';
-import { BOARD_SKINS } from '@/lib/storeCatalog';
+import { BOARD_SKINS, BOARD_BORDERS, PARTICLE_EFFECTS } from '@/lib/storeCatalog';
+import ParticleBurst from '@/components/effects/ParticleBurst';
 
 // Returns the squares a piece travels through between from→to (exclusive of endpoints)
 function getPathSquares(from, to) {
@@ -25,6 +26,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
   const boardRef = useRef(null);
   const [animPiece, setAnimPiece] = useState(null);
   const [pulseKey, setPulseKey] = useState(0); // increment to re-trigger pulse animations
+  const [burst, setBurst] = useState(null);
   const prevLastMove = useRef(null);
   const prevBoardRef = useRef(board);
   const prevCheckRef = useRef(false);
@@ -32,8 +34,10 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
   const pathSquares = lastMove ? getPathSquares(lastMove.from, lastMove.to) : [];
   const pathSet = new Set(pathSquares.map(([r, c]) => `${r}-${c}`));
 
-  const { boardSkin } = useSkin();
+  const { boardSkin, boardBorder, particleEffect } = useSkin();
   const skin = BOARD_SKINS[boardSkin] || BOARD_SKINS.classic;
+  const borderItem = BOARD_BORDERS.find(b => b.id === boardBorder);
+  const particleItem = PARTICLE_EFFECTS.find(p => p.id === particleEffect);
   const showCoords = localStorage.getItem('chessCoords') !== 'off';
   const showLastMove = localStorage.getItem('chessLastMove') !== 'off';
   const showMoveAnim = localStorage.getItem('chessMoveAnim') !== 'off';
@@ -88,6 +92,10 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
       const [tr, tc] = lastMove.to;
       if (prevBoard[tr] && prevBoard[tc] && prevBoard[tr][tc]) {
         navigator.vibrate?.(30);
+        if (particleItem) {
+          const pos = getSquarePx(tr, tc);
+          if (pos) setBurst({ x: pos.x, y: pos.y, color: particleItem.color, key: Date.now() });
+        }
       }
     }
     prevBoardRef.current = board;
@@ -118,7 +126,12 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
 
   return (
     <div className="relative w-full h-full" ref={boardRef}>
-      <div className="rounded-lg overflow-hidden w-full h-full" style={{ boxShadow: `0 0 40px ${skin.glow}, 0 8px 32px rgba(0,0,0,0.7)`, border: `1px solid ${skin.border}` }}>
+      <div className="rounded-lg overflow-hidden w-full h-full" style={{
+        boxShadow: borderItem
+          ? `0 0 24px ${borderItem.color}80, 0 8px 32px rgba(0,0,0,0.7)` + (borderItem.style === 'glow' ? `, inset 0 0 12px ${borderItem.color}40` : '')
+          : `0 0 40px ${skin.glow}, 0 8px 32px rgba(0,0,0,0.7)`,
+        border: borderItem ? `3px solid ${borderItem.color}` : `1px solid ${skin.border}`,
+      }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gridTemplateRows: 'repeat(8, 1fr)', width: '100%', height: '100%' }}>
           {displayRows.map((row) =>
             displayCols.map((col) => {
@@ -256,6 +269,8 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
           </motion.div>
         )}
       </AnimatePresence>
+
+      <ParticleBurst burst={burst} />
     </div>
   );
 }
