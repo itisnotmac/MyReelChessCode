@@ -15,6 +15,7 @@ import { base44 } from '@/api/base44Client';
 import StreakPopup from '../components/streak/StreakPopup';
 import Cinematic3DHero from '@/components/lobby/Cinematic3DHero';
 import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
+import StormOverlay from '@/components/lobby/StormOverlay';
 
 function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
   const [items, setItems] = useState([
@@ -190,9 +191,9 @@ export default function Lobby() {
   };
 
   const buttons = [
-  { label: 'Play Chess', icon: Swords, onClick: () => setPlayChessOpen(true), span: true },
-  { label: 'R.C.U.', icon: BookOpen, onClick: () => navigate('/Tutorial'), span: false },
-  { label: 'Daily', icon: Gift, onClick: () => navigate('/DailyChallenges'), span: false }];
+  { label: 'Learn Chess', icon: BookOpen, onClick: () => navigate('/Tutorial') },
+  { label: 'Play Chess', icon: Swords, onClick: () => setPlayChessOpen(true) },
+  { label: 'Earn Chess', icon: Gift, onClick: () => navigate('/DailyChallenges') }];
 
 
   return (
@@ -210,6 +211,9 @@ export default function Lobby() {
       style={{ background: 'radial-gradient(120% 80% at 50% 16%, rgba(10,10,15,0.15) 0%, rgba(10,10,15,0.5) 58%, rgba(10,10,15,0.92) 100%)' }} />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 z-[1]"
       style={{ background: 'linear-gradient(to top, #0a0a0f 10%, rgba(10,10,15,0.55) 45%, transparent 100%)' }} />
+
+      {/* Thunderstorm rain + lightning flash */}
+      <StormOverlay />
 
       {/* Title */}
       <motion.div
@@ -289,19 +293,19 @@ export default function Lobby() {
         className="relative z-10 flex justify-center pb-4 px-4 w-full"
         initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28 }}>
         
-        <div className="grid grid-cols-2 gap-3 w-full" style={{ maxWidth: 480 }}>
+        <div className="grid grid-cols-3 gap-2 w-full" style={{ maxWidth: 480 }}>
           {buttons.map((btn, i) =>
           <motion.button
             key={btn.label}
             onClick={btn.onClick}
-            whileHover={{ scale: 2 }}
-            whileTap={{ scale: 2 }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 1.04 }}
             initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.05 }}
             style={{ boxShadow: '0 0 8px rgba(58,175,169,0.7), 0 0 16px rgba(58,175,169,0.4), 0 0 24px rgba(58,175,169,0.15), inset 0 0 6px rgba(58,175,169,0.1)' }}
-            className={`flex items-center justify-center gap-2.5 rounded-2xl border border-[#3AAFA9]/50 bg-white/5 backdrop-blur-md py-4 text-white/90 active:bg-white/10 transition-all select-none${btn.span ? ' col-span-2' : ''}`}>
+            className="flex flex-col items-center justify-center gap-1.5 rounded-2xl border border-[#3AAFA9]/50 bg-white/5 backdrop-blur-md py-3.5 text-white/90 active:bg-white/10 transition-all select-none">
             
-              <btn.icon className="w-4 h-4 text-[#3AAFA9] opacity-100" />
-              <span className="text-sm tracking-[0.18em] uppercase [font-family:'Old_Standard_TT',_serif] font-bold">{btn.label}</span>
+              <btn.icon className="w-4 h-4 text-[#3AAFA9]" />
+              <span className="text-[10px] tracking-[0.1em] uppercase [font-family:'Old_Standard_TT',_serif] font-bold">{btn.label}</span>
             </motion.button>
           )}
         </div>

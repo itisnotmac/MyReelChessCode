@@ -49,19 +49,19 @@ export default function Cinematic3DHero() {
     container.appendChild(renderer.domElement);
 
     // ── LIGHTS ──
-    // Very low ambient so inactive pieces read as dark silhouettes.
-    scene.add(new THREE.AmbientLight(0xffffff, 0.1));
+    // Low ambient so inactive pieces read as dark silhouettes but aren't pure black.
+    scene.add(new THREE.AmbientLight(0xffffff, 0.18));
 
     // Key spotlight that follows the active piece — the signature of the
-    // "Spotlight Cycle" direction. Target is added to the scene and lerped
-    // towards whichever piece is currently lit.
-    const spot = new THREE.SpotLight(0xfff5e0, 8, 14, Math.PI / 5.5, 0.45, 1.8);
-    spot.position.set(0, 5.5, 3);
+    // "Spotlight Cycle" direction. High intensity + wider cone for a
+    // dramatic, clearly visible beam on the lit piece.
+    const spot = new THREE.SpotLight(0xfff5e0, 45, 16, Math.PI / 4, 0.5, 1.5);
+    spot.position.set(0, 4, 2);
     scene.add(spot);
     scene.add(spot.target);
 
     // Teal rim light that also follows the active piece for the brand glow.
-    const tealRim = new THREE.PointLight(0x3aafa9, 4, 9);
+    const tealRim = new THREE.PointLight(0x3aafa9, 15, 14);
     tealRim.position.set(-2, 2.5, 1.5);
     scene.add(tealRim);
 

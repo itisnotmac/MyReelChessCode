@@ -65,6 +65,9 @@ export default function ConnectivityIndicator() {
 
   const Icon = isOnline ? Wifi : WifiOff;
 
+  // Respect the "Stuff for Nerds" ping toggle in Settings
+  if (localStorage.getItem('chessPingIndicator') === 'off') return null;
+
   return (
     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
       style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}

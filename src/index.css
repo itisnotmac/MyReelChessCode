@@ -184,6 +184,12 @@ html.theme-high-contrast canvas {
   filter: contrast(1.5) brightness(1.1);
 }
 
+/* === RAIN ANIMATION (lobby storm overlay) === */
+@keyframes rain-fall {
+  0% { transform: translateY(-60px); }
+  100% { transform: translateY(105vh); }
+}
+
 /* === COLOR BLIND MODES (SVG color matrix filters) === */
 html.cb-deuteranopia { filter: url(#cb-deuteranopia); }
 html.cb-protanopia { filter: url(#cb-protanopia); }

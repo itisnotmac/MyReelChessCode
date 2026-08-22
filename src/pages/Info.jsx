@@ -50,6 +50,14 @@ export default function InfoPage() {
     base44.functions.invoke('logActivity', { type: 'settings', label: `Haptics: ${next ? 'On' : 'Off'}` }).catch(() => {});
   };
 
+  const [pingEnabled, setPingEnabled] = useState(() => localStorage.getItem('chessPingIndicator') !== 'off');
+  const togglePing = () => {
+    const next = !pingEnabled;
+    setPingEnabled(next);
+    localStorage.setItem('chessPingIndicator', next ? 'on' : 'off');
+    base44.functions.invoke('logActivity', { type: 'settings', label: `Ping: ${next ? 'On' : 'Off'}` }).catch(() => {});
+  };
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] relative">
       {/* Cinematic backdrop — command sanctum */}
@@ -144,6 +152,20 @@ export default function InfoPage() {
                 <p className="text-white/30 text-xs mt-0.5">Vibrate on captures and check alerts (mobile)</p>
               </div>
               <Switch checked={hapticsEnabled} onCheckedChange={toggleHaptics} className="data-[state=checked]:bg-[#3AAFA9]" />
+            </div>
+          </div>
+
+          {/* Stuff for Nerds */}
+          <div>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-[#3AAFA9]/50 font-medium mb-2 px-1">Stuff for Nerds</p>
+            <div className="rounded-xl bg-white/5 border border-white/10 p-4 space-y-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white text-sm font-medium">Network Ping Indicator</p>
+                  <p className="text-white/30 text-xs mt-0.5">Show live latency badge in the lobby corner</p>
+                </div>
+                <Switch checked={pingEnabled} onCheckedChange={togglePing} className="data-[state=checked]:bg-[#3AAFA9]" />
+              </div>
             </div>
           </div>
 
