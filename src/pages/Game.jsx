@@ -358,29 +358,29 @@ export default function Game() {
           <p className="text-[10px] tracking-[0.3em] uppercase text-[#D4AF37]/60 font-medium">
             {mode === 'ai' ? 'VS AI' : mode === '2v2' ? '2V2' : 'LOCAL'}
           </p>
-          <p className="text-[10px] text-white/20">Move {moveCount}</p>
+          <p className="text-[10px] text-white/50">Move {moveCount}</p>
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => setShowHistory(true)}
+            aria-label="Move history" onClick={() => setShowHistory(true)}
             className="rounded-lg bg-white/5 border border-white/10 flex items-center justify-center px-2.5 py-1.5 text-[#3AAFA9] hover:bg-[#3AAFA9]/10 transition-colors"
             title="Move History"
           >
             <ScrollText className="w-4 h-4" />
           </button>
           <button
-            onClick={() => setIs3D(v => !v)}
+            aria-label={is3D ? 'Back to 2D' : 'Switch to 3D'} onClick={() => setIs3D(v => !v)}
             className="rounded-lg bg-white/5 border border-white/10 flex flex-col items-center justify-center px-2 py-1 text-[#D4AF37]/70 hover:text-[#D4AF37] transition-colors leading-none"
             title={is3D ? 'Back to 2D' : 'Switch to 3D'}
           >
             {is3D ? (
               <>
-                <span style={{ fontSize: '7px' }} className="tracking-widest uppercase text-[#D4AF37]/50">Back to</span>
+                <span style={{ fontSize: '7px' }} className="tracking-widest uppercase text-[#D4AF37]/70">Back to</span>
                 <span style={{ fontSize: '15px', fontFamily: "'Georgia', serif", fontWeight: 'bold', letterSpacing: '0.05em', textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>2D</span>
               </>
             ) : (
               <>
-                <span style={{ fontSize: '7px' }} className="tracking-widest uppercase text-[#D4AF37]/50">Switch to</span>
+                <span style={{ fontSize: '7px' }} className="tracking-widest uppercase text-[#D4AF37]/70">Switch to</span>
                 <span style={{ fontSize: '15px', fontFamily: "'Palatino Linotype', 'Book Antiqua', Palatino, serif", fontWeight: 'bold', fontStyle: 'italic', letterSpacing: '0.05em', textShadow: '1px 1px 0px #8B6914, 2px 2px 0px rgba(0,0,0,0.5)' }}>3D</span>
               </>
             )}
@@ -419,7 +419,7 @@ export default function Game() {
           className="aspect-square w-[min(92vw,82vh)] max-w-[480px] sm:max-w-[600px] md:max-w-[720px] lg:max-w-[800px]"
         >
           {is3D ? (
-            <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-[#3AAFA9]/40 text-xs tracking-widest">LOADING 3D…</div>}>
+            <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-[#3AAFA9]/60 text-xs tracking-widest">LOADING 3D…</div>}>
               <ChessBoard3D
                 board={board}
                 selectedSquare={selectedSquare}

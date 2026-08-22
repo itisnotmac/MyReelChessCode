@@ -133,7 +133,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
               return (
                 <div
                   key={`${row}-${col}`}
-                  className="relative flex items-center justify-center cursor-pointer transition-all duration-150"
+                  className="relative flex items-center justify-center cursor-pointer transition-[background-color,box-shadow] duration-150"
                   style={{ aspectRatio: '1 / 1', backgroundColor: getSquareBg(row, col), ...getSquareStyle(row, col) }}
                   onClick={() => onSquareClick(row, col)}
                 >

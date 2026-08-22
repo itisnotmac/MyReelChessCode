@@ -27,7 +27,7 @@ export default function BrandIntro({ onComplete }) {
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="fixed inset-0 z-[9999] bg-black flex items-center justify-center overflow-hidden"
+          className="fixed inset-0 z-[100] bg-black flex items-center justify-center overflow-hidden"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.35 }}
@@ -59,7 +59,7 @@ export default function BrandIntro({ onComplete }) {
           {/* Skip button */}
           <button
             onClick={finish}
-            className="absolute bottom-6 right-6 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm text-white/40 text-xs tracking-wider uppercase hover:text-white/70 hover:bg-white/20 transition-all z-10"
+            className="absolute bottom-6 right-6 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm text-white/60 text-xs tracking-wider uppercase hover:text-white/70 hover:bg-white/20 transition-all z-10"
           >
             Skip
           </button>

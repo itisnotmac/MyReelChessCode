@@ -48,7 +48,7 @@ function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
             <div className="p-6 pb-4 flex-shrink-0">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-bold tracking-wider text-[#3AAFA9]">MENU</h2>
-                <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white transition-colors">
+                <button onClick={onClose} aria-label="Close" className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white transition-colors">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -85,7 +85,7 @@ function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
             )}
             </div>
             <div className="flex-shrink-0 p-4 text-center">
-              <p className="text-[10px] tracking-[0.3em] uppercase text-white/15">Reel Chess v1.0</p>
+              <p className="text-[10px] tracking-[0.3em] uppercase text-white/50">Reel Chess v1.0</p>
             </div>
           </motion.div>
         </>
@@ -107,6 +107,12 @@ export default function Lobby() {
   const [streakData, setStreakData] = useState(null);
   const [showStreakPopup, setShowStreakPopup] = useState(false);
   const [volume, setVolume] = useState(() => getMenuMusicVolume());
+  const rainfallEnabled = (() => {
+    const stored = localStorage.getItem('chessRainfall');
+    if (stored === 'off') return false;
+    if (stored === 'on') return true;
+    return !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  })();
 
   const handleVolumeChange = (e) => {
     const v = parseFloat(e.target.value);
@@ -207,13 +213,13 @@ export default function Lobby() {
       <Cinematic3DHero />
 
       {/* Readability overlays */}
-      <div className="pointer-events-none absolute inset-0 z-[1]"
+      <div className="pointer-events-none absolute inset-0 z-[5]"
       style={{ background: 'radial-gradient(120% 80% at 50% 16%, rgba(10,10,15,0.15) 0%, rgba(10,10,15,0.5) 58%, rgba(10,10,15,0.92) 100%)' }} />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 z-[1]"
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 z-[5]"
       style={{ background: 'linear-gradient(to top, #0a0a0f 10%, rgba(10,10,15,0.55) 45%, transparent 100%)' }} />
 
       {/* Thunderstorm rain + lightning flash */}
-      <StormOverlay />
+      {rainfallEnabled && <StormOverlay />}
 
       {/* Title */}
       <motion.div
@@ -255,8 +261,8 @@ export default function Lobby() {
 
       {/* Hamburger menu icon (top-right) */}
       <button
-        onClick={() => setMenuOpen(true)}
-        className="fixed z-30 w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-colors backdrop-blur-md"
+        aria-label="Open menu" onClick={() => setMenuOpen(true)}
+        className="fixed z-30 w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-colors backdrop-blur-md"
         style={{ top: 'calc(env(safe-area-inset-top) + 16px)', right: 'calc(env(safe-area-inset-right) + 16px)' }}>
         <MenuIcon className="w-5 h-5 text-green-400" />
       </button>
@@ -269,7 +275,7 @@ export default function Lobby() {
         
           <motion.button
           onClick={() => navigate('/login')}
-          className="flex items-center justify-center px-8 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-white font-bold text-xs tracking-[0.18em] uppercase hover:bg-white/10 active:scale-95 transition-all select-none"
+          className="flex items-center justify-center px-8 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-white font-bold text-xs tracking-[0.18em] uppercase hover:bg-white/10 active:scale-95 transition-[background-color,transform] select-none"
           whileTap={{ scale: 0.94 }}>
           
             <LogIn className="w-3.5 h-3.5 mr-1.5" />
@@ -277,7 +283,7 @@ export default function Lobby() {
           </motion.button>
           <motion.button
           onClick={() => navigate('/register')}
-          className="flex items-center justify-center px-8 py-2 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 backdrop-blur-md text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase hover:bg-[#3AAFA9]/25 active:scale-95 transition-all select-none"
+          className="flex items-center justify-center px-8 py-2 rounded-full border border-[#3AAFA9]/60 bg-[#3AAFA9]/15 backdrop-blur-md text-[#3AAFA9] font-bold text-xs tracking-[0.18em] uppercase hover:bg-[#3AAFA9]/25 active:scale-95 transition-[background-color,transform] select-none"
           whileTap={{ scale: 0.94 }}>
           
             Register
@@ -298,11 +304,10 @@ export default function Lobby() {
           <motion.button
             key={btn.label}
             onClick={btn.onClick}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 1.04 }}
+            whileTap={{ opacity: 0.85 }}
             initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.05 }}
             style={{ boxShadow: '0 0 8px rgba(58,175,169,0.7), 0 0 16px rgba(58,175,169,0.4), 0 0 24px rgba(58,175,169,0.15), inset 0 0 6px rgba(58,175,169,0.1)' }}
-            className="flex flex-col items-center justify-center gap-1.5 rounded-2xl border border-[#3AAFA9]/50 bg-white/5 backdrop-blur-md py-3.5 text-white/90 active:bg-white/10 transition-all select-none">
+            className="flex flex-col items-center justify-center gap-1.5 rounded-2xl border border-[#3AAFA9]/50 bg-white/5 backdrop-blur-md py-3.5 text-white/90 hover:bg-white/10 active:bg-white/10 transition-all select-none">
             
               <btn.icon className="w-4 h-4 text-[#3AAFA9]" />
               <span className="text-[10px] tracking-[0.1em] uppercase [font-family:'Old_Standard_TT',_serif] font-bold">{btn.label}</span>
@@ -316,7 +321,7 @@ export default function Lobby() {
         className="relative z-10 text-center pb-5"
         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>
         
-        <p className="text-xs tracking-[0.45em] uppercase text-[#3AAFA9]/40 font-medium">
+        <p className="text-xs tracking-[0.45em] uppercase text-[#3AAFA9]/60 font-medium">
           Get Immersed
         </p>
       </motion.div>

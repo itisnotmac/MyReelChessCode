@@ -26,10 +26,10 @@ function StatCard({ icon: Icon, label, value, sub, color = '#3AAFA9', delay = 0 
         <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: color + '18', border: `1px solid ${color}30` }}>
           <Icon className="w-4 h-4" style={{ color }} />
         </div>
-        <span className="text-xs text-white/30 tracking-wider uppercase">{label}</span>
+        <span className="text-xs text-white/60 tracking-wider uppercase">{label}</span>
       </div>
-      <p className="text-2xl font-black text-white leading-none">{value}</p>
-      {sub && <p className="text-xs text-white/30">{sub}</p>}
+      <p className="text-2xl font-black text-white leading-none tabular-nums">{value}</p>
+      {sub && <p className="text-xs text-white/60">{sub}</p>}
     </motion.div>
   );
 }
@@ -136,8 +136,8 @@ export default function Dashboard() {
         style={{ paddingTop: 'calc(env(safe-area-inset-top) + 24px)' }}
       >
         <button
-          onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/Profile'))}
-          className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors"
+          aria-label="Go back" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/Profile'))}
+          className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
@@ -157,9 +157,16 @@ export default function Dashboard() {
             className="rounded-2xl bg-white/5 border border-white/5 p-12 text-center"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           >
-            <BarChart2 className="w-10 h-10 text-white/10 mx-auto mb-3" />
-            <p className="text-white/40 text-sm">No data yet.</p>
-            <p className="text-white/20 text-xs mt-1">Play some games to see your stats.</p>
+            <BarChart2 className="w-10 h-10 text-white/30 mx-auto mb-3" />
+            <p className="text-white/60 text-sm">No data yet.</p>
+            <p className="text-white/50 text-xs mt-1">Play some games to see your stats.</p>
+            <button
+              onClick={() => navigate('/Lobby')}
+              className="mt-4 inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-[#0a0a0f] font-bold text-xs tracking-wider uppercase hover:brightness-110 transition-all"
+              style={{ background: 'linear-gradient(135deg, #3AAFA9, #1a6e6b)' }}
+            >
+              <Swords className="w-4 h-4" /> Play a Game
+            </button>
           </motion.div>
         ) : (
           <>
@@ -172,12 +179,12 @@ export default function Dashboard() {
                   <Trophy className="w-6 h-6 text-[#3AAFA9]" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs text-white/30 tracking-wider uppercase">Rating (ELO)</p>
-                  <p className="text-4xl font-black text-white leading-none mt-1">{account.elo}</p>
+                  <p className="text-xs text-white/60 tracking-wider uppercase">Rating (ELO)</p>
+                  <p className="text-4xl font-black text-white leading-none mt-1 tabular-nums">{account.elo}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-white/30 tracking-wider uppercase">Peak</p>
-                  <p className="text-lg font-bold text-[#D4AF37] mt-1">{account.peak_elo ?? account.elo}</p>
+                  <p className="text-xs text-white/60 tracking-wider uppercase">Peak</p>
+                  <p className="text-lg font-bold text-[#D4AF37] mt-1 tabular-nums">{account.peak_elo ?? account.elo}</p>
                 </div>
               </motion.div>
             )}
@@ -192,7 +199,7 @@ export default function Dashboard() {
               className="rounded-2xl bg-white/5 border border-white/5 p-4"
               initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             >
-              <p className="text-xs text-white/30 tracking-wider uppercase mb-3">Results Breakdown</p>
+              <p className="text-xs text-white/60 tracking-wider uppercase mb-3">Results Breakdown</p>
               <div className="flex rounded-full overflow-hidden h-3 gap-0.5">
                 {wins > 0 && <div className="bg-[#D4AF37] transition-all" style={{ flex: wins }} />}
                 {losses > 0 && <div className="bg-[#9B59B6] transition-all" style={{ flex: losses }} />}
@@ -202,7 +209,7 @@ export default function Dashboard() {
                 {[{ label: 'Wins', val: wins, c: '#D4AF37' }, { label: 'Losses', val: losses, c: '#9B59B6' }, { label: 'Draws', val: draws, c: '#3AAFA9' }].map(item => (
                   <div key={item.label} className="flex items-center gap-1.5">
                     <div className="w-2 h-2 rounded-full" style={{ background: item.c }} />
-                    <span className="text-xs text-white/40">{item.label} <span className="text-white/70 font-semibold">{item.val}</span></span>
+                    <span className="text-xs text-white/60">{item.label} <span className="text-white/70 font-semibold">{item.val}</span></span>
                   </div>
                 ))}
               </div>
@@ -212,10 +219,10 @@ export default function Dashboard() {
               className="rounded-2xl bg-white/5 border border-white/5 p-4"
               initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
             >
-              <p className="text-xs text-white/30 tracking-wider uppercase mb-4">Last 7 Days</p>
+              <p className="text-xs text-white/60 tracking-wider uppercase mb-4">Last 7 Days</p>
               <ResponsiveContainer width="100%" height={110}>
                 <BarChart data={activityData} barSize={20}>
-                  <XAxis dataKey="name" tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="name" tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: 12 }} axisLine={false} tickLine={false} />
                   <YAxis hide allowDecimals={false} />
                   <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
                   <Bar dataKey="count" radius={[4, 4, 0, 0]}>
@@ -231,20 +238,20 @@ export default function Dashboard() {
               className="rounded-2xl bg-white/5 border border-white/5 p-4"
               initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
             >
-              <p className="text-xs text-white/30 tracking-wider uppercase mb-3">Game Mode</p>
+              <p className="text-xs text-white/60 tracking-wider uppercase mb-3">Game Mode</p>
               <div className="flex gap-3">
                 <div className="flex-1 rounded-xl bg-[#3AAFA9]/10 border border-[#3AAFA9]/20 p-3 flex items-center gap-3">
                   <Bot className="w-5 h-5 text-[#3AAFA9]" />
                   <div>
                     <p className="text-lg font-black text-white">{aiGames}</p>
-                    <p className="text-xs text-white/30 uppercase tracking-wider">vs AI</p>
+                    <p className="text-xs text-white/60 uppercase tracking-wider">vs AI</p>
                   </div>
                 </div>
                 <div className="flex-1 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/20 p-3 flex items-center gap-3">
                   <Users className="w-5 h-5 text-[#D4AF37]" />
                   <div>
                     <p className="text-lg font-black text-white">{pvpGames}</p>
-                    <p className="text-xs text-white/30 uppercase tracking-wider">Local PvP</p>
+                    <p className="text-xs text-white/60 uppercase tracking-wider">Local PvP</p>
                   </div>
                 </div>
               </div>

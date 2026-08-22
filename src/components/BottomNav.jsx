@@ -78,18 +78,36 @@ export default function BottomNav() {
             aria-current={active ? 'page' : undefined}
             role="tab"
             aria-selected={active}
-            className="flex flex-col items-center gap-1 px-4 transition-opacity text-teal-300"
+            className="relative flex flex-col items-center gap-1 px-4 transition-colors"
             style={{ minWidth: 56, minHeight: 48 }}>
-            
+
+            {/* Active indicator bar — non-color state cue */}
+            {active && (
+              <span
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  top: -8,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 24,
+                  height: 3,
+                  borderRadius: 9999,
+                  background: '#3AAFA9',
+                  boxShadow: '0 0 8px rgba(58,175,169,0.6)',
+                }}
+              />
+            )}
+
             <Icon
-              className="w-5 h-5 transition-colors text-teal-200"
-              style={{ color: active ? '#3AAFA9' : 'rgba(255,255,255,0.3)' }}
+              className="w-5 h-5 transition-colors"
+              style={{ color: active ? '#3AAFA9' : 'rgba(255,255,255,0.55)' }}
               aria-hidden="true" />
-            
+
             <span
-              className="text-[11px] tracking-wider transition-colors text-teal-300 [font-family:'Crimson_Text',_serif] font-bold"
-              style={{ color: active ? '#3AAFA9' : 'rgba(255,255,255,0.25)' }}>
-              
+              className="text-[11px] tracking-wider transition-colors [font-family:'Crimson_Text',_serif] font-bold"
+              style={{ color: active ? '#3AAFA9' : 'rgba(255,255,255,0.55)' }}>
+
               {label}
             </span>
           </button>);

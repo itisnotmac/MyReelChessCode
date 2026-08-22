@@ -44,7 +44,7 @@ export default function LandingModes() {
         >
           Game Modes
         </h2>
-        <p className="text-white/40 text-sm">
+        <p className="text-white/60 text-sm">
           However you like to play chess, Reel Chess has a mode for you.
         </p>
       </motion.div>

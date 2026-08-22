@@ -25,8 +25,8 @@ export default function Contact() {
       {/* Header */}
       <div className="flex items-center gap-4 px-5 pt-6 pb-4 border-b border-[#3AAFA9]/10">
         <button
-          onClick={() => navigate(-1)}
-          className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-[#3AAFA9] hover:bg-[#3AAFA9]/15 transition-colors"
+          aria-label="Go back" onClick={() => navigate(-1)}
+          className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-[#3AAFA9] hover:bg-[#3AAFA9]/15 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
@@ -45,7 +45,7 @@ export default function Contact() {
         >
           Contact Us
         </h1>
-        <p className="text-[#3AAFA9]/40 text-xs tracking-widest uppercase mb-10">We'd love to hear from you</p>
+        <p className="text-[#3AAFA9]/60 text-xs tracking-widest uppercase mb-10">We'd love to hear from you</p>
 
         {/* Email card */}
         <a
@@ -57,14 +57,14 @@ export default function Contact() {
             <Mail className="w-5 h-5 text-[#0a0a0f]" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs tracking-widest uppercase text-[#3AAFA9]/50 mb-1">Email</p>
+            <p className="text-xs tracking-widest uppercase text-[#3AAFA9]/70 mb-1">Email</p>
             <p className="text-[#3AAFA9] font-semibold text-sm group-hover:text-[#A8E6E3] transition-colors truncate">
               reelchessgame@gmail.com
             </p>
           </div>
         </a>
 
-        <p className="mt-6 text-white/30 text-xs leading-relaxed">
+        <p className="mt-6 text-white/60 text-xs leading-relaxed">
           Have a bug to report, a feature request, or just want to say hi? Send us an email and we'll
           get back to you as soon as possible.
         </p>

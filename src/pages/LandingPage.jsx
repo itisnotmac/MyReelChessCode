@@ -48,7 +48,7 @@ export default function LandingPage() {
           </p>
           <button
             onClick={handlePlayNow}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-[#3AAFA9] to-[#A8E6E3] text-[#0a0a0f] font-bold text-sm tracking-wider uppercase hover:scale-105 transition-transform shadow-lg shadow-[#3AAFA9]/30"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-[#3AAFA9] to-[#A8E6E3] text-[#0a0a0f] font-bold text-sm tracking-wider uppercase hover:brightness-110 transition-all shadow-lg shadow-[#3AAFA9]/30"
           >
             <Play className="w-5 h-5" /> Play Now — Free
           </button>
@@ -62,37 +62,37 @@ export default function LandingPage() {
           <nav className="flex gap-6">
             <Link
               to="/About"
-              className="text-xs text-white/40 hover:text-[#3AAFA9] transition-colors"
+              className="text-xs text-white/60 hover:text-[#3AAFA9] transition-colors"
             >
               About
             </Link>
             <Link
               to="/Tutorial"
-              className="text-xs text-white/40 hover:text-[#3AAFA9] transition-colors"
+              className="text-xs text-white/60 hover:text-[#3AAFA9] transition-colors"
             >
               Tutorial
             </Link>
             <Link
               to="/Contact"
-              className="text-xs text-white/40 hover:text-[#3AAFA9] transition-colors"
+              className="text-xs text-white/60 hover:text-[#3AAFA9] transition-colors"
             >
               Contact
             </Link>
             <Link
               to="/privacy-policy"
-              className="text-xs text-white/40 hover:text-[#3AAFA9] transition-colors"
+              className="text-xs text-white/60 hover:text-[#3AAFA9] transition-colors"
             >
               Privacy
             </Link>
             <Link
               to="/terms-of-service"
-              className="text-xs text-white/40 hover:text-[#3AAFA9] transition-colors"
+              className="text-xs text-white/60 hover:text-[#3AAFA9] transition-colors"
             >
               Terms
             </Link>
           </nav>
         </div>
-        <p className="text-center text-white/20 text-xs mt-6">
+        <p className="text-center text-white/50 text-xs mt-6">
           © 2026 Reel Chess. All rights reserved.
         </p>
       </footer>

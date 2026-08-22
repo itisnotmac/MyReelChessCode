@@ -60,8 +60,8 @@ export default function Achievements() {
       {/* Header */}
       <div className="relative z-10 flex items-center gap-3 px-5 pb-4"
         style={{ paddingTop: 'calc(env(safe-area-inset-top) + 24px)' }}>
-        <button onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))}
-          className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
+        <button aria-label="Go back" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))}
+          className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-2">
@@ -84,14 +84,14 @@ export default function Achievements() {
             >
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <p className="text-xs text-white/30 tracking-wider uppercase">Badges Earned</p>
+                  <p className="text-xs text-white/60 tracking-wider uppercase">Badges Earned</p>
                   <p className="text-3xl font-black text-white">
-                    {earnedCount}<span className="text-lg text-white/30">/{totalCount}</span>
+                    {earnedCount}<span className="text-lg text-white/60">/{totalCount}</span>
                   </p>
                 </div>
                 <div className="w-14 h-14 rounded-full flex items-center justify-center"
                   style={{ background: earnedCount > 0 ? 'rgba(212,175,55,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${earnedCount > 0 ? 'rgba(212,175,55,0.3)' : 'rgba(255,255,255,0.05)'}` }}>
-                  <span className="text-xl font-black" style={{ color: earnedCount > 0 ? '#D4AF37' : 'rgba(255,255,255,0.2)' }}>
+                  <span className="text-xl font-black" style={{ color: earnedCount > 0 ? '#D4AF37' : 'rgba(255,255,255,0.4)' }}>
                     {Math.round((earnedCount / totalCount) * 100)}%
                   </span>
                 </div>

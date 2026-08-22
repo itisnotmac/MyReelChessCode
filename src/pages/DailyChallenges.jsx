@@ -122,7 +122,7 @@ export default function DailyChallenges() {
           <div className="absolute inset-0"
             style={{ background: 'radial-gradient(120% 80% at 50% 12%, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.55) 60%, rgba(10,10,15,0.88) 100%)' }} />
         </div>
-        <ClipboardList className="relative z-10 w-12 h-12 text-[#3AAFA9]/40 mb-4" />
+        <ClipboardList className="relative z-10 w-12 h-12 text-[#3AAFA9]/60 mb-4" />
         <h1 className="relative z-10 text-xl font-bold mb-2">Daily Report Card</h1>
         <p className="relative z-10 text-sm text-white/50 text-center mb-6 max-w-xs">
           Log in to track your daily activities and earn Tempo by completing challenges.
@@ -131,7 +131,7 @@ export default function DailyChallenges() {
           className="relative z-10 flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#3AAFA9]/15 border border-[#3AAFA9]/60 text-[#3AAFA9] font-bold text-xs tracking-wider uppercase">
           <LogIn className="w-4 h-4" /> Login
         </button>
-        <button onClick={() => navigate('/')} className="relative z-10 mt-3 text-xs text-white/40 hover:text-white/60">Back to Lobby</button>
+        <button onClick={() => navigate('/')} className="relative z-10 mt-3 text-xs text-white/60 hover:text-white/60">Back to Lobby</button>
       </div>
     );
   }
@@ -153,8 +153,8 @@ export default function DailyChallenges() {
 
       {/* Header */}
       <div className="relative z-10 flex items-center gap-3 px-4 pt-6 pb-4">
-        <button onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))}
-          className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
+        <button aria-label="Go back" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))}
+          className="w-11 h-11 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
           <ChevronLeft className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-2">
@@ -172,8 +172,8 @@ export default function DailyChallenges() {
               <Coins className="w-5 h-5 text-[#D4AF37]" />
             </div>
             <div>
-              <p className="text-2xl font-black text-[#D4AF37]">{coinBalance}</p>
-              <p className="text-[10px] tracking-wider text-white/40 uppercase">Tempo</p>
+              <p className="text-2xl font-black text-[#D4AF37] tabular-nums">{coinBalance}</p>
+              <p className="text-[10px] tracking-wider text-white/60 uppercase">Tempo</p>
             </div>
           </div>
           <button onClick={() => navigate('/Store')}
@@ -185,7 +185,7 @@ export default function DailyChallenges() {
 
       {/* Today's Challenge */}
       <div className="relative z-10 px-4 mb-4">
-        <p className="text-[10px] tracking-[0.2em] uppercase text-white/30 mb-2">Today's Challenge • {CHALLENGE_REWARD} Tempo</p>
+        <p className="text-[10px] tracking-[0.2em] uppercase text-white/60 mb-2">Today's Challenge • {CHALLENGE_REWARD} Tempo</p>
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           className={`rounded-xl p-5 border backdrop-blur-md transition-all ${
             isClaimed ? 'border-[#3AAFA9]/40 bg-black/40'
@@ -201,12 +201,12 @@ export default function DailyChallenges() {
               <ch.Icon className={`w-6 h-6 ${
                 isClaimed ? 'text-[#3AAFA9]'
                 : isComplete ? 'text-[#D4AF37]'
-                : 'text-white/40'
+                : 'text-white/60'
               }`} />
             </div>
             <div className="flex-1">
               <p className="text-base font-bold text-white">{ch.title}</p>
-              <p className="text-xs text-white/40">{ch.description}</p>
+              <p className="text-xs text-white/60">{ch.description}</p>
             </div>
             <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20">
               <Coins className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -222,7 +222,7 @@ export default function DailyChallenges() {
                 }}
               />
             </div>
-            <span className="text-xs font-bold text-white/50 min-w-[35px] text-right">{progress}/{ch.target}</span>
+            <span className="text-xs font-bold text-white/50 min-w-[35px] text-right tabular-nums">{progress}/{ch.target}</span>
           </div>
           {isClaimed && (
             <div className="flex items-center gap-1.5 mt-2.5">
@@ -236,8 +236,8 @@ export default function DailyChallenges() {
       {/* Activity Feed */}
       <div className="relative z-10 px-4 mb-4">
         <div className="flex items-center justify-between mb-2">
-          <p className="text-[10px] tracking-[0.2em] uppercase text-white/30">Activity Feed</p>
-          <p className="text-[10px] tracking-wider text-white/30">Resets in {timeUntilReset}</p>
+          <p className="text-[10px] tracking-[0.2em] uppercase text-white/60">Activity Feed</p>
+          <p className="text-[10px] tracking-wider text-white/60">Resets in {timeUntilReset}</p>
         </div>
         {refreshMsg && (
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
@@ -252,9 +252,16 @@ export default function DailyChallenges() {
           </div>
         ) : activities.length === 0 ? (
           <div className="rounded-xl border border-white/10 bg-black/30 p-8 text-center">
-            <ClipboardList className="w-8 h-8 text-white/20 mx-auto mb-2" />
-            <p className="text-sm text-white/40">No activities yet today</p>
-            <p className="text-xs text-white/20 mt-1">Play a game to get started!</p>
+            <ClipboardList className="w-8 h-8 text-white/50 mx-auto mb-2" />
+            <p className="text-sm text-white/60">No activities yet today</p>
+            <p className="text-xs text-white/50 mt-1">Play a game to get started!</p>
+            <button
+              onClick={() => navigate('/Lobby')}
+              className="mt-4 inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-[#0a0a0f] font-bold text-xs tracking-wider uppercase hover:brightness-110 transition-all"
+              style={{ background: 'linear-gradient(135deg, #3AAFA9, #1a6e6b)' }}
+            >
+              <Gamepad2 className="w-4 h-4" /> Play a Game
+            </button>
           </div>
         ) : (
           <div className="space-y-2">
@@ -270,7 +277,7 @@ export default function DailyChallenges() {
                     <Icon className="w-4 h-4" style={{ color }} />
                   </div>
                   <p className="text-sm text-white/80 flex-1">{act.label}</p>
-                  <span className="text-[10px] text-white/30 flex-shrink-0">{formatTime(act.time)}</span>
+                  <span className="text-[10px] text-white/60 flex-shrink-0">{formatTime(act.time)}</span>
                 </motion.div>
               );
             })}
@@ -289,7 +296,7 @@ export default function DailyChallenges() {
               <><RefreshCw className="w-4 h-4" /> REFRESH REPORT</>
             )}
           </button>
-          <p className="text-center text-[10px] text-white/20 mt-3">
+          <p className="text-center text-[10px] text-white/50 mt-3">
             Rewards auto-apply on completion — refresh syncs if you dropped offline mid-game
           </p>
         </div>

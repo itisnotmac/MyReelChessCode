@@ -19,6 +19,9 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        "chess-primary": "bg-gradient-to-br from-[#3AAFA9] to-[#1a6e6b] text-[#0a0a0f] hover:brightness-110 transition-all",
+        "chess-secondary": "bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 transition-colors",
+        "chess-destructive": "bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 transition-colors",
       },
       size: {
         default: "h-9 px-4 py-2",

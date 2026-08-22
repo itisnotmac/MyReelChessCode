@@ -51,6 +51,20 @@ export default function InfoPage() {
   };
 
   const [pingEnabled, setPingEnabled] = useState(() => localStorage.getItem('chessPingIndicator') !== 'off');
+
+  const [rainfallEnabled, setRainfallEnabled] = useState(() => {
+    const stored = localStorage.getItem('chessRainfall');
+    if (stored === 'off') return false;
+    if (stored === 'on') return true;
+    return !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  });
+  const toggleRainfall = () => {
+    const next = !rainfallEnabled;
+    setRainfallEnabled(next);
+    localStorage.setItem('chessRainfall', next ? 'on' : 'off');
+    base44.functions.invoke('logActivity', { type: 'settings', label: `Rainfall: ${next ? 'On' : 'Off'}` }).catch(() => {});
+  };
+
   const togglePing = () => {
     const next = !pingEnabled;
     setPingEnabled(next);
@@ -72,8 +86,8 @@ export default function InfoPage() {
         className="relative z-10 flex items-center gap-3 px-5 pb-8"
         style={{ paddingTop: 'calc(env(safe-area-inset-top) + 24px)' }}>
         <button
-          onClick={() => navigate(createPageUrl('Lobby'))}
-          className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
+          aria-label="Go back" onClick={() => navigate(createPageUrl('Lobby'))}
+          className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-2">
@@ -93,7 +107,7 @@ export default function InfoPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white text-sm font-medium">Sound Effects</p>
-                <p className="text-white/30 text-xs mt-0.5">Move sounds, check alerts, and game events</p>
+                <p className="text-white/60 text-xs mt-0.5">Move sounds, check alerts, and game events</p>
               </div>
               <Switch checked={soundEnabled} onCheckedChange={toggleSound} className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
@@ -101,7 +115,7 @@ export default function InfoPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white text-sm font-medium">Battle Cutscenes</p>
-                <p className="text-white/30 text-xs mt-0.5">Show cinematic battles on capture</p>
+                <p className="text-white/60 text-xs mt-0.5">Show cinematic battles on capture</p>
               </div>
               <Switch defaultChecked className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
@@ -109,7 +123,7 @@ export default function InfoPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white text-sm font-medium">Board Flip</p>
-                <p className="text-white/30 text-xs mt-0.5">Rotate board for Player 2 in local mode</p>
+                <p className="text-white/60 text-xs mt-0.5">Rotate board for Player 2 in local mode</p>
               </div>
               <Switch defaultChecked className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
@@ -117,7 +131,7 @@ export default function InfoPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white text-sm font-medium">Move Hints</p>
-                <p className="text-white/30 text-xs mt-0.5">Show legal move indicators</p>
+                <p className="text-white/60 text-xs mt-0.5">Show legal move indicators</p>
               </div>
               <Switch defaultChecked className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
@@ -125,7 +139,7 @@ export default function InfoPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white text-sm font-medium">Rank &amp; File Labels</p>
-                <p className="text-white/30 text-xs mt-0.5">Show a–h / 1–8 coordinates on the board edges</p>
+                <p className="text-white/60 text-xs mt-0.5">Show a–h / 1–8 coordinates on the board edges</p>
               </div>
               <Switch checked={coordsEnabled} onCheckedChange={toggleCoords} className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
@@ -133,7 +147,7 @@ export default function InfoPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white text-sm font-medium">Last Move Highlight</p>
-                <p className="text-white/30 text-xs mt-0.5">Glow the previous move's from and to squares</p>
+                <p className="text-white/60 text-xs mt-0.5">Glow the previous move's from and to squares</p>
               </div>
               <Switch checked={lastMoveEnabled} onCheckedChange={toggleLastMove} className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
@@ -141,7 +155,7 @@ export default function InfoPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white text-sm font-medium">Move Animation</p>
-                <p className="text-white/30 text-xs mt-0.5">Slide pieces smoothly to their destination</p>
+                <p className="text-white/60 text-xs mt-0.5">Slide pieces smoothly to their destination</p>
               </div>
               <Switch checked={moveAnimEnabled} onCheckedChange={toggleMoveAnim} className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
@@ -149,20 +163,28 @@ export default function InfoPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white text-sm font-medium">Haptic Feedback</p>
-                <p className="text-white/30 text-xs mt-0.5">Vibrate on captures and check alerts (mobile)</p>
+                <p className="text-white/60 text-xs mt-0.5">Vibrate on captures and check alerts (mobile)</p>
               </div>
               <Switch checked={hapticsEnabled} onCheckedChange={toggleHaptics} className="data-[state=checked]:bg-[#3AAFA9]" />
+            </div>
+            <div className="h-px bg-white/5" />
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white text-sm font-medium">Rainfall Effect</p>
+                <p className="text-white/60 text-xs mt-0.5">Thunderstorm overlay on the lobby</p>
+              </div>
+              <Switch checked={rainfallEnabled} onCheckedChange={toggleRainfall} className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
           </div>
 
           {/* Stuff for Nerds */}
           <div>
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#3AAFA9]/50 font-medium mb-2 px-1">Stuff for Nerds</p>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-[#3AAFA9]/70 font-medium mb-2 px-1">Stuff for Nerds</p>
             <div className="rounded-xl bg-white/5 border border-white/10 p-4 space-y-5">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-white text-sm font-medium">Network Ping Indicator</p>
-                  <p className="text-white/30 text-xs mt-0.5">Show live latency badge in the lobby corner</p>
+                  <p className="text-white/60 text-xs mt-0.5">Show live latency badge in the lobby corner</p>
                 </div>
                 <Switch checked={pingEnabled} onCheckedChange={togglePing} className="data-[state=checked]:bg-[#3AAFA9]" />
               </div>

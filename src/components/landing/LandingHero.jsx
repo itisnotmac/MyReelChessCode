@@ -52,7 +52,7 @@ export default function LandingHero() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={handlePlayNow}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-[#3AAFA9] to-[#A8E6E3] text-[#0a0a0f] font-bold text-sm tracking-wider uppercase hover:scale-105 transition-transform shadow-lg shadow-[#3AAFA9]/30"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-[#3AAFA9] to-[#A8E6E3] text-[#0a0a0f] font-bold text-sm tracking-wider uppercase hover:brightness-110 transition-all shadow-lg shadow-[#3AAFA9]/30"
             >
               <Play className="w-5 h-5" /> Play Now — Free
             </button>

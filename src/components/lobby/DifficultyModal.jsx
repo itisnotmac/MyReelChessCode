@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Cpu, AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const difficulties = [
   { id: 'novice',          label: 'Novice (Practice)', desc: 'AI intentionally loses',  icon: '♟' },
@@ -66,10 +67,10 @@ export default function DifficultyModal({ isOpen, onClose, onConfirm }) {
                   </div>
                   <div>
                     <p className="text-white font-bold tracking-wider text-sm">CHOOSE DIFFICULTY</p>
-                    <p className="text-[#3AAFA9]/50 text-[10px] tracking-wider">Select your opponent's strength</p>
+                    <p className="text-[#3AAFA9]/70 text-[10px] tracking-wider">Select your opponent's strength</p>
                   </div>
                 </div>
-                <button onClick={onClose} className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-colors">
+                <button onClick={onClose} aria-label="Close" className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-white/60 hover:text-white transition-colors">
                   <X className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -86,12 +87,12 @@ export default function DifficultyModal({ isOpen, onClose, onConfirm }) {
                           : 'border-white/5 bg-white/3 hover:bg-white/5'
                       }`}
                     >
-                      <span className={`text-2xl ${selected === d.id ? 'text-[#3AAFA9]' : 'text-white/20'}`}>{d.icon}</span>
+                      <span className={`text-2xl ${selected === d.id ? 'text-[#3AAFA9]' : 'text-white/50'}`}>{d.icon}</span>
                       <div className="flex-1">
                         <p className={`text-xs font-bold tracking-wider ${selected === d.id ? 'text-[#3AAFA9]' : 'text-white/50'}`}>
                           {d.label.toUpperCase()}
                         </p>
-                        <p className={`text-[10px] mt-0.5 ${selected === d.id ? 'text-[#3AAFA9]/60' : 'text-white/20'}`}>{d.desc}</p>
+                        <p className={`text-[10px] mt-0.5 ${selected === d.id ? 'text-[#3AAFA9]/80' : 'text-white/50'}`}>{d.desc}</p>
                       </div>
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${
                         selected === d.id ? 'border-[#3AAFA9] bg-[#3AAFA9]' : 'border-white/20'
@@ -109,13 +110,13 @@ export default function DifficultyModal({ isOpen, onClose, onConfirm }) {
 
               {/* Confirm */}
               <div className="px-4 pb-5">
-                <button
+                <Button
                   onClick={handleConfirm}
-                  className="w-full py-3.5 rounded-xl font-bold tracking-[0.15em] text-sm text-[#0a0a0f] transition-opacity hover:opacity-90"
-                  style={{ background: 'linear-gradient(135deg, #3AAFA9, #1a6e6b)' }}
+                  variant="chess-primary"
+                  className="w-full py-3.5 rounded-xl font-bold tracking-[0.15em] text-sm"
                 >
                   START BATTLE
-                </button>
+                </Button>
               </div>
             </div>
           </motion.div>
@@ -142,16 +143,17 @@ export default function DifficultyModal({ isOpen, onClose, onConfirm }) {
                     <div className="w-12 h-12 rounded-xl bg-[#3AAFA9]/15 border border-[#3AAFA9]/30 flex items-center justify-center mb-4">
                       <AlertCircle className="w-6 h-6 text-[#3AAFA9]" />
                     </div>
-                    <p className="text-white text-sm leading-relaxed text-center mb-5">
-                      The Novice difficulty selection you have chosen was implemented as a practice space for new players of chess to be able to go hands-on, in a real game setting. The AI will intentionally move its pieces into positions where they can be easily taken by You.
+                    <p className="text-[#3AAFA9] font-bold tracking-wider text-sm uppercase mb-2">Practice Mode</p>
+                    <p className="text-white/60 text-sm leading-relaxed text-center mb-5">
+                      Novice is a hands-on practice space for new players. The AI will intentionally leave its pieces open for you to capture.
                     </p>
-                    <button
+                    <Button
                       onClick={handleNoviceAcknowledge}
-                      className="w-full py-3.5 rounded-xl font-bold tracking-[0.15em] text-sm text-[#0a0a0f] transition-opacity hover:opacity-90"
-                      style={{ background: 'linear-gradient(135deg, #3AAFA9, #1a6e6b)' }}
+                      variant="chess-primary"
+                      className="w-full py-3.5 rounded-xl font-bold tracking-[0.15em] text-sm"
                     >
-                      OK
-                    </button>
+                      Got It
+                    </Button>
                   </div>
                 </motion.div>
               </motion.div>

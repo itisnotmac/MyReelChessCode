@@ -5,6 +5,7 @@ import { ArrowLeft, User as UserIcon, Camera, Check, Loader2, Trash2, AlertTrian
 import { base44 } from '@/api/base44Client';
 import { PRESET_AVATARS, getLocalProfile, setLocalProfile, renderAvatarContent } from '@/lib/profileUtils';
 import FrostedAvatarImage from '@/components/FrostedAvatarImage';
+import ProfileSkeleton from '@/components/ProfileSkeleton';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,9 +15,11 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Profile() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
@@ -88,7 +91,7 @@ export default function Profile() {
     await Promise.all(history.map((r) => base44.entities.GameHistory.delete(r.id)));
     setDeletingData(false);
     setShowDeleteDataDialog(false);
-    alert('All your game data has been deleted.');
+    toast({ title: 'Data deleted', description: 'All your game data has been deleted.' });
   };
 
   const handleSave = async () => {
@@ -117,11 +120,7 @@ export default function Profile() {
   const presetChar = isPreset ? avatarUrl.slice(7) : null;
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-[#3AAFA9] animate-spin" />
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   return (
@@ -136,8 +135,8 @@ export default function Profile() {
       {/* Header */}
       <div className="relative z-10 flex items-center gap-3 px-5 pb-4"
         style={{ paddingTop: 'calc(env(safe-area-inset-top) + 24px)' }}>
-        <button onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))}
-          className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
+        <button aria-label="Go back" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))}
+          className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-2">
@@ -154,7 +153,7 @@ export default function Profile() {
             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
           >
             <p className="text-2xl font-black text-[#3AAFA9] leading-none">{streak}</p>
-            <p className="text-xs text-white/40 tracking-wider mt-1">consecutive days logged in</p>
+            <p className="text-xs text-white/60 tracking-wider mt-1">consecutive days logged in</p>
           </motion.div>
         )}
 
@@ -169,8 +168,8 @@ export default function Profile() {
               <Coins className="w-5 h-5 text-[#D4AF37]" />
             </div>
             <div>
-              <p className="text-xs text-white/40 tracking-wider uppercase">Tempo Balance</p>
-              <p className="text-2xl font-black text-[#D4AF37] leading-none mt-0.5">{tempoBalance}</p>
+              <p className="text-xs text-white/60 tracking-wider uppercase">Tempo Balance</p>
+              <p className="text-2xl font-black text-[#D4AF37] leading-none mt-0.5 tabular-nums">{tempoBalance}</p>
             </div>
           </div>
           <button onClick={() => navigate('/Store')}
@@ -194,7 +193,7 @@ export default function Profile() {
               ) : renderAvatarContent(avatarUrl)}
             </div>
             <button
-              onClick={() => fileInputRef.current?.click()}
+              aria-label="Upload avatar" onClick={() => fileInputRef.current?.click()}
               className="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-[#3AAFA9] border-2 border-[#0a0a0f] flex items-center justify-center text-[#0a0a0f] active:scale-90 transition-transform"
             >
               <Camera className="w-4 h-4" />
@@ -202,7 +201,7 @@ export default function Profile() {
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
           </div>
           {avatarUrl && (
-            <button onClick={() => setAvatarUrl('')} className="text-xs text-white/30 hover:text-white/60 transition-colors">
+            <button onClick={() => setAvatarUrl('')} className="text-xs text-white/60 hover:text-white/60 transition-colors">
               {isPreset ? 'Use default' : 'Remove custom avatar'}
             </button>
           )}
@@ -215,12 +214,12 @@ export default function Profile() {
             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 }}
           >
             <div>
-              <p className="text-xs text-white/30 tracking-wider uppercase">Rating (ELO)</p>
-              <p className="text-3xl font-black text-white leading-none mt-1">{elo}</p>
+              <p className="text-xs text-white/60 tracking-wider uppercase">Rating (ELO)</p>
+              <p className="text-3xl font-black text-white leading-none mt-1 tabular-nums">{elo}</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-white/30 tracking-wider uppercase">Peak</p>
-              <p className="text-lg font-bold text-[#D4AF37] mt-1">{peakElo}</p>
+              <p className="text-xs text-white/60 tracking-wider uppercase">Peak</p>
+              <p className="text-lg font-bold text-[#D4AF37] mt-1 tabular-nums">{peakElo}</p>
             </div>
           </motion.div>
         )}
@@ -252,23 +251,23 @@ export default function Profile() {
           className="space-y-2"
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
         >
-          <label className="text-xs text-white/30 tracking-wider uppercase">Username</label>
+          <label className="text-xs text-white/60 tracking-wider uppercase">Username</label>
           <input
             type="text"
             value={username}
             onChange={e => setUsername(e.target.value)}
             maxLength={20}
             placeholder="Enter your username"
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#3AAFA9]/50 placeholder:text-white/20 transition-colors"
+            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#3AAFA9]/50 placeholder:text-white/50 transition-colors"
           />
-          <p className="text-xs text-white/20">{username.length}/20 characters</p>
+          <p className="text-xs text-white/50">{username.length}/20 characters</p>
         </motion.div>
 
         {/* Preset avatars */}
         <motion.div
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
         >
-          <p className="text-xs text-white/30 tracking-wider uppercase mb-3">Or pick a preset</p>
+          <p className="text-xs text-white/60 tracking-wider uppercase mb-3">Or pick a preset</p>
           <div className="grid grid-cols-4 gap-3">
             {PRESET_AVATARS.map((preset, i) => {
               const isActive = isPreset && presetChar === preset.char;
@@ -296,7 +295,7 @@ export default function Profile() {
           style={{ background: 'linear-gradient(135deg, #3AAFA9 0%, #2d8a85 100%)', color: '#0a0a0f' }}
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : null}
-          {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Profile'}
+          {saving ? 'Saving…' : saved ? 'Saved!' : 'Save Profile'}
         </motion.button>
 
         {/* Danger zone */}
@@ -312,7 +311,7 @@ export default function Profile() {
               <Trash2 className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-white text-sm font-medium">Delete My Data</p>
-                <p className="text-white/30 text-xs mt-0.5 leading-relaxed">
+                <p className="text-white/60 text-xs mt-0.5 leading-relaxed">
                   Permanently delete all your game history and statistics. Your account will remain active.
                 </p>
               </div>
@@ -330,7 +329,7 @@ export default function Profile() {
               <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-white text-sm font-medium">Delete Account</p>
-                <p className="text-white/30 text-xs mt-0.5 leading-relaxed">
+                <p className="text-white/60 text-xs mt-0.5 leading-relaxed">
                   Permanently delete your account and all associated game history. This action cannot be undone.
                 </p>
               </div>
@@ -356,7 +355,7 @@ export default function Profile() {
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction disabled={deletingData} onClick={handleDeleteData} className="bg-orange-600 hover:bg-orange-700 text-white border-0">
-                {deletingData ? 'Deleting...' : 'Yes, Delete Data'}
+                {deletingData ? 'Deleting…' : 'Yes, Delete Data'}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -375,7 +374,7 @@ export default function Profile() {
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction disabled={deleting} onClick={handleDeleteAccount} className="bg-red-600 hover:bg-red-700 text-white border-0">
-                {deleting ? 'Deleting...' : 'Yes, Delete'}
+                {deleting ? 'Deleting…' : 'Yes, Delete'}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

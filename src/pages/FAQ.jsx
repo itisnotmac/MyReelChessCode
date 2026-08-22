@@ -45,8 +45,8 @@ export default function FAQ() {
       {/* Header */}
       <div className="relative z-10 flex items-center gap-4 px-5 pt-6 pb-4 border-b border-[#3AAFA9]/10">
         <button
-          onClick={() => navigate(-1)}
-          className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-[#3AAFA9] hover:bg-[#3AAFA9]/15 transition-colors"
+          aria-label="Go back" onClick={() => navigate(-1)}
+          className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-[#3AAFA9] hover:bg-[#3AAFA9]/15 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
@@ -65,7 +65,7 @@ export default function FAQ() {
         >
           FAQ
         </h1>
-        <p className="text-[#3AAFA9]/40 text-xs tracking-widest uppercase mb-8">Frequently asked questions</p>
+        <p className="text-[#3AAFA9]/60 text-xs tracking-widest uppercase mb-8">Frequently asked questions</p>
 
         <Accordion type="single" collapsible className="space-y-3">
           {FAQS.map((item, i) => (

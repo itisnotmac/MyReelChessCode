@@ -150,8 +150,8 @@ export default function GameHistoryPage() {
         style={{ paddingTop: 'calc(env(safe-area-inset-top) + 24px)' }}
       >
         <button
-          onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/Profile'))}
-          className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors"
+          aria-label="Go back" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/Profile'))}
+          className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
@@ -171,11 +171,11 @@ export default function GameHistoryPage() {
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <p className="text-xs text-white/50 tracking-wider uppercase mb-2">Total Games Played</p>
-                <p className="text-3xl font-black text-white">{stats.total}</p>
+                <p className="text-3xl font-black text-white tabular-nums">{stats.total}</p>
               </div>
               <div>
                 <p className="text-xs text-white/50 tracking-wider uppercase mb-2">Win Rate</p>
-                <p className="text-3xl font-black text-[#D4AF37]">{winRate}%</p>
+                <p className="text-3xl font-black text-[#D4AF37] tabular-nums">{winRate}%</p>
               </div>
             </div>
           </motion.div>
@@ -195,7 +195,7 @@ export default function GameHistoryPage() {
             ].map(s => (
               <div key={s.label} className="rounded-xl bg-white/5 border border-white/5 p-3 text-center">
                 <p className={`text-xl font-black ${s.color}`}>{s.value}</p>
-                <p className="text-xs text-white/30 tracking-wider uppercase mt-0.5">{s.label}</p>
+                <p className="text-xs text-white/60 tracking-wider uppercase mt-0.5">{s.label}</p>
               </div>
             ))}
           </motion.div>
@@ -235,7 +235,7 @@ export default function GameHistoryPage() {
                   <div className="grid grid-cols-3 gap-2 pb-1">
                     {/* Game Type */}
                     <div className="space-y-1">
-                      <p className="text-xs text-white/30 tracking-wider uppercase px-1">Type</p>
+                      <p className="text-xs text-white/60 tracking-wider uppercase px-1">Type</p>
                       {[['all', 'All'], ['ai', 'vs AI'], ['local', 'Local']].map(([val, label]) => (
                         <button key={val} onClick={() => setFilterMode(val)}
                           className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors ${filterMode === val ? 'bg-[#3AAFA9]/20 text-[#3AAFA9] border border-[#3AAFA9]/30' : 'bg-white/5 text-white/50 border border-transparent'}`}>
@@ -245,7 +245,7 @@ export default function GameHistoryPage() {
                     </div>
                     {/* Result */}
                     <div className="space-y-1">
-                      <p className="text-xs text-white/30 tracking-wider uppercase px-1">Result</p>
+                      <p className="text-xs text-white/60 tracking-wider uppercase px-1">Result</p>
                       {[['all', 'All'], ['white_wins', 'Won'], ['black_wins', 'Lost'], ['draw', 'Draw']].map(([val, label]) => (
                         <button key={val} onClick={() => setFilterResult(val)}
                           className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors ${filterResult === val ? 'bg-[#3AAFA9]/20 text-[#3AAFA9] border border-[#3AAFA9]/30' : 'bg-white/5 text-white/50 border border-transparent'}`}>
@@ -255,7 +255,7 @@ export default function GameHistoryPage() {
                     </div>
                     {/* Date */}
                     <div className="space-y-1">
-                      <p className="text-xs text-white/30 tracking-wider uppercase px-1">Date</p>
+                      <p className="text-xs text-white/60 tracking-wider uppercase px-1">Date</p>
                       {[['all', 'All Time'], ['today', 'Today'], ['week', 'This Week'], ['month', 'This Month']].map(([val, label]) => (
                         <button key={val} onClick={() => setFilterDate(val)}
                           className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors ${filterDate === val ? 'bg-[#3AAFA9]/20 text-[#3AAFA9] border border-[#3AAFA9]/30' : 'bg-white/5 text-white/50 border border-transparent'}`}>
@@ -300,17 +300,24 @@ export default function GameHistoryPage() {
             className="rounded-2xl bg-white/5 border border-white/5 p-12 text-center"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           >
-            <Trophy className="w-10 h-10 text-white/10 mx-auto mb-3" />
-            <p className="text-white/40 text-sm">No games recorded yet.</p>
-            <p className="text-white/20 text-xs mt-1">Play a game to see your history here.</p>
+            <Trophy className="w-10 h-10 text-white/30 mx-auto mb-3" />
+            <p className="text-white/60 text-sm">No games recorded yet.</p>
+            <p className="text-white/50 text-xs mt-1">Play a game to see your history here.</p>
+            <button
+              onClick={() => navigate('/Lobby')}
+              className="mt-4 inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-[#0a0a0f] font-bold text-xs tracking-wider uppercase hover:brightness-110 transition-all"
+              style={{ background: 'linear-gradient(135deg, #3AAFA9, #1a6e6b)' }}
+            >
+              <Swords className="w-4 h-4" /> Play a Game
+            </button>
           </motion.div>
         ) : filtered.length === 0 ? (
           <motion.div
             className="rounded-2xl bg-white/5 border border-white/5 p-12 text-center"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           >
-            <Filter className="w-10 h-10 text-white/10 mx-auto mb-3" />
-            <p className="text-white/40 text-sm">No games match your filters.</p>
+            <Filter className="w-10 h-10 text-white/30 mx-auto mb-3" />
+            <p className="text-white/60 text-sm">No games match your filters.</p>
           </motion.div>
         ) : (
           <AnimatePresence>
@@ -329,12 +336,12 @@ export default function GameHistoryPage() {
                     <div className="flex items-center mt-1 flex-shrink-0">
                       {selected.has(record.id)
                         ? <CheckSquare className="w-5 h-5 text-[#3AAFA9]" />
-                        : <Square className="w-5 h-5 text-white/20" />
+                        : <Square className="w-5 h-5 text-white/50" />
                       }
                     </div>
                   )}
                   <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className="w-10 h-10 rounded-xl bg-[#3AAFA9]/10 border border-[#3AAFA9]/20 flex items-center justify-center flex-shrink-0">
+                    <div className="w-11 h-11 rounded-xl bg-[#3AAFA9]/10 border border-[#3AAFA9]/20 flex items-center justify-center flex-shrink-0">
                       {record.mode === 'ai'
                         ? <Bot className="w-4 h-4 text-[#3AAFA9]" />
                         : <Users className="w-4 h-4 text-[#3AAFA9]" />
@@ -356,15 +363,15 @@ export default function GameHistoryPage() {
                         </span>
                       </div>
                       <div className="flex items-center gap-3 mt-1.5 flex-wrap">
-                        <span className="flex items-center gap-1 text-xs text-white/30">
+                        <span className="flex items-center gap-1 text-xs text-white/60">
                           <Swords className="w-3 h-3" />
                           {record.moves_count || 0} moves
                         </span>
-                        <span className="flex items-center gap-1 text-xs text-white/30">
+                        <span className="flex items-center gap-1 text-xs text-white/60">
                           <Clock className="w-3 h-3" />
                           {formatDuration(record.duration_seconds)}
                         </span>
-                        <span className="text-xs text-white/20">
+                        <span className="text-xs text-white/50">
                           {formatDate(record.created_date)} · {formatTime(record.created_date)}
                         </span>
                       </div>
@@ -373,8 +380,8 @@ export default function GameHistoryPage() {
 
                   {!selectMode && (
                     <button
-                      onClick={() => deleteRecord(record.id)}
-                      className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-colors flex-shrink-0"
+                      aria-label="Delete game" onClick={() => deleteRecord(record.id)}
+                      className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/50 hover:text-red-400 hover:bg-red-400/10 transition-colors flex-shrink-0"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>

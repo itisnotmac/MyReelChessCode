@@ -54,7 +54,7 @@ export default function LandingFeatures() {
         >
           Why Reel Chess?
         </h2>
-        <p className="text-white/40 text-sm">
+        <p className="text-white/60 text-sm">
           More than just a board — a full chess experience built for players of all levels.
         </p>
       </motion.div>

@@ -71,7 +71,7 @@ export default function PlayChessModal({ isOpen, onClose, onOnlinePvp, onVsAI, o
             <div className="p-6 pb-8 max-w-md mx-auto">
               <div className="flex items-center justify-between mb-5">
                 <h2 className="text-lg font-bold tracking-wider text-[#3AAFA9]">PLAY CHESS</h2>
-                <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white transition-colors">
+                <button onClick={onClose} aria-label="Close" className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white transition-colors">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -89,7 +89,7 @@ export default function PlayChessModal({ isOpen, onClose, onOnlinePvp, onVsAI, o
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-bold tracking-wider text-white">{mode.label}</p>
-                      <p className="text-[11px] text-white/40 mt-0.5">{mode.desc}</p>
+                      <p className="text-[11px] text-white/60 mt-0.5">{mode.desc}</p>
                     </div>
                     {mode.locked && <Lock className="w-4 h-4 text-[#3AAFA9]/70" />}
                   </motion.button>

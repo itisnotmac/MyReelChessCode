@@ -8,6 +8,8 @@ import { useAuth } from '@/lib/AuthContext';
 import { useSkin } from '@/lib/skinContext';
 import { BOARD_SKINS, PIECE_SETS } from '@/lib/storeCatalog';
 import { renderPieceSet } from '@/components/chess/PieceSets';
+import { useToast } from "@/components/ui/use-toast";
+import StoreCardSkeleton from '@/components/StoreCardSkeleton';
 
 function BoardPreview({ skin }) {
   return (
@@ -43,7 +45,7 @@ function StoreCard({ item, owned, selected, onSelect, onPurchase, purchasing, co
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`relative rounded-xl p-3 pb-14 border backdrop-blur-md transition-all ${
+      className={`relative rounded-xl p-3 pb-14 border backdrop-blur-md transition-colors ${
         selected
           ? 'border-[#3AAFA9] bg-[#3AAFA9]/15'
           : owned
@@ -62,7 +64,7 @@ function StoreCard({ item, owned, selected, onSelect, onPurchase, purchasing, co
 
       {/* Name */}
       <p className="text-sm font-bold text-white text-center mb-0.5">{item.name}</p>
-      <p className="text-[10px] text-white/40 text-center mb-2">{item.description}</p>
+      <p className="text-[10px] text-white/60 text-center mb-2">{item.description}</p>
 
       {/* Action */}
       <div className="absolute bottom-3 left-3 right-3">
@@ -121,6 +123,7 @@ export default function Store() {
   const location = useLocation();
   const { isAuthenticated, user } = useAuth();
   const { boardSkin, pieceSet, setBoardSkin, setPieceSet } = useSkin();
+  const { toast } = useToast();
   const [purchases, setPurchases] = useState([]);
   const [coinBalance, setCoinBalance] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -172,7 +175,7 @@ export default function Store() {
       return;
     }
     if (window.self !== window.top) {
-      alert('Checkout works only from a published app. Please open the app directly to purchase.');
+      toast({ title: 'Checkout unavailable', description: 'Please open the app directly to purchase.' });
       return;
     }
     setPurchasing(item.id);
@@ -187,7 +190,7 @@ export default function Store() {
       }
     } catch (e) {
       console.error('Checkout error:', e);
-      alert('Failed to start checkout. Please try again.');
+      toast({ title: 'Checkout failed', description: 'Please try again.' });
     }
     setPurchasing(null);
   };
@@ -219,7 +222,7 @@ export default function Store() {
     } catch (e) {
       console.error('Coin purchase error:', e);
       const msg = e?.data?.error || e?.message || 'Failed to purchase with Tempo.';
-      alert(msg);
+      toast({ title: 'Purchase failed', description: msg });
     }
     setCoinPurchasing(null);
   };
@@ -235,7 +238,7 @@ export default function Store() {
 
       {/* Header */}
       <div className="relative z-10 flex items-center gap-3 px-4 pt-6 pb-4">
-        <button onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))} className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
+        <button aria-label="Go back" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))} className="w-11 h-11 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
           <ChevronLeft className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-2">
@@ -244,7 +247,7 @@ export default function Store() {
         </div>
         {isAuthenticated && (
           <button onClick={() => navigate('/DailyChallenges')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#D4AF37]/10 border border-[#D4AF37]/25 text-[#D4AF37] text-[11px] font-bold tracking-wider hover:bg-[#D4AF37]/20 transition-colors">
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#D4AF37]/10 border border-[#D4AF37]/25 text-[#D4AF37] text-[11px] font-bold tracking-wider tabular-nums hover:bg-[#D4AF37]/20 transition-colors">
             <Coins className="w-3.5 h-3.5" />
             {coinBalance}
           </button>
@@ -278,8 +281,8 @@ export default function Store() {
           BOARD STYLES
         </h2>
         {loading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="w-6 h-6 text-[#3AAFA9]/50 animate-spin" />
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3">
@@ -311,8 +314,8 @@ export default function Store() {
           PIECE SETS
         </h2>
         {loading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="w-6 h-6 text-[#3AAFA9]/50 animate-spin" />
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3">
@@ -339,7 +342,7 @@ export default function Store() {
 
       {/* Footer note */}
       <div className="relative z-10 px-4 text-center">
-        <p className="text-[10px] text-white/20 tracking-wider">
+        <p className="text-[10px] text-white/50 tracking-wider">
           All board themes and piece sets are currently free. Equip any item instantly — no purchase required.
         </p>
       </div>
