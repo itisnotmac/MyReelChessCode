@@ -87,7 +87,7 @@ export default function BottomNav() {
               aria-hidden="true" />
             
             <span
-              className="text-[11px] font-medium tracking-wider transition-colors text-teal-300"
+              className="text-[11px] tracking-wider transition-colors text-teal-300 [font-family:'Crimson_Text',_serif] font-bold"
               style={{ color: active ? '#3AAFA9' : 'rgba(255,255,255,0.25)' }}>
               
               {label}
