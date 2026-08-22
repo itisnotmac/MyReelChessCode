@@ -17,7 +17,11 @@
         "pieces",
         "username_glow",
         "move_trail",
-        "avatar"
+        "avatar",
+        "particle_effect",
+        "board_border",
+        "avatar_frame",
+        "ambient_effect"
       ],
       "description": "Category of cosmetic"
     },

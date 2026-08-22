@@ -43,6 +43,34 @@ const COSMETIC_CATALOG = {
   gm_nakamura:   { name: 'Nakamura',    item_type: 'avatar', price: 500 },
   gm_pillsbury:  { name: 'Pillsbury',   item_type: 'avatar', price: 500 },
   gm_timman:     { name: 'Timman',      item_type: 'avatar', price: 500 },
+  // Particle effects
+  fx_sparkle:   { name: 'Sparkle',   item_type: 'particle_effect', price: 300 },
+  fx_ember:     { name: 'Ember',     item_type: 'particle_effect', price: 300 },
+  fx_frost:     { name: 'Frost',     item_type: 'particle_effect', price: 300 },
+  fx_toxic:     { name: 'Toxic',     item_type: 'particle_effect', price: 300 },
+  fx_cosmic:    { name: 'Cosmic',    item_type: 'particle_effect', price: 300 },
+  fx_lightning: { name: 'Lightning', item_type: 'particle_effect', price: 300 },
+  // Board borders
+  border_neon:    { name: 'Neon Teal',    item_type: 'board_border', price: 250 },
+  border_gold:   { name: 'Gold Trim',     item_type: 'board_border', price: 250 },
+  border_crimson: { name: 'Crimson Edge', item_type: 'board_border', price: 250 },
+  border_purple:  { name: 'Royal Purple', item_type: 'board_border', price: 250 },
+  border_ice:     { name: 'Ice Blue',     item_type: 'board_border', price: 250 },
+  border_emerald: { name: 'Emerald Vine', item_type: 'board_border', price: 250 },
+  // Avatar frames
+  frame_teal:    { name: 'Teal Circle',   item_type: 'avatar_frame', price: 250 },
+  frame_gold:    { name: 'Gold Crown',    item_type: 'avatar_frame', price: 250 },
+  frame_crimson: { name: 'Crimson Spike', item_type: 'avatar_frame', price: 250 },
+  frame_purple:  { name: 'Purple Mist',   item_type: 'avatar_frame', price: 250 },
+  frame_ice:     { name: 'Ice Crystal',   item_type: 'avatar_frame', price: 250 },
+  frame_emerald: { name: 'Emerald Leaf',  item_type: 'avatar_frame', price: 250 },
+  // Ambient effects
+  amb_embers:    { name: 'Floating Embers', item_type: 'ambient_effect', price: 350 },
+  amb_snow:      { name: 'Snowfall',        item_type: 'ambient_effect', price: 350 },
+  amb_aurora:    { name: 'Aurora',          item_type: 'ambient_effect', price: 350 },
+  amb_stardust:  { name: 'Stardust',        item_type: 'ambient_effect', price: 350 },
+  amb_rain:      { name: 'Raindrops',       item_type: 'ambient_effect', price: 350 },
+  amb_fireflies: { name: 'Fireflies',       item_type: 'ambient_effect', price: 350 },
 };
 
 Deno.serve(async (req) => {

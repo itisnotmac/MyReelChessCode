@@ -80,10 +80,50 @@ export const GRANDMASTER_AVATARS = [
   { id: 'gm_timman',      name: 'Timman',      image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/849ec4fc8_timman.jpg', price: 500 },
 ];
 
+export const PARTICLE_EFFECTS = [
+  { id: 'fx_sparkle',   name: 'Sparkle',   color: '#FFD700', style: 'sparkle',   price: 300 },
+  { id: 'fx_ember',     name: 'Ember',     color: '#FF6B35', style: 'ember',     price: 300 },
+  { id: 'fx_frost',     name: 'Frost',     color: '#7EC8E3', style: 'frost',     price: 300 },
+  { id: 'fx_toxic',     name: 'Toxic',     color: '#7FFF00', style: 'toxic',     price: 300 },
+  { id: 'fx_cosmic',    name: 'Cosmic',    color: '#9D4EDD', style: 'cosmic',    price: 300 },
+  { id: 'fx_lightning', name: 'Lightning', color: '#FFFF00', style: 'lightning', price: 300 },
+];
+
+export const BOARD_BORDERS = [
+  { id: 'border_neon',    name: 'Neon Teal',    color: '#3AAFA9', style: 'glow',   price: 250 },
+  { id: 'border_gold',   name: 'Gold Trim',    color: '#FFD700', style: 'solid',  price: 250 },
+  { id: 'border_crimson', name: 'Crimson Edge', color: '#DC143C', style: 'solid',  price: 250 },
+  { id: 'border_purple',  name: 'Royal Purple', color: '#9D4EDD', style: 'glow',   price: 250 },
+  { id: 'border_ice',     name: 'Ice Blue',     color: '#7EC8E3', style: 'glow',   price: 250 },
+  { id: 'border_emerald', name: 'Emerald Vine', color: '#32CD32', style: 'glow',   price: 250 },
+];
+
+export const AVATAR_FRAMES = [
+  { id: 'frame_teal',    name: 'Teal Circle',    color: '#3AAFA9', style: 'ring',    price: 250 },
+  { id: 'frame_gold',    name: 'Gold Crown',    color: '#FFD700', style: 'crown',   price: 250 },
+  { id: 'frame_crimson', name: 'Crimson Spike',  color: '#DC143C', style: 'spike',   price: 250 },
+  { id: 'frame_purple',  name: 'Purple Mist',    color: '#9D4EDD', style: 'mist',    price: 250 },
+  { id: 'frame_ice',     name: 'Ice Crystal',    color: '#7EC8E3', style: 'crystal', price: 250 },
+  { id: 'frame_emerald', name: 'Emerald Leaf',   color: '#32CD32', style: 'leaf',    price: 250 },
+];
+
+export const AMBIENT_EFFECTS = [
+  { id: 'amb_embers',    name: 'Floating Embers', color: '#FF6B35', style: 'embers',    price: 350 },
+  { id: 'amb_snow',      name: 'Snowfall',        color: '#FFFFFF', style: 'snow',      price: 350 },
+  { id: 'amb_aurora',    name: 'Aurora',          color: '#3AAFA9', style: 'aurora',    price: 350 },
+  { id: 'amb_stardust',  name: 'Stardust',        color: '#9D4EDD', style: 'stardust',  price: 350 },
+  { id: 'amb_rain',      name: 'Raindrops',       color: '#7EC8E3', style: 'rain',      price: 350 },
+  { id: 'amb_fireflies', name: 'Fireflies',       color: '#FFD700', style: 'fireflies', price: 350 },
+];
+
 export const STORE_ITEMS = [
   ...Object.values(BOARD_SKINS).map(s => ({ ...s, category: 'board', price: 0 })),
   ...Object.values(PIECE_SETS).map(s => ({ ...s, category: 'pieces', price: 0 })),
   ...USERNAME_GLOW_COLORS.map(s => ({ ...s, category: 'username_glow' })),
   ...MOVE_TRAIL_COLORS.map(s => ({ ...s, category: 'move_trail' })),
   ...GRANDMASTER_AVATARS.map(s => ({ ...s, category: 'avatar' })),
+  ...PARTICLE_EFFECTS.map(s => ({ ...s, category: 'particle_effect' })),
+  ...BOARD_BORDERS.map(s => ({ ...s, category: 'board_border' })),
+  ...AVATAR_FRAMES.map(s => ({ ...s, category: 'avatar_frame' })),
+  ...AMBIENT_EFFECTS.map(s => ({ ...s, category: 'ambient_effect' })),
 ];

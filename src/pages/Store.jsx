@@ -6,7 +6,7 @@ import { ITEM_COST_COINS } from '@/lib/dailyChallenges';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useSkin } from '@/lib/skinContext';
-import { BOARD_SKINS, PIECE_SETS, USERNAME_GLOW_COLORS, MOVE_TRAIL_COLORS, GRANDMASTER_AVATARS } from '@/lib/storeCatalog';
+import { BOARD_SKINS, PIECE_SETS, USERNAME_GLOW_COLORS, MOVE_TRAIL_COLORS, GRANDMASTER_AVATARS, PARTICLE_EFFECTS, BOARD_BORDERS, AVATAR_FRAMES, AMBIENT_EFFECTS } from '@/lib/storeCatalog';
 import { renderPieceSet } from '@/components/chess/PieceSets';
 import CosmeticGrid from '@/components/store/CosmeticGrid';
 import { getLocalProfile, setLocalProfile } from '@/lib/profileUtils';
@@ -109,7 +109,7 @@ export default function Store() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, user } = useAuth();
-  const { boardSkin, pieceSet, setBoardSkin, setPieceSet, usernameGlow, moveTrailColor, setUsernameGlow, setMoveTrailColor } = useSkin();
+  const { boardSkin, pieceSet, setBoardSkin, setPieceSet, usernameGlow, moveTrailColor, setUsernameGlow, setMoveTrailColor, boardBorder, particleEffect, avatarFrame, ambientEffect, setBoardBorder, setParticleEffect, setAvatarFrame, setAmbientEffect } = useSkin();
   const { toast } = useToast();
   const [purchases, setPurchases] = useState([]);
   const [coinBalance, setCoinBalance] = useState(0);
@@ -220,6 +220,26 @@ export default function Store() {
       console.error('Avatar equip error:', e);
       toast({ title: 'Failed to equip avatar', description: 'Please try again.' });
     }
+  };
+
+  const handleEquipParticle = (item) => {
+    setParticleEffect(item.id);
+    toast({ title: 'Particle effect equipped', description: item.name });
+  };
+
+  const handleEquipBorder = (item) => {
+    setBoardBorder(item.id);
+    toast({ title: 'Border equipped', description: item.name });
+  };
+
+  const handleEquipFrame = (item) => {
+    setAvatarFrame(item.id);
+    toast({ title: 'Frame equipped', description: item.name });
+  };
+
+  const handleEquipAmbient = (item) => {
+    setAmbientEffect(item.id);
+    toast({ title: 'Ambient effect equipped', description: item.name });
   };
 
   const handleCoinPurchase = async (item) => {
@@ -446,6 +466,102 @@ export default function Store() {
             purchasingId={coinPurchasing}
             coinBalance={coinBalance}
             variant="avatar"
+          />
+        )}
+      </div>
+
+      {/* Particle Effects */}
+      <div className="relative z-10 px-4 mb-8">
+        <h2 className="text-sm font-bold tracking-wider text-[#3AAFA9]/70 mb-3 flex items-center gap-2">
+          <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
+          PARTICLE EFFECTS
+        </h2>
+        {loading ? (
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
+          </div>
+        ) : (
+          <CosmeticGrid
+            items={PARTICLE_EFFECTS}
+            ownedIds={new Set(purchases.filter(p => p.item_type === 'particle_effect').map(p => p.item_id))}
+            equippedId={particleEffect}
+            onEquip={handleEquipParticle}
+            onPurchase={handleCoinPurchase}
+            purchasingId={coinPurchasing}
+            coinBalance={coinBalance}
+            variant="particle"
+          />
+        )}
+      </div>
+
+      {/* Board Borders */}
+      <div className="relative z-10 px-4 mb-8">
+        <h2 className="text-sm font-bold tracking-wider text-[#3AAFA9]/70 mb-3 flex items-center gap-2">
+          <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
+          BOARD BORDERS
+        </h2>
+        {loading ? (
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
+          </div>
+        ) : (
+          <CosmeticGrid
+            items={BOARD_BORDERS}
+            ownedIds={new Set(purchases.filter(p => p.item_type === 'board_border').map(p => p.item_id))}
+            equippedId={boardBorder}
+            onEquip={handleEquipBorder}
+            onPurchase={handleCoinPurchase}
+            purchasingId={coinPurchasing}
+            coinBalance={coinBalance}
+            variant="border"
+          />
+        )}
+      </div>
+
+      {/* Avatar Frames */}
+      <div className="relative z-10 px-4 mb-8">
+        <h2 className="text-sm font-bold tracking-wider text-[#3AAFA9]/70 mb-3 flex items-center gap-2">
+          <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
+          AVATAR FRAMES
+        </h2>
+        {loading ? (
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
+          </div>
+        ) : (
+          <CosmeticGrid
+            items={AVATAR_FRAMES}
+            ownedIds={new Set(purchases.filter(p => p.item_type === 'avatar_frame').map(p => p.item_id))}
+            equippedId={avatarFrame}
+            onEquip={handleEquipFrame}
+            onPurchase={handleCoinPurchase}
+            purchasingId={coinPurchasing}
+            coinBalance={coinBalance}
+            variant="frame"
+          />
+        )}
+      </div>
+
+      {/* Ambient Effects */}
+      <div className="relative z-10 px-4 mb-8">
+        <h2 className="text-sm font-bold tracking-wider text-[#3AAFA9]/70 mb-3 flex items-center gap-2">
+          <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
+          AMBIENT EFFECTS
+        </h2>
+        {loading ? (
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
+          </div>
+        ) : (
+          <CosmeticGrid
+            items={AMBIENT_EFFECTS}
+            ownedIds={new Set(purchases.filter(p => p.item_type === 'ambient_effect').map(p => p.item_id))}
+            equippedId={ambientEffect}
+            onEquip={handleEquipAmbient}
+            onPurchase={handleCoinPurchase}
+            purchasingId={coinPurchasing}
+            coinBalance={coinBalance}
+            variant="ambient"
           />
         )}
       </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, Loader2, Coins } from 'lucide-react';
+import EffectPreview from './EffectPreview';
 
 /**
  * Reusable grid for Tempo-purchasable cosmetics.
@@ -20,9 +21,11 @@ export default function CosmeticGrid({
     <div className="grid grid-cols-2 gap-3">
       {items.map((item, i) => {
         const owned = ownedIds.has(item.id);
-        const equipped = variant === 'color'
+        const equipped = ['color'].includes(variant)
           ? equippedId === item.color
-          : equippedId === item.image;
+          : ['avatar'].includes(variant)
+            ? equippedId === item.image
+            : equippedId === item.id;
         const canAfford = (coinBalance || 0) >= item.price;
 
         return (
@@ -46,7 +49,7 @@ export default function CosmeticGrid({
                     boxShadow: `0 0 24px ${item.color}80, inset 0 0 12px rgba(255,255,255,0.2)`,
                   }}
                 />
-              ) : (
+              ) : variant === 'avatar' ? (
                 <div
                   className="w-16 h-16 rounded-full overflow-hidden border border-white/10"
                   style={{ boxShadow: '0 0 12px rgba(58,175,169,0.2)' }}
@@ -59,6 +62,8 @@ export default function CosmeticGrid({
                     </div>
                   )}
                 </div>
+              ) : (
+                <EffectPreview item={item} variant={variant} />
               )}
             </div>
 
