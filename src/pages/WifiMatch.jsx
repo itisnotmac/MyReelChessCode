@@ -34,6 +34,9 @@ export default function WifiMatch() {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
   const pollingRef = useRef(null);
+  // Set when we're transitioning to the game (not cancelling) so the cleanup
+  // effect doesn't delete the game out from under the OnlineGame page.
+  const transitionedRef = useRef(false);
 
   useEffect(() => {
     stopMenuMusic();
@@ -86,18 +89,20 @@ export default function WifiMatch() {
         if (!g) return;
         if (g.status === 'active' && g.guest_id) {
           clearInterval(pollingRef.current);
+          transitionedRef.current = true;
           navigate(createPageUrl('OnlineGame') + `?game=${gameId}`);
         }
-      } catch {}
+      } catch (e) { console.error('WifiMatch polling error:', e); }
     }, 2000);
     return () => clearInterval(pollingRef.current);
   }, [phase, gameId]);
 
-  // Cleanup: cancel the game if host leaves while still waiting
+  // Cleanup: cancel the game if host leaves while still waiting.
+  // Skip the delete when we're transitioning to play (guest joined).
   useEffect(() => {
     return () => {
       clearInterval(pollingRef.current);
-      if (gameId && phase === 'waiting') {
+      if (gameId && phase === 'waiting' && !transitionedRef.current) {
         base44.entities.OnlineGame.delete(gameId).catch(() => {});
       }
     };
@@ -111,6 +116,7 @@ export default function WifiMatch() {
 
   const handleCancel = async () => {
     clearInterval(pollingRef.current);
+    transitionedRef.current = true; // prevent cleanup double-delete
     if (gameId) {
       try { await base44.entities.OnlineGame.delete(gameId); } catch {}
     }
