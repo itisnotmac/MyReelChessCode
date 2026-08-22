@@ -54,35 +54,45 @@ export default function EffectPreview({ item, variant }) {
     const isFalling = style === 'snow' || style === 'rain';
     const isVertical = style === 'rain';
     const isRising = style === 'embers';
-    const drift = style === 'fireflies' || style === 'embers';
 
-    const count = style === 'rain' ? 10 : style === 'snow' ? 8 : 6;
+    const count = style === 'rain' ? 14 : style === 'snow' ? 12 : 8;
     const dots = Array.from({ length: count }, (_, i) => ({
       id: i,
-      left: 8 + Math.random() * 84,
-      delay: Math.random() * 2.5,
-      duration: 2 + Math.random() * 2,
-      size: 1.5 + Math.random() * 2,
+      left: 5 + Math.random() * 90,
+      delay: Math.random() * 3,
+      duration: 1.8 + Math.random() * 1.8,
+      size: 2.5 + Math.random() * 2.5,
     }));
 
     return (
-      <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-black/50">
+      <div className="relative w-full rounded-lg overflow-hidden bg-black/60 border border-white/10" style={{ height: 90 }}>
         {/* Base glow */}
         <motion.div
           className="absolute inset-0"
-          style={{ background: `radial-gradient(circle at 50% 40%, ${color}30, transparent 70%)` }}
-          animate={{ opacity: [0.3, 0.6, 0.3] }}
+          style={{ background: `radial-gradient(circle at 50% 40%, ${color}35, transparent 75%)` }}
+          animate={{ opacity: [0.4, 0.7, 0.4] }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         />
 
         {/* Aurora wave */}
         {style === 'aurora' && (
-          <motion.div
-            className="absolute inset-x-0 top-0 h-2/3"
-            style={{ background: `linear-gradient(180deg, ${color}50, transparent)`, filter: 'blur(6px)' }}
-            animate={{ opacity: [0.4, 0.7, 0.4], x: [-6, 6, -6] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          />
+          <>
+            <motion.div
+              className="absolute inset-x-0 top-0 h-3/4"
+              style={{ background: `linear-gradient(180deg, ${color}60, transparent)`, filter: 'blur(8px)' }}
+              animate={{ opacity: [0.4, 0.8, 0.4], x: [-10, 10, -10] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            {dots.map(p => (
+              <motion.div
+                key={p.id}
+                className="absolute rounded-full"
+                style={{ width: p.size, height: p.size, backgroundColor: color, boxShadow: `0 0 ${p.size * 3}px ${color}`, left: `${p.left}%`, top: `${10 + Math.random() * 80}%` }}
+                animate={{ opacity: [0, 1, 0], scale: [0.5, 1.5, 0.5] }}
+                transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
+              />
+            ))}
+          </>
         )}
 
         {/* Stardust twinkle */}
@@ -90,8 +100,8 @@ export default function EffectPreview({ item, variant }) {
           <motion.div
             key={p.id}
             className="absolute rounded-full"
-            style={{ width: p.size, height: p.size, backgroundColor: color, boxShadow: `0 0 ${p.size * 2}px ${color}`, left: `${p.left}%`, top: `${10 + Math.random() * 80}%` }}
-            animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
+            style={{ width: p.size, height: p.size, backgroundColor: color, boxShadow: `0 0 ${p.size * 3}px ${color}`, left: `${p.left}%`, top: `${10 + Math.random() * 80}%` }}
+            animate={{ opacity: [0, 1, 0], scale: [0.5, 1.5, 0.5] }}
             transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
           />
         ))}
@@ -103,14 +113,14 @@ export default function EffectPreview({ item, variant }) {
             className="absolute"
             style={{
               width: p.size,
-              height: isVertical ? p.size * 3 : p.size,
+              height: isVertical ? p.size * 4 : p.size,
               backgroundColor: color,
-              boxShadow: `0 0 ${p.size}px ${color}`,
+              boxShadow: `0 0 ${p.size * 1.5}px ${color}`,
               left: `${p.left}%`,
               borderRadius: isVertical ? '1px' : '50%',
             }}
-            initial={{ y: -8, opacity: 0 }}
-            animate={{ y: 64, opacity: [0, 1, 1, 0] }}
+            initial={{ y: -10, opacity: 0 }}
+            animate={{ y: 95, opacity: [0, 1, 1, 0] }}
             transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: isVertical ? 'linear' : 'easeIn' }}
           />
         ))}
@@ -120,9 +130,9 @@ export default function EffectPreview({ item, variant }) {
           <motion.div
             key={p.id}
             className="absolute rounded-full"
-            style={{ width: p.size, height: p.size, backgroundColor: color, boxShadow: `0 0 ${p.size * 2}px ${color}`, left: `${p.left}%`, bottom: 0 }}
+            style={{ width: p.size, height: p.size, backgroundColor: color, boxShadow: `0 0 ${p.size * 3}px ${color}`, left: `${p.left}%`, bottom: 0 }}
             initial={{ y: 0, opacity: 0 }}
-            animate={{ y: -64, opacity: [0, 1, 1, 0], x: [0, 6, -3, 0] }}
+            animate={{ y: -90, opacity: [0, 1, 1, 0], x: [0, 8, -4, 0] }}
             transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: 'easeOut' }}
           />
         ))}
@@ -132,8 +142,8 @@ export default function EffectPreview({ item, variant }) {
           <motion.div
             key={p.id}
             className="absolute rounded-full"
-            style={{ width: p.size, height: p.size, backgroundColor: color, boxShadow: `0 0 ${p.size * 3}px ${color}`, left: `${p.left}%`, top: `${20 + Math.random() * 60}%` }}
-            animate={{ x: [0, 10, -5, 0], y: [0, -6, 4, 0], opacity: [0.2, 1, 0.4, 1, 0.2] }}
+            style={{ width: p.size, height: p.size, backgroundColor: color, boxShadow: `0 0 ${p.size * 4}px ${color}`, left: `${p.left}%`, top: `${15 + Math.random() * 70}%` }}
+            animate={{ x: [0, 14, -7, 0], y: [0, -8, 6, 0], opacity: [0.2, 1, 0.4, 1, 0.2] }}
             transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
           />
         ))}

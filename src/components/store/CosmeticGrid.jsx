@@ -40,7 +40,7 @@ export default function CosmeticGrid({
             style={{ minHeight: 140 }}
           >
             {/* Preview */}
-            <div className="flex justify-center mb-2" style={{ height: 72 }}>
+            <div className="flex justify-center mb-2" style={{ height: variant === 'ambient' ? 90 : 72 }}>
               {variant === 'color' ? (
                 <div
                   className="w-14 h-14 rounded-full"
@@ -62,6 +62,8 @@ export default function CosmeticGrid({
                     </div>
                   )}
                 </div>
+              ) : variant === 'ambient' ? (
+                <EffectPreview item={item} variant={variant} />
               ) : (
                 <EffectPreview item={item} variant={variant} />
               )}
