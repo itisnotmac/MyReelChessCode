@@ -41,11 +41,30 @@ Deno.serve(async (req) => {
       }
 
       if (userId && session.mode === 'payment') {
-        // Cosmetic purchase
         const itemId = session.metadata?.item_id;
         const itemType = session.metadata?.item_type;
         const itemName = session.metadata?.item_name;
-        if (itemId) {
+
+        if (itemType === 'tempo') {
+          // Tempo bundle purchase — credit currency_balance (1 Tempo = 1 cent)
+          const tempoAmount = parseInt(session.metadata?.tempo_amount || '0', 10);
+          if (tempoAmount > 0) {
+            const accounts = await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: userId });
+            const account = accounts[0];
+            if (account) {
+              await base44.asServiceRole.entities.PlayerAccount.update(account.id, {
+                currency_balance: (account.currency_balance || 0) + tempoAmount,
+              });
+            } else {
+              await base44.asServiceRole.entities.PlayerAccount.create({
+                user_id: userId,
+                currency_balance: tempoAmount,
+              });
+            }
+            console.log(`Credited ${tempoAmount} Tempo to user ${userId}`);
+          }
+        } else if (itemId) {
+          // Cosmetic purchase
           const existing = await base44.asServiceRole.entities.UserPurchase.filter({
             user_id: userId,
             item_id: itemId,

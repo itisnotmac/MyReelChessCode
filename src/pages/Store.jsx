@@ -10,6 +10,7 @@ import { BOARD_SKINS, PIECE_SETS } from '@/lib/storeCatalog';
 import { renderPieceSet } from '@/components/chess/PieceSets';
 import { useToast } from "@/components/ui/use-toast";
 import StoreCardSkeleton from '@/components/StoreCardSkeleton';
+import TempoBundles from '@/components/store/TempoBundles';
 
 function BoardPreview({ skin }) {
   return (
@@ -130,6 +131,7 @@ export default function Store() {
   const [purchasing, setPurchasing] = useState(null);
   const [coinPurchasing, setCoinPurchasing] = useState(null);
   const [justPurchased, setJustPurchased] = useState(null);
+  const [tempoPurchased, setTempoPurchased] = useState(null);
 
   const loadPurchases = useCallback(async () => {
     if (!isAuthenticated) {
@@ -164,6 +166,13 @@ export default function Store() {
       // Reload purchases after a brief delay (webhook may still be processing)
       setTimeout(() => loadPurchases(), 1500);
       setTimeout(() => setJustPurchased(null), 4000);
+    }
+    const tempo = params.get('tempo');
+    if (tempo) {
+      setTempoPurchased(tempo);
+      navigate('/Store', { replace: true });
+      setTimeout(() => loadPurchases(), 1500);
+      setTimeout(() => setTempoPurchased(null), 4000);
     }
   }, [location.search]);
 
@@ -273,6 +282,23 @@ export default function Store() {
           <span className="text-xs text-[#D4AF37]/70">Log in to purchase and save your cosmetics.</span>
         </div>
       )}
+
+      {/* Tempo purchased banner */}
+      {tempoPurchased && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative z-10 mx-4 mb-4 p-3 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center gap-2"
+        >
+          <Coins className="w-4 h-4 text-[#D4AF37]" />
+          <span className="text-sm text-[#D4AF37]">{Number(tempoPurchased).toLocaleString()} Tempo added to your balance!</span>
+        </motion.div>
+      )}
+
+      {/* Buy Tempo bundles */}
+      <div className="relative z-10 px-4 mb-8">
+        <TempoBundles />
+      </div>
 
       {/* Board Styles */}
       <div className="relative z-10 px-4 mb-8">
