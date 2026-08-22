@@ -34,14 +34,15 @@ const COSMETIC_CATALOG = {
   trail_lime:    { name: 'Lime',     item_type: 'move_trail', price: 200 },
   trail_orange:  { name: 'Orange',   item_type: 'move_trail', price: 200 },
   // Grandmaster avatars
-  gm_kasparov:   { name: 'Kasparov',    item_type: 'avatar', price: 500 },
-  gm_carlsen:    { name: 'Carlsen',     item_type: 'avatar', price: 500 },
+  gm_alekhine:   { name: 'Alekhine',    item_type: 'avatar', price: 500 },
   gm_fischer:    { name: 'Fischer',     item_type: 'avatar', price: 500 },
-  gm_karpov:     { name: 'Karpov',      item_type: 'avatar', price: 500 },
-  gm_tal:        { name: 'Tal',         item_type: 'avatar', price: 500 },
   gm_capablanca: { name: 'Capablanca',  item_type: 'avatar', price: 500 },
-  gm_lasker:     { name: 'Lasker',       item_type: 'avatar', price: 500 },
-  gm_anand:      { name: 'Anand',        item_type: 'avatar', price: 500 },
+  gm_karpov:     { name: 'Karpov',      item_type: 'avatar', price: 500 },
+  gm_carlsen:    { name: 'Carlsen',     item_type: 'avatar', price: 500 },
+  gm_morphy:     { name: 'Morphy',      item_type: 'avatar', price: 500 },
+  gm_nakamura:   { name: 'Nakamura',    item_type: 'avatar', price: 500 },
+  gm_pillsbury:  { name: 'Pillsbury',   item_type: 'avatar', price: 500 },
+  gm_timman:     { name: 'Timman',      item_type: 'avatar', price: 500 },
 };
 
 Deno.serve(async (req) => {
