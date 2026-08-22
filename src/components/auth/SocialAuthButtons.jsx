@@ -1,6 +1,6 @@
 import React from 'react';
 import { base44 } from '@/api/base44Client';
-import { createPageUrl } from '@/utils';
+import { safeReturnTo } from '@/lib/authReturnTo';
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18">
@@ -31,7 +31,7 @@ const PROVIDERS = [
 
 export default function SocialAuthButtons() {
   const handleProvider = (provider) => {
-    base44.auth.loginWithProvider(provider, createPageUrl('Lobby'));
+    base44.auth.loginWithProvider(provider, safeReturnTo());
   };
 
   return (

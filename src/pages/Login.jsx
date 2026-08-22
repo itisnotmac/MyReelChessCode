@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { ChevronRight, Loader2 } from 'lucide-react';
 import SocialAuthButtons from '@/components/auth/SocialAuthButtons';
+import { safeReturnTo } from '@/lib/authReturnTo';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -17,7 +18,7 @@ export default function Login() {
     setLoading(true);
     try {
       await base44.auth.loginViaEmailPassword(email, password);
-      window.location.href = '/';
+      window.location.href = safeReturnTo();
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {

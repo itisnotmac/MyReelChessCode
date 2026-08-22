@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { X, Camera, Keyboard, Loader2, ScanLine } from 'lucide-react';
+import jsQR from 'jsqr';
 
 export default function QrScannerModal({ isOpen, onClose }) {
   const navigate = useNavigate();
@@ -73,13 +74,19 @@ export default function QrScannerModal({ isOpen, onClose }) {
   useEffect(() => {
     if (!isOpen || mode !== 'camera') return;
 
-    if (!('BarcodeDetector' in window) || !navigator.mediaDevices?.getUserMedia) {
+    if (!navigator.mediaDevices?.getUserMedia) {
       setMode('manual');
       return;
     }
 
+    // BarcodeDetector is Chromium-only (not on iOS Safari). Fall back to
+    // jsQR (pure-JS QR decoder via canvas) so the camera scanner works on
+    // iPhone and every other browser.
+    const useBarcodeDetector = 'BarcodeDetector' in window;
     let cancelled = false;
     let detector = null;
+    let canvas = null;
+    let ctx = null;
 
     const start = async () => {
       try {
@@ -95,14 +102,35 @@ export default function QrScannerModal({ isOpen, onClose }) {
           setCameraReady(true);
         }
 
-        detector = new window.BarcodeDetector({ formats: ['qr_code'] });
+        if (useBarcodeDetector) {
+          detector = new window.BarcodeDetector({ formats: ['qr_code'] });
+        } else {
+          canvas = document.createElement('canvas');
+          ctx = canvas.getContext('2d', { willReadFrequently: true });
+        }
 
         const scan = async () => {
           if (cancelled || !videoRef.current || !streamRef.current) return;
           try {
-            const codes = await detector.detect(videoRef.current);
-            if (codes.length > 0) {
-              const code = extractInviteCode(codes[0].rawValue);
+            let rawValue = null;
+            if (useBarcodeDetector) {
+              const codes = await detector.detect(videoRef.current);
+              if (codes.length > 0) rawValue = codes[0].rawValue;
+            } else {
+              const video = videoRef.current;
+              if (video.readyState >= 2 && video.videoWidth > 0) {
+                // Downscale to max 640px for fast QR detection on mobile
+                const scale = Math.min(1, 640 / Math.max(video.videoWidth, video.videoHeight));
+                canvas.width = Math.floor(video.videoWidth * scale);
+                canvas.height = Math.floor(video.videoHeight * scale);
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+                if (code) rawValue = code.data;
+              }
+            }
+            if (rawValue) {
+              const code = extractInviteCode(rawValue);
               if (code) {
                 stopCamera();
                 handleJoinRef.current(code);
