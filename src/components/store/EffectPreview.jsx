@@ -51,21 +51,90 @@ export default function EffectPreview({ item, variant }) {
   }
 
   if (variant === 'ambient') {
+    const isFalling = style === 'snow' || style === 'rain';
+    const isVertical = style === 'rain';
+    const isRising = style === 'embers';
+    const drift = style === 'fireflies' || style === 'embers';
+
+    const count = style === 'rain' ? 10 : style === 'snow' ? 8 : 6;
+    const dots = Array.from({ length: count }, (_, i) => ({
+      id: i,
+      left: 8 + Math.random() * 84,
+      delay: Math.random() * 2.5,
+      duration: 2 + Math.random() * 2,
+      size: 1.5 + Math.random() * 2,
+    }));
+
     return (
-      <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-black/40">
+      <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-black/50">
+        {/* Base glow */}
         <motion.div
           className="absolute inset-0"
-          style={{ background: `radial-gradient(circle at 50% 50%, ${color}50, transparent 70%)` }}
-          animate={{ opacity: [0.3, 0.7, 0.3], scale: [1, 1.15, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ background: `radial-gradient(circle at 50% 40%, ${color}30, transparent 70%)` }}
+          animate={{ opacity: [0.3, 0.6, 0.3] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         />
-        {[...Array(4)].map((_, i) => (
+
+        {/* Aurora wave */}
+        {style === 'aurora' && (
           <motion.div
-            key={i}
-            className="absolute w-1 h-1 rounded-full"
-            style={{ backgroundColor: color, left: `${20 + i * 20}%` }}
-            animate={{ y: [0, 24, 0], opacity: [0, 1, 0] }}
-            transition={{ duration: 2 + i * 0.3, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 }}
+            className="absolute inset-x-0 top-0 h-2/3"
+            style={{ background: `linear-gradient(180deg, ${color}50, transparent)`, filter: 'blur(6px)' }}
+            animate={{ opacity: [0.4, 0.7, 0.4], x: [-6, 6, -6] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        )}
+
+        {/* Stardust twinkle */}
+        {style === 'stardust' && dots.map(p => (
+          <motion.div
+            key={p.id}
+            className="absolute rounded-full"
+            style={{ width: p.size, height: p.size, backgroundColor: color, boxShadow: `0 0 ${p.size * 2}px ${color}`, left: `${p.left}%`, top: `${10 + Math.random() * 80}%` }}
+            animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
+            transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        ))}
+
+        {/* Falling (rain/snow) */}
+        {isFalling && dots.map(p => (
+          <motion.div
+            key={p.id}
+            className="absolute"
+            style={{
+              width: p.size,
+              height: isVertical ? p.size * 3 : p.size,
+              backgroundColor: color,
+              boxShadow: `0 0 ${p.size}px ${color}`,
+              left: `${p.left}%`,
+              borderRadius: isVertical ? '1px' : '50%',
+            }}
+            initial={{ y: -8, opacity: 0 }}
+            animate={{ y: 64, opacity: [0, 1, 1, 0] }}
+            transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: isVertical ? 'linear' : 'easeIn' }}
+          />
+        ))}
+
+        {/* Rising embers */}
+        {isRising && dots.map(p => (
+          <motion.div
+            key={p.id}
+            className="absolute rounded-full"
+            style={{ width: p.size, height: p.size, backgroundColor: color, boxShadow: `0 0 ${p.size * 2}px ${color}`, left: `${p.left}%`, bottom: 0 }}
+            initial={{ y: 0, opacity: 0 }}
+            animate={{ y: -64, opacity: [0, 1, 1, 0], x: [0, 6, -3, 0] }}
+            transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: 'easeOut' }}
+          />
+        ))}
+
+        {/* Drifting fireflies */}
+        {style === 'fireflies' && dots.map(p => (
+          <motion.div
+            key={p.id}
+            className="absolute rounded-full"
+            style={{ width: p.size, height: p.size, backgroundColor: color, boxShadow: `0 0 ${p.size * 3}px ${color}`, left: `${p.left}%`, top: `${20 + Math.random() * 60}%` }}
+            animate={{ x: [0, 10, -5, 0], y: [0, -6, 4, 0], opacity: [0.2, 1, 0.4, 1, 0.2] }}
+            transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
           />
         ))}
       </div>
