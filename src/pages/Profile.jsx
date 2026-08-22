@@ -16,6 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from '@/components/ui/button';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -172,10 +173,9 @@ export default function Profile() {
               <p className="text-2xl font-black text-[#D4AF37] leading-none mt-0.5 tabular-nums">{tempoBalance}</p>
             </div>
           </div>
-          <button onClick={() => navigate('/Store')}
-            className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/60 text-[11px] font-bold tracking-wider hover:bg-white/10 transition-colors">
+          <Button onClick={() => navigate('/Store')} variant="chess-secondary" className="px-3 py-2 rounded-lg text-[11px] font-bold tracking-wider">
             STORE
-          </button>
+          </Button>
         </motion.div>
 
         {/* Avatar preview */}
@@ -291,8 +291,7 @@ export default function Profile() {
           onClick={handleSave}
           disabled={saving}
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm tracking-wider uppercase transition-all active:scale-95 disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg, #3AAFA9 0%, #2d8a85 100%)', color: '#0a0a0f' }}
+          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm tracking-wider uppercase active:scale-95 disabled:opacity-50 bg-gradient-to-br from-[#3AAFA9] to-[#1a6e6b] text-[#0a0a0f] hover:brightness-110 transition-all"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : null}
           {saving ? 'Saving…' : saved ? 'Saved!' : 'Save Profile'}
@@ -334,11 +333,12 @@ export default function Profile() {
                 </p>
               </div>
             </div>
-            <button
+            <Button
               onClick={() => setShowDeleteDialog(true)}
-              className="w-full py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold tracking-wider hover:bg-red-500/20 transition-colors">
+              variant="chess-destructive"
+              className="w-full py-2.5 rounded-xl text-sm font-semibold tracking-wider">
               DELETE ACCOUNT
-            </button>
+            </Button>
           </div>
         </motion.div>
 

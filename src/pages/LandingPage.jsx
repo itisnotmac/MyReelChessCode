@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Play } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 import { useSeo } from '@/lib/useSeo';
 import LandingHero from '@/components/landing/LandingHero';
@@ -46,12 +47,13 @@ export default function LandingPage() {
           <p className="text-white/60 mb-8">
             Create a free account and start playing Reel Chess today.
           </p>
-          <button
+          <Button
             onClick={handlePlayNow}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-[#3AAFA9] to-[#A8E6E3] text-[#0a0a0f] font-bold text-sm tracking-wider uppercase hover:brightness-110 transition-all shadow-lg shadow-[#3AAFA9]/30"
+            variant="chess-primary"
+            className="px-8 py-4 rounded-full font-bold text-sm tracking-wider uppercase shadow-lg shadow-[#3AAFA9]/30"
           >
             <Play className="w-5 h-5" /> Play Now — Free
-          </button>
+          </Button>
         </div>
       </motion.section>
 

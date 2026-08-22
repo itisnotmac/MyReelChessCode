@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Coins, Sparkles } from 'lucide-react';
 import StreakBadge from './StreakBadge';
 import { getStreakTier, getTierName, getNextMilestone } from '@/lib/streakTiers';
+import { Button } from '@/components/ui/button';
 
 export default function StreakPopup({ isOpen, onClose, streak, previousStreak, rewardAwarded }) {
   const tier = getStreakTier(streak);
@@ -80,13 +81,13 @@ export default function StreakPopup({ isOpen, onClose, streak, previousStreak, r
                 Next reward: Day {nextMilestone.day} • +{nextMilestone.reward} coins
               </p>
 
-              <button
+              <Button
                 onClick={onClose}
-                className="w-full py-3.5 rounded-xl font-bold text-sm tracking-wider uppercase text-[#0a0a0f] transition-transform active:scale-95"
-                style={{ background: 'linear-gradient(135deg, #3AAFA9, #2d8a85)' }}
+                variant="chess-primary"
+                className="w-full py-3.5 rounded-xl font-bold text-sm tracking-wider uppercase active:scale-95"
               >
                 Continue
-              </button>
+              </Button>
             </div>
           </motion.div>
         </motion.div>

@@ -4,6 +4,7 @@ import { Crown, Wifi, Users, Check, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
+import { Button } from '@/components/ui/button';
 
 export default function PremiumBanner({ isPremium }) {
   const navigate = useNavigate();
@@ -97,14 +98,14 @@ export default function PremiumBanner({ isPremium }) {
           <span className="text-2xl font-black text-white">$4.99</span>
           <span className="text-white/40 text-xs ml-1">/ month</span>
         </div>
-        <button
+        <Button
           onClick={handleSubscribe}
           disabled={loading}
-          className="px-5 py-2.5 rounded-xl font-black text-[11px] tracking-[0.15em] uppercase text-[#0a0a0f] disabled:opacity-60 transition-opacity"
-          style={{ background: 'linear-gradient(135deg, #3AAFA9, #5ECFCA)' }}
+          variant="chess-primary"
+          className="px-5 py-2.5 rounded-xl font-black text-[11px] tracking-[0.15em] uppercase disabled:opacity-60"
         >
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Subscribe'}
-        </button>
+        </Button>
       </div>
 
       {error && <p className="text-red-400 text-[11px] mt-2">{error}</p>}

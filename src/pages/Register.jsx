@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { ChevronRight, Loader2 } from 'lucide-react';
 import SocialAuthButtons from '@/components/auth/SocialAuthButtons';
+import { Button } from '@/components/ui/button';
 
 export default function Register() {
   const [step, setStep] = useState('register');
@@ -117,15 +118,15 @@ export default function Register() {
                   required
                   className="w-full bg-white/5 border border-[#3AAFA9]/15 text-white placeholder-white/30 rounded-xl px-4 py-3 focus:outline-none focus:border-[#3AAFA9]/50 transition-colors"
                 />
-                <button
+                <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 font-bold text-sm tracking-wider uppercase py-3 rounded-xl transition-all active:scale-95 disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg, #3AAFA9 0%, #2d8a85 100%)', color: '#0a0a0f' }}
+                  variant="chess-primary"
+                  className="w-full justify-center gap-2 font-bold text-sm tracking-wider uppercase py-3 rounded-xl active:scale-95"
                 >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
                   {loading ? 'Creating account…' : 'Create Account'}
-                </button>
+                </Button>
               </form>
             </>
           ) : (
@@ -149,15 +150,15 @@ export default function Register() {
                   required
                   className="w-full bg-white/5 border border-[#3AAFA9]/15 text-white placeholder-white/30 rounded-xl px-4 py-3 focus:outline-none focus:border-[#3AAFA9]/50 transition-colors text-center tracking-widest text-lg"
                 />
-                <button
+                <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 font-bold text-sm tracking-wider uppercase py-3 rounded-xl transition-all active:scale-95 disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg, #3AAFA9 0%, #2d8a85 100%)', color: '#0a0a0f' }}
+                  variant="chess-primary"
+                  className="w-full justify-center gap-2 font-bold text-sm tracking-wider uppercase py-3 rounded-xl active:scale-95"
                 >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
                   {loading ? 'Verifying…' : 'Verify'}
-                </button>
+                </Button>
               </form>
 
               <p className="text-white/40 text-sm text-center mt-4">

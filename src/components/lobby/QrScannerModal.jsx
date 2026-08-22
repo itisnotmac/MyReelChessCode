@@ -5,6 +5,7 @@ import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { X, Camera, Keyboard, Loader2, ScanLine } from 'lucide-react';
 import jsQR from 'jsqr';
+import { Button } from '@/components/ui/button';
 
 export default function QrScannerModal({ isOpen, onClose }) {
   const navigate = useNavigate();
@@ -285,18 +286,18 @@ export default function QrScannerModal({ isOpen, onClose }) {
                     autoFocus
                     className="w-full text-center px-4 py-4 rounded-xl bg-white/5 border border-white/15 text-[#3AAFA9] font-mono font-bold text-2xl tracking-[0.3em] uppercase placeholder:text-white/20 placeholder:text-base placeholder:tracking-normal focus:outline-none focus:border-[#3AAFA9]/50"
                   />
-                  <button
+                  <Button
                     type="submit"
                     disabled={joining || manualCode.trim().length < 4}
-                    className="w-full py-3.5 rounded-xl font-black text-sm tracking-[0.15em] uppercase transition-all active:scale-95 disabled:opacity-40"
-                    style={{ background: 'linear-gradient(135deg, #3AAFA9, #2d8c87)', color: '#000' }}
+                    variant="chess-primary"
+                    className="w-full py-3.5 rounded-xl font-black text-sm tracking-[0.15em] uppercase active:scale-95 disabled:opacity-40"
                   >
                     {joining ? (
                       <span className="flex items-center justify-center gap-2">
                         <Loader2 className="w-4 h-4 animate-spin" /> Joining…
                       </span>
                     ) : 'Join Game'}
-                  </button>
+                  </Button>
                 </form>
               )}
 

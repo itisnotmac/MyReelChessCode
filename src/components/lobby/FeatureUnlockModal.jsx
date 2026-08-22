@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Lock, Wifi, Users, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { Button } from '@/components/ui/button';
 
 const FEATURES = {
   qr_host_unlock: {
@@ -103,18 +104,18 @@ export default function FeatureUnlockModal({ isOpen, onClose, featureId, isAuthe
 
               {error && <p className="text-red-400 text-xs text-center mb-3">{error}</p>}
 
-              <button
+              <Button
                 onClick={handleBuy}
                 disabled={loading}
-                className="w-full py-4 rounded-2xl font-black text-sm tracking-[0.2em] uppercase text-[#0a0a0f] disabled:opacity-60 transition-opacity"
-                style={{ background: 'linear-gradient(135deg, #3AAFA9, #5ECFCA)' }}
+                variant="chess-primary"
+                className="w-full py-4 rounded-2xl font-black text-sm tracking-[0.2em] uppercase disabled:opacity-60"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
                     <Loader2 className="w-4 h-4 animate-spin" /> Loading…
                   </span>
                 ) : isAuthenticated ? 'Unlock Now' : 'Sign In to Unlock'}
-              </button>
+              </Button>
 
               <p className="text-center text-white/20 text-[10px] tracking-wider mt-3">One-time payment · No subscription</p>
             </div>

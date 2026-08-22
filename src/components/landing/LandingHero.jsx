@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Play, GraduationCap, ChevronDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 
 const HERO_IMAGE = 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/100ea7145_generated_image.png';
@@ -50,12 +51,13 @@ export default function LandingHero() {
             Novice to Grandmaster, local and online multiplayer, and interactive tutorials.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
+            <Button
               onClick={handlePlayNow}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-[#3AAFA9] to-[#A8E6E3] text-[#0a0a0f] font-bold text-sm tracking-wider uppercase hover:brightness-110 transition-all shadow-lg shadow-[#3AAFA9]/30"
+              variant="chess-primary"
+              className="justify-center px-8 py-4 rounded-full font-bold text-sm tracking-wider uppercase shadow-lg shadow-[#3AAFA9]/30"
             >
               <Play className="w-5 h-5" /> Play Now — Free
-            </button>
+            </Button>
             <Link
               to="/Tutorial"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-[#3AAFA9]/30 text-[#3AAFA9] font-bold text-sm tracking-wider uppercase hover:bg-[#3AAFA9]/10 transition-colors"

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Crown, Wifi, Users, Lock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { Button } from '@/components/ui/button';
 
 export default function PremiumModal({ isOpen, onClose, isAuthenticated }) {
   const [loading, setLoading] = useState(false);
@@ -96,14 +97,14 @@ export default function PremiumModal({ isOpen, onClose, isAuthenticated }) {
 
               {error && <p className="text-red-400 text-xs text-center mb-3">{error}</p>}
 
-              <button
+              <Button
                 onClick={handleSubscribe}
                 disabled={loading}
-                className="w-full py-4 rounded-2xl font-black text-sm tracking-[0.2em] uppercase text-[#0a0a0f] disabled:opacity-60 transition-opacity"
-                style={{ background: 'linear-gradient(135deg, #3AAFA9, #5ECFCA)' }}
+                variant="chess-primary"
+                className="w-full py-4 rounded-2xl font-black text-sm tracking-[0.2em] uppercase disabled:opacity-60"
               >
                 {loading ? 'Loading…' : isAuthenticated ? 'Subscribe Now' : 'Sign In to Subscribe'}
-              </button>
+              </Button>
 
               <p className="text-center text-white/20 text-[10px] tracking-wider mt-3">Cancel anytime · Billed monthly</p>
             </div>

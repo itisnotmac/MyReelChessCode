@@ -9,6 +9,7 @@ import {
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { getTodaysChallenge, CHALLENGE_REWARD } from '@/lib/dailyChallenges';
+import { Button } from '@/components/ui/button';
 
 const ACTIVITY_ICONS = {
   match: Gamepad2,
@@ -255,13 +256,13 @@ export default function DailyChallenges() {
             <ClipboardList className="w-8 h-8 text-white/50 mx-auto mb-2" />
             <p className="text-sm text-white/60">No activities yet today</p>
             <p className="text-xs text-white/50 mt-1">Play a game to get started!</p>
-            <button
+            <Button
               onClick={() => navigate('/Lobby')}
-              className="mt-4 inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-[#0a0a0f] font-bold text-xs tracking-wider uppercase hover:brightness-110 transition-all"
-              style={{ background: 'linear-gradient(135deg, #3AAFA9, #1a6e6b)' }}
+              variant="chess-primary"
+              className="mt-4 px-6 py-2.5 rounded-full font-bold text-xs tracking-wider uppercase"
             >
               <Gamepad2 className="w-4 h-4" /> Play a Game
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="space-y-2">

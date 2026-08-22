@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { ChevronRight, Loader2 } from 'lucide-react';
 import SocialAuthButtons from '@/components/auth/SocialAuthButtons';
+import { Button } from '@/components/ui/button';
 import { safeReturnTo } from '@/lib/authReturnTo';
 
 export default function Login() {
@@ -90,15 +91,15 @@ export default function Login() {
                 Forgot password?
               </Link>
             </div>
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 font-bold text-sm tracking-wider uppercase py-3 rounded-xl transition-all active:scale-95 disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #3AAFA9 0%, #2d8a85 100%)', color: '#0a0a0f' }}
+              variant="chess-primary"
+              className="w-full justify-center gap-2 font-bold text-sm tracking-wider uppercase py-3 rounded-xl active:scale-95"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
               {loading ? 'Signing in…' : 'Sign In'}
-            </button>
+            </Button>
           </form>
         </div>
 

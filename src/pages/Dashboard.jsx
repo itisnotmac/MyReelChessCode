@@ -6,6 +6,7 @@ import { base44 } from '@/api/base44Client';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
+import { Button } from '@/components/ui/button';
 
 function formatDuration(secs) {
   if (!secs) return '—';
@@ -160,13 +161,13 @@ export default function Dashboard() {
             <BarChart2 className="w-10 h-10 text-white/30 mx-auto mb-3" />
             <p className="text-white/60 text-sm">No data yet.</p>
             <p className="text-white/50 text-xs mt-1">Play some games to see your stats.</p>
-            <button
+            <Button
               onClick={() => navigate('/Lobby')}
-              className="mt-4 inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-[#0a0a0f] font-bold text-xs tracking-wider uppercase hover:brightness-110 transition-all"
-              style={{ background: 'linear-gradient(135deg, #3AAFA9, #1a6e6b)' }}
+              variant="chess-primary"
+              className="mt-4 px-6 py-2.5 rounded-full font-bold text-xs tracking-wider uppercase"
             >
               <Swords className="w-4 h-4" /> Play a Game
-            </button>
+            </Button>
           </motion.div>
         ) : (
           <>
