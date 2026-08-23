@@ -17,8 +17,44 @@ export default function CosmeticGrid({
   coinBalance,
   variant,
 }) {
+  const showNone = variant !== 'avatar';
+  const noneEquipped = !equippedId;
+  const noneItem = { id: '', name: 'None', color: '', image: '', price: 0 };
+
   return (
     <div className="grid grid-cols-2 gap-3">
+      {showNone && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`relative rounded-xl p-3 pb-14 border backdrop-blur-md transition-colors ${
+            noneEquipped ? 'border-[#3AAFA9] bg-[#3AAFA9]/15' : 'border-white/15 bg-black/40'
+          }`}
+          style={{ minHeight: 140 }}
+        >
+          <div className="flex justify-center mb-2" style={{ height: variant === 'ambient' ? 90 : 72 }}>
+            <div className="flex items-center justify-center w-14 h-14 rounded-full border-2 border-dashed border-white/15 bg-black/30">
+              <span className="text-white/30 text-[10px] font-bold tracking-wider">OFF</span>
+            </div>
+          </div>
+          <p className="text-sm font-bold text-white text-center mb-0.5">None</p>
+          <div className="absolute bottom-3 left-3 right-3">
+            {noneEquipped ? (
+              <div className="flex items-center justify-center gap-1 py-2 rounded-lg bg-[#3AAFA9]/15 border border-[#3AAFA9]/40">
+                <Check className="w-3.5 h-3.5 text-[#3AAFA9]" />
+                <span className="text-[11px] font-bold text-[#3AAFA9] tracking-wider">EQUIPPED</span>
+              </div>
+            ) : (
+              <button
+                onClick={() => onEquip(noneItem)}
+                className="w-full py-2 rounded-lg bg-white/5 border border-white/10 text-white/60 text-[11px] font-bold tracking-wider hover:bg-white/10 transition-colors"
+              >
+                UNEQUIP
+              </button>
+            )}
+          </div>
+        </motion.div>
+      )}
       {items.map((item, i) => {
         const owned = ownedIds.has(item.id);
         const equipped = ['color'].includes(variant)

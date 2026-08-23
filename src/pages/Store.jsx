@@ -213,12 +213,12 @@ export default function Store() {
 
   const handleEquipGlow = (item) => {
     setUsernameGlow(item.color);
-    toast({ title: 'Glow equipped', description: item.name });
+    toast({ title: item.color ? 'Glow equipped' : 'Glow unequipped', description: item.name });
   };
 
   const handleEquipTrail = (item) => {
     setMoveTrailColor(item.color);
-    toast({ title: 'Trail equipped', description: item.name });
+    toast({ title: item.color ? 'Trail equipped' : 'Trail unequipped', description: item.name });
   };
 
   const handleEquipAvatar = async (item) => {
@@ -239,22 +239,22 @@ export default function Store() {
 
   const handleEquipParticle = (item) => {
     setParticleEffect(item.id);
-    toast({ title: 'Particle effect equipped', description: item.name });
+    toast({ title: item.id ? 'Particle effect equipped' : 'Particle effect unequipped', description: item.name });
   };
 
   const handleEquipBorder = (item) => {
     setBoardBorder(item.id);
-    toast({ title: 'Border equipped', description: item.name });
+    toast({ title: item.id ? 'Border equipped' : 'Border unequipped', description: item.name });
   };
 
   const handleEquipFrame = (item) => {
     setAvatarFrame(item.id);
-    toast({ title: 'Frame equipped', description: item.name });
+    toast({ title: item.id ? 'Frame equipped' : 'Frame unequipped', description: item.name });
   };
 
   const handleEquipAmbient = (item) => {
     setAmbientEffect(item.id);
-    toast({ title: 'Ambient effect equipped', description: item.name });
+    toast({ title: item.id ? 'Ambient effect equipped' : 'Ambient effect unequipped', description: item.name });
   };
 
   const handleCoinPurchase = async (item) => {

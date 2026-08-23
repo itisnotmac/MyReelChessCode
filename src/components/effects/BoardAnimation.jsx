@@ -91,25 +91,25 @@ export default function BoardAnimation({ animation }) {
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Deep magma base — dark molten rock that slowly breathes */}
         <motion.div className="absolute inset-0"
-          style={{ background: 'radial-gradient(ellipse at 50% 100%, #1a0500, #0a0200 70%)' }}
-          animate={{ opacity: [0.7, 1, 0.7] }}
+          style={{ background: 'radial-gradient(ellipse at 50% 100%, #2a0a00, #0a0200 60%)' }}
+          animate={{ opacity: [0.8, 1, 0.8] }}
           transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         />
 
         {/* Flowing lava streams — bright blobs that drift and morph */}
         <motion.div className="absolute inset-0"
-          style={{ background: `radial-gradient(circle at 25% 65%, ${color}, transparent 35%), radial-gradient(circle at 75% 45%, ${color}90, transparent 40%)` }}
-          animate={{ opacity: [0.6, 0.9, 0.6], scale: [1, 1.2, 1], x: ['-5%', '5%', '-5%'] }}
+          style={{ background: `radial-gradient(circle at 25% 65%, ${color}, transparent 42%), radial-gradient(circle at 75% 45%, ${color}, transparent 42%)` }}
+          animate={{ opacity: [0.75, 1, 0.75], scale: [1, 1.2, 1], x: ['-5%', '5%', '-5%'] }}
           transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div className="absolute inset-0"
-          style={{ background: `radial-gradient(circle at 50% 75%, ${color}80, transparent 30%), radial-gradient(circle at 20% 35%, ${color}60, transparent 35%)` }}
-          animate={{ opacity: [0.5, 0.85, 0.5], scale: [1.15, 1, 1.15], x: ['5%', '-5%', '5%'] }}
+          style={{ background: `radial-gradient(circle at 50% 75%, ${color}, transparent 38%), radial-gradient(circle at 20% 35%, ${color}, transparent 38%)` }}
+          animate={{ opacity: [0.65, 0.95, 0.65], scale: [1.15, 1, 1.15], x: ['5%', '-5%', '5%'] }}
           transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div className="absolute inset-0"
-          style={{ background: `radial-gradient(circle at 85% 80%, ${color}70, transparent 25%)` }}
-          animate={{ opacity: [0.4, 0.7, 0.4], scale: [1, 1.3, 1] }}
+          style={{ background: `radial-gradient(circle at 85% 80%, ${color}, transparent 32%)` }}
+          animate={{ opacity: [0.55, 0.9, 0.55], scale: [1, 1.3, 1] }}
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         />
 
@@ -117,19 +117,19 @@ export default function BoardAnimation({ animation }) {
         {embers.map(e => (
           <motion.div key={e.id} className="absolute rounded-full"
             style={{ width: e.size, height: e.size, bottom: '-5%',
-              backgroundColor: '#ff6a00',
-              boxShadow: `0 0 ${e.size * 2}px ${color}, 0 0 ${e.size * 4}px ${color}80`,
+              backgroundColor: '#ff9500',
+              boxShadow: `0 0 ${e.size * 3}px ${color}, 0 0 ${e.size * 6}px ${color}`,
               left: `${e.left}%` }}
             initial={{ opacity: 0, x: 0 }}
-            animate={{ bottom: '108%', opacity: [0, 1, 1, 0], x: e.drift, scale: [0.5, 1.3, 0.3] }}
+            animate={{ bottom: '108%', opacity: [0, 1, 1, 0], x: e.drift, scale: [0.5, 1.5, 0.3] }}
             transition={{ duration: e.duration, delay: e.delay, repeat: Infinity, ease: 'easeOut' }}
           />
         ))}
 
-        {/* Surface heat haze — subtle shimmering glow along the top edge */}
+        {/* Surface heat haze — shimmering glow along the top edge */}
         <motion.div className="absolute inset-x-0 top-0 h-1/3"
-          style={{ background: `linear-gradient(180deg, ${color}30, transparent)`, filter: 'blur(8px)' }}
-          animate={{ opacity: [0.2, 0.5, 0.2] }}
+          style={{ background: `linear-gradient(180deg, ${color}60, transparent)`, filter: 'blur(4px)' }}
+          animate={{ opacity: [0.35, 0.7, 0.35] }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>
