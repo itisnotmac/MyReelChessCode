@@ -32,6 +32,17 @@ export default function BoardAnimation({ animation }) {
     }));
   }, [type]);
 
+  // Rising embers for the lava skin
+  const embers = useMemo(() => {
+    if (type !== 'lava') return [];
+    return Array.from({ length: 20 }, (_, i) => ({
+      id: `e${i}`, left: Math.random() * 100,
+      size: 1.5 + Math.random() * 3,
+      delay: Math.random() * 5, duration: 3 + Math.random() * 3,
+      drift: (Math.random() - 0.5) * 40,
+    }));
+  }, [type]);
+
   if (!animation) return null;
 
   if (type === 'stars') {
@@ -78,17 +89,48 @@ export default function BoardAnimation({ animation }) {
   if (type === 'lava') {
     return (
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute inset-0"
-          style={{ background: `radial-gradient(circle at 30% 40%, ${color}80, transparent 45%), radial-gradient(circle at 70% 60%, ${color}60, transparent 50%)` }}
-          animate={{ opacity: [0.5, 0.85, 0.5], scale: [1, 1.15, 1] }}
+        {/* Deep magma base — dark molten rock that slowly breathes */}
+        <motion.div className="absolute inset-0"
+          style={{ background: 'radial-gradient(ellipse at 50% 100%, #1a0500, #0a0200 70%)' }}
+          animate={{ opacity: [0.7, 1, 0.7] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
+        {/* Flowing lava streams — bright blobs that drift and morph */}
+        <motion.div className="absolute inset-0"
+          style={{ background: `radial-gradient(circle at 25% 65%, ${color}, transparent 35%), radial-gradient(circle at 75% 45%, ${color}90, transparent 40%)` }}
+          animate={{ opacity: [0.6, 0.9, 0.6], scale: [1, 1.2, 1], x: ['-5%', '5%', '-5%'] }}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div className="absolute inset-0"
+          style={{ background: `radial-gradient(circle at 50% 75%, ${color}80, transparent 30%), radial-gradient(circle at 20% 35%, ${color}60, transparent 35%)` }}
+          animate={{ opacity: [0.5, 0.85, 0.5], scale: [1.15, 1, 1.15], x: ['5%', '-5%', '5%'] }}
+          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div className="absolute inset-0"
+          style={{ background: `radial-gradient(circle at 85% 80%, ${color}70, transparent 25%)` }}
+          animate={{ opacity: [0.4, 0.7, 0.4], scale: [1, 1.3, 1] }}
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <motion.div
-          className="absolute inset-0"
-          style={{ background: `radial-gradient(circle at 60% 30%, ${color}50, transparent 40%)` }}
-          animate={{ opacity: [0.4, 0.7, 0.4], scale: [1.1, 1, 1.1] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+
+        {/* Rising embers — glowing particles that float upward and flicker out */}
+        {embers.map(e => (
+          <motion.div key={e.id} className="absolute rounded-full"
+            style={{ width: e.size, height: e.size, bottom: '-5%',
+              backgroundColor: '#ff6a00',
+              boxShadow: `0 0 ${e.size * 2}px ${color}, 0 0 ${e.size * 4}px ${color}80`,
+              left: `${e.left}%` }}
+            initial={{ opacity: 0, x: 0 }}
+            animate={{ bottom: '108%', opacity: [0, 1, 1, 0], x: e.drift, scale: [0.5, 1.3, 0.3] }}
+            transition={{ duration: e.duration, delay: e.delay, repeat: Infinity, ease: 'easeOut' }}
+          />
+        ))}
+
+        {/* Surface heat haze — subtle shimmering glow along the top edge */}
+        <motion.div className="absolute inset-x-0 top-0 h-1/3"
+          style={{ background: `linear-gradient(180deg, ${color}30, transparent)`, filter: 'blur(8px)' }}
+          animate={{ opacity: [0.2, 0.5, 0.2] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>
     );
