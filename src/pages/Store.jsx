@@ -345,31 +345,25 @@ export default function Store() {
         <p className="text-[11px] text-white/50 mb-3 leading-relaxed">
           Choose your board's look. Cosmic, Lava, Ocean, and Neon Grid skins feature live animated backgrounds during gameplay.
         </p>
-        {loading ? (
-          <div className="grid grid-cols-2 gap-3">
-            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-3">
-            {Object.values(BOARD_SKINS).map(skin => {
-              const item = { ...skin, category: 'board', price: 0 };
-              return (
-                <StoreCard
-                  key={skin.id}
-                  item={item}
-                  owned={isOwned(skin.id)}
-                  selected={boardSkin === skin.id}
-                  onSelect={handleSelect}
-                  onPurchase={handlePurchase}
-                  purchasing={purchasing === skin.id}
-                  coinBalance={coinBalance}
-                  onCoinPurchase={handleCoinPurchase}
-                  coinPurchasing={coinPurchasing === skin.id}
-                />
-              );
-            })}
-          </div>
-        )}
+        <div className="grid grid-cols-2 gap-3">
+          {Object.values(BOARD_SKINS).map(skin => {
+            const item = { ...skin, category: 'board', price: 0 };
+            return (
+              <StoreCard
+                key={skin.id}
+                item={item}
+                owned={isOwned(skin.id)}
+                selected={boardSkin === skin.id}
+                onSelect={handleSelect}
+                onPurchase={handlePurchase}
+                purchasing={purchasing === skin.id}
+                coinBalance={coinBalance}
+                onCoinPurchase={handleCoinPurchase}
+                coinPurchasing={coinPurchasing === skin.id}
+              />
+            );
+          })}
+        </div>
       </div>
 
       {/* Piece Sets */}
@@ -378,31 +372,25 @@ export default function Store() {
           <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
           PIECE SETS
         </h2>
-        {loading ? (
-          <div className="grid grid-cols-2 gap-3">
-            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-3">
-            {Object.values(PIECE_SETS).map(set => {
-              const item = { ...set, category: 'pieces', price: 0 };
-              return (
-                <StoreCard
-                  key={set.id}
-                  item={item}
-                  owned={isOwned(set.id)}
-                  selected={pieceSet === set.id}
-                  onSelect={handleSelect}
-                  onPurchase={handlePurchase}
-                  purchasing={purchasing === set.id}
-                  coinBalance={coinBalance}
-                  onCoinPurchase={handleCoinPurchase}
-                  coinPurchasing={coinPurchasing === set.id}
-                />
-              );
-            })}
-          </div>
-        )}
+        <div className="grid grid-cols-2 gap-3">
+          {Object.values(PIECE_SETS).map(set => {
+            const item = { ...set, category: 'pieces', price: 0 };
+            return (
+              <StoreCard
+                key={set.id}
+                item={item}
+                owned={isOwned(set.id)}
+                selected={pieceSet === set.id}
+                onSelect={handleSelect}
+                onPurchase={handlePurchase}
+                purchasing={purchasing === set.id}
+                coinBalance={coinBalance}
+                onCoinPurchase={handleCoinPurchase}
+                coinPurchasing={coinPurchasing === set.id}
+              />
+            );
+          })}
+        </div>
       </div>
 
       {/* Username Glow */}
