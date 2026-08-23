@@ -166,13 +166,18 @@ export default function Store() {
     }
   }, [location.search]);
 
+  const isAdmin = user?.role === 'admin';
   const ANIMATED_SKIN_IDS = ['cosmic', 'lava', 'ocean', 'neonGrid'];
   const isOwned = (itemId) => {
+    if (isAdmin) return true;
     if (ANIMATED_SKIN_IDS.includes(itemId)) {
       return purchases.some(p => p.item_id === itemId);
     }
     return true;
   };
+  // Admin sees all items as owned; everyone else only what they've purchased
+  const getOwnedIds = (itemType, items) =>
+    isAdmin ? new Set(items.map(i => i.id)) : new Set(purchases.filter(p => p.item_type === itemType).map(p => p.item_id));
 
   const handlePurchase = async (item) => {
     if (!isAuthenticated) {
@@ -448,7 +453,7 @@ export default function Store() {
         ) : (
           <CosmeticGrid
             items={USERNAME_GLOW_COLORS}
-            ownedIds={new Set(purchases.filter(p => p.item_type === 'username_glow').map(p => p.item_id))}
+            ownedIds={getOwnedIds('username_glow', USERNAME_GLOW_COLORS)}
             equippedId={usernameGlow}
             onEquip={handleEquipGlow}
             onPurchase={handleCoinPurchase}
@@ -472,7 +477,7 @@ export default function Store() {
         ) : (
           <CosmeticGrid
             items={MOVE_TRAIL_COLORS}
-            ownedIds={new Set(purchases.filter(p => p.item_type === 'move_trail').map(p => p.item_id))}
+            ownedIds={getOwnedIds('move_trail', MOVE_TRAIL_COLORS)}
             equippedId={moveTrailColor}
             onEquip={handleEquipTrail}
             onPurchase={handleCoinPurchase}
@@ -496,7 +501,7 @@ export default function Store() {
         ) : (
           <CosmeticGrid
             items={GRANDMASTER_AVATARS}
-            ownedIds={new Set(purchases.filter(p => p.item_type === 'avatar').map(p => p.item_id))}
+            ownedIds={getOwnedIds('avatar', GRANDMASTER_AVATARS)}
             equippedId={user?.avatar_url}
             onEquip={handleEquipAvatar}
             onPurchase={handleCoinPurchase}
@@ -523,7 +528,7 @@ export default function Store() {
         ) : (
           <CosmeticGrid
             items={PARTICLE_EFFECTS}
-            ownedIds={new Set(purchases.filter(p => p.item_type === 'particle_effect').map(p => p.item_id))}
+            ownedIds={getOwnedIds('particle_effect', PARTICLE_EFFECTS)}
             equippedId={particleEffect}
             onEquip={handleEquipParticle}
             onPurchase={handleCoinPurchase}
@@ -547,7 +552,7 @@ export default function Store() {
         ) : (
           <CosmeticGrid
             items={BOARD_BORDERS}
-            ownedIds={new Set(purchases.filter(p => p.item_type === 'board_border').map(p => p.item_id))}
+            ownedIds={getOwnedIds('board_border', BOARD_BORDERS)}
             equippedId={boardBorder}
             onEquip={handleEquipBorder}
             onPurchase={handleCoinPurchase}
@@ -571,7 +576,7 @@ export default function Store() {
         ) : (
           <CosmeticGrid
             items={AVATAR_FRAMES}
-            ownedIds={new Set(purchases.filter(p => p.item_type === 'avatar_frame').map(p => p.item_id))}
+            ownedIds={getOwnedIds('avatar_frame', AVATAR_FRAMES)}
             equippedId={avatarFrame}
             onEquip={handleEquipFrame}
             onPurchase={handleCoinPurchase}
@@ -598,7 +603,7 @@ export default function Store() {
         ) : (
           <CosmeticGrid
             items={AMBIENT_EFFECTS}
-            ownedIds={new Set(purchases.filter(p => p.item_type === 'ambient_effect').map(p => p.item_id))}
+            ownedIds={getOwnedIds('ambient_effect', AMBIENT_EFFECTS)}
             equippedId={ambientEffect}
             onEquip={handleEquipAmbient}
             onPurchase={handleCoinPurchase}
