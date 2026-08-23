@@ -45,14 +45,14 @@ export default function BoardAnimation({ animation }) {
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute inset-0"
-          style={{ background: `radial-gradient(circle at 30% 40%, ${color}50, transparent 45%), radial-gradient(circle at 70% 60%, ${color}30, transparent 50%)` }}
-          animate={{ opacity: [0.4, 0.7, 0.4], scale: [1, 1.15, 1] }}
+          style={{ background: `radial-gradient(circle at 30% 40%, ${color}80, transparent 45%), radial-gradient(circle at 70% 60%, ${color}60, transparent 50%)` }}
+          animate={{ opacity: [0.5, 0.85, 0.5], scale: [1, 1.15, 1] }}
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
           className="absolute inset-0"
-          style={{ background: `radial-gradient(circle at 60% 30%, ${color}25, transparent 40%)` }}
-          animate={{ opacity: [0.3, 0.6, 0.3], scale: [1.1, 1, 1.1] }}
+          style={{ background: `radial-gradient(circle at 60% 30%, ${color}50, transparent 40%)` }}
+          animate={{ opacity: [0.4, 0.7, 0.4], scale: [1.1, 1, 1.1] }}
           transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>
@@ -69,10 +69,10 @@ export default function BoardAnimation({ animation }) {
             style={{
               height: '50%',
               top: `${i * 25}%`,
-              background: `linear-gradient(180deg, transparent, ${color}25, transparent)`,
+              background: `linear-gradient(180deg, transparent, ${color}50, transparent)`,
               filter: 'blur(6px)',
             }}
-            animate={{ x: ['-15%', '15%', '-15%'], opacity: [0.4, 0.7, 0.4] }}
+            animate={{ x: ['-15%', '15%', '-15%'], opacity: [0.5, 0.85, 0.5] }}
             transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut' }}
           />
         ))}
@@ -86,10 +86,10 @@ export default function BoardAnimation({ animation }) {
         <motion.div
           className="absolute inset-0"
           style={{
-            backgroundImage: `linear-gradient(${color}50 1px, transparent 1px), linear-gradient(90deg, ${color}50 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(${color}80 1px, transparent 1px), linear-gradient(90deg, ${color}80 1px, transparent 1px)`,
             backgroundSize: '12.5% 12.5%',
           }}
-          animate={{ opacity: [0.15, 0.45, 0.15] }}
+          animate={{ opacity: [0.3, 0.7, 0.3] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>

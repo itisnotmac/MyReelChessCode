@@ -166,7 +166,13 @@ export default function Store() {
     }
   }, [location.search]);
 
-  const isOwned = () => true; // All cosmetics are currently free
+  const ANIMATED_SKIN_IDS = ['cosmic', 'lava', 'ocean', 'neonGrid'];
+  const isOwned = (itemId) => {
+    if (ANIMATED_SKIN_IDS.includes(itemId)) {
+      return purchases.some(p => p.item_id === itemId);
+    }
+    return true;
+  };
 
   const handlePurchase = async (item) => {
     if (!isAuthenticated) {
@@ -343,10 +349,10 @@ export default function Store() {
           BOARD STYLES
         </h2>
         <p className="text-[11px] text-white/50 mb-3 leading-relaxed">
-          Choose your board's look. Cosmic, Lava, Ocean, and Neon Grid skins feature live animated backgrounds during gameplay.
+          Choose your board's look from these classic static styles.
         </p>
         <div className="grid grid-cols-2 gap-3">
-          {Object.values(BOARD_SKINS).map(skin => {
+          {Object.values(BOARD_SKINS).filter(s => !s.animated).map(skin => {
             const item = { ...skin, category: 'board', price: 0 };
             return (
               <StoreCard
@@ -364,6 +370,42 @@ export default function Store() {
             );
           })}
         </div>
+      </div>
+
+      {/* Animated Board Styles */}
+      <div className="relative z-10 px-4 mb-8">
+        <h2 className="text-sm font-bold tracking-wider text-[#3AAFA9]/70 mb-3 flex items-center gap-2">
+          <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
+          ANIMATED BOARD STYLES
+        </h2>
+        <p className="text-[11px] text-white/50 mb-3 leading-relaxed">
+          Premium skins with live animated backgrounds — drifting stars, flowing lava, rolling waves, and pulsing neon grids.
+        </p>
+        {loading ? (
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {Object.values(BOARD_SKINS).filter(s => s.animated).map(skin => {
+              const item = { ...skin, category: 'board', price: skin.price };
+              return (
+                <StoreCard
+                  key={skin.id}
+                  item={item}
+                  owned={isOwned(skin.id)}
+                  selected={boardSkin === skin.id}
+                  onSelect={handleSelect}
+                  onPurchase={handlePurchase}
+                  purchasing={purchasing === skin.id}
+                  coinBalance={coinBalance}
+                  onCoinPurchase={handleCoinPurchase}
+                  coinPurchasing={coinPurchasing === skin.id}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Piece Sets */}

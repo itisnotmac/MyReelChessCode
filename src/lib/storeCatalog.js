@@ -41,6 +41,7 @@ export const BOARD_SKINS = {
     border: 'rgba(157,78,221,0.4)', glow: 'rgba(157,78,221,0.2)',
     coords: 'rgba(157,78,221,0.6)',
     animation: { type: 'stars', color: '#9D4EDD' },
+    animated: true, price: 400,
   },
   lava: {
     id: 'lava', name: 'Lava',
@@ -48,6 +49,7 @@ export const BOARD_SKINS = {
     border: 'rgba(255,107,53,0.4)', glow: 'rgba(255,107,53,0.2)',
     coords: 'rgba(255,107,53,0.6)',
     animation: { type: 'lava', color: '#FF6B35' },
+    animated: true, price: 400,
   },
   ocean: {
     id: 'ocean', name: 'Ocean',
@@ -55,6 +57,7 @@ export const BOARD_SKINS = {
     border: 'rgba(126,200,227,0.4)', glow: 'rgba(126,200,227,0.2)',
     coords: 'rgba(126,200,227,0.6)',
     animation: { type: 'waves', color: '#7EC8E3' },
+    animated: true, price: 400,
   },
   neonGrid: {
     id: 'neonGrid', name: 'Neon Grid',
@@ -62,6 +65,7 @@ export const BOARD_SKINS = {
     border: 'rgba(58,175,169,0.5)', glow: 'rgba(58,175,169,0.3)',
     coords: 'rgba(58,175,169,0.7)',
     animation: { type: 'pulse', color: '#3AAFA9' },
+    animated: true, price: 400,
   },
 };
 
@@ -145,7 +149,7 @@ export const AMBIENT_EFFECTS = [
 ];
 
 export const STORE_ITEMS = [
-  ...Object.values(BOARD_SKINS).map(s => ({ ...s, category: 'board', price: 0 })),
+  ...Object.values(BOARD_SKINS).map(s => ({ ...s, category: 'board', price: s.price || 0 })),
   ...Object.values(PIECE_SETS).map(s => ({ ...s, category: 'pieces', price: 0 })),
   ...USERNAME_GLOW_COLORS.map(s => ({ ...s, category: 'username_glow' })),
   ...MOVE_TRAIL_COLORS.map(s => ({ ...s, category: 'move_trail' })),

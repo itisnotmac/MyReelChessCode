@@ -8,7 +8,12 @@ const COSMETIC_CATALOG = {
   glass:      { name: 'Glass',           item_type: 'board',         price: 0 },
   marble:     { name: 'Marble',          item_type: 'board',         price: 0 },
   obsidian:   { name: 'Obsidian',        item_type: 'board',         price: 0 },
-  emerald:    { name: 'Emerald',         item_type: 'board',         price: 0 },
+  emerald:    { name: 'Emerald',          item_type: 'board',         price: 0 },
+  // Animated board skins (premium)
+  cosmic:     { name: 'Cosmic',           item_type: 'board',         price: 400 },
+  lava:       { name: 'Lava',             item_type: 'board',         price: 400 },
+  ocean:      { name: 'Ocean',            item_type: 'board',         price: 400 },
+  neonGrid:   { name: 'Neon Grid',        item_type: 'board',         price: 400 },
   // Piece sets (free)
   minimalist: { name: 'Minimalist',      item_type: 'pieces',        price: 0 },
   futuristic: { name: 'Futuristic',      item_type: 'pieces',        price: 0 },
