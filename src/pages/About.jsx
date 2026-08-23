@@ -55,20 +55,32 @@ export default function About() {
           <p>
             Whether you're a brand-new player still learning how the pieces move or a seasoned club player
             looking for a quick casual match, Reel Chess has a mode for you. Jump into a game against our
-            AI opponent — choose Novice for a forgiving intro, Arrogant for a balanced challenge, or
-            Grandmaster when you're ready to test your limits. Prefer playing with a friend? Local PvP lets
-            two players go head-to-head on the same device.
+            AI opponent — choose Novice if you are just learning the game, but when you are ready to start being challenged
+            we have 5 levels of AI with increasing difficulty. Prefer playing with a friend? Local PvP lets
+            two players go head-to-head on the same device. Maybe your friend is in another state? No problem
+            you can always find a match online in traditional PVP mode. We offer other modes including a REEL CHESS 
+            exclusive mode, 2v2! Go head to head to head to head. Two teams of two battle it out like never before. 
+            We also just added a brand new game mode I called "BlitzSchach" which means rapid chess in german. The players
+            start out with 30 seconds to make a move, or they lose. For every 2 pieces taken from the board, that time goes
+            down by 1 second, falling to 15 seconds at its lowest, if you can't make a move in 15 seconds, you lose. I am
+            really excited to see this mode eat people up!
           </p>
           <p>
             Learning the game is built right in. The interactive Tutorial section walks you through every piece,
             explains check and checkmate, and lets you practice moves on a live board — so you're never stuck
-            watching a video when you could be playing.
+            watching a video when you could be playing. We have revamped the visuals of the "RCU" Reel Chess University. It 
+            now has beginners, intermediate, and advanced. There are a total of 64 lessons to take you from beginner to WINNER baby!
+            Some of the lessons are interactive, some are not, but the content is most certainly worth your time! Every chess player
+            from every skill level can potentially learn something from our RCU. So be sure you stop by and look around. 
+          
           </p>
           <p>
             Reel Chess is developed and maintained by an independent creator passionate about making classic
             strategy games accessible, beautiful, and fun for everyone. The app is constantly evolving, with
             new features, visual improvements, and gameplay refinements rolled out regularly based on community
-            feedback.
+            feedback and requests. All other improvements are coming from the creators mind and his extreme dedication
+            to this app is surely shown. When a developer truly cares about the experience that the users get from their game
+            you tend to get, a far better, more polished, content rich game that you can enjoy for years to come!
           </p>
           <p>
             We believe great chess doesn't need a complicated interface. Reel Chess keeps things clean,
