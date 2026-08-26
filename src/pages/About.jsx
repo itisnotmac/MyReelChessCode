@@ -22,6 +22,7 @@ export default function About() {
       }}
     >
       {/* Header */}
+      <meta name="facebook-domain-verification" content="yhigcbkecn6n6c72ibzkin19ezjya9" />
       <div className="flex items-center gap-4 px-5 pt-6 pb-4 border-b border-[#3AAFA9]/10">
         <button
           aria-label="Go back" onClick={() => navigate(-1)}
