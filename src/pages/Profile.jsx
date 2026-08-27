@@ -95,27 +95,44 @@ export default function Profile() {
     toast({ title: 'Data deleted', description: 'All your game data has been deleted.' });
   };
 
-  const handleSave = async () => {
-    setSaving(true);
-    setSaved(false);
-    try {
-      setLocalProfile({ username, avatar_url: avatarUrl });
-      if (user) {
-        try {
-          await base44.auth.updateMe({ username, avatar_url: avatarUrl });
-        } catch (e) {
-          console.error('Failed to sync profile to account:', e);
-        }
-      }
-      setSaved(true);
-      base44.functions.invoke('logActivity', { type: 'profile', label: 'Profile Updated' }).catch(() => {});
-      setTimeout(() => setSaved(false), 2000);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSaving(false);
+ const handleSave = async () => {
+  setSaving(true);
+  setSaved(false);
+
+  try {
+    if (!user) {
+      throw new Error('No authenticated user');
     }
-  };
+
+    // Save to the authenticated Base44 account first.
+    // This is the permanent source of truth for the player's profile.
+    await base44.auth.updateMe({
+      username,
+      avatar_url: avatarUrl
+    });
+
+    // Only update the local cache after the account save succeeds.
+    setLocalProfile({
+      username,
+      avatar_url: avatarUrl
+    });
+
+    setSaved(true);
+
+    base44.functions
+      .invoke('logActivity', {
+        type: 'profile',
+        label: 'Profile Updated'
+      })
+      .catch(() => {});
+
+    setTimeout(() => setSaved(false), 2000);
+  } catch (err) {
+    console.error('Failed to save profile:', err);
+  } finally {
+    setSaving(false);
+  }
+};
 
   const isPreset = avatarUrl?.startsWith('preset:');
   const presetChar = isPreset ? avatarUrl.slice(7) : null;
