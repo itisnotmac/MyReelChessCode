@@ -49,7 +49,7 @@ export default function Contact() {
 
         {/* Email card */}
         <a
-          href="mailto:reelchessgame@gmail.com"
+          href="mailto:support@reelchess.org"
           className="flex items-center gap-5 px-6 py-5 rounded-2xl border border-[#3AAFA9]/20 bg-[#3AAFA9]/5 hover:bg-[#3AAFA9]/10 hover:border-[#3AAFA9]/40 transition-all group min-h-[80px]"
         >
           <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
