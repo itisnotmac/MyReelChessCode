@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     checkAppState();
   }, []);
-
+if (appParams.token)
   const checkAppState = async () => {
     try {
       setIsLoadingPublicSettings(true);
