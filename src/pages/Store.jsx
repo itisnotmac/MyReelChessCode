@@ -269,12 +269,12 @@ export default function Store() {
         item_type: item.category,
         item_name: item.name,
       });
-      if (res?.success) {
-        setCoinBalance(res.new_balance);
-        setJustPurchased(item.id);
-        setTimeout(() => loadPurchases(), 500);
-        setTimeout(() => setJustPurchased(null), 4000);
-      }
+     if (res?.data?.success) {
+  setCoinBalance(res.data.new_balance);
+  setJustPurchased(item.id);
+  setTimeout(() => loadPurchases(), 500);
+  setTimeout(() => setJustPurchased(null), 4000);
+}
     } catch (e) {
       console.error('Coin purchase error:', e);
       const msg = e?.data?.error || e?.message || 'Failed to purchase with Tempo.';
