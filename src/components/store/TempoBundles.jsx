@@ -36,9 +36,9 @@ export default function TempoBundles() {
       const res = await base44.functions.invoke('createTempoCheckout', {
         bundle_id: bundle.id,
       });
-      if (res?.url) {
-        window.location.href = res.url;
-      }
+     if (res?.data?.url) {
+  window.location.href = res.data.url;
+}
     } catch (e) {
       console.error('Tempo checkout error:', e);
       toast({ title: 'Checkout failed', description: 'Please try again.' });
