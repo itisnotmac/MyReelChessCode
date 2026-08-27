@@ -195,8 +195,8 @@ export default function Store() {
         item_type: item.category,
         item_name: item.name,
       });
-      if (res?.url) {
-        window.location.href = res.url;
+      if (res?.data?.url) {
+        window.location.href = res.data.url;
       }
     } catch (e) {
       console.error('Checkout error:', e);
