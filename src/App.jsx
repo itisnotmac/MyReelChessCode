@@ -52,6 +52,8 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, isAuthenticated, user } = useAuth();
   const location = useLocation();
+  const AUTH_FREE_PATHS = ['/login', '/register', '/premium-success', '/forgot-password', '/reset-password'];
+  const isAuthFreePath = AUTH_FREE_PATHS.includes(location.pathname.toLowerCase());
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -66,7 +68,7 @@ const AuthenticatedApp = () => {
   if (authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
+    } else if (authError.type === 'auth_required' && !isAuthFreePath) {
       navigateToLogin();
       return null;
     }
@@ -76,8 +78,7 @@ const AuthenticatedApp = () => {
   // tutorial, contact, info, privacy) are rendered in AppRoutes before this
   // component, so everything that reaches here is the app proper and needs a
   // session. Anonymous visitors are redirected to the login page.
-  const AUTH_FREE_PATHS = ['/login', '/register', '/premium-success', '/forgot-password', '/reset-password'];
-  if (!isAuthenticated && !AUTH_FREE_PATHS.includes(location.pathname)) {
+  if (!isAuthenticated && !isAuthFreePath) {
     navigateToLogin();
     return null;
   }
