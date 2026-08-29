@@ -120,17 +120,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = (shouldRedirect = true) => {
+  const logout = (redirectUrl = '/login') => {
     setUser(null);
     setIsAuthenticated(false);
-    
-    if (shouldRedirect) {
-      // Use the SDK's logout method which handles token cleanup and redirect
-      base44.auth.logout(window.location.href);
-    } else {
-      // Just remove the token without redirect
-      base44.auth.logout();
-    }
+
+    // Base44 logout is synchronous: it clears local tokens and immediately
+    // navigates through its server endpoint to clear the HTTP-only session
+    // cookie. Always return to a public route. Returning to the current
+    // protected page starts another auth redirect and can restore the account
+    // the player just signed out of.
+    base44.auth.logout(redirectUrl);
   };
 
   const navigateToLogin = () => {

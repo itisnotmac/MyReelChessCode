@@ -28,8 +28,10 @@ function markIntroHandledForSession() {
 export default function BrandIntro({ onComplete }) {
   const videoRef = useRef(null);
   const completedRef = useRef(false);
+  const playbackStartedRef = useRef(false);
   const completionTimerRef = useRef(null);
   const failsafeTimerRef = useRef(null);
+  const paintFrameRef = useRef(null);
   const [visible, setVisible] = useState(true);
   const [muted, setMuted] = useState(false);
 
@@ -50,19 +52,30 @@ export default function BrandIntro({ onComplete }) {
     completionTimerRef.current = window.setTimeout(onComplete, 350);
   }, [onComplete]);
 
-  // Try unmuted autoplay; fall back to muted if the browser blocks it
+  const startPlayback = useCallback(() => {
+    if (playbackStartedRef.current || completedRef.current) return;
+    playbackStartedRef.current = true;
+
+    // Let the WebView paint the video layer before starting its audio track.
+    // Starting play directly in the mount effect can produce audible playback
+    // behind Base44's/editor's loading surface on some Chromium WebViews.
+    paintFrameRef.current = window.requestAnimationFrame(() => {
+      paintFrameRef.current = window.requestAnimationFrame(() => {
+        const v = videoRef.current;
+        if (!v || completedRef.current) return;
+        v.volume = 0.7;
+        v.play().catch(() => {
+          v.muted = true;
+          setMuted(true);
+          v.play().catch(finish);
+        });
+      });
+    });
+  }, [finish]);
+
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    markIntroHandledForSession();
-    v.volume = 0.7;
-    v.play().catch(() => {
-      v.muted = true;
-      setMuted(true);
-      // Setting the React prop alone does not retry playback on every Android
-      // WebView, so retry explicitly after switching to muted playback.
-      v.play().catch(() => {});
-    });
 
     // A remote video can stall without firing ended/error. Never let media
     // loading prevent the application itself from opening.
@@ -71,6 +84,7 @@ export default function BrandIntro({ onComplete }) {
     return () => {
       window.clearTimeout(failsafeTimerRef.current);
       window.clearTimeout(completionTimerRef.current);
+      window.cancelAnimationFrame(paintFrameRef.current);
       v.pause();
     };
   }, [finish]);
@@ -87,9 +101,11 @@ export default function BrandIntro({ onComplete }) {
           <video
             ref={videoRef}
             src={INTRO_VIDEO_URL}
-            autoPlay
+            preload="auto"
             playsInline
             muted={muted}
+            onCanPlay={startPlayback}
+            onPlaying={markIntroHandledForSession}
             onEnded={finish}
             onError={finish}
             onClick={finish}

@@ -96,7 +96,7 @@ function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
 
 export default function Lobby() {
   const navigate = useNavigate();
-  const { isAuthenticated, user, navigateToLogin } = useAuth();
+  const { isAuthenticated, user, navigateToLogin, logout } = useAuth();
   const { hasUnlock } = useFeatureUnlocks(user);
   const [menuOpen, setMenuOpen] = useState(false);
   const [difficultyOpen, setDifficultyOpen] = useState(false);
@@ -145,9 +145,9 @@ export default function Lobby() {
     processStreak();
   }, [isAuthenticated]);
 
-  const handleLogout = async () => {
-    await base44.auth.logout();
+  const handleLogout = () => {
     stopMenuMusic();
+    logout('/login');
   };
 
   // Auto-join when arriving via ?join=CODE (e.g. from scanning the QR with a phone camera)
