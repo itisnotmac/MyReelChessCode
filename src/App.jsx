@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
-import BrandIntro from '@/components/BrandIntro'
+import BrandIntro, { hasCompletedIntroThisSession } from '@/components/BrandIntro'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
@@ -193,7 +193,10 @@ function AppRoutes() {
 }
 
 function App() {
-  const [introDone, setIntroDone] = useState(false);
+  // Android WebViews may reload the page while restoring the app or returning
+  // from authentication. Keep the intro complete for this browsing session so
+  // those reloads cannot trap users in a splash-video loop.
+  const [introDone, setIntroDone] = useState(hasCompletedIntroThisSession);
 
   return (
     <QueryClientProvider client={queryClientInstance}>
