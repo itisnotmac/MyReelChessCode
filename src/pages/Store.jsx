@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ChevronLeft, Check, Lock, Loader2, ShoppingBag, Crown, Coins } from 'lucide-react';
+import { ChevronLeft, Check, Loader2, ShoppingBag, Crown, Coins } from 'lucide-react';
 import { ITEM_COST_COINS } from '@/lib/dailyChallenges';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
@@ -14,6 +14,7 @@ import { useToast } from "@/components/ui/use-toast";
 import StoreCardSkeleton from '@/components/StoreCardSkeleton';
 import TempoBundles from '@/components/store/TempoBundles';
 import BoardAnimation from '@/components/effects/BoardAnimation';
+import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 
 function BoardPreview({ skin }) {
   return (
@@ -211,9 +212,15 @@ export default function Store() {
     else setPieceSet(item.id);
   };
 
-  const handleEquipGlow = (item) => {
+  const handleEquipGlow = async (item) => {
     setUsernameGlow(item.color);
-    toast({ title: item.color ? 'Glow equipped' : 'Glow unequipped', description: item.name });
+    try {
+      await base44.auth.updateMe({ username_glow: item.color });
+      toast({ title: item.color ? 'Glow equipped' : 'Glow unequipped', description: item.name });
+    } catch (e) {
+      console.error('Glow equip error:', e);
+      toast({ title: 'Glow saved on this device', description: 'Account sync will retry next time.' });
+    }
   };
 
   const handleEquipTrail = (item) => {
@@ -271,6 +278,7 @@ export default function Store() {
       });
      if (res?.data?.success) {
   setCoinBalance(res.data.new_balance);
+  window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT));
   setJustPurchased(item.id);
   setTimeout(() => loadPurchases(), 500);
   setTimeout(() => setJustPurchased(null), 4000);

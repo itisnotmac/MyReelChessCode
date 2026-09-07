@@ -10,6 +10,7 @@ import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { getTodaysChallenge, CHALLENGE_REWARD } from '@/lib/dailyChallenges';
 import { Button } from '@/components/ui/button';
+import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 
 const ACTIVITY_ICONS = {
   match: Gamepad2,
@@ -97,6 +98,7 @@ export default function DailyChallenges() {
       const body = res?.data || res;
       if (body?.account) setAccount(body.account);
       else await loadAccount();
+      window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT));
       if (body?.newRewards > 0) {
         setRefreshMsg(`+${body.newRewards} Tempo recovered!`);
       } else {

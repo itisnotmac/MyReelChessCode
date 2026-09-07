@@ -1,6 +1,7 @@
 import React from 'react';
 import BottomNav from '@/components/BottomNav';
 import ConnectivityIndicator from '@/components/ConnectivityIndicator';
+import PlayerAccountBanner from '@/components/PlayerAccountBanner';
 
 // Pages that should NOT show the bottom nav (immersive gameplay screens)
 const HIDE_NAV_PATHS = ['/Game', '/OnlineGame', '/Tutorial'];
@@ -39,12 +40,13 @@ export default function Layout({ children, currentPageName }) {
           -webkit-user-select: none;
         }
       `}</style>
+      <PlayerAccountBanner />
       {/* Add bottom padding so content isn't hidden behind the nav bar */}
       <div style={{ paddingBottom: shouldHideNav ? 0 : 'calc(env(safe-area-inset-bottom) + 68px)' }}>
         {children}
       </div>
       {!shouldHideNav && (
-        <div className="fixed top-0 right-0 z-[60]"
+        <div className="fixed top-11 right-0 z-[60]"
           style={{ paddingTop: 'calc(env(safe-area-inset-top) + 8px)', paddingRight: 'calc(env(safe-area-inset-right) + 12px)' }}
         >
           <ConnectivityIndicator />

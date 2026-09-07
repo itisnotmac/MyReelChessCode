@@ -19,6 +19,22 @@
       "type": "string",
       "description": "User ID of the guest (plays black)"
     },
+    "host_username": {
+      "type": "string",
+      "description": "Host display-name snapshot"
+    },
+    "guest_username": {
+      "type": "string",
+      "description": "Guest display-name snapshot"
+    },
+    "host_username_glow": {
+      "type": "string",
+      "description": "Host equipped username glow"
+    },
+    "guest_username_glow": {
+      "type": "string",
+      "description": "Guest equipped username glow"
+    },
     "board": {
       "type": "string",
       "description": "JSON serialized board state"

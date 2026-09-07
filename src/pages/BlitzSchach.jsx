@@ -7,6 +7,8 @@ import { startBlitzAudio, stopBlitzAudio } from '@/lib/blitzAudio';
 import { getBlitzTimeLimit } from '@/lib/blitzClock';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
+import { useSkin } from '@/lib/skinContext';
+import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 import { Button } from '@/components/ui/button';
 import BlitzGameView from '../components/chess/BlitzGameView';
 import {
@@ -30,6 +32,7 @@ function parseJSON(str, fallback) {
 export default function BlitzSchach() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { usernameGlow } = useSkin();
 
   // Mode: 'online' | 'ai' | 'local'
   const [mode, setMode] = useState(() => {
@@ -309,7 +312,10 @@ export default function BlitzSchach() {
     try {
       const r = await base44.functions.invoke('settleElo', { game_id: gameIdRef.current });
       const d = r?.data || r || {};
-      if (d.settled) setEloDelta(isHostRef.current ? d.host_delta : d.guest_delta);
+      if (d.settled) {
+        setEloDelta(isHostRef.current ? d.host_delta : d.guest_delta);
+        window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT));
+      }
     } catch (e) { console.error('ELO settle failed:', e); }
   };
 
@@ -334,6 +340,10 @@ export default function BlitzSchach() {
       const game = await base44.entities.OnlineGame.create({
         host_id: opponent.user_id,
         guest_id: user.id,
+        host_username: opponent.username || 'Opponent',
+        guest_username: user.username || 'Player',
+        host_username_glow: opponent.username_glow || '',
+        guest_username_glow: usernameGlow || '',
         status: 'active',
         board: JSON.stringify(initialBoard),
         is_white_turn: true,
@@ -349,7 +359,7 @@ export default function BlitzSchach() {
       });
 
       await base44.entities.MatchQueue.update(opponent.id, { status: 'matched', game_id: game.id, role: 'host' });
-      const myEntry = await base44.entities.MatchQueue.create({ user_id: user.id, status: 'matched', game_id: game.id, role: 'guest', region, mode: 'blitz' });
+      const myEntry = await base44.entities.MatchQueue.create({ user_id: user.id, username: user.username || 'Player', username_glow: usernameGlow || '', status: 'matched', game_id: game.id, role: 'guest', region, mode: 'blitz' });
       queueIdRef.current = myEntry.id;
 
       gameIdRef.current = game.id;
@@ -361,7 +371,7 @@ export default function BlitzSchach() {
       setPhase('found');
       setTimeout(() => setPhase('playing'), 1500);
     } else {
-      const entry = await base44.entities.MatchQueue.create({ user_id: user.id, status: 'waiting', region, mode: 'blitz' });
+      const entry = await base44.entities.MatchQueue.create({ user_id: user.id, username: user.username || 'Player', username_glow: usernameGlow || '', status: 'waiting', region, mode: 'blitz' });
       queueIdRef.current = entry.id;
       roleRef.current = 'host';
       isHostRef.current = true; setIsHost(true);
@@ -737,6 +747,11 @@ export default function BlitzSchach() {
       roleLabel={roleLabel}
       turnIndicatorMode={turnIndicatorMode}
       mode={mode}
+      playerName={mode === 'online' ? (isHost ? (gameDoc?.host_username || user?.username) : (gameDoc?.guest_username || user?.username)) : user?.username}
+      opponentName={mode === 'online' ? (isHost ? gameDoc?.guest_username : gameDoc?.host_username) : mode === 'ai' ? 'AI' : 'Player 2'}
+      playerGlow={mode === 'online' ? (isHost ? (gameDoc?.host_username_glow || usernameGlow) : (gameDoc?.guest_username_glow || usernameGlow)) : usernameGlow}
+      opponentGlow={mode === 'online' ? (isHost ? gameDoc?.guest_username_glow : gameDoc?.host_username_glow) : ''}
+      opponentIsAI={mode === 'ai'}
     />
   );
 }

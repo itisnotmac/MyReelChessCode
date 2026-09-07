@@ -18,6 +18,10 @@
       "type": "string",
       "description": "URL to the user's avatar image"
     },
+    "username_glow": {
+      "type": "string",
+      "description": "Equipped username glow color as a CSS hex value"
+    },
     "feature_unlocks": {
       "type": "string",
       "description": "Comma-separated feature unlock IDs granted to this user without payment (e.g. 'qr_host_unlock,2v2_host_unlock'). Admins can edit this in the user management dashboard to manually grant unlocks."

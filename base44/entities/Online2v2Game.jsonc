@@ -31,6 +31,14 @@
       "type": "string",
       "description": "Team B \u2014 moves on slot 3"
     },
+    "player_names": {
+      "type": "string",
+      "description": "JSON object mapping p1-p4 to display-name snapshots"
+    },
+    "player_glows": {
+      "type": "string",
+      "description": "JSON object mapping p1-p4 to equipped username glows"
+    },
     "board": {
       "type": "string",
       "description": "JSON serialized board state"

@@ -8,11 +8,13 @@ import BattleCutscene from '../components/chess/BattleCutscene';
 import GameOverModal from '../components/chess/GameOverModal';
 import TurnIndicator from '../components/chess/TurnIndicator';
 import PlayerTimer from '../components/chess/PlayerTimer';
+import MatchPlayersBar from '../components/chess/MatchPlayersBar';
 import { Button } from '@/components/ui/button';
 import GameMenu from '../components/chess/GameMenu';
 import { stopMenuMusic } from '@/lib/menuMusic';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
+import { useSkin } from '@/lib/skinContext';
 import {
   createInitialBoard, getLegalMoves, makeMove,
   isInCheck, isCheckmate, isStalemate,
@@ -35,6 +37,7 @@ const SLOT_LABELS = ['Player 1', 'Player 3', 'Player 2', 'Player 4'];
 export default function Online2v2Game() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { usernameGlow } = useSkin();
 
   const gameIdRef = useRef(null);
   const mySlotRef = useRef(null);
@@ -93,6 +96,8 @@ export default function Online2v2Game() {
       invite_code: code,
       status: 'waiting',
       player1_id: user.id,
+      player_names: JSON.stringify({ p1: user.username || 'Player 1' }),
+      player_glows: JSON.stringify({ p1: usernameGlow || '' }),
       board: JSON.stringify(createInitialBoard()),
       is_white_turn: true,
       player_slot: 0,
@@ -137,6 +142,10 @@ export default function Online2v2Game() {
     if (willBeFullP2 && willBeFullP3 && willBeFullP4) {
       updateData.status = 'active';
     }
+
+    const slotKey = slot === 0 ? 'p1' : slot === 2 ? 'p2' : slot === 1 ? 'p3' : 'p4';
+    updateData.player_names = JSON.stringify({ ...parseJSON(game.player_names, {}), [slotKey]: user.username || SLOT_LABELS[slot] });
+    updateData.player_glows = JSON.stringify({ ...parseJSON(game.player_glows, {}), [slotKey]: usernameGlow || '' });
 
     await base44.entities.Online2v2Game.update(game.id, updateData);
     gameIdRef.current = game.id;
@@ -387,6 +396,12 @@ export default function Online2v2Game() {
   // ── PLAYING ──
   const currentPlayerName = SLOT_LABELS[playerSlot];
   const currentTeam = SLOT_TEAMS[playerSlot] === 0 ? 'Team A' : 'Team B';
+  const playerNames = parseJSON(gameDoc?.player_names, {});
+  const playerGlows = parseJSON(gameDoc?.player_glows, {});
+  const myKey = mySlotRef.current === 0 ? 'p1' : mySlotRef.current === 2 ? 'p2' : mySlotRef.current === 1 ? 'p3' : 'p4';
+  const myTeam = SLOT_TEAMS[mySlotRef.current];
+  const opponentKeys = myTeam === 0 ? ['p3', 'p4'] : ['p1', 'p2'];
+  const opponentNames = opponentKeys.map(key => playerNames[key]).filter(Boolean).join(' & ') || 'Opposing team';
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex flex-col">
@@ -402,6 +417,12 @@ export default function Online2v2Game() {
           <span className="text-[10px] text-white/40 tracking-wider">{SLOT_LABELS[mySlotRef.current]}</span>
         </div>
       </div>
+
+      <MatchPlayersBar
+        playerName={playerNames[myKey] || user?.username}
+        opponentName={opponentNames}
+        playerGlow={playerGlows[myKey] || usernameGlow}
+      />
 
       <div className="px-4 py-1">
         <CapturedPieces pieces={shouldFlip ? capturedBlack : capturedWhite} color={shouldFlip ? 'black' : 'white'} />

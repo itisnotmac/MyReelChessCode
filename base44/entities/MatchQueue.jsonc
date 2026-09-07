@@ -6,6 +6,14 @@
       "type": "string",
       "description": "The user waiting for a match"
     },
+    "username": {
+      "type": "string",
+      "description": "Display-name snapshot used when creating a match"
+    },
+    "username_glow": {
+      "type": "string",
+      "description": "Equipped username-glow snapshot used when creating a match"
+    },
     "status": {
       "type": "string",
       "enum": [

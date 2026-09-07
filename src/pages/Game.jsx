@@ -13,10 +13,14 @@ import TurnIndicator from '../components/chess/TurnIndicator';
 import PlayerTimer from '../components/chess/PlayerTimer';
 import MoveHistory from '../components/chess/MoveHistory';
 import PostGameAnalysis from '../components/chess/PostGameAnalysis';
+import MatchPlayersBar from '../components/chess/MatchPlayersBar';
 import { toAlgebraicNotation } from '../lib/chessNotation';
 import { stopMenuMusic } from '@/lib/menuMusic';
 import AmbientOverlay from '@/components/effects/AmbientOverlay';
 import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
+import { useSkin } from '@/lib/skinContext';
+import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 import { playMoveSound, playCheckSound, playGameOverSound, unlockAudio } from '@/lib/chessSound';
 import {
   createInitialBoard,
@@ -33,6 +37,8 @@ import {
 
 export default function Game() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { usernameGlow } = useSkin();
   // Store mode in a ref so screen rotation / re-renders don't re-read it
   const modeRef = useRef(new URLSearchParams(window.location.search).get('mode') || 'ai');
   const mode = modeRef.current;
@@ -89,6 +95,7 @@ export default function Game() {
     if (!gameOver) return;
     const duration_seconds = Math.round((Date.now() - gameStartTimeRef.current) / 1000);
     base44.functions.invoke('recordGameResult', { mode, result: gameOver, moves_count: moveCount, duration_seconds })
+      .then(() => window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT)))
       .catch(e => console.error('Failed to record game result:', e));
   }, [gameOver, mode, moveCount]);
 
@@ -391,6 +398,13 @@ export default function Game() {
 
         </div>
       </div>
+
+      <MatchPlayersBar
+        playerName={mode === '2v2' ? 'Team A' : user?.username}
+        opponentName={mode === 'ai' ? 'AI' : mode === '2v2' ? 'Team B' : 'Player 2'}
+        playerGlow={usernameGlow}
+        opponentIsAI={mode === 'ai'}
+      />
 
       {/* Black captured pieces (top) */}
       <div className="px-4 py-1">

@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
+import { useSkin } from '@/lib/skinContext';
 import {
   createInitialBoard,
   INITIAL_CASTLING
 } from '../components/chess/ChessLogic';
 import { stopMenuMusic } from '@/lib/menuMusic';
-import { X, Wifi, Loader2, QrCode, Copy, Check, ChevronLeft } from 'lucide-react';
+import { Wifi, Loader2, QrCode, Copy, Check, ChevronLeft } from 'lucide-react';
 
 const INVITE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
@@ -28,6 +29,7 @@ function buildJoinUrl(code) {
 export default function WifiMatch() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { usernameGlow } = useSkin();
   const [phase, setPhase] = useState('creating'); // creating | waiting | error
   const [inviteCode, setInviteCode] = useState('');
   const [gameId, setGameId] = useState(null);
@@ -48,6 +50,8 @@ export default function WifiMatch() {
         const code = generateInviteCode();
         const game = await base44.entities.OnlineGame.create({
           host_id: user.id,
+          host_username: user.username || 'Player',
+          host_username_glow: usernameGlow || '',
           status: 'waiting',
           invite_code: code,
           board: JSON.stringify(createInitialBoard()),
@@ -77,7 +81,7 @@ export default function WifiMatch() {
       cancelled = true;
       clearInterval(pollingRef.current);
     };
-  }, [user?.id]);
+  }, [user?.id, user?.username, usernameGlow]);
 
   // Poll for guest joining
   useEffect(() => {

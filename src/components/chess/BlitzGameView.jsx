@@ -6,6 +6,7 @@ import GameOverModal from './GameOverModal';
 import TurnIndicator from './TurnIndicator';
 import GameMenu from './GameMenu';
 import BlitzTimer from './BlitzTimer';
+import MatchPlayersBar from './MatchPlayersBar';
 import { isInCheck } from './ChessLogic';
 
 // Shared presentational view for the "playing" phase of BlitzSchach.
@@ -22,6 +23,7 @@ export default function BlitzGameView({
   roleIcon: RoleIcon, roleLabel,
   turnIndicatorMode = 'online',
   mode = 'online',
+  playerName, opponentName, playerGlow, opponentGlow, opponentIsAI,
 }) {
   const inCheck = isInCheck(board, isWhiteTurn);
 
@@ -45,6 +47,14 @@ export default function BlitzGameView({
           <span className="text-[10px] text-white/40 tracking-wider">{roleLabel}</span>
         </div>
       </div>
+
+      <MatchPlayersBar
+        playerName={playerName}
+        opponentName={opponentName}
+        playerGlow={playerGlow}
+        opponentGlow={opponentGlow}
+        opponentIsAI={opponentIsAI}
+      />
 
       <div className="px-4 py-1">
         <CapturedPieces pieces={shouldFlip ? capturedBlack : capturedWhite} color={shouldFlip ? 'black' : 'white'} />

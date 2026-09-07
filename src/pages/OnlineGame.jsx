@@ -8,11 +8,14 @@ import BattleCutscene from '../components/chess/BattleCutscene';
 import GameOverModal from '../components/chess/GameOverModal';
 import TurnIndicator from '../components/chess/TurnIndicator';
 import PlayerTimer from '../components/chess/PlayerTimer';
+import MatchPlayersBar from '../components/chess/MatchPlayersBar';
 import { Button } from '@/components/ui/button';
 import GameMenu from '../components/chess/GameMenu';
 import { stopMenuMusic } from '@/lib/menuMusic';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
+import { useSkin } from '@/lib/skinContext';
+import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 import {
   createInitialBoard,
   getLegalMoves,
@@ -33,6 +36,7 @@ function parseJSON(str, fallback) {
 export default function OnlineGame() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { usernameGlow } = useSkin();
 
   // Persistent refs so subscribe callbacks always see latest values
   const gameIdRef = useRef(null);
@@ -205,6 +209,10 @@ export default function OnlineGame() {
       const game = await base44.entities.OnlineGame.create({
         host_id: opponent.user_id,
         guest_id: user.id,
+        host_username: opponent.username || 'Opponent',
+        guest_username: user.username || 'Player',
+        host_username_glow: opponent.username_glow || '',
+        guest_username_glow: usernameGlow || '',
         status: 'active',
         board: JSON.stringify(initialBoard),
         is_white_turn: true,
@@ -227,6 +235,8 @@ export default function OnlineGame() {
       // Create our own matched entry
       const myEntry = await base44.entities.MatchQueue.create({
         user_id: user.id,
+        username: user.username || 'Player',
+        username_glow: usernameGlow || '',
         status: 'matched',
         game_id: game.id,
         role: 'guest',
@@ -247,6 +257,8 @@ export default function OnlineGame() {
       // We're the host — enter queue and wait
       const entry = await base44.entities.MatchQueue.create({
         user_id: user.id,
+        username: user.username || 'Player',
+        username_glow: usernameGlow || '',
         status: 'waiting',
         region,
       });
@@ -362,6 +374,7 @@ export default function OnlineGame() {
           const d = r?.data || r || {};
           if (d.settled) {
             setEloDelta(isHostRef.current ? d.host_delta : d.guest_delta);
+            window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT));
           }
         } catch (se) { console.error('ELO settle failed:', se); }
         if (gameDoc?.tournament_id) {
@@ -599,6 +612,13 @@ export default function OnlineGame() {
           <span className="text-[10px] text-white/40 tracking-wider">{isHost ? 'White' : 'Black'}</span>
         </div>
       </div>
+
+      <MatchPlayersBar
+        playerName={isHost ? (gameDoc?.host_username || user?.username) : (gameDoc?.guest_username || user?.username)}
+        opponentName={isHost ? gameDoc?.guest_username : gameDoc?.host_username}
+        playerGlow={isHost ? (gameDoc?.host_username_glow || usernameGlow) : (gameDoc?.guest_username_glow || usernameGlow)}
+        opponentGlow={isHost ? gameDoc?.guest_username_glow : gameDoc?.host_username_glow}
+      />
 
       <div className="px-4 py-1">
         <CapturedPieces pieces={shouldFlip ? capturedBlack : capturedWhite} color={shouldFlip ? 'black' : 'white'} />

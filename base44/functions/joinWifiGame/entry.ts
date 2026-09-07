@@ -25,6 +25,8 @@ export default async function(req) {
     // Atomically claim the guest slot and activate the game
     const updated = await base44.asServiceRole.entities.OnlineGame.update(game.id, {
       guest_id: user.id,
+      guest_username: user.username || 'Player',
+      guest_username_glow: user.username_glow || '',
       status: 'active'
     });
 
