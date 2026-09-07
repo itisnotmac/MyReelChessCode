@@ -41,6 +41,20 @@ export default async function(req: Request): Promise<Response> {
       });
     }
 
+    // Recalculate progress from today's actual results before awarding Tempo.
+    // This self-repairs false AI victories written by older app versions.
+    const histories = await base44.entities.GameHistory.list('-created_date', 200);
+    const todaysGames = (histories || []).filter(game => game.created_date?.startsWith(date));
+    const isHistoryWin = (game) => game.mode === 'ai'
+      ? game.result === 'white_wins'
+      : game.result === 'white_wins' || game.result === 'black_wins';
+    account = await base44.asServiceRole.entities.PlayerAccount.update(account.id, {
+      daily_games_played: todaysGames.length,
+      daily_wins: todaysGames.filter(isHistoryWin).length,
+      daily_ai_wins: todaysGames.filter(game => game.mode === 'ai' && game.result === 'white_wins').length,
+      daily_local_wins: todaysGames.filter(game => game.mode === 'local' && isHistoryWin(game)).length,
+    });
+
     let claimed = [];
     try { claimed = JSON.parse(account.claimed_today || '[]'); } catch { claimed = []; }
 

@@ -67,22 +67,23 @@ export default async function(req: Request): Promise<Response> {
     const modeLabel = mode === 'ai' ? 'AI Match' : mode === 'local' ? 'Local Match' : '2v2 Match';
     activities.push({ type: 'match', label: `${modeLabel} — ${resultLabel}`, time: new Date().toISOString() });
 
+    // Rebuild today's counters from authoritative game history. This repairs
+    // any false AI victory recorded by older versions without touching Tempo.
+    const histories = await base44.entities.GameHistory.list('-created_date', 200);
+    const todaysGames = (histories || []).filter(game => game.created_date?.startsWith(date));
+    const isHistoryWin = (game) => game.mode === 'ai'
+      ? game.result === 'white_wins'
+      : game.result === 'white_wins' || game.result === 'black_wins';
+
     // Build progress updates + activities in one write
     const updates = {
-      daily_games_played: (account.daily_games_played || 0) + 1,
+      daily_games_played: todaysGames.length,
+      daily_wins: todaysGames.filter(isHistoryWin).length,
+      daily_ai_wins: todaysGames.filter(game => game.mode === 'ai' && game.result === 'white_wins').length,
+      daily_local_wins: todaysGames.filter(game => game.mode === 'local' && isHistoryWin(game)).length,
       last_challenge_date: date,
       daily_activities: JSON.stringify(activities.slice(-50)),
     };
-
-    if (isPlayerWin) {
-      updates.daily_wins = (account.daily_wins || 0) + 1;
-      if (mode === 'ai') updates.daily_ai_wins = (account.daily_ai_wins || 0) + 1;
-      if (mode === 'local') updates.daily_local_wins = (account.daily_local_wins || 0) + 1;
-    } else {
-      updates.daily_wins = account.daily_wins || 0;
-      updates.daily_ai_wins = account.daily_ai_wins || 0;
-      updates.daily_local_wins = account.daily_local_wins || 0;
-    }
 
     updates.claimed_today = account.claimed_today || '[]';
 
