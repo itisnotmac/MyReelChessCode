@@ -61,16 +61,17 @@ export default function PlayChessModal({ isOpen, onClose, onOnlinePvp, onVsAI, o
       {isOpen && (
         <>
           <motion.div
-            className="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose} />
           <motion.div
-            className="fixed bottom-0 left-0 right-0 z-[80] max-h-[calc(100dvh-env(safe-area-inset-top)-0.75rem)] overflow-y-auto overscroll-contain rounded-t-3xl border-t border-[#3AAFA9]/20 bg-gradient-to-b from-[#1a1a2e] to-[#0f0f1a] shadow-2xl"
+            className="fixed left-0 right-0 z-[45] max-h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom)-4.75rem)] overflow-y-auto overscroll-contain rounded-t-3xl border-t border-[#3AAFA9]/20 bg-gradient-to-b from-[#1a1a2e] to-[#0f0f1a] shadow-2xl"
+            style={{ bottom: 'calc(env(safe-area-inset-bottom) + 4rem)' }}
             initial={{ y: 400 }} animate={{ y: 0 }} exit={{ y: 400 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}>
             <div
               className="mx-auto max-w-md p-6"
-              style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 5rem)' }}
+              style={{ paddingBottom: '1.5rem' }}
             >
               <div className="flex items-center justify-between mb-5">
                 <h2 className="text-lg font-bold tracking-wider text-[#3AAFA9]">PLAY CHESS</h2>

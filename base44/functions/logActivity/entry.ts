@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { selectPlayerAccount } from '../../shared/playerAccount.ts';
 import { formatDate } from '../../shared/dailyChallenges.ts';
 
 // Logs a user activity to their daily report card. Called from the frontend
@@ -18,7 +19,7 @@ export default async function(req: Request): Promise<Response> {
     const date = formatDate(new Date());
 
     let accounts = await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: user.id });
-    let account = accounts[0];
+    let account = selectPlayerAccount(accounts);
 
     if (!account) {
       account = await base44.asServiceRole.entities.PlayerAccount.create({

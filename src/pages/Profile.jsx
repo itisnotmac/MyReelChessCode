@@ -17,6 +17,7 @@ import {
   AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from '@/components/ui/button';
+import { selectPlayerAccount } from '@/lib/playerAccount';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -51,11 +52,12 @@ export default function Profile() {
     }).catch(() => {}).finally(() => setLoading(false));
 
     base44.entities.PlayerAccount.list().then(accounts => {
-      if (accounts?.[0]) {
-        setStreak(accounts[0].login_streak || 0);
-        setTempoBalance(accounts[0].currency_balance || 0);
-        setElo(accounts[0].elo ?? 1200);
-        setPeakElo(accounts[0].peak_elo ?? accounts[0].elo ?? 1200);
+      const account = selectPlayerAccount(accounts);
+      if (account) {
+        setStreak(account.login_streak || 0);
+        setTempoBalance(account.currency_balance || 0);
+        setElo(account.elo ?? 1200);
+        setPeakElo(account.peak_elo ?? account.elo ?? 1200);
       }
     }).catch(() => {});
   }, []);

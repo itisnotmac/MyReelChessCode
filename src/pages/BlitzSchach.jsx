@@ -29,6 +29,11 @@ function parseJSON(str, fallback) {
   try { return str ? JSON.parse(str) : fallback; } catch { return fallback; }
 }
 
+function broadcastAccountUpdate(response) {
+  const body = response?.data || response;
+  window.dispatchEvent(new CustomEvent(PLAYER_ACCOUNT_UPDATED_EVENT, { detail: { account: body?.account } }));
+}
+
 export default function BlitzSchach() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -304,7 +309,7 @@ export default function BlitzSchach() {
         moves_count: moveCountRef.current,
         duration_seconds: Math.round((Date.now() - (gameStartTimeRef.current || Date.now())) / 1000),
         variant: 'blitz',
-      }).catch(e => console.error('Failed to record blitz result:', e));
+      }).then(broadcastAccountUpdate).catch(e => console.error('Failed to record blitz result:', e));
     }
   };
 
@@ -511,7 +516,7 @@ export default function BlitzSchach() {
           moves_count: newMoveCount,
           duration_seconds: Math.round((Date.now() - (gameStartTimeRef.current || Date.now())) / 1000),
           variant: 'blitz',
-        }).catch(e => console.error('Failed to record blitz result:', e));
+        }).then(broadcastAccountUpdate).catch(e => console.error('Failed to record blitz result:', e));
       }
     }
 

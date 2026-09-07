@@ -11,6 +11,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { getTodaysChallenge, CHALLENGE_REWARD } from '@/lib/dailyChallenges';
 import { Button } from '@/components/ui/button';
 import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
+import { selectPlayerAccount } from '@/lib/playerAccount';
 
 const ACTIVITY_ICONS = {
   match: Gamepad2,
@@ -36,7 +37,7 @@ function formatTime(iso) {
 
 export default function DailyChallenges() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -46,8 +47,8 @@ export default function DailyChallenges() {
   const loadAccount = useCallback(async () => {
     if (!isAuthenticated) { setLoading(false); return; }
     try {
-      const res = await base44.entities.PlayerAccount.list();
-      let acct = res?.[0] || null;
+      const res = await base44.entities.PlayerAccount.filter({ user_id: user.id });
+      let acct = selectPlayerAccount(res);
       // If the daily progress hasn't been reset for today yet (e.g. the user
       // hasn't played since yesterday), sync with the server to trigger the
       // reset so stale wins/claims from a previous day don't show as completed.
@@ -58,11 +59,12 @@ export default function DailyChallenges() {
         if (syncBody?.account) acct = syncBody.account;
       }
       setAccount(acct);
+      if (acct) window.dispatchEvent(new CustomEvent(PLAYER_ACCOUNT_UPDATED_EVENT, { detail: { account: acct } }));
     } catch (e) {
       console.error('Failed to load account:', e);
     }
     setLoading(false);
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user?.id]);
 
   useEffect(() => { loadAccount(); }, [loadAccount]);
 
@@ -98,7 +100,11 @@ export default function DailyChallenges() {
       const body = res?.data || res;
       if (body?.account) setAccount(body.account);
       else await loadAccount();
-      window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT));
+      if (body?.account) {
+        window.dispatchEvent(new CustomEvent(PLAYER_ACCOUNT_UPDATED_EVENT, { detail: { account: body.account } }));
+      } else {
+        window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT));
+      }
       if (body?.newRewards > 0) {
         setRefreshMsg(`+${body.newRewards} Tempo recovered!`);
       } else {

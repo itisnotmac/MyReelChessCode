@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Award, Loader2, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { selectPlayerAccount } from '@/lib/playerAccount';
 import { useAuth } from '@/lib/AuthContext';
 import { ACHIEVEMENTS, computeStats, evaluateAchievements, AchievementBadge } from '@/lib/achievements';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
@@ -20,7 +21,7 @@ export default function Achievements() {
     if (user) {
       try {
         const accounts = await base44.entities.PlayerAccount.filter({ user_id: user.id });
-        setAccount(accounts[0] || null);
+        setAccount(selectPlayerAccount(accounts));
       } catch (e) { console.error('Failed to fetch account:', e); }
     }
   }, [user?.id]);

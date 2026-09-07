@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useSkin } from '@/lib/skinContext';
 import GlowingUsername from '@/components/GlowingUsername';
+import { selectPlayerAccount } from '@/lib/playerAccount';
 
 export const PLAYER_ACCOUNT_UPDATED_EVENT = 'reelchess:account-updated';
 
@@ -18,18 +19,22 @@ export default function PlayerAccountBanner() {
   const loadAccount = useCallback(async () => {
     if (!isAuthenticated) return;
     try {
-      const accounts = await base44.entities.PlayerAccount.list();
-      setAccount(accounts?.[0] || { elo: 1200, currency_balance: 0 });
+      const accounts = await base44.entities.PlayerAccount.filter({ user_id: user.id });
+      setAccount(selectPlayerAccount(accounts) || { elo: 1200, currency_balance: 0 });
     } catch (error) {
       console.error('Failed to load account banner:', error);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user?.id]);
 
   useEffect(() => { loadAccount(); }, [loadAccount, location.pathname]);
 
   useEffect(() => {
-    window.addEventListener(PLAYER_ACCOUNT_UPDATED_EVENT, loadAccount);
-    return () => window.removeEventListener(PLAYER_ACCOUNT_UPDATED_EVENT, loadAccount);
+    const handleAccountUpdated = (event) => {
+      if (event.detail?.account) setAccount(event.detail.account);
+      else loadAccount();
+    };
+    window.addEventListener(PLAYER_ACCOUNT_UPDATED_EVENT, handleAccountUpdated);
+    return () => window.removeEventListener(PLAYER_ACCOUNT_UPDATED_EVENT, handleAccountUpdated);
   }, [loadAccount]);
 
   useEffect(() => {

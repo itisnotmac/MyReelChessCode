@@ -95,7 +95,10 @@ export default function Game() {
     if (!gameOver) return;
     const duration_seconds = Math.round((Date.now() - gameStartTimeRef.current) / 1000);
     base44.functions.invoke('recordGameResult', { mode, result: gameOver, moves_count: moveCount, duration_seconds })
-      .then(() => window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT)))
+      .then((response) => {
+        const body = response?.data || response;
+        window.dispatchEvent(new CustomEvent(PLAYER_ACCOUNT_UPDATED_EVENT, { detail: { account: body?.account } }));
+      })
       .catch(e => console.error('Failed to record game result:', e));
   }, [gameOver, mode, moveCount]);
 

@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 import { CHALLENGES, formatDate, getDayIndex } from '../../shared/dailyChallenges.ts';
+import { selectPlayerAccount } from '../../shared/playerAccount.ts';
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -27,7 +28,7 @@ export default async function(req: Request): Promise<Response> {
 
     // Get or create PlayerAccount
     let accounts = await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: user.id });
-    let account = accounts[0];
+    let account = selectPlayerAccount(accounts);
 
     if (!account) {
       account = await base44.asServiceRole.entities.PlayerAccount.create({
@@ -58,8 +59,11 @@ export default async function(req: Request): Promise<Response> {
     let activities = [];
     try { activities = JSON.parse(account.daily_activities || '[]'); } catch { activities = []; }
 
-    const isWin = result === 'white_wins' || result === 'black_wins';
-    const resultLabel = isWin ? 'Victory' : result === 'draw' ? 'Draw' : 'Defeat';
+    const isDecisive = result === 'white_wins' || result === 'black_wins';
+    // The human always plays White against AI. In local/2v2 modes both sides
+    // are human, so any decisive result represents a local-player victory.
+    const isPlayerWin = mode === 'ai' ? result === 'white_wins' : isDecisive;
+    const resultLabel = isPlayerWin ? 'Victory' : result === 'draw' ? 'Draw' : 'Defeat';
     const modeLabel = mode === 'ai' ? 'AI Match' : mode === 'local' ? 'Local Match' : '2v2 Match';
     activities.push({ type: 'match', label: `${modeLabel} — ${resultLabel}`, time: new Date().toISOString() });
 
@@ -70,7 +74,7 @@ export default async function(req: Request): Promise<Response> {
       daily_activities: JSON.stringify(activities.slice(-50)),
     };
 
-    if (isWin) {
+    if (isPlayerWin) {
       updates.daily_wins = (account.daily_wins || 0) + 1;
       if (mode === 'ai') updates.daily_ai_wins = (account.daily_ai_wins || 0) + 1;
       if (mode === 'local') updates.daily_local_wins = (account.daily_local_wins || 0) + 1;

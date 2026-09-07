@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 import { CHALLENGES, formatDate, getDayIndex } from '../../shared/dailyChallenges.ts';
+import { selectPlayerAccount } from '../../shared/playerAccount.ts';
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -11,7 +12,7 @@ export default async function(req: Request): Promise<Response> {
     const date = formatDate(new Date());
 
     let accounts = await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: user.id });
-    let account = accounts[0];
+    let account = selectPlayerAccount(accounts);
 
     if (!account) {
       account = await base44.asServiceRole.entities.PlayerAccount.create({

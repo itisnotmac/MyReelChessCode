@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { selectPlayerAccount } from '../../shared/playerAccount.ts';
 
 function getStreakReward(streak) {
   if (streak <= 0 || streak % 7 !== 0) return 0;
@@ -34,7 +35,7 @@ Deno.serve(async (req) => {
     const yesterday = getYesterday(date);
 
     let accounts = await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: user.id });
-    let account = accounts[0];
+    let account = selectPlayerAccount(accounts);
 
     // Create account if this is the user's first interaction
     if (!account) {

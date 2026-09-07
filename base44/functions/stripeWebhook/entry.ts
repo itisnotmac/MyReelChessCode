@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 import Stripe from 'npm:stripe@14.21.0';
+import { selectPlayerAccount } from '../../shared/playerAccount.ts';
 
 Deno.serve(async (req) => {
   try {
@@ -50,7 +51,7 @@ Deno.serve(async (req) => {
           const tempoAmount = parseInt(session.metadata?.tempo_amount || '0', 10);
           if (tempoAmount > 0) {
             const accounts = await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: userId });
-            const account = accounts[0];
+            const account = selectPlayerAccount(accounts);
             if (account) {
               await base44.asServiceRole.entities.PlayerAccount.update(account.id, {
                 currency_balance: (account.currency_balance || 0) + tempoAmount,

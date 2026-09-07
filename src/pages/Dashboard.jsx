@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, BarChart2, Clock, Swords, Trophy, Bot, Users, TrendingUp, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { selectPlayerAccount } from '@/lib/playerAccount';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
@@ -59,7 +60,7 @@ export default function Dashboard() {
       base44.entities.PlayerAccount.list().catch(() => []),
     ]);
     setHistory(data);
-    setAccount(accounts[0] || null);
+    setAccount(selectPlayerAccount(accounts));
   }, []);
 
   useEffect(() => {

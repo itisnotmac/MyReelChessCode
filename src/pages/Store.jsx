@@ -15,6 +15,7 @@ import StoreCardSkeleton from '@/components/StoreCardSkeleton';
 import TempoBundles from '@/components/store/TempoBundles';
 import BoardAnimation from '@/components/effects/BoardAnimation';
 import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
+import { selectPlayerAccount } from '@/lib/playerAccount';
 
 function BoardPreview({ skin }) {
   return (
@@ -135,7 +136,7 @@ export default function Store() {
         base44.entities.PlayerAccount.list(),
       ]);
       setPurchases(purchaseRes || []);
-      setCoinBalance(accountRes?.[0]?.currency_balance || 0);
+      setCoinBalance(selectPlayerAccount(accountRes)?.currency_balance || 0);
     } catch (e) {
       console.error('Failed to load store data:', e);
     }

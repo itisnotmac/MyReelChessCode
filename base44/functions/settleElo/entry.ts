@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.38';
+import { selectPlayerAccount } from '../../shared/playerAccount.ts';
 
 // Standard ELO constants
 const K = 32;
@@ -36,13 +37,13 @@ Deno.serve(async (req) => {
     if (!hostId || !guestId) return Response.json({ error: 'Missing players' }, { status: 400 });
 
     // Load or create each player's account
-    let hostAccount = (await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: hostId }))[0];
+    let hostAccount = selectPlayerAccount(await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: hostId }));
     if (!hostAccount) {
       hostAccount = await base44.asServiceRole.entities.PlayerAccount.create({
         user_id: hostId, currency_balance: 0, elo: DEFAULT_ELO, peak_elo: DEFAULT_ELO,
       });
     }
-    let guestAccount = (await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: guestId }))[0];
+    let guestAccount = selectPlayerAccount(await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: guestId }));
     if (!guestAccount) {
       guestAccount = await base44.asServiceRole.entities.PlayerAccount.create({
         user_id: guestId, currency_balance: 0, elo: DEFAULT_ELO, peak_elo: DEFAULT_ELO,

@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { selectPlayerAccount } from '../../shared/playerAccount.ts';
 
 // Server-side source of truth for cosmetics purchasable with Tempo. Never
 // trust client-supplied name/type — this prevents purchasing forged item ids.
@@ -107,7 +108,7 @@ Deno.serve(async (req) => {
 
     // Get account
     let accounts = await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: user.id });
-    let account = accounts[0];
+    let account = selectPlayerAccount(accounts);
 
     // Free items: record purchase without deducting balance
     if (price === 0) {
