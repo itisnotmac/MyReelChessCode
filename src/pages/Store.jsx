@@ -468,7 +468,7 @@ export default function Store() {
             onPurchase={handleCoinPurchase}
             purchasingId={coinPurchasing}
             coinBalance={coinBalance}
-            variant="color"
+            variant="username-glow"
           />
         )}
       </div>
@@ -492,7 +492,7 @@ export default function Store() {
             onPurchase={handleCoinPurchase}
             purchasingId={coinPurchasing}
             coinBalance={coinBalance}
-            variant="color"
+            variant="move-trail"
           />
         )}
       </div>
@@ -529,6 +529,9 @@ export default function Store() {
         </h2>
         <p className="text-[11px] text-white/50 mb-3 leading-relaxed">
           A burst of glowing particles erupts at the board square whenever you capture a piece. Equipped effect plays in classic AI and local games.
+        </p>
+        <p className="mb-3 rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-3 py-2.5 text-[11px] leading-relaxed text-[#F5E6A3]/85">
+          Particle effects appear when <span className="font-bold text-[#F5E6A3]">Battle Cutscenes</span> are disabled in Settings. When cutscenes are enabled, the cinematic capture plays instead of the particle effect.
         </p>
         {loading ? (
           <div className="grid grid-cols-2 gap-3">

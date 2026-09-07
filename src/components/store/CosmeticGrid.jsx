@@ -3,9 +3,53 @@ import { motion } from 'framer-motion';
 import { Check, Loader2, Coins } from 'lucide-react';
 import EffectPreview from './EffectPreview';
 
+function UsernameGlowPreview({ color }) {
+  return (
+    <div className="flex h-[72px] w-full items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-black/35 px-2">
+      <span
+        className="truncate text-sm font-black uppercase tracking-[0.12em]"
+        style={{ color, textShadow: `0 0 5px ${color}, 0 0 12px ${color}, 0 0 22px ${color}99` }}
+      >
+        Username
+      </span>
+    </div>
+  );
+}
+
+function MoveTrailPreview({ color, piece = '♞' }) {
+  return (
+    <div
+      className="relative h-[72px] w-full max-w-[120px] overflow-hidden rounded-lg border border-white/10 bg-black/45"
+      aria-label={`${color} move trail preview`}
+    >
+      <div
+        className="absolute inset-0 opacity-70"
+        style={{
+          backgroundImage: 'repeating-conic-gradient(rgba(255,255,255,0.11) 0% 25%, rgba(255,255,255,0.025) 0% 50%)',
+          backgroundSize: '36px 36px',
+        }}
+      />
+      <motion.div
+        className="absolute left-1/2 top-1/2 h-1 w-[62px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{ background: `linear-gradient(90deg, transparent, ${color}55, ${color})`, boxShadow: `0 0 9px ${color}` }}
+        animate={{ opacity: [0.2, 1, 0.2], scaleX: [0.35, 1, 0.35] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.span
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl leading-none text-white"
+        style={{ filter: `drop-shadow(0 0 5px ${color})` }}
+        animate={{ x: [-34, 34, -34] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        {piece}
+      </motion.span>
+    </div>
+  );
+}
+
 /**
  * Reusable grid for Tempo-purchasable cosmetics.
- * variant: 'color' (glow/trail swatches) or 'avatar' (grandmaster portraits)
+ * variant selects the purpose-built preview shown above each cosmetic.
  */
 export default function CosmeticGrid({
   items,
@@ -57,7 +101,7 @@ export default function CosmeticGrid({
       )}
       {items.map((item, i) => {
         const owned = ownedIds.has(item.id);
-        const equipped = ['color'].includes(variant)
+        const equipped = ['color', 'username-glow', 'move-trail'].includes(variant)
           ? equippedId === item.color
           : ['avatar'].includes(variant)
             ? equippedId === item.image
@@ -77,7 +121,11 @@ export default function CosmeticGrid({
           >
             {/* Preview */}
             <div className="flex justify-center mb-2" style={{ height: variant === 'ambient' ? 90 : 72 }}>
-              {variant === 'color' ? (
+              {variant === 'username-glow' ? (
+                <UsernameGlowPreview color={item.color} />
+              ) : variant === 'move-trail' ? (
+                <MoveTrailPreview color={item.color} piece={i % 2 === 0 ? '♟' : '♞'} />
+              ) : variant === 'color' ? (
                 <div
                   className="w-14 h-14 rounded-full"
                   style={{
