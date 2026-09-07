@@ -3,13 +3,14 @@ import BottomNav from '@/components/BottomNav';
 import ConnectivityIndicator from '@/components/ConnectivityIndicator';
 import PlayerAccountBanner from '@/components/PlayerAccountBanner';
 
-// Pages that should NOT show the bottom nav (immersive gameplay screens)
-const HIDE_NAV_PATHS = ['/Game', '/OnlineGame', '/Tutorial'];
+// Exact page names avoid treating GameHistory as a live game just because its
+// URL begins with "/Game".
+const HIDE_NAV_PAGES = new Set(['Game', 'OnlineGame', 'Online2v2Game', 'BlitzSchach', 'Tutorial']);
+const HIDE_ACCOUNT_BANNER_PAGES = new Set(['Game', 'OnlineGame', 'Online2v2Game', 'BlitzSchach']);
 
 export default function Layout({ children, currentPageName }) {
-  const shouldHideNav = HIDE_NAV_PATHS.some(p =>
-    window.location.pathname.startsWith(p)
-  );
+  const shouldHideNav = HIDE_NAV_PAGES.has(currentPageName);
+  const shouldHideAccountBanner = HIDE_ACCOUNT_BANNER_PAGES.has(currentPageName);
 
   return (
     <div
@@ -40,7 +41,7 @@ export default function Layout({ children, currentPageName }) {
           -webkit-user-select: none;
         }
       `}</style>
-      <PlayerAccountBanner />
+      {!shouldHideAccountBanner && <PlayerAccountBanner />}
       {/* Add bottom padding so content isn't hidden behind the nav bar */}
       <div style={{ paddingBottom: shouldHideNav ? 0 : 'calc(env(safe-area-inset-bottom) + 68px)' }}>
         {children}
