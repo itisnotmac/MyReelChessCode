@@ -57,6 +57,11 @@
       ],
       "default": "classic",
       "description": "Matchmaking mode \u2014 'classic' for standard PVP, 'blitz' for BlitzSchach"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes or context about this matchmaking request"
     }
   },
   "required": [

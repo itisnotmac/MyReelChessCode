@@ -28,6 +28,11 @@
     "item_name": {
       "type": "string",
       "description": "Display name of the purchased item"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes about this purchase"
     }
   },
   "required": [

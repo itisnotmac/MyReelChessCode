@@ -27,6 +27,11 @@
       ],
       "default": "text",
       "description": "Type of message \u2014 text or a game challenge invite"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional longer context or notes attached to this message"
     }
   },
   "required": [

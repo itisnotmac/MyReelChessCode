@@ -80,6 +80,11 @@
     "move_count": {
       "type": "number",
       "default": 0
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes about this game"
     }
   },
   "required": [

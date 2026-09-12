@@ -63,6 +63,11 @@
       "type": "number",
       "default": 1200,
       "description": "Highest ELO rating the player has reached"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional player bio or account notes"
     }
   },
   "required": [

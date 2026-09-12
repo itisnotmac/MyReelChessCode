@@ -30,6 +30,11 @@
       "type": "boolean",
       "default": true,
       "description": "Whether this asset is eligible for selection in cutscenes"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description of this cinematic asset"
     }
   },
   "required": [

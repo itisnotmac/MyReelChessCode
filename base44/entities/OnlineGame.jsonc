@@ -121,6 +121,11 @@
     "turn_started_at": {
       "type": "string",
       "description": "ISO timestamp when the current turn started (used for BlitzSchach per-move timer)"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes about this game"
     }
   },
   "required": [

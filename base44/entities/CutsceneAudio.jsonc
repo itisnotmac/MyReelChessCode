@@ -26,6 +26,11 @@
       "type": "boolean",
       "default": true,
       "description": "Whether this audio is available for use in cutscenes"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description of this audio clip"
     }
   },
   "required": [

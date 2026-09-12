@@ -46,6 +46,11 @@
     "stripe_payment_intent": {
       "type": "string",
       "description": "Stripe payment intent used for refund handling"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes about this tournament entry"
     }
   },
   "required": [
