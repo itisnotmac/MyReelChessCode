@@ -16,6 +16,7 @@ import TempoBundles from '@/components/store/TempoBundles';
 import BoardAnimation from '@/components/effects/BoardAnimation';
 import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 import { selectPlayerAccount } from '@/lib/playerAccount';
+import { isAndroidApp } from '@/lib/platformDetect';
 
 function BoardPreview({ skin }) {
   return (
@@ -191,6 +192,12 @@ export default function Store() {
       return;
     }
     setPurchasing(item.id);
+    // Block Stripe checkout in the Android TWA — Play Store policy compliance
+    if (isAndroidApp()) {
+      toast({ title: 'Unavailable', description: 'Tempo purchases are not available in the Android app.' });
+      setPurchasing(null);
+      return;
+    }
     try {
       const res = await base44.functions.invoke('createCosmeticCheckout', {
         item_id: item.id,

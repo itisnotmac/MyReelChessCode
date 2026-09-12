@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Crown, Wifi, Users, Lock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
+import { isAndroidApp } from '@/lib/platformDetect';
 
 export default function PremiumModal({ isOpen, onClose, isAuthenticated }) {
   const [loading, setLoading] = useState(false);
@@ -14,6 +15,8 @@ export default function PremiumModal({ isOpen, onClose, isAuthenticated }) {
       alert('Checkout is only available from the published app.');
       return;
     }
+    // Block Stripe checkout in the Android TWA — Play Store policy compliance
+    if (isAndroidApp()) return;
 
     if (!isAuthenticated) {
       window.location.href = '/login';
@@ -89,24 +92,34 @@ export default function PremiumModal({ isOpen, onClose, isAuthenticated }) {
                 ))}
               </div>
 
-              {/* Price + CTA */}
-              <div className="text-center mb-4">
-                <span className="text-3xl font-black text-white">$4.99</span>
-                <span className="text-white/40 text-sm ml-1">/ month</span>
-              </div>
+              {isAndroidApp() ? (
+                <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-4 text-center mb-4">
+                  <p className="text-sm text-white/60 leading-relaxed">
+                    Tempo purchases are not available in the Android app.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {/* Price + CTA */}
+                  <div className="text-center mb-4">
+                    <span className="text-3xl font-black text-white">$4.99</span>
+                    <span className="text-white/40 text-sm ml-1">/ month</span>
+                  </div>
 
-              {error && <p className="text-red-400 text-xs text-center mb-3">{error}</p>}
+                  {error && <p className="text-red-400 text-xs text-center mb-3">{error}</p>}
 
-              <Button
-                onClick={handleSubscribe}
-                disabled={loading}
-                variant="chess-primary"
-                className="w-full py-4 rounded-2xl font-black text-sm tracking-[0.2em] uppercase disabled:opacity-60"
-              >
-                {loading ? 'Loading…' : isAuthenticated ? 'Subscribe Now' : 'Sign In to Subscribe'}
-              </Button>
+                  <Button
+                    onClick={handleSubscribe}
+                    disabled={loading}
+                    variant="chess-primary"
+                    className="w-full py-4 rounded-2xl font-black text-sm tracking-[0.2em] uppercase disabled:opacity-60"
+                  >
+                    {loading ? 'Loading…' : isAuthenticated ? 'Subscribe Now' : 'Sign In to Subscribe'}
+                  </Button>
 
-              <p className="text-center text-white/20 text-[10px] tracking-wider mt-3">Cancel anytime · Billed monthly</p>
+                  <p className="text-center text-white/20 text-[10px] tracking-wider mt-3">Cancel anytime · Billed monthly</p>
+                </>
+              )}
             </div>
           </motion.div>
         </>

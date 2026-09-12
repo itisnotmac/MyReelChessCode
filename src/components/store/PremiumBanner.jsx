@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
+import { isAndroidApp } from '@/lib/platformDetect';
 
 export default function PremiumBanner({ isPremium }) {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ export default function PremiumBanner({ isPremium }) {
       alert('Checkout is only available from the published app.');
       return;
     }
+    // Block Stripe checkout in the Android TWA — Play Store policy compliance
+    if (isAndroidApp()) return;
     if (!isAuthenticated) {
       navigate('/login');
       return;
@@ -93,23 +96,33 @@ export default function PremiumBanner({ isPremium }) {
         ))}
       </div>
 
-      <div className="flex items-center justify-between">
-        <div>
-          <span className="text-2xl font-black text-white">$4.99</span>
-          <span className="text-white/40 text-xs ml-1">/ month</span>
+      {isAndroidApp() ? (
+        <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center">
+          <p className="text-sm text-white/60 leading-relaxed">
+            Tempo purchases are not available in the Android app.
+          </p>
         </div>
-        <Button
-          onClick={handleSubscribe}
-          disabled={loading}
-          variant="chess-primary"
-          className="px-5 py-2.5 rounded-xl font-black text-[11px] tracking-[0.15em] uppercase disabled:opacity-60"
-        >
-          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Subscribe'}
-        </Button>
-      </div>
+      ) : (
+        <>
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-2xl font-black text-white">$4.99</span>
+              <span className="text-white/40 text-xs ml-1">/ month</span>
+            </div>
+            <Button
+              onClick={handleSubscribe}
+              disabled={loading}
+              variant="chess-primary"
+              className="px-5 py-2.5 rounded-xl font-black text-[11px] tracking-[0.15em] uppercase disabled:opacity-60"
+            >
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Subscribe'}
+            </Button>
+          </div>
 
-      {error && <p className="text-red-400 text-[11px] mt-2">{error}</p>}
-      <p className="text-white/20 text-[9px] tracking-wider mt-3">Cancel anytime · Billed monthly</p>
+          {error && <p className="text-red-400 text-[11px] mt-2">{error}</p>}
+          <p className="text-white/20 text-[9px] tracking-wider mt-3">Cancel anytime · Billed monthly</p>
+        </>
+      )}
     </motion.div>
   );
 }

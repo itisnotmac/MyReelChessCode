@@ -4,6 +4,7 @@ import { Coins, Loader2, Zap } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useToast } from "@/components/ui/use-toast";
+import { isAndroidApp } from '@/lib/platformDetect';
 
 // Mirror of TEMPO_CATALOG in createTempoCheckout. The backend is the source of
 // truth for pricing; this is display-only.
@@ -45,6 +46,22 @@ export default function TempoBundles() {
     }
     setPurchasing(null);
   };
+
+  if (isAndroidApp()) {
+    return (
+      <div>
+        <h2 className="text-sm font-bold tracking-wider text-[#3AAFA9]/70 mb-4 flex items-center gap-2">
+          <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
+          BUY TEMPO
+        </h2>
+        <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-6 text-center">
+          <p className="text-sm text-white/60 leading-relaxed">
+            Tempo purchases are not available in the Android app.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
