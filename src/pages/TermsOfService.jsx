@@ -7,7 +7,7 @@ export default function TermsOfService() {
   const navigate = useNavigate();
   useSeo(
     'Terms & Conditions – Reel Chess',
-    'Read the Reel Chess Terms & Conditions. Learn the rules governing your use of the app, premium subscriptions, tournament play, and in-game purchases.'
+    'Read the Reel Chess Terms & Conditions. Learn the rules governing your use of the app, tournament play, and in-game purchases.'
   );
 
   return (
@@ -72,17 +72,12 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">5. Subscriptions &amp; Payments</h2>
+          <h2 className="text-white font-semibold text-base mb-2">5. Payments &amp; Purchases</h2>
           <p>
-            The App offers "Reel Chess Premium", a recurring subscription billed through Stripe.
-            By subscribing, you authorize recurring charges at the displayed price until you
-            cancel. You may cancel at any time through your app store account settings;
-            cancellation stops future billing but does not refund the current billing period.
-          </p>
-          <p className="mt-2">
-            We do not store your payment card information. All transactions are processed
-            securely by Stripe. Currency conversions, taxes, and store fees may apply
-            depending on your region.
+            The App offers "Tempo", an in-game digital currency available for purchase in
+            predetermined bundle amounts. All Tempo purchases are one-time payments processed
+            securely through Stripe. We do not store your payment card information. Currency
+            conversions, taxes, and store fees may apply depending on your region.
           </p>
         </section>
 
@@ -100,10 +95,10 @@ export default function TermsOfService() {
         <section>
           <h2 className="text-white font-semibold text-base mb-2">7. Tournaments</h2>
           <p>
-            Premium subscribers may enter player-funded tournaments. Tournament entry requires
-            an active Premium subscription. Prize pools are funded by entries and distributed
-            according to the published payout structure. If a tournament does not meet the
-            minimum player count, all buy-ins are fully refunded.
+            Players may enter player-funded tournaments. Tournament entry requires a buy-in.
+            Prize pools are funded by entries and distributed according to the published payout
+            structure. If a tournament does not meet the minimum player count, all buy-ins are
+            fully refunded.
           </p>
           <p className="mt-2">
             Competitive rules — including disabled cutscenes, move hints, and last-move
@@ -116,9 +111,9 @@ export default function TermsOfService() {
         <section>
           <h2 className="text-white font-semibold text-base mb-2">8. Refund Policy</h2>
           <p>
-            Subscription payments are non-refundable except where required by law. Tournament
-            buy-ins are refunded in full if the tournament is cancelled or does not reach the
-            minimum player count. Cosmetic purchases made with in-game currency are final.
+            Tempo purchases are non-refundable except where required by law. Tournament buy-ins
+            are refunded in full if the tournament is cancelled or does not reach the minimum
+            player count. Cosmetic purchases made with in-game currency are final.
           </p>
         </section>
 

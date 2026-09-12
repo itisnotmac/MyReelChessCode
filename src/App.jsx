@@ -22,7 +22,6 @@ import Dashboard from './pages/Dashboard';
 import OnlineGame from './pages/OnlineGame';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
-import PremiumSuccess from './pages/PremiumSuccess';
 import Info from './pages/Info';
 import FAQ from './pages/FAQ';
 import Chat from './pages/Chat';
@@ -52,7 +51,7 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, isAuthenticated, user } = useAuth();
   const location = useLocation();
-  const AUTH_FREE_PATHS = ['/login', '/register', '/premium-success', '/forgot-password', '/reset-password'];
+  const AUTH_FREE_PATHS = ['/login', '/register', '/forgot-password', '/reset-password'];
   const isAuthFreePath = AUTH_FREE_PATHS.includes(location.pathname.toLowerCase());
 
   // Show loading spinner while checking app public settings or auth
@@ -138,7 +137,6 @@ const AuthenticatedApp = () => {
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/delete-account" element={<LayoutWrapper currentPageName="Info"><Info /></LayoutWrapper>} />
           <Route path="/delete-data" element={<LayoutWrapper currentPageName="Info"><Info /></LayoutWrapper>} />
-          <Route path="/premium-success" element={<LayoutWrapper currentPageName="PremiumSuccess"><PremiumSuccess /></LayoutWrapper>} />
           <Route path="/Online2v2Game" element={<LayoutWrapper currentPageName="Online2v2Game"><Online2v2Game /></LayoutWrapper>} />
           <Route path="/Profile" element={<LayoutWrapper currentPageName="Profile"><Profile /></LayoutWrapper>} />
           <Route path="/Achievements" element={<LayoutWrapper currentPageName="Achievements"><Achievements /></LayoutWrapper>} />

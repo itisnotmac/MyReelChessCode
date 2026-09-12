@@ -128,7 +128,7 @@ export default function FeatureUnlockModal({ isOpen, onClose, featureId, isAuthe
                     ) : isAuthenticated ? 'Unlock Now' : 'Sign In to Unlock'}
                   </Button>
 
-                  <p className="text-center text-white/20 text-[10px] tracking-wider mt-3">One-time payment · No subscription</p>
+                  <p className="text-center text-white/20 text-[10px] tracking-wider mt-3">One-time payment · Keep forever</p>
                 </>
               )}
             </div>
