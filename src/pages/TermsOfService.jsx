@@ -72,12 +72,11 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">5. Payments &amp; Purchases</h2>
+          <h2 className="text-white font-semibold text-base mb-2">5. In-Game Currency</h2>
           <p>
-            The App offers "Tempo", an in-game digital currency available for purchase in
-            predetermined bundle amounts. All Tempo purchases are one-time payments processed
-            securely through Stripe. We do not store your payment card information. Currency
-            conversions, taxes, and store fees may apply depending on your region.
+            The App includes "Tempo", an in-game digital currency earned through daily
+            challenges and gameplay. Tempo has no real-world monetary value, is
+            non-transferable, and may not be exchanged for cash.
           </p>
         </section>
 
@@ -93,32 +92,14 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">7. Tournaments</h2>
+          <h2 className="text-white font-semibold text-base mb-2">7. Refund Policy</h2>
           <p>
-            Players may enter player-funded tournaments. Tournament entry requires a buy-in.
-            Prize pools are funded by entries and distributed according to the published payout
-            structure. If a tournament does not meet the minimum player count, all buy-ins are
-            fully refunded.
-          </p>
-          <p className="mt-2">
-            Competitive rules — including disabled cutscenes, move hints, and last-move
-            indicators — are enforced during tournament play to ensure fair competition. We
-            reserve the right to disqualify players for cheating or conduct violations, which
-            may result in forfeiture of prizes and entry fees.
+            In-game currency and cosmetic items are non-refundable except where required by law.
           </p>
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">8. Refund Policy</h2>
-          <p>
-            Tempo purchases are non-refundable except where required by law. Tournament buy-ins
-            are refunded in full if the tournament is cancelled or does not reach the minimum
-            player count. Cosmetic purchases made with in-game currency are final.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-white font-semibold text-base mb-2">9. User-Generated Content</h2>
+          <h2 className="text-white font-semibold text-base mb-2">8. User-Generated Content</h2>
           <p>
             You retain ownership of content you submit (e.g., chat messages, avatars). By
             submitting content, you grant us a worldwide, royalty-free license to display and
@@ -128,7 +109,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">10. Intellectual Property</h2>
+          <h2 className="text-white font-semibold text-base mb-2">9. Intellectual Property</h2>
           <p>
             The App, including its software, design, chess assets, cutscenes, and content, is
             owned by Reel Chess and protected by intellectual property laws. You may not copy,
@@ -137,7 +118,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">11. Disclaimers</h2>
+          <h2 className="text-white font-semibold text-base mb-2">10. Disclaimers</h2>
           <p>
             The App is provided "as is" and "as available" without warranties of any kind. We
             do not guarantee that the service will be uninterrupted, error-free, or secure.
@@ -146,7 +127,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">12. Limitation of Liability</h2>
+          <h2 className="text-white font-semibold text-base mb-2">11. Limitation of Liability</h2>
           <p>
             To the fullest extent permitted by law, Reel Chess shall not be liable for any
             indirect, incidental, or consequential damages arising from your use of the App,
@@ -155,7 +136,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">13. Account Termination</h2>
+          <h2 className="text-white font-semibold text-base mb-2">12. Account Termination</h2>
           <p>
             You may delete your account at any time from the Settings page. We may suspend or
             terminate your access if you violate these Terms. Upon termination, your right to
@@ -164,7 +145,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">14. Changes to These Terms</h2>
+          <h2 className="text-white font-semibold text-base mb-2">13. Changes to These Terms</h2>
           <p>
             We may update these Terms from time to time. Material changes will be communicated
             by updating the "Last updated" date at the top of this page. Continued use of the
@@ -173,11 +154,11 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">15. Contact Us</h2>
+          <h2 className="text-white font-semibold text-base mb-2">14. Contact Us</h2>
           <p>
             If you have any questions about these Terms, please reach out to us at:
           </p>
-          <p className="mt-2 text-teal-400 font-medium">reelchessgame@gmail.com</p>
+          <p className="mt-2 text-teal-400 font-medium">support@reelchess.org</p>
         </section>
 
       </div>
