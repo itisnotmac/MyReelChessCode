@@ -100,18 +100,6 @@ export const MOVE_TRAIL_COLORS = [
   { id: 'trail_orange',  name: 'Orange',   color: '#FF8C00', price: 200 },
 ];
 
-export const GRANDMASTER_AVATARS = [
-  { id: 'gm_alekhine',    name: 'Alekhine',    image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/02c16919b_Alekhine.jpg', price: 500 },
-  { id: 'gm_fischer',     name: 'Fischer',     image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/326238419_bobbyfischer.jpg', price: 500 },
-  { id: 'gm_capablanca',  name: 'Capablanca',  image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/71489e4cc_Capablanca.png', price: 500 },
-  { id: 'gm_karpov',      name: 'Karpov',      image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/ff6f1a039_karpov.jpg', price: 500 },
-  { id: 'gm_carlsen',     name: 'Carlsen',     image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/ffd2fbc25_magnuscarlsen.jpg', price: 500 },
-  { id: 'gm_morphy',      name: 'Morphy',      image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/a9ef79a15_Morphy.png', price: 500 },
-  { id: 'gm_nakamura',    name: 'Nakamura',    image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/8984503ad_Nakamura.jpg', price: 500 },
-  { id: 'gm_pillsbury',   name: 'Pillsbury',   image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/1d0e42eac_pillsbury.jpg', price: 500 },
-  { id: 'gm_timman',      name: 'Timman',      image: 'https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/849ec4fc8_timman.jpg', price: 500 },
-];
-
 export const PARTICLE_EFFECTS = [
   { id: 'fx_sparkle',   name: 'Sparkle',   color: '#FFD700', style: 'sparkle',   price: 300 },
   { id: 'fx_ember',     name: 'Ember',     color: '#FF6B35', style: 'ember',     price: 300 },
@@ -153,7 +141,6 @@ export const STORE_ITEMS = [
   ...Object.values(PIECE_SETS).map(s => ({ ...s, category: 'pieces', price: 0 })),
   ...USERNAME_GLOW_COLORS.map(s => ({ ...s, category: 'username_glow' })),
   ...MOVE_TRAIL_COLORS.map(s => ({ ...s, category: 'move_trail' })),
-  ...GRANDMASTER_AVATARS.map(s => ({ ...s, category: 'avatar' })),
   ...PARTICLE_EFFECTS.map(s => ({ ...s, category: 'particle_effect' })),
   ...BOARD_BORDERS.map(s => ({ ...s, category: 'board_border' })),
   ...AVATAR_FRAMES.map(s => ({ ...s, category: 'avatar_frame' })),
