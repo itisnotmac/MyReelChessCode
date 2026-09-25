@@ -29,3 +29,7 @@ dist-ssr
 
 .env
 base44/.app.jsonc
+upload-keystore.jks
+android/app/build/
+android/.gradle/
+node_modules/

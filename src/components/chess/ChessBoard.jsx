@@ -251,7 +251,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
       <AnimatePresence>
         {animPiece && (
           <motion.div
-            key={`${lastMove?.from}-${lastMove?.to}-${Date.now()}`}
+            key={`slide-${pulseKey}`}
             className="absolute pointer-events-none z-20 flex items-center justify-center"
             style={{
               width: animPiece.from.size * 0.88,

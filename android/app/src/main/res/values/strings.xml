@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Reel Chess</string>
+    <string name="title_activity_main">Reel Chess</string>
+    <string name="package_name">com.base69ab30c24c8c7db2b8432adf.app</string>
+    <string name="custom_url_scheme">com.base69ab30c24c8c7db2b8432adf.app</string>
+</resources>
