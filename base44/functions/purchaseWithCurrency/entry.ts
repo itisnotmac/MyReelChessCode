@@ -39,16 +39,6 @@ const COSMETIC_CATALOG = {
   trail_cyan:    { name: 'Cyan',     item_type: 'move_trail', price: 200 },
   trail_lime:    { name: 'Lime',     item_type: 'move_trail', price: 200 },
   trail_orange:  { name: 'Orange',   item_type: 'move_trail', price: 200 },
-  // Grandmaster avatars
-  gm_alekhine:   { name: 'Alekhine',    item_type: 'avatar', price: 500 },
-  gm_fischer:    { name: 'Fischer',     item_type: 'avatar', price: 500 },
-  gm_capablanca: { name: 'Capablanca',  item_type: 'avatar', price: 500 },
-  gm_karpov:     { name: 'Karpov',      item_type: 'avatar', price: 500 },
-  gm_carlsen:    { name: 'Carlsen',     item_type: 'avatar', price: 500 },
-  gm_morphy:     { name: 'Morphy',      item_type: 'avatar', price: 500 },
-  gm_nakamura:   { name: 'Nakamura',    item_type: 'avatar', price: 500 },
-  gm_pillsbury:  { name: 'Pillsbury',   item_type: 'avatar', price: 500 },
-  gm_timman:     { name: 'Timman',      item_type: 'avatar', price: 500 },
   // Particle effects
   fx_sparkle:   { name: 'Sparkle',   item_type: 'particle_effect', price: 300 },
   fx_ember:     { name: 'Ember',     item_type: 'particle_effect', price: 300 },

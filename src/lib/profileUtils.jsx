@@ -1,6 +1,8 @@
 import React from 'react';
 import FrostedAvatarImage from '@/components/FrostedAvatarImage';
 
+import { normalizeAvatarUrl } from './avatarCompatibility.js';
+
 const PROFILE_KEY = 'reelchess_profile';
 
 // Preset avatars: AI-rendered crystal chess pieces with a teal glow + frost overlay.
@@ -16,14 +18,15 @@ export const PRESET_AVATARS = [
 export function getLocalProfile() {
   try {
     const raw = localStorage.getItem(PROFILE_KEY);
-    return raw ? JSON.parse(raw) : null;
+    const profile = raw ? JSON.parse(raw) : null;
+    return profile ? { ...profile, avatar_url: normalizeAvatarUrl(profile.avatar_url) } : null;
   } catch {
     return null;
   }
 }
 
 export function setLocalProfile(profile) {
-  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  localStorage.setItem(PROFILE_KEY, JSON.stringify({ ...profile, avatar_url: normalizeAvatarUrl(profile.avatar_url) }));
 }
 
 export function hasProfile() {
@@ -32,6 +35,7 @@ export function hasProfile() {
 }
 
 export function renderAvatarContent(avatarUrl) {
+  avatarUrl = normalizeAvatarUrl(avatarUrl);
   if (avatarUrl && !avatarUrl.startsWith('preset:')) {
     return <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover rounded-full" />;
   }

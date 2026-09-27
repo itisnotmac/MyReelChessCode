@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, User as UserIcon, Camera, Check, Loader2, Trash2, AlertTriangle, Coins, Trophy, History, BarChart2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { PRESET_AVATARS, getLocalProfile, setLocalProfile, renderAvatarContent } from '@/lib/profileUtils';
+import { normalizeAvatarUrl } from '@/lib/avatarCompatibility';
 import FrostedAvatarImage from '@/components/FrostedAvatarImage';
 import ProfileSkeleton from '@/components/ProfileSkeleton';
 import {
@@ -48,7 +49,7 @@ export default function Profile() {
     base44.auth.me().then(u => {
       setUser(u);
       if (u?.username) setUsername(u.username);
-      if (u?.avatar_url) setAvatarUrl(u.avatar_url);
+      if (u?.avatar_url) setAvatarUrl(normalizeAvatarUrl(u.avatar_url));
     }).catch(() => {}).finally(() => setLoading(false));
 
     base44.entities.PlayerAccount.list().then(accounts => {
