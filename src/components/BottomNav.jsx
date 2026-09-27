@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Gamepad2, User, Settings, ShoppingBag } from 'lucide-react';
 
@@ -54,7 +55,9 @@ export default function BottomNav() {
     }
   };
 
-  return (
+  // Keep fixed navigation outside the transformed route-animation container.
+  // Otherwise long pages can move its touch targets below the viewport.
+  return createPortal(
     <nav
       role="navigation"
       aria-label="Main navigation"
@@ -113,6 +116,6 @@ export default function BottomNav() {
           </button>);
 
       })}
-    </nav>);
+    </nav>, document.body);
 
 }
