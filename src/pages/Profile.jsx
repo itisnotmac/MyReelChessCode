@@ -18,6 +18,7 @@ import {
   AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from '@/components/ui/button';
+import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 import { selectPlayerAccount } from '@/lib/playerAccount';
 
 export default function Profile() {
@@ -52,16 +53,36 @@ export default function Profile() {
       if (u?.avatar_url) setAvatarUrl(normalizeAvatarUrl(u.avatar_url));
     }).catch(() => {}).finally(() => setLoading(false));
 
-    base44.entities.PlayerAccount.list().then(accounts => {
-      const account = selectPlayerAccount(accounts);
-      if (account) {
+  }, []);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    let cancelled = false;
+    const refreshAccount = async () => {
+      try {
+        const accounts = await base44.entities.PlayerAccount.filter({ user_id: user.id });
+        const account = selectPlayerAccount(accounts);
+        if (cancelled || !account) return;
         setStreak(account.login_streak || 0);
         setTempoBalance(account.currency_balance || 0);
         setElo(account.elo ?? 1200);
-        setPeakElo(account.peak_elo ?? account.elo ?? 1200);
-      }
-    }).catch(() => {});
-  }, []);
+        setPeakElo(Math.max(account.peak_elo ?? account.elo ?? 1200, account.elo ?? 1200));
+      } catch (error) { console.error('Failed to refresh profile rating:', error); }
+    };
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === 'visible') refreshAccount();
+    };
+    refreshAccount();
+    window.addEventListener(PLAYER_ACCOUNT_UPDATED_EVENT, refreshAccount);
+    window.addEventListener('focus', refreshAccount);
+    document.addEventListener('visibilitychange', refreshWhenVisible);
+    return () => {
+      cancelled = true;
+      window.removeEventListener(PLAYER_ACCOUNT_UPDATED_EVENT, refreshAccount);
+      window.removeEventListener('focus', refreshAccount);
+      document.removeEventListener('visibilitychange', refreshWhenVisible);
+    };
+  }, [user?.id]);
 
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -243,6 +264,10 @@ export default function Profile() {
             </div>
           </motion.div>
         )}
+
+        <p className="text-xs text-white/60 leading-relaxed">
+          ELO changes after online 1v1 games, including online BlitzSchach. AI and local games are unrated.
+        </p>
 
         {/* Profile sections — Achievements, History, Stats */}
         <motion.div

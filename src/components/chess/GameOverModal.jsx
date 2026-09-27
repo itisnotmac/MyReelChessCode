@@ -89,6 +89,10 @@ export default function GameOverModal({ result, onRematch, onHome, onAnalysis, m
             </p>
           </motion.div>
 
+          {['ai', 'local', '2v2'].includes(mode) && (
+            <p className="mt-4 text-center text-xs text-white/60">Unrated game · ELO unchanged</p>
+          )}
+
           {typeof eloDelta === 'number' && (
             <motion.div
               className="mx-auto mt-5 flex w-fit items-center gap-3 rounded-full border border-white/10 bg-black/30 px-4 py-2 backdrop-blur-md"

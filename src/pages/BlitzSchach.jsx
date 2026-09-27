@@ -71,6 +71,7 @@ export default function BlitzSchach() {
   const [lastMove, setLastMove] = useState(null);
   const [gameOver, setGameOver] = useState(null);
   const [eloDelta, setEloDelta] = useState(null);
+  const notifiedRatingRef = useRef(null);
   const [moveCount, setMoveCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('chessSound') !== 'off');
   const [timeRemaining, setTimeRemaining] = useState(null);
@@ -155,7 +156,8 @@ export default function BlitzSchach() {
         const serverMoves = g.move_count ?? 0;
         const localMoves = moveCountRef.current ?? 0;
         const serverTurn = g.is_white_turn ?? true;
-        if (serverMoves > localMoves || (serverMoves === localMoves && serverTurn !== isWhiteTurnRef.current)) {
+        // A result/rating can arrive without another move (including a timeout).
+        if (g.status === 'finished' || serverMoves > localMoves || (serverMoves === localMoves && serverTurn !== isWhiteTurnRef.current)) {
           setGameDoc(g);
           applyGameDoc(g);
         }
@@ -212,7 +214,13 @@ export default function BlitzSchach() {
     if (g.result && g.result !== 'in_progress') {
       setGameOver(g.result);
       const d = getMyEloDelta(g);
-      if (d != null) setEloDelta(d);
+      if (typeof d === 'number' && Number.isFinite(d)) {
+        setEloDelta(d);
+        if (notifiedRatingRef.current !== g.id) {
+          notifiedRatingRef.current = g.id;
+          window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT));
+        }
+      }
     }
   }
 
@@ -317,8 +325,9 @@ export default function BlitzSchach() {
     try {
       const r = await base44.functions.invoke('settleElo', { game_id: gameIdRef.current });
       const d = r?.data || r || {};
-      if (d.settled) {
-        setEloDelta(isHostRef.current ? d.host_delta : d.guest_delta);
+      if (d.settled || d.reason === 'already_settled') {
+        const delta = isHostRef.current ? (d.host_delta ?? d.deltas?.host) : (d.guest_delta ?? d.deltas?.guest);
+        if (typeof delta === 'number' && Number.isFinite(delta)) setEloDelta(delta);
         window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT));
       }
     } catch (e) { console.error('ELO settle failed:', e); }

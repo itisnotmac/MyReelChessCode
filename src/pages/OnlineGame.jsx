@@ -61,6 +61,7 @@ export default function OnlineGame() {
   const [lastMove, setLastMove] = useState(null);
   const [gameOver, setGameOver] = useState(null);
   const [eloDelta, setEloDelta] = useState(null);
+  const notifiedRatingRef = useRef(null);
   const [moveCount, setMoveCount] = useState(0);
   const [battleInfo, setBattleInfo] = useState(null);
   const [tournamentRules, setTournamentRules] = useState(null);
@@ -134,7 +135,8 @@ export default function OnlineGame() {
         const serverTurn = g.is_white_turn ?? true;
         // Only reconcile if the server is ahead (we missed a move) or the turn
         // flag is out of sync — never revert a pending local move.
-        if (serverMoves > localMoves || (serverMoves === localMoves && serverTurn !== isWhiteTurnRef.current)) {
+        // A result/rating can arrive without another move (including a timeout).
+        if (g.status === 'finished' || serverMoves > localMoves || (serverMoves === localMoves && serverTurn !== isWhiteTurnRef.current)) {
           setGameDoc(g);
           applyGameDoc(g);
         }
@@ -170,7 +172,13 @@ export default function OnlineGame() {
     if (g.result && g.result !== 'in_progress') {
       setGameOver(g.result);
       const d = getMyEloDelta(g);
-      if (d != null) setEloDelta(d);
+      if (typeof d === 'number' && Number.isFinite(d)) {
+        setEloDelta(d);
+        if (notifiedRatingRef.current !== g.id) {
+          notifiedRatingRef.current = g.id;
+          window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT));
+        }
+      }
     }
   }
 
@@ -372,8 +380,9 @@ export default function OnlineGame() {
         try {
           const r = await base44.functions.invoke('settleElo', { game_id: gameIdRef.current });
           const d = r?.data || r || {};
-          if (d.settled) {
-            setEloDelta(isHostRef.current ? d.host_delta : d.guest_delta);
+          if (d.settled || d.reason === 'already_settled') {
+            const delta = isHostRef.current ? (d.host_delta ?? d.deltas?.host) : (d.guest_delta ?? d.deltas?.guest);
+            if (typeof delta === 'number' && Number.isFinite(delta)) setEloDelta(delta);
             window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT));
           }
         } catch (se) { console.error('ELO settle failed:', se); }

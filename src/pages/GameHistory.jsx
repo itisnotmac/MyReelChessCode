@@ -351,7 +351,7 @@ export default function GameHistoryPage() {
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-white text-sm font-semibold">
-                          {record.mode === 'ai' ? 'vs AI' : 'Local PvP'}
+                          {record.mode === 'ai' ? 'vs AI' : 'Local PvP'} · Unrated
                         </span>
                         <span
                           className="text-xs font-bold tracking-wider px-2 py-0.5 rounded-full"
