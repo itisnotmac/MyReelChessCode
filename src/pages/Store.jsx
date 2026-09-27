@@ -161,15 +161,11 @@ export default function Store() {
     }
   }, [location.search]);
 
-  const isAdmin = user?.role === 'admin';
-  const ANIMATED_SKIN_IDS = ['cosmic', 'lava', 'ocean', 'neonGrid'];
-  const isOwned = (itemId) => {
-    if (isAdmin) return true;
-    if (ANIMATED_SKIN_IDS.includes(itemId)) {
-      return purchases.some(p => p.item_id === itemId);
-    }
-    return true;
-  };
+ const isAdmin = user?.role === 'admin';
+const isOwned = (itemId) => {
+  if (isAdmin) return true;
+  return purchases.some(p => p.item_id === itemId);
+};
   // Admin sees all items as owned; everyone else only what they've purchased
   const getOwnedIds = (itemType, items) =>
     isAdmin ? new Set(items.map(i => i.id)) : new Set(purchases.filter(p => p.item_type === itemType).map(p => p.item_id));
