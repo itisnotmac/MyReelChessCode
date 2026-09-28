@@ -50,7 +50,7 @@ export default function InfoPage() {
     base44.functions.invoke('logActivity', { type: 'settings', label: `Haptics: ${next ? 'On' : 'Off'}` }).catch(() => {});
   };
 
-  const [pingEnabled, setPingEnabled] = useState(() => localStorage.getItem('chessPingIndicator') !== 'off');
+  const [pingEnabled, setPingEnabled] = useState(() => localStorage.getItem('chessPingIndicator') === 'on');
 
   const [rainfallEnabled, setRainfallEnabled] = useState(() => {
     const stored = localStorage.getItem('chessRainfall');
