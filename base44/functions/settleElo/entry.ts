@@ -21,8 +21,14 @@ Deno.serve(async (req) => {
     const games = await base44.asServiceRole.entities.OnlineGame.filter({ id: game_id });
     const game = games[0];
     if (!game) return Response.json({ error: 'Game not found' }, { status: 404 });
-    if (!game.result || game.result === 'in_progress') {
+    if (user.id !== game.host_id && user.id !== game.guest_id) {
+      return Response.json({ error: 'Not a player in this game' }, { status: 403 });
+    }
+    if (game.status !== 'finished' || !game.result || game.result === 'in_progress') {
       return Response.json({ settled: false, reason: 'in_progress' });
+    }
+    if (!['white_wins', 'black_wins', 'draw'].includes(game.result)) {
+      return Response.json({ error: 'Invalid result' }, { status: 400 });
     }
     if (game.elo_settled) {
       // Already settled — surface the previously computed deltas so both
@@ -35,6 +41,8 @@ Deno.serve(async (req) => {
     const hostId = game.host_id;   // plays white
     const guestId = game.guest_id; // plays black
     if (!hostId || !guestId) return Response.json({ error: 'Missing players' }, { status: 400 });
+
+    if (hostId === guestId) return Response.json({ error: 'Players must be different' }, { status: 400 });
 
     // Load or create each player's account
     let hostAccount = selectPlayerAccount(await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: hostId }));
@@ -66,11 +74,11 @@ Deno.serve(async (req) => {
 
     await base44.asServiceRole.entities.PlayerAccount.update(hostAccount.id, {
       elo: newHostElo,
-      peak_elo: Math.max(hostAccount.peak_elo ?? newHostElo, newHostElo),
+      peak_elo: Math.max(hostAccount.peak_elo ?? hostElo, hostElo, newHostElo),
     });
     await base44.asServiceRole.entities.PlayerAccount.update(guestAccount.id, {
       elo: newGuestElo,
-      peak_elo: Math.max(guestAccount.peak_elo ?? newGuestElo, newGuestElo),
+      peak_elo: Math.max(guestAccount.peak_elo ?? guestElo, guestElo, newGuestElo),
     });
 
     // Persist deltas on the game so both players (not just the one who made

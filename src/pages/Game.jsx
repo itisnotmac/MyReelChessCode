@@ -369,7 +369,7 @@ export default function Game() {
         />
         <div className="text-center">
           <p className="text-[10px] tracking-[0.3em] uppercase text-[#D4AF37]/60 font-medium">
-            {mode === 'ai' ? 'VS AI' : mode === '2v2' ? '2V2' : 'LOCAL'}
+            {mode === 'ai' ? 'VS AI' : mode === '2v2' ? '2V2' : 'LOCAL'} · Unrated
           </p>
           <p className="text-[10px] text-white/50">Move {moveCount}</p>
         </div>

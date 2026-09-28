@@ -40,7 +40,7 @@ export default function BlitzGameView({
         />
         <div className="text-center">
           <p className="text-[10px] tracking-[0.3em] uppercase text-red-400/60 font-medium">BLITZSCHACH</p>
-          <p className="text-[10px] text-white/20">Move {moveCount}</p>
+          <p className="text-[10px] text-white/20">{mode === 'online' ? 'Rated' : 'Unrated'} · Move {moveCount}</p>
         </div>
         <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/5 border border-white/10">
           {RoleIcon && <RoleIcon className="w-3 h-3 text-red-400" />}
