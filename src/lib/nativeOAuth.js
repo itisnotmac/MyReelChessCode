@@ -3,7 +3,6 @@ export const NATIVE_OAUTH_ERROR_KEY = 'reelchess_native_oauth_error';
 
 const PROVIDER_PATHS = {
   google: '',
-  facebook: '/facebook',
   apple: '/apple',
 };
 
