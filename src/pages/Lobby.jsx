@@ -200,7 +200,10 @@ export default function Lobby() {
 
 
   return (
-    <div className="relative min-h-screen bg-[#0a0a0f] text-white overflow-hidden flex flex-col items-center">
+    <div
+      className="relative bg-[#0a0a0f] text-white overflow-hidden flex flex-col items-center"
+      style={{ minHeight: 'calc(100svh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 7rem)' }}
+    >
       {/* Cinematic backdrop image — matches the generated graphics on every other page */}
       <div className="absolute inset-0 z-0">
         <img src={HERO_BACKDROPS.lobbySpotlightStage} alt="" className="w-full h-full object-cover" />
