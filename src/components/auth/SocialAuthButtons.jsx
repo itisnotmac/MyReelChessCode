@@ -1,6 +1,9 @@
-import React from 'react';
-import { base44 } from '@/api/base44Client';
+import React, { useState } from 'react';
+import { Browser } from '@capacitor/browser';
+import { Capacitor } from '@capacitor/core';
+import { appId, authRedirectBaseUrl, base44 } from '@/api/base44Client';
 import { safeReturnTo } from '@/lib/authReturnTo';
+import { buildNativeOAuthUrl, NATIVE_OAUTH_ERROR_KEY } from '@/lib/nativeOAuth';
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18">
@@ -30,16 +33,39 @@ const PROVIDERS = [
 ];
 
 export default function SocialAuthButtons() {
-  const handleProvider = (provider) => {
+  const [error, setError] = useState(() => {
+    const savedError = sessionStorage.getItem(NATIVE_OAUTH_ERROR_KEY);
+    sessionStorage.removeItem(NATIVE_OAUTH_ERROR_KEY);
+    return savedError || '';
+  });
+
+  const handleProvider = async (provider) => {
+    setError('');
+    if (Capacitor.getPlatform() === 'android') {
+      try {
+        const url = buildNativeOAuthUrl(provider, appId, authRedirectBaseUrl);
+        await Browser.open({ url });
+      } catch (authError) {
+        setError(authError.message || 'Unable to start provider sign-in. Please try again.');
+      }
+      return;
+    }
+
     base44.auth.loginWithProvider(provider, safeReturnTo());
   };
 
   return (
     <div className="space-y-2.5 mb-6">
+      {error && (
+        <div role="alert" className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3">
+          {error}
+        </div>
+      )}
       {PROVIDERS.map(({ id, label, Icon }) => (
         <button
           key={id}
-          onClick={() => handleProvider(id)}
+          type="button"
+          onClick={() => void handleProvider(id)}
           className="w-full flex items-center justify-center gap-3 bg-white/5 border border-[#3AAFA9]/20 text-white font-medium py-3 px-4 rounded-xl hover:bg-[#3AAFA9]/10 hover:border-[#3AAFA9]/40 transition-all"
         >
           <Icon />
