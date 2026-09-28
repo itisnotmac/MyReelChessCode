@@ -46,9 +46,9 @@ export default function Layout({ children, currentPageName }) {
       <div style={{ paddingBottom: shouldHideNav ? 0 : 'calc(env(safe-area-inset-bottom) + 68px)' }}>
         {children}
       </div>
-      {!shouldHideNav && (
-        <div className="fixed top-11 right-0 z-[60]"
-          style={{ paddingTop: 'calc(env(safe-area-inset-top) + 8px)', paddingRight: 'calc(env(safe-area-inset-right) + 12px)' }}
+      {!shouldHideNav && currentPageName === 'Lobby' && (
+        <div className="fixed top-11 left-0 z-[60]"
+          style={{ paddingTop: 'calc(env(safe-area-inset-top) + 8px)', paddingLeft: 'calc(env(safe-area-inset-left) + 12px)' }}
         >
           <ConnectivityIndicator />
         </div>

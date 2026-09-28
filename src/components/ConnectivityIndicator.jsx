@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Wifi, WifiOff } from 'lucide-react';
 
 export default function ConnectivityIndicator() {
+  const [enabled] = useState(() => localStorage.getItem('chessPingIndicator') === 'on');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [latency, setLatency] = useState(null);
   const [pinging, setPinging] = useState(false);
@@ -18,9 +19,9 @@ export default function ConnectivityIndicator() {
     };
   }, []);
 
-  // Ping loop — measures latency to the app origin
+  // Ping loop - measures latency to the app origin
   useEffect(() => {
-    if (!isOnline) return;
+    if (!enabled || !isOnline) return;
     let cancelled = false;
 
     const ping = async () => {
@@ -47,7 +48,7 @@ export default function ConnectivityIndicator() {
     ping();
     const interval = setInterval(ping, 15000);
     return () => { cancelled = true; clearInterval(interval); };
-  }, [isOnline]);
+  }, [enabled, isOnline]);
 
   const getStatusColor = () => {
     if (!isOnline) return '#ef4444';
@@ -65,8 +66,8 @@ export default function ConnectivityIndicator() {
 
   const Icon = isOnline ? Wifi : WifiOff;
 
-  // Respect the "Stuff for Nerds" ping toggle in Settings
-  if (localStorage.getItem('chessPingIndicator') === 'off') return null;
+  // The latency badge is opt-in so it cannot crowd the lobby by default.
+  if (!enabled) return null;
 
   return (
     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
