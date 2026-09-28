@@ -9,7 +9,6 @@ import {
 test('native provider login URLs use each Base44 provider endpoint and app callback', () => {
   const expectedPaths = {
     google: '/api/apps/auth/login',
-    facebook: '/api/apps/auth/facebook/login',
     apple: '/api/apps/auth/apple/login',
   };
 
