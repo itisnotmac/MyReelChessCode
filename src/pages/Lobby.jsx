@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -18,30 +19,26 @@ import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
 import StormOverlay from '@/components/lobby/StormOverlay';
 
 function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
-  const [items, setItems] = useState([
+  const items = [
   { id: 'chat', label: 'Community Chat', icon: MessageCircle },
   { id: 'faq', label: 'FAQ', icon: HelpCircle },
   { id: 'contact', label: 'Contact', icon: Mail },
-  { id: 'about', label: 'About', icon: Info }]
-  );
+  { id: 'about', label: 'About', icon: Info },
+  ...(isAuthenticated ? [{ id: 'logout', label: 'Sign Out', icon: LogOut, isDanger: true }] : [])];
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      setItems((prev) => [...prev, { id: 'logout', label: 'Sign Out', icon: LogOut, isDanger: true }]);
-    }
-  }, [isAuthenticated]);
-
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen &&
       <>
           <motion.div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80]"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           onClick={onClose} />
         
           <motion.div
-          className="fixed right-0 top-0 bottom-0 w-72 flex flex-col bg-gradient-to-b from-[#1a1a2e] to-[#0f0f1a] z-50 shadow-2xl border-l border-[#3AAFA9]/15"
+          role="dialog" aria-modal="true" aria-label="Lobby menu"
+          className="fixed right-0 top-0 bottom-0 w-72 max-w-full flex flex-col bg-gradient-to-b from-[#1a1a2e] to-[#0f0f1a] z-[90] shadow-2xl border-l border-[#3AAFA9]/15"
+          style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
           initial={{ x: 300 }} animate={{ x: 0 }} exit={{ x: 300 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}>
           
@@ -90,7 +87,7 @@ function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
           </motion.div>
         </>
       }
-    </AnimatePresence>);
+    </AnimatePresence>, document.body);
 
 }
 
@@ -261,9 +258,9 @@ export default function Lobby() {
 
       {/* Hamburger menu icon (top-right) */}
       <button
-        aria-label="Open menu" onClick={() => setMenuOpen(true)}
+        aria-label="Open menu" aria-haspopup="dialog" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}
         className="fixed z-30 w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-colors backdrop-blur-md"
-        style={{ top: 'calc(env(safe-area-inset-top) + 16px)', right: 'calc(env(safe-area-inset-right) + 16px)' }}>
+        style={{ top: 'calc(env(safe-area-inset-top) + 84px)', right: 'calc(env(safe-area-inset-right) + 16px)' }}>
         <MenuIcon className="w-5 h-5 text-green-400" />
       </button>
 

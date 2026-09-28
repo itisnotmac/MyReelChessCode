@@ -121,9 +121,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = (redirectUrl = '/login') => {
-    setUser(null);
-    setIsAuthenticated(false);
-
+    // Keep the current screen mounted until the SDK's full-page redirect.
+    // Clearing auth first triggers the protected-route login redirect and can
+    // replace the logout navigation before the server clears its session cookie.
     // Base44 logout is synchronous: it clears local tokens and immediately
     // navigates through its server endpoint to clear the HTTP-only session
     // cookie. Always return to a public route. Returning to the current
