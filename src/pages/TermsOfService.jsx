@@ -85,7 +85,7 @@ export default function TermsOfService() {
           <p>
             The App includes an in-game digital currency ("coins") earned through daily
             challenges and gameplay. Coins may be spent on cosmetic items such as boards and
-            piece sets. Coins and cosmetic items have no real-world monetary value, are
+            piece sets,Username Glows, Board Glows, Ambient Screen Effects, Piece Move Trails,  and other items. (We may update our storefront at our discretion without notice.) Coins and cosmetic items have no real-world monetary value, are
             non-transferable, and may not be exchanged for cash. We reserve the right to adjust,
             remove, or revalue in-game currency and items at our discretion.
           </p>
