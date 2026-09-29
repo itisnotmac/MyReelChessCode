@@ -1,10 +1,6 @@
-import React, { useState } from 'react';
-import { Browser } from '@capacitor/browser';
-import { Capacitor } from '@capacitor/core';
-import { appId, authRedirectBaseUrl, base44 } from '@/api/base44Client';
+import React from 'react';
+import { base44 } from '@/api/base44Client';
 import { safeReturnTo } from '@/lib/authReturnTo';
-import { buildNativeOAuthUrl, NATIVE_OAUTH_ERROR_KEY } from '@/lib/nativeOAuth';
-import { clearPendingLoginMethod, setPendingLoginMethod } from '@/lib/lastLogin';
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18">
@@ -12,6 +8,12 @@ const GoogleIcon = () => (
     <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
     <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
     <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+  </svg>
+);
+
+const FacebookIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24">
+    <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
   </svg>
 );
 
@@ -23,56 +25,21 @@ const AppleIcon = () => (
 
 const PROVIDERS = [
   { id: 'google', label: 'Google', Icon: GoogleIcon },
+  { id: 'facebook', label: 'Facebook', Icon: FacebookIcon },
   { id: 'apple', label: 'Apple', Icon: AppleIcon },
 ];
 
-export default function SocialAuthButtons({ onlyProvider }) {
-  const [error, setError] = useState(() => {
-    try {
-      const savedError = sessionStorage.getItem(NATIVE_OAUTH_ERROR_KEY);
-      sessionStorage.removeItem(NATIVE_OAUTH_ERROR_KEY);
-      return savedError || '';
-    } catch {
-      return '';
-    }
-  });
-
-  const handleProvider = async (provider) => {
-    setError('');
-    setPendingLoginMethod(provider);
-    if (Capacitor.getPlatform() === 'android') {
-      try {
-        const url = buildNativeOAuthUrl(provider, appId, authRedirectBaseUrl);
-        await Browser.open({ url });
-      } catch (authError) {
-        clearPendingLoginMethod();
-        setError(authError.message || 'Unable to start provider sign-in. Please try again.');
-      }
-      return;
-    }
-
-    try {
-      base44.auth.loginWithProvider(provider, safeReturnTo());
-    } catch (authError) {
-      clearPendingLoginMethod();
-      setError(authError.message || 'Unable to start provider sign-in. Please try again.');
-    }
+export default function SocialAuthButtons() {
+  const handleProvider = (provider) => {
+    base44.auth.loginWithProvider(provider, safeReturnTo());
   };
-
-  const providers = onlyProvider ? PROVIDERS.filter(({ id }) => id === onlyProvider) : PROVIDERS;
 
   return (
     <div className="space-y-2.5 mb-6">
-      {error && (
-        <div role="alert" className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3">
-          {error}
-        </div>
-      )}
-      {providers.map(({ id, label, Icon }) => (
+      {PROVIDERS.map(({ id, label, Icon }) => (
         <button
           key={id}
-          type="button"
-          onClick={() => void handleProvider(id)}
+          onClick={() => handleProvider(id)}
           className="w-full flex items-center justify-center gap-3 bg-white/5 border border-[#3AAFA9]/20 text-white font-medium py-3 px-4 rounded-xl hover:bg-[#3AAFA9]/10 hover:border-[#3AAFA9]/40 transition-all"
         >
           <Icon />
