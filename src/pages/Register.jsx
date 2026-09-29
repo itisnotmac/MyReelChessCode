@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { ChevronRight, Loader2 } from 'lucide-react';
 import SocialAuthButtons from '@/components/auth/SocialAuthButtons';
 import { Button } from '@/components/ui/button';
+import { safeReturnTo } from '@/lib/authReturnTo';
 
 export default function Register() {
   const [step, setStep] = useState('register');
@@ -37,7 +38,7 @@ export default function Register() {
     try {
       const res = await base44.auth.verifyOtp({ email, otpCode: otp });
       base44.auth.setToken(res.access_token);
-      window.location.href = '/';
+      window.location.href = safeReturnTo();
     } catch (err) {
       setError(err.message || 'Invalid code. Please try again.');
     } finally {
