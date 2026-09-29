@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wifi, WifiOff } from 'lucide-react';
+import { isLatencyBadgeEnabled } from '@/lib/latencyPreference';
 
 export default function ConnectivityIndicator() {
-  const [enabled] = useState(() => localStorage.getItem('chessPingIndicator') === 'on');
+  const [enabled] = useState(isLatencyBadgeEnabled);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [latency, setLatency] = useState(null);
   const [pinging, setPinging] = useState(false);

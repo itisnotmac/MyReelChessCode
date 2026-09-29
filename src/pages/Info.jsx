@@ -6,6 +6,7 @@ import { ArrowLeft, Settings } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
 import ThemePicker from '@/components/ThemePicker';
 import { base44 } from '@/api/base44Client';
+import { isLatencyBadgeEnabled, setLatencyBadgeEnabled } from '@/lib/latencyPreference';
 
 export default function InfoPage() {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export default function InfoPage() {
     base44.functions.invoke('logActivity', { type: 'settings', label: `Haptics: ${next ? 'On' : 'Off'}` }).catch(() => {});
   };
 
-  const [pingEnabled, setPingEnabled] = useState(() => localStorage.getItem('chessPingIndicator') === 'on');
+  const [pingEnabled, setPingEnabled] = useState(isLatencyBadgeEnabled);
 
   const [rainfallEnabled, setRainfallEnabled] = useState(() => {
     const stored = localStorage.getItem('chessRainfall');
@@ -68,7 +69,7 @@ export default function InfoPage() {
   const togglePing = () => {
     const next = !pingEnabled;
     setPingEnabled(next);
-    localStorage.setItem('chessPingIndicator', next ? 'on' : 'off');
+    setLatencyBadgeEnabled(next);
     base44.functions.invoke('logActivity', { type: 'settings', label: `Ping: ${next ? 'On' : 'Off'}` }).catch(() => {});
   };
 
