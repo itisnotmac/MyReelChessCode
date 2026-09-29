@@ -4,6 +4,7 @@ import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
 import { base44 } from '@/api/base44Client';
 import { NATIVE_OAUTH_ERROR_KEY, parseNativeOAuthCallback } from '@/lib/nativeOAuth';
+import { clearPendingLoginMethod, setPendingLoginMethod } from '@/lib/lastLogin';
 
 export default function NativeOAuthCallback() {
   useEffect(() => {
@@ -20,16 +21,20 @@ export default function NativeOAuthCallback() {
       handledUrls.add(rawUrl);
 
       if (!result.accessToken) {
-        sessionStorage.setItem(
-          NATIVE_OAUTH_ERROR_KEY,
-          result.error || 'Sign-in did not complete. Please try again.'
-        );
+        try {
+          sessionStorage.setItem(
+            NATIVE_OAUTH_ERROR_KEY,
+            result.error || 'Sign-in did not complete. Please try again.'
+          );
+        } catch { /* Login can still continue without a stored error message. */ }
+        clearPendingLoginMethod();
         try { await Browser.close(); } catch { /* Browser may already be closed. */ }
         window.location.replace('/login');
         return;
       }
 
       base44.auth.setToken(result.accessToken);
+      if (result.loginMethod) setPendingLoginMethod(result.loginMethod);
       try { await Browser.close(); } catch { /* Browser may already be closed. */ }
       window.location.replace('/');
     };
@@ -45,10 +50,12 @@ export default function NativeOAuthCallback() {
 
     void registerCallback().catch(() => {
       if (!disposed) {
-        sessionStorage.setItem(
-          NATIVE_OAUTH_ERROR_KEY,
-          'Unable to resume sign-in. Please try again.'
-        );
+        try {
+          sessionStorage.setItem(
+            NATIVE_OAUTH_ERROR_KEY,
+            'Unable to resume sign-in. Please try again.'
+          );
+        } catch { /* Login can still continue without a stored error message. */ }
       }
     });
 

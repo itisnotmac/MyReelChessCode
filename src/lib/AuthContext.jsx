@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { getLocalProfile } from '@/lib/profileUtils';
+import { clearLastLogin, rememberSuccessfulLogin, takePendingLoginMethod } from '@/lib/lastLogin';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
 const AuthContext = createContext();
@@ -102,6 +103,8 @@ export const AuthProvider = ({ children }) => {
           }
         }
       }
+      const loginMethod = takePendingLoginMethod();
+      if (loginMethod) rememberSuccessfulLogin(currentUser, loginMethod);
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
@@ -129,6 +132,7 @@ export const AuthProvider = ({ children }) => {
     // cookie. Always return to a public route. Returning to the current
     // protected page starts another auth redirect and can restore the account
     // the player just signed out of.
+    clearLastLogin();
     base44.auth.logout(redirectUrl);
   };
 
