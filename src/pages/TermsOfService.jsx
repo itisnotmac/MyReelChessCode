@@ -75,7 +75,7 @@ export default function TermsOfService() {
           <h2 className="text-white font-semibold text-base mb-2">5. In-Game Currency</h2>
           <p>
             The App includes "Tempo", an in-game digital currency earned through daily
-            challenges and gameplay. Tempo has no real-world monetary value, is
+            challenges and gameplay, and can be purchased in the ReelChess storefront for USD. Currently Tempo is sold in 4 different "pack" variations.  Tempo has no real-world monetary value, is
             non-transferable, and may not be exchanged for cash.
           </p>
         </section>
