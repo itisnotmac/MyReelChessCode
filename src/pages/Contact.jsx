@@ -8,7 +8,7 @@ export default function Contact() {
   const navigate = useNavigate();
   useSeo(
     'Contact Reel Chess – Support, Feedback & Bug Reports',
-    'Contact the Reel Chess team for support, bug reports, or feature requests. Email reelchessgame@gmail.com — we respond to all player feedback for our free online chess game.'
+    'Contact the Reel Chess team for support, bug reports, or feature requests. Email support@reelchess.org — we respond to all player feedback for our free online chess game.'
   );
 
   return (
