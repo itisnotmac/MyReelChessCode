@@ -4,6 +4,7 @@ import { Capacitor } from '@capacitor/core';
 import { appId, authRedirectBaseUrl, base44 } from '@/api/base44Client';
 import { safeReturnTo } from '@/lib/authReturnTo';
 import { buildNativeOAuthUrl, NATIVE_OAUTH_ERROR_KEY } from '@/lib/nativeOAuth';
+import { clearPendingLoginMethod, setPendingLoginMethod } from '@/lib/lastLogin';
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18">
@@ -25,27 +26,40 @@ const PROVIDERS = [
   { id: 'apple', label: 'Apple', Icon: AppleIcon },
 ];
 
-export default function SocialAuthButtons() {
+export default function SocialAuthButtons({ onlyProvider }) {
   const [error, setError] = useState(() => {
-    const savedError = sessionStorage.getItem(NATIVE_OAUTH_ERROR_KEY);
-    sessionStorage.removeItem(NATIVE_OAUTH_ERROR_KEY);
-    return savedError || '';
+    try {
+      const savedError = sessionStorage.getItem(NATIVE_OAUTH_ERROR_KEY);
+      sessionStorage.removeItem(NATIVE_OAUTH_ERROR_KEY);
+      return savedError || '';
+    } catch {
+      return '';
+    }
   });
 
   const handleProvider = async (provider) => {
     setError('');
+    setPendingLoginMethod(provider);
     if (Capacitor.getPlatform() === 'android') {
       try {
         const url = buildNativeOAuthUrl(provider, appId, authRedirectBaseUrl);
         await Browser.open({ url });
       } catch (authError) {
+        clearPendingLoginMethod();
         setError(authError.message || 'Unable to start provider sign-in. Please try again.');
       }
       return;
     }
 
-    base44.auth.loginWithProvider(provider, safeReturnTo());
+    try {
+      base44.auth.loginWithProvider(provider, safeReturnTo());
+    } catch (authError) {
+      clearPendingLoginMethod();
+      setError(authError.message || 'Unable to start provider sign-in. Please try again.');
+    }
   };
+
+  const providers = onlyProvider ? PROVIDERS.filter(({ id }) => id === onlyProvider) : PROVIDERS;
 
   return (
     <div className="space-y-2.5 mb-6">
@@ -54,7 +68,7 @@ export default function SocialAuthButtons() {
           {error}
         </div>
       )}
-      {PROVIDERS.map(({ id, label, Icon }) => (
+      {providers.map(({ id, label, Icon }) => (
         <button
           key={id}
           type="button"

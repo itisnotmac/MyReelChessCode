@@ -20,6 +20,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Button } from '@/components/ui/button';
 import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 import { selectPlayerAccount } from '@/lib/playerAccount';
+import { clearLastLogin } from '@/lib/lastLogin';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -107,6 +108,7 @@ export default function Profile() {
       setDeleting(false);
       return;
     }
+    clearLastLogin();
     await base44.auth.logout('/');
   };
 

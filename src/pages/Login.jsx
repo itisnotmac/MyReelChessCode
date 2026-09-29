@@ -1,17 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { ChevronRight, Loader2 } from 'lucide-react';
+import { ChevronRight, Loader2, UserRound } from 'lucide-react';
 import SocialAuthButtons from '@/components/auth/SocialAuthButtons';
 import { Button } from '@/components/ui/button';
 import { safeReturnTo } from '@/lib/authReturnTo';
+import { readLastLogin, setPendingLoginMethod } from '@/lib/lastLogin';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { isAuthenticated, isLoadingAuth } = useAuth();
+  const [lastLogin] = useState(() => readLastLogin());
+  const [showAllOptions, setShowAllOptions] = useState(!lastLogin);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) navigate('/', { replace: true });
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (lastLogin?.method === 'email') setEmail(lastLogin.username);
+  }, [lastLogin]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,6 +33,7 @@ export default function Login() {
     setLoading(true);
     try {
       await base44.auth.loginViaEmailPassword(email, password);
+      setPendingLoginMethod('email');
       window.location.href = safeReturnTo();
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
@@ -26,6 +41,12 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+  if (isLoadingAuth || isAuthenticated) return null;
+
+  const showWelcomeBack = lastLogin && !showAllOptions;
+  const methodLabel = lastLogin?.method === 'email' ? 'Email' : lastLogin?.method === 'google' ? 'Google' : 'Apple';
+  const avatarIsImage = lastLogin?.avatar && !lastLogin.avatar.startsWith('preset:');
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
@@ -56,15 +77,76 @@ export default function Login() {
 
         {/* Card */}
         <div className="bg-[#111118] border border-[#3AAFA9]/15 rounded-2xl p-8 shadow-2xl">
-          <SocialAuthButtons />
+          {showWelcomeBack && (
+            <div className="text-center mb-6">
+              <div className="mx-auto mb-3 w-16 h-16 rounded-full overflow-hidden border border-[#3AAFA9]/30 bg-white/5 flex items-center justify-center text-2xl text-[#A8E6E3]">
+                {avatarIsImage
+                  ? <img src={lastLogin.avatar} alt="" className="w-full h-full object-cover" />
+                  : lastLogin.avatar?.startsWith('preset:')
+                    ? lastLogin.avatar.slice('preset:'.length)
+                    : <UserRound className="w-7 h-7" />}
+              </div>
+              <h2 className="text-white text-xl font-bold">Welcome back, {lastLogin.username}</h2>
+              <p className="text-white/40 text-sm mt-1">Continue with {methodLabel}</p>
+            </div>
+          )}
 
-          <div className="flex items-center gap-3 mb-6">
+          {showWelcomeBack && lastLogin.method !== 'email' && (
+            <SocialAuthButtons onlyProvider={lastLogin.method} />
+          )}
+
+          {showWelcomeBack && lastLogin.method === 'email' && (
+            <form onSubmit={handleSubmit} className="space-y-4 mb-4">
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3">
+                  {error}
+                </div>
+              )}
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="username"
+                required
+                className="w-full bg-white/5 border border-[#3AAFA9]/15 text-white placeholder-white/30 rounded-xl px-4 py-3 focus:outline-none focus:border-[#3AAFA9]/50 transition-colors"
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                required
+                className="w-full bg-white/5 border border-[#3AAFA9]/15 text-white placeholder-white/30 rounded-xl px-4 py-3 focus:outline-none focus:border-[#3AAFA9]/50 transition-colors"
+              />
+              <div className="text-right">
+                <Link to="/forgot-password" className="text-[#3AAFA9]/60 text-sm hover:text-[#3AAFA9] transition-colors">
+                  Forgot password?
+                </Link>
+              </div>
+              <Button type="submit" disabled={loading} variant="chess-primary" className="w-full justify-center gap-2 font-bold text-sm tracking-wider uppercase py-3 rounded-xl active:scale-95">
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
+                {loading ? 'Signing in.' : 'Continue with Email'}
+              </Button>
+            </form>
+          )}
+
+          {showWelcomeBack && (
+            <button type="button" onClick={() => setShowAllOptions(true)} className="block mx-auto text-sm text-[#3AAFA9] hover:text-[#A8E6E3] transition-colors">
+              Use a different account
+            </button>
+          )}
+
+          {showAllOptions && <SocialAuthButtons />}
+
+          {showAllOptions && <div className="flex items-center gap-3 mb-6">
             <div className="flex-1 h-px bg-[#3AAFA9]/15" />
             <span className="text-white/30 text-xs">or sign in with email</span>
             <div className="flex-1 h-px bg-[#3AAFA9]/15" />
-          </div>
+          </div>}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {showAllOptions && <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3">
                 {error}
@@ -75,6 +157,7 @@ export default function Login() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoComplete="username"
               required
               className="w-full bg-white/5 border border-[#3AAFA9]/15 text-white placeholder-white/30 rounded-xl px-4 py-3 focus:outline-none focus:border-[#3AAFA9]/50 transition-colors"
             />
@@ -83,6 +166,7 @@ export default function Login() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
               required
               className="w-full bg-white/5 border border-[#3AAFA9]/15 text-white placeholder-white/30 rounded-xl px-4 py-3 focus:outline-none focus:border-[#3AAFA9]/50 transition-colors"
             />
@@ -100,7 +184,7 @@ export default function Login() {
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
               {loading ? 'Signing in…' : 'Sign In'}
             </Button>
-          </form>
+          </form>}
         </div>
 
         <p className="text-white/40 text-sm text-center mt-6">

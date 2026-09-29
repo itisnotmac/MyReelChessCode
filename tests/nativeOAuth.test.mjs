@@ -17,7 +17,10 @@ test('native provider login URLs use each Base44 provider endpoint and app callb
     assert.equal(url.origin, 'https://reelchess.org');
     assert.equal(url.pathname, pathname);
     assert.equal(url.searchParams.get('app_id'), 'app-123');
-    assert.equal(url.searchParams.get('from_url'), NATIVE_OAUTH_CALLBACK_URL);
+    const callback = new URL(url.searchParams.get('from_url'));
+    assert.equal(callback.origin, new URL(NATIVE_OAUTH_CALLBACK_URL).origin);
+    assert.equal(callback.pathname, new URL(NATIVE_OAUTH_CALLBACK_URL).pathname);
+    assert.equal(callback.searchParams.get('login_method'), provider);
   }
 });
 
@@ -29,7 +32,15 @@ test('native provider login URLs reject unsupported providers and missing build 
 test('native callback parser accepts only the registered app callback and extracts its token', () => {
   assert.deepEqual(
     parseNativeOAuthCallback(`${NATIVE_OAUTH_CALLBACK_URL}?access_token=secret-token`),
-    { accessToken: 'secret-token', error: null }
+    { accessToken: 'secret-token', error: null, loginMethod: null }
+  );
+  assert.equal(
+    parseNativeOAuthCallback(`${NATIVE_OAUTH_CALLBACK_URL}?access_token=token&login_method=google`).loginMethod,
+    'google'
+  );
+  assert.equal(
+    parseNativeOAuthCallback(`${NATIVE_OAUTH_CALLBACK_URL}?access_token=token&login_method=email`).loginMethod,
+    null
   );
   assert.equal(parseNativeOAuthCallback('https://reelchess.org/?access_token=secret-token'), null);
   assert.equal(parseNativeOAuthCallback('com.base69ab30c24c8c7db2b8432adf.app://oauth/other?access_token=x'), null);
