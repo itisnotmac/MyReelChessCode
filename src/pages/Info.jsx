@@ -74,7 +74,7 @@ export default function InfoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] relative">
+    <div className="relative min-h-screen w-full min-w-0 overflow-x-hidden bg-[#0a0a0f]">
       {/* Cinematic backdrop — command sanctum */}
       <div className="absolute inset-0 z-0">
         <img src="https://media.base44.com/images/public/69ab30c24c8c7db2b8432adf/98ae19c90_generated_image.png" alt="" className="w-full h-full object-cover" />
@@ -99,13 +99,13 @@ export default function InfoPage() {
 
       {/* Content */}
       <motion.div
-        className="relative z-10 px-5 pb-8"
+        className="relative z-10 box-border w-full min-w-0 px-5 pb-8"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}>
-        <div className="space-y-6">
+        <div className="w-full min-w-0 space-y-6">
           <ThemePicker />
-          <div className="rounded-xl bg-[#3AAFA9]/10 border border-[#3AAFA9]/30 p-4 space-y-5">
-            <div className="flex items-center justify-between">
+          <div className="box-border w-full min-w-0 rounded-xl border border-[#3AAFA9]/30 bg-[#3AAFA9]/10 p-4 space-y-5">
+            <div className="flex min-w-0 items-center justify-between gap-4 [&>div]:min-w-0 [&>div]:flex-1">
               <div>
                 <p className="text-white text-sm font-medium">Sound Effects</p>
                 <p className="text-white/60 text-xs mt-0.5">Move sounds, check alerts, and game events</p>
@@ -113,7 +113,7 @@ export default function InfoPage() {
               <Switch checked={soundEnabled} onCheckedChange={toggleSound} className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
             <div className="h-px bg-white/5" />
-            <div className="flex items-center justify-between">
+            <div className="flex min-w-0 items-center justify-between gap-4 [&>div]:min-w-0 [&>div]:flex-1">
               <div>
                 <p className="text-white text-sm font-medium">Battle Cutscenes</p>
                 <p className="text-white/60 text-xs mt-0.5">Show cinematic battles on capture</p>
@@ -121,7 +121,7 @@ export default function InfoPage() {
               <Switch defaultChecked className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
             <div className="h-px bg-white/5" />
-            <div className="flex items-center justify-between">
+            <div className="flex min-w-0 items-center justify-between gap-4 [&>div]:min-w-0 [&>div]:flex-1">
               <div>
                 <p className="text-white text-sm font-medium">Board Flip</p>
                 <p className="text-white/60 text-xs mt-0.5">Rotate board for Player 2 in local mode</p>
@@ -129,7 +129,7 @@ export default function InfoPage() {
               <Switch defaultChecked className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
             <div className="h-px bg-white/5" />
-            <div className="flex items-center justify-between">
+            <div className="flex min-w-0 items-center justify-between gap-4 [&>div]:min-w-0 [&>div]:flex-1">
               <div>
                 <p className="text-white text-sm font-medium">Move Hints</p>
                 <p className="text-white/60 text-xs mt-0.5">Show legal move indicators</p>
@@ -137,7 +137,7 @@ export default function InfoPage() {
               <Switch defaultChecked className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
             <div className="h-px bg-white/5" />
-            <div className="flex items-center justify-between">
+            <div className="flex min-w-0 items-center justify-between gap-4 [&>div]:min-w-0 [&>div]:flex-1">
               <div>
                 <p className="text-white text-sm font-medium">Rank &amp; File Labels</p>
                 <p className="text-white/60 text-xs mt-0.5">Show a–h / 1–8 coordinates on the board edges</p>
@@ -145,7 +145,7 @@ export default function InfoPage() {
               <Switch checked={coordsEnabled} onCheckedChange={toggleCoords} className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
             <div className="h-px bg-white/5" />
-            <div className="flex items-center justify-between">
+            <div className="flex min-w-0 items-center justify-between gap-4 [&>div]:min-w-0 [&>div]:flex-1">
               <div>
                 <p className="text-white text-sm font-medium">Last Move Highlight</p>
                 <p className="text-white/60 text-xs mt-0.5">Glow the previous move's from and to squares</p>
@@ -153,7 +153,7 @@ export default function InfoPage() {
               <Switch checked={lastMoveEnabled} onCheckedChange={toggleLastMove} className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
             <div className="h-px bg-white/5" />
-            <div className="flex items-center justify-between">
+            <div className="flex min-w-0 items-center justify-between gap-4 [&>div]:min-w-0 [&>div]:flex-1">
               <div>
                 <p className="text-white text-sm font-medium">Move Animation</p>
                 <p className="text-white/60 text-xs mt-0.5">Slide pieces smoothly to their destination</p>
@@ -161,7 +161,7 @@ export default function InfoPage() {
               <Switch checked={moveAnimEnabled} onCheckedChange={toggleMoveAnim} className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
             <div className="h-px bg-white/5" />
-            <div className="flex items-center justify-between">
+            <div className="flex min-w-0 items-center justify-between gap-4 [&>div]:min-w-0 [&>div]:flex-1">
               <div>
                 <p className="text-white text-sm font-medium">Haptic Feedback</p>
                 <p className="text-white/60 text-xs mt-0.5">Vibrate on captures and check alerts (mobile)</p>
@@ -169,7 +169,7 @@ export default function InfoPage() {
               <Switch checked={hapticsEnabled} onCheckedChange={toggleHaptics} className="data-[state=checked]:bg-[#3AAFA9]" />
             </div>
             <div className="h-px bg-white/5" />
-            <div className="flex items-center justify-between">
+            <div className="flex min-w-0 items-center justify-between gap-4 [&>div]:min-w-0 [&>div]:flex-1">
               <div>
                 <p className="text-white text-sm font-medium">Rainfall Effect</p>
                 <p className="text-white/60 text-xs mt-0.5">Thunderstorm overlay on the lobby</p>
@@ -181,8 +181,8 @@ export default function InfoPage() {
           {/* Stuff for Nerds */}
           <div>
             <p className="text-[10px] tracking-[0.3em] uppercase text-[#3AAFA9]/70 font-medium mb-2 px-1">Stuff for Nerds</p>
-            <div className="rounded-xl bg-white/5 border border-white/10 p-4 space-y-5">
-              <div className="flex items-center justify-between">
+            <div className="box-border w-full min-w-0 rounded-xl border border-white/10 bg-white/5 p-4 space-y-5">
+              <div className="flex min-w-0 items-center justify-between gap-4 [&>div]:min-w-0 [&>div]:flex-1">
                 <div>
                   <p className="text-white text-sm font-medium">Network Ping Indicator</p>
                   <p className="text-white/60 text-xs mt-0.5">Show live latency badge in the lobby corner</p>
