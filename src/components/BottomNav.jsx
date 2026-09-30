@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Gamepad2, User, Settings, ShoppingBag } from 'lucide-react';
@@ -10,41 +10,15 @@ const NAV_ITEMS = [
 { label: 'Settings', icon: Settings, path: '/Info?section=settings' }];
 
 
-// Persist scroll positions per tab path
-const scrollPositions = {};
-
 export default function BottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
-  const prevPath = useRef(location.pathname);
 
   const isActive = (path) => {
     const basePath = path.split('?')[0];
     if (basePath === '/') return location.pathname === '/';
     return location.pathname === basePath;
   };
-
-  // Save scroll position of the page we're leaving
-  useEffect(() => {
-    const leaving = prevPath.current;
-    return () => {
-      scrollPositions[leaving] = window.scrollY;
-    };
-  }, [location.pathname]);
-
-  // Restore scroll position when arriving at a tab
-  useEffect(() => {
-    const isTabPath = NAV_ITEMS.some((item) => {
-      const base = item.path.split('?')[0];
-      return base === location.pathname;
-    });
-    if (isTabPath) {
-      const saved = scrollPositions[location.pathname] ?? 0;
-      // Defer to let the page render first
-      requestAnimationFrame(() => window.scrollTo(0, saved));
-    }
-    prevPath.current = location.pathname;
-  }, [location.pathname]);
 
   const handleNav = (path) => {
     const basePath = path.split('?')[0];
