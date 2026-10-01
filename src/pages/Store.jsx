@@ -10,7 +10,6 @@ import { BOARD_SKINS, PIECE_SETS, USERNAME_GLOW_COLORS, MOVE_TRAIL_COLORS, PARTI
 import { renderPieceSet } from '@/components/chess/PieceSets';
 import CosmeticGrid from '@/components/store/CosmeticGrid';
 import { useToast } from "@/components/ui/use-toast";
-import StoreCardSkeleton from '@/components/StoreCardSkeleton';
 
 import BoardAnimation from '@/components/effects/BoardAnimation';
 import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
@@ -51,9 +50,7 @@ function StoreCard({ item, owned, selected, onSelect, onPurchase, purchasing, co
   const canAffordCoins = (coinBalance || 0) >= (item.price || ITEM_COST_COINS);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+    <div
       className={`relative rounded-xl p-3 pb-14 border backdrop-blur-md transition-colors ${
         selected
           ? 'border-[#3AAFA9] bg-[#3AAFA9]/15'
@@ -107,7 +104,7 @@ function StoreCard({ item, owned, selected, onSelect, onPurchase, purchasing, co
           </button>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -119,14 +116,12 @@ export default function Store() {
   const { toast } = useToast();
   const [purchases, setPurchases] = useState([]);
   const [coinBalance, setCoinBalance] = useState(0);
-  const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState(null);
   const [coinPurchasing, setCoinPurchasing] = useState(null);
   const [justPurchased, setJustPurchased] = useState(null);
 
   const loadPurchases = useCallback(async () => {
     if (!isAuthenticated) {
-      setLoading(false);
       return;
     }
     try {
@@ -139,7 +134,6 @@ export default function Store() {
     } catch (e) {
       console.error('Failed to load store data:', e);
     }
-    setLoading(false);
   }, [isAuthenticated]);
 
   useEffect(() => {
@@ -360,31 +354,25 @@ export default function Store() {
         <p className="text-[11px] text-white/50 mb-3 leading-relaxed">
           Premium skins with live animated backgrounds — drifting stars, flowing lava, rolling waves, and pulsing neon grids.
         </p>
-        {loading ? (
-          <div className="grid grid-cols-2 gap-3">
-            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-3">
-            {Object.values(BOARD_SKINS).filter(s => s.animated).map(skin => {
-              const item = { ...skin, category: 'board', price: skin.price };
-              return (
-                <StoreCard
-                  key={skin.id}
-                  item={item}
-                  owned={isOwned(skin.id)}
-                  selected={boardSkin === skin.id}
-                  onSelect={handleSelect}
-                  onPurchase={handlePurchase}
-                  purchasing={purchasing === skin.id}
-                  coinBalance={coinBalance}
-                  onCoinPurchase={handleCoinPurchase}
-                  coinPurchasing={coinPurchasing === skin.id}
-                />
-              );
-            })}
-          </div>
-        )}
+        <div className="grid grid-cols-2 gap-3">
+          {Object.values(BOARD_SKINS).filter(s => s.animated).map(skin => {
+            const item = { ...skin, category: 'board', price: skin.price };
+            return (
+              <StoreCard
+                key={skin.id}
+                item={item}
+                owned={isOwned(skin.id)}
+                selected={boardSkin === skin.id}
+                onSelect={handleSelect}
+                onPurchase={handlePurchase}
+                purchasing={purchasing === skin.id}
+                coinBalance={coinBalance}
+                onCoinPurchase={handleCoinPurchase}
+                coinPurchasing={coinPurchasing === skin.id}
+              />
+            );
+          })}
+        </div>
       </div>
 
       {/* Piece Sets */}
@@ -420,22 +408,16 @@ export default function Store() {
           <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
           USERNAME GLOW
         </h2>
-        {loading ? (
-          <div className="grid grid-cols-2 gap-3">
-            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
-          </div>
-        ) : (
-          <CosmeticGrid
-            items={USERNAME_GLOW_COLORS}
-            ownedIds={getOwnedIds('username_glow', USERNAME_GLOW_COLORS)}
-            equippedId={usernameGlow}
-            onEquip={handleEquipGlow}
-            onPurchase={handleCoinPurchase}
-            purchasingId={coinPurchasing}
-            coinBalance={coinBalance}
-            variant="username-glow"
-          />
-        )}
+        <CosmeticGrid
+          items={USERNAME_GLOW_COLORS}
+          ownedIds={getOwnedIds('username_glow', USERNAME_GLOW_COLORS)}
+          equippedId={usernameGlow}
+          onEquip={handleEquipGlow}
+          onPurchase={handleCoinPurchase}
+          purchasingId={coinPurchasing}
+          coinBalance={coinBalance}
+          variant="username-glow"
+        />
       </div>
 
       {/* Move Trail */}
@@ -444,22 +426,16 @@ export default function Store() {
           <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
           MOVE TRAIL
         </h2>
-        {loading ? (
-          <div className="grid grid-cols-2 gap-3">
-            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
-          </div>
-        ) : (
-          <CosmeticGrid
-            items={MOVE_TRAIL_COLORS}
-            ownedIds={getOwnedIds('move_trail', MOVE_TRAIL_COLORS)}
-            equippedId={moveTrailColor}
-            onEquip={handleEquipTrail}
-            onPurchase={handleCoinPurchase}
-            purchasingId={coinPurchasing}
-            coinBalance={coinBalance}
-            variant="move-trail"
-          />
-        )}
+        <CosmeticGrid
+          items={MOVE_TRAIL_COLORS}
+          ownedIds={getOwnedIds('move_trail', MOVE_TRAIL_COLORS)}
+          equippedId={moveTrailColor}
+          onEquip={handleEquipTrail}
+          onPurchase={handleCoinPurchase}
+          purchasingId={coinPurchasing}
+          coinBalance={coinBalance}
+          variant="move-trail"
+        />
       </div>
 
       {/* Reserved for a future avatar collection. */}
@@ -476,22 +452,16 @@ export default function Store() {
         <p className="mb-3 rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-3 py-2.5 text-[11px] leading-relaxed text-[#F5E6A3]/85">
           Particle effects appear when <span className="font-bold text-[#F5E6A3]">Battle Cutscenes</span> are disabled in Settings. When cutscenes are enabled, the cinematic capture plays instead of the particle effect.
         </p>
-        {loading ? (
-          <div className="grid grid-cols-2 gap-3">
-            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
-          </div>
-        ) : (
-          <CosmeticGrid
-            items={PARTICLE_EFFECTS}
-            ownedIds={getOwnedIds('particle_effect', PARTICLE_EFFECTS)}
-            equippedId={particleEffect}
-            onEquip={handleEquipParticle}
-            onPurchase={handleCoinPurchase}
-            purchasingId={coinPurchasing}
-            coinBalance={coinBalance}
-            variant="particle"
-          />
-        )}
+        <CosmeticGrid
+          items={PARTICLE_EFFECTS}
+          ownedIds={getOwnedIds('particle_effect', PARTICLE_EFFECTS)}
+          equippedId={particleEffect}
+          onEquip={handleEquipParticle}
+          onPurchase={handleCoinPurchase}
+          purchasingId={coinPurchasing}
+          coinBalance={coinBalance}
+          variant="particle"
+        />
       </div>
 
       {/* Board Borders */}
@@ -500,22 +470,16 @@ export default function Store() {
           <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
           BOARD BORDERS
         </h2>
-        {loading ? (
-          <div className="grid grid-cols-2 gap-3">
-            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
-          </div>
-        ) : (
-          <CosmeticGrid
-            items={BOARD_BORDERS}
-            ownedIds={getOwnedIds('board_border', BOARD_BORDERS)}
-            equippedId={boardBorder}
-            onEquip={handleEquipBorder}
-            onPurchase={handleCoinPurchase}
-            purchasingId={coinPurchasing}
-            coinBalance={coinBalance}
-            variant="border"
-          />
-        )}
+        <CosmeticGrid
+          items={BOARD_BORDERS}
+          ownedIds={getOwnedIds('board_border', BOARD_BORDERS)}
+          equippedId={boardBorder}
+          onEquip={handleEquipBorder}
+          onPurchase={handleCoinPurchase}
+          purchasingId={coinPurchasing}
+          coinBalance={coinBalance}
+          variant="border"
+        />
       </div>
 
       {/* Avatar Frames */}
@@ -524,22 +488,16 @@ export default function Store() {
           <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
           AVATAR FRAMES
         </h2>
-        {loading ? (
-          <div className="grid grid-cols-2 gap-3">
-            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
-          </div>
-        ) : (
-          <CosmeticGrid
-            items={AVATAR_FRAMES}
-            ownedIds={getOwnedIds('avatar_frame', AVATAR_FRAMES)}
-            equippedId={avatarFrame}
-            onEquip={handleEquipFrame}
-            onPurchase={handleCoinPurchase}
-            purchasingId={coinPurchasing}
-            coinBalance={coinBalance}
-            variant="frame"
-          />
-        )}
+        <CosmeticGrid
+          items={AVATAR_FRAMES}
+          ownedIds={getOwnedIds('avatar_frame', AVATAR_FRAMES)}
+          equippedId={avatarFrame}
+          onEquip={handleEquipFrame}
+          onPurchase={handleCoinPurchase}
+          purchasingId={coinPurchasing}
+          coinBalance={coinBalance}
+          variant="frame"
+        />
       </div>
 
       {/* Ambient Effects */}
@@ -551,22 +509,16 @@ export default function Store() {
         <p className="text-[11px] text-white/50 mb-3 leading-relaxed">
           An animated atmospheric layer — rain, snow, embers, fireflies, aurora, or stardust — drifts behind the board during classic AI and local games.
         </p>
-        {loading ? (
-          <div className="grid grid-cols-2 gap-3">
-            {[0, 1, 2, 3].map(i => <StoreCardSkeleton key={i} />)}
-          </div>
-        ) : (
-          <CosmeticGrid
-            items={AMBIENT_EFFECTS}
-            ownedIds={getOwnedIds('ambient_effect', AMBIENT_EFFECTS)}
-            equippedId={ambientEffect}
-            onEquip={handleEquipAmbient}
-            onPurchase={handleCoinPurchase}
-            purchasingId={coinPurchasing}
-            coinBalance={coinBalance}
-            variant="ambient"
-          />
-        )}
+        <CosmeticGrid
+          items={AMBIENT_EFFECTS}
+          ownedIds={getOwnedIds('ambient_effect', AMBIENT_EFFECTS)}
+          equippedId={ambientEffect}
+          onEquip={handleEquipAmbient}
+          onPurchase={handleCoinPurchase}
+          purchasingId={coinPurchasing}
+          coinBalance={coinBalance}
+          variant="ambient"
+        />
       </div>
 
       {/* Footer note */}

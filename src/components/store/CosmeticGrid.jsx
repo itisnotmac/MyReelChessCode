@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Check, Loader2, Coins } from 'lucide-react';
 import EffectPreview from './EffectPreview';
 
@@ -68,9 +67,7 @@ export default function CosmeticGrid({
   return (
     <div className="grid grid-cols-2 gap-3">
       {showNone && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
+        <div
           className={`relative rounded-xl p-3 pb-14 border backdrop-blur-md transition-colors ${
             noneEquipped ? 'border-[#3AAFA9] bg-[#3AAFA9]/15' : 'border-white/15 bg-black/40'
           }`}
@@ -97,7 +94,7 @@ export default function CosmeticGrid({
               </button>
             )}
           </div>
-        </motion.div>
+        </div>
       )}
       {items.map((item, i) => {
         const owned = ownedIds.has(item.id);
@@ -109,11 +106,8 @@ export default function CosmeticGrid({
         const canAfford = (coinBalance || 0) >= item.price;
 
         return (
-          <motion.div
+          <div
             key={item.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05 }}
             className={`relative rounded-xl p-3 pb-14 border backdrop-blur-md transition-colors ${
               equipped ? 'border-[#3AAFA9] bg-[#3AAFA9]/15' : 'border-white/15 bg-black/40'
             }`}
@@ -187,7 +181,7 @@ export default function CosmeticGrid({
                 </button>
               )}
             </div>
-          </motion.div>
+          </div>
         );
       })}
     </div>
