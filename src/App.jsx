@@ -37,6 +37,7 @@ import Tournament from './pages/Tournament';
 import WifiMatch from './pages/WifiMatch';
 import BlitzSchach from './pages/BlitzSchach';
 import BackButtonHandler from '@/components/BackButtonHandler';
+import ScrollToTop from '@/components/ScrollToTop';
 import { SkinProvider } from '@/lib/skinContext';
 
 
@@ -208,6 +209,7 @@ function App() {
             ) : (
               <>
               <AppRoutes />
+              <ScrollToTop />
               <BackButtonHandler />
               <Toaster />
               </>
