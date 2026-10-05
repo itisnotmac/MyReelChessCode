@@ -14,6 +14,7 @@ import PlayerTimer from '../components/chess/PlayerTimer';
 import MoveHistory from '../components/chess/MoveHistory';
 import PostGameAnalysis from '../components/chess/PostGameAnalysis';
 import MatchPlayersBar from '../components/chess/MatchPlayersBar';
+import { difficulties } from '../components/lobby/DifficultyModal';
 import { toAlgebraicNotation } from '../lib/chessNotation';
 import { stopMenuMusic } from '@/lib/menuMusic';
 import AmbientOverlay from '@/components/effects/AmbientOverlay';
@@ -352,7 +353,11 @@ export default function Game() {
     gameStartTimeRef.current = Date.now();
     base44.analytics.track({ eventName: 'game_started', properties: { mode } });
   };
-
+  // Show the chosen AI difficulty (name + icon) instead of a generic "AI" label.
+  // Falls back to Tough Guy, the same default the AI move logic uses.
+  const aiDifficulty = mode === 'ai'
+    ? (difficulties.find(d => d.id === localStorage.getItem('chessDifficulty')) || difficulties.find(d => d.id === 'tough-guy'))
+    : null;
   const shouldFlip = (mode === 'local' || mode === '2v2') && !isWhiteTurn;
 
   return (
@@ -404,7 +409,8 @@ export default function Game() {
 
       <MatchPlayersBar
         playerName={mode === '2v2' ? 'Team A' : user?.username}
-        opponentName={mode === 'ai' ? 'AI' : mode === '2v2' ? 'Team B' : 'Player 2'}
+                opponentName={mode === 'ai' ? (aiDifficulty?.label || 'AI') : mode === '2v2' ? 'Team B' : 'Player 2'}
+        opponentIcon={mode === 'ai' ? aiDifficulty?.icon : ''}
         playerGlow={usernameGlow}
         opponentIsAI={mode === 'ai'}
       />

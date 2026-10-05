@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Cpu, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const difficulties = [
+export const difficulties = [
   { id: 'novice',          label: 'Novice (Practice)', desc: 'AI intentionally loses',  icon: '♟' },
   { id: 'yellow-belt',     label: 'Yellow Belt',      desc: 'Just learning the ropes',  icon: '🥋' },
   { id: 'tough-guy',       label: 'Tough Guy',        desc: 'Knows the basics',         icon: '💪' },
