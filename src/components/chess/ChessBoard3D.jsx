@@ -84,9 +84,9 @@ function applyMaterial(object3D, color, isWhite) {
 function enhanceMaterial(object3D, isWhite) {
   // Neutral tint — let the texture's own coloring define white vs black.
   // Multiplying dark tints kills sculpted detail on the black set.
-  const tint = 0xffffff;
-  // Faint teal edge glow on silhouette edges only.
-  const glowColor = TEAL_GLOW;
+    const tint = 0xffffff;
+  // Glow color follows the piece's own color, same as the compressed-model path.
+  const glowColor = isWhite ? WHITE_GLOW : TEAL_GLOW;
   const glowIntensity = 0.3;
   const glowPower = 4.5;
   const cacheKey = isWhite ? 'orig_glow_white_v2' : 'orig_glow_black_v2';
@@ -97,8 +97,8 @@ function enhanceMaterial(object3D, isWhite) {
     const newMats = src.map(orig => {
       const mat = orig.clone();
       // Tint multiplies on top of the original texture map (kept intact)
-      mat.color = new THREE.Color(tint);
-      mat.emissive = new THREE.Color(TEAL_GLOW);
+            mat.color = new THREE.Color(tint);
+      mat.emissive = new THREE.Color(glowColor);
       mat.emissiveIntensity = 0;
       mat.customProgramCacheKey = () => cacheKey;
       mat.onBeforeCompile = (shader) => {
@@ -170,7 +170,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     sceneRef.current = scene;
 
     // Camera
-    const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100);
+        const camera = new THREE.PerspectiveCamera(W / H < 1 ? 45 / (W / H) : 45, W / H, 0.1, 100);
     cameraRef.current = camera;
 
     // Renderer
@@ -374,10 +374,12 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
     container.addEventListener('touchend', onTouchEnd);
     container.addEventListener('wheel', onWheel, { passive: true });
 
-    const handleResize = () => {
+        const handleResize = () => {
       const W2 = container.clientWidth;
       const H2 = container.clientHeight;
-      camera.aspect = W2 / H2;
+      const aspect2 = W2 / H2;
+      camera.fov = aspect2 < 1 ? 45 / aspect2 : 45;
+      camera.aspect = aspect2;
       camera.updateProjectionMatrix();
       renderer.setSize(W2, H2);
     };
