@@ -21,7 +21,7 @@ export default function PrivacyPolicy() {
       </button>
 
       <h1 className="text-2xl font-bold text-white mb-1">Privacy Policy</h1>
-      <p className="text-teal-400 text-sm mb-8">Reel Chess · Last updated: June 11, 2026</p>
+      <p className="text-teal-400 text-sm mb-8">Reel Chess · Last updated: Oct 4, 2026</p>
 
       <div className="space-y-8 text-gray-300 text-sm leading-relaxed">
 
