@@ -21,7 +21,7 @@ export default function PrivacyPolicy() {
       </button>
 
       <h1 className="text-2xl font-bold text-white mb-1">Privacy Policy</h1>
-      <p className="text-teal-400 text-sm mb-8">Reel Chess · Last updated: June 11, 2026</p>
+      <p className="text-teal-400 text-sm mb-8">Reel Chess · Last updated: Oct,4 2026</p>
 
       <div className="space-y-8 text-gray-300 text-sm leading-relaxed">
 
@@ -151,10 +151,7 @@ export default function PrivacyPolicy() {
             If you have any questions, concerns, or requests regarding this Privacy Policy, please
             reach out to us at:
           </p>
-          <p className="mt-2 text-teal-400 font-medium">reelchessgame@gmail.com</p>
-          <p className="mt-1 text-gray-400 text-xs">
-            (Replace with your actual support email before submitting to the Play Store.)
-          </p>
+                    <p className="mt-2 text-teal-400 font-medium">support@reelchess.org</p>
         </section>
 
         <section>
