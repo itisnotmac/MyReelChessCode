@@ -68,6 +68,7 @@ export default function Game() {
   const [showHistory, setShowHistory] = useState(false);
   const [moveData, setMoveData] = useState([]);
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [confirmLeave, setConfirmLeave] = useState(null);			
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('chessSound') !== 'off');
   const soundEnabledRef = useRef(soundEnabled);
   useEffect(() => { soundEnabledRef.current = soundEnabled; }, [soundEnabled]);
@@ -353,7 +354,25 @@ export default function Game() {
     gameStartTimeRef.current = Date.now();
     base44.analytics.track({ eventName: 'game_started', properties: { mode } });
   };
-  // Show the chosen AI difficulty (name + icon) instead of a generic "AI" label.
+    const goHome = () => navigate(createPageUrl('Lobby'));
+
+  // Ask before throwing away a game in progress. Games with no moves, or that
+  // are already over, leave immediately.
+  const requestLeave = (action) => {
+    const gameInProgress = moveCount > 0 && !gameOver;
+    if (!gameInProgress) {
+      if (action === 'home') goHome(); else resetGame();
+      return;
+    }
+    setConfirmLeave(action);
+  };
+
+  const confirmLeaveAction = () => {
+    const action = confirmLeave;
+    setConfirmLeave(null);
+    if (action === 'home') goHome(); else resetGame();
+  };
+// Show the chosen AI difficulty (name + icon) instead of a generic "AI" label.
   // Falls back to Tough Guy, the same default the AI move logic uses.
   const aiDifficulty = mode === 'ai'
     ? (difficulties.find(d => d.id === localStorage.getItem('chessDifficulty')) || difficulties.find(d => d.id === 'tough-guy'))
@@ -367,8 +386,8 @@ export default function Game() {
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <GameMenu
-          onHome={() => navigate(createPageUrl('Lobby'))}
-          onReset={resetGame}
+                   onHome={() => requestLeave('home')}
+          onReset={() => requestLeave('reset')}
           soundEnabled={soundEnabled}
           onToggleSound={handleToggleSound}
         />
@@ -510,7 +529,33 @@ export default function Game() {
           onClose={() => setShowAnalysis(false)}
         />
       )}
-
+      {/* Leave / restart confirmation */}
+      {confirmLeave && (
+        <div className="fixed inset-0 z-[95] flex items-center justify-center bg-black/70 px-5 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl border border-[#3AAFA9]/30 bg-[#0d1f1f] p-6 text-center shadow-2xl">
+            <p className="mb-2 text-sm font-bold uppercase tracking-wider text-[#3AAFA9]">
+              {confirmLeave === 'home' ? 'Leave this game?' : 'Restart this game?'}
+            </p>
+            <p className="mb-5 text-sm leading-relaxed text-white/60">
+              You'll lose your progress in this game.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmLeave(null)}
+                className="min-h-11 flex-1 rounded-xl border border-white/10 bg-white/5 py-3 text-xs font-bold uppercase tracking-wider text-white/70"
+              >
+                Keep playing
+              </button>
+              <button
+                onClick={confirmLeaveAction}
+                className="min-h-11 flex-1 rounded-xl bg-[#3AAFA9] py-3 text-xs font-bold uppercase tracking-wider text-[#0a0a0f]"
+              >
+                {confirmLeave === 'home' ? 'Leave' : 'Restart'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Move History Panel */}
       <MoveHistory moves={moveHistory} open={showHistory} onClose={() => setShowHistory(false)} />
       </div>
