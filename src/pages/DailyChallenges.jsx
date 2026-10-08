@@ -87,9 +87,10 @@ export default function DailyChallenges() {
     try { return JSON.parse(account?.claimed_today || '[]'); } catch { return []; }
   })();
 
+   const HIDDEN_ACTIVITY_TYPES = ['settings', 'avatar', 'profile'];
   const activities = (() => {
     try { return JSON.parse(account?.daily_activities || '[]'); } catch { return []; }
-  })().reverse();
+  })().filter((a) => !HIDDEN_ACTIVITY_TYPES.includes(a.type)).reverse();
 
   const handleRefresh = async () => {
     setRefreshing(true);

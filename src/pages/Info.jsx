@@ -16,7 +16,7 @@ export default function InfoPage() {
     const next = !soundEnabled;
     setSoundEnabled(next);
     localStorage.setItem('chessSound', next ? 'on' : 'off');
-    base44.functions.invoke('logActivity', { type: 'settings', label: `Sound: ${next ? 'On' : 'Off'}` }).catch(() => {});
+    
   };
 
   const [coordsEnabled, setCoordsEnabled] = useState(() => localStorage.getItem('chessCoords') !== 'off');
@@ -24,7 +24,7 @@ export default function InfoPage() {
     const next = !coordsEnabled;
     setCoordsEnabled(next);
     localStorage.setItem('chessCoords', next ? 'on' : 'off');
-    base44.functions.invoke('logActivity', { type: 'settings', label: `Coords: ${next ? 'On' : 'Off'}` }).catch(() => {});
+    
   };
 
   const [lastMoveEnabled, setLastMoveEnabled] = useState(() => localStorage.getItem('chessLastMove') !== 'off');
@@ -32,7 +32,7 @@ export default function InfoPage() {
     const next = !lastMoveEnabled;
     setLastMoveEnabled(next);
     localStorage.setItem('chessLastMove', next ? 'on' : 'off');
-    base44.functions.invoke('logActivity', { type: 'settings', label: `LastMove: ${next ? 'On' : 'Off'}` }).catch(() => {});
+    
   };
 
   const [moveAnimEnabled, setMoveAnimEnabled] = useState(() => localStorage.getItem('chessMoveAnim') !== 'off');
@@ -40,7 +40,7 @@ export default function InfoPage() {
     const next = !moveAnimEnabled;
     setMoveAnimEnabled(next);
     localStorage.setItem('chessMoveAnim', next ? 'on' : 'off');
-    base44.functions.invoke('logActivity', { type: 'settings', label: `MoveAnim: ${next ? 'On' : 'Off'}` }).catch(() => {});
+    
   };
 
   const [hapticsEnabled, setHapticsEnabled] = useState(() => localStorage.getItem('chessHaptics') !== 'off');
@@ -48,7 +48,7 @@ export default function InfoPage() {
     const next = !hapticsEnabled;
     setHapticsEnabled(next);
     localStorage.setItem('chessHaptics', next ? 'on' : 'off');
-    base44.functions.invoke('logActivity', { type: 'settings', label: `Haptics: ${next ? 'On' : 'Off'}` }).catch(() => {});
+    
   };
 
   const [pingEnabled, setPingEnabled] = useState(isLatencyBadgeEnabled);
@@ -63,14 +63,14 @@ export default function InfoPage() {
     const next = !rainfallEnabled;
     setRainfallEnabled(next);
     localStorage.setItem('chessRainfall', next ? 'on' : 'off');
-    base44.functions.invoke('logActivity', { type: 'settings', label: `Rainfall: ${next ? 'On' : 'Off'}` }).catch(() => {});
+    
   };
 
   const togglePing = () => {
     const next = !pingEnabled;
     setPingEnabled(next);
     setLatencyBadgeEnabled(next);
-    base44.functions.invoke('logActivity', { type: 'settings', label: `Ping: ${next ? 'On' : 'Off'}` }).catch(() => {});
+   
   };
 
   return (

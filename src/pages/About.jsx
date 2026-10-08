@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useSeo } from '@/lib/useSeo';
 import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
+import { LESSONS } from '@/lib/tutorialLessons';
 
 export default function About() {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ export default function About() {
             Learning the game is built right in. The interactive Tutorial section walks you through every piece,
             explains check and checkmate, and lets you practice moves on a live board — so you're never stuck
             watching a video when you could be playing. We have revamped the visuals of the "RCU" Reel Chess University. It 
-            now has beginners, intermediate, and advanced. There are a total of 64 lessons to take you from beginner to WINNER baby!
+            now has beginners, intermediate, and advanced. There are a total of {LESSONS.length} lessons to take you from beginner to WINNER baby!
             Some of the lessons are interactive, some are not, but the content is most certainly worth your time! Every chess player
             from every skill level can potentially learn something from our RCU. So be sure you stop by and look around. 
           
