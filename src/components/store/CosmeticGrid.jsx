@@ -71,7 +71,7 @@ export default function CosmeticGrid({
         <motion.div
   initial={false}
   animate={{ opacity: 1, y: 0 }}
-  className={`relative rounded-xl p-3 pb-14 border backdrop-blur-md transition-colors ${
+  className={`relative rounded-xl p-3 pb-14 border transition-colors ${
     noneEquipped ? 'border-[#3AAFA9] bg-[#3AAFA9]/15' : 'border-white/15 bg-black/40'
   }`}
   style={{ minHeight: 140 }}
@@ -113,7 +113,7 @@ export default function CosmeticGrid({
   key={item.id}
   initial={false}
   animate={{ opacity: 1, y: 0 }}
-            className={`relative rounded-xl p-3 pb-14 border backdrop-blur-md transition-colors ${
+            className={`relative rounded-xl p-3 pb-14 border transition-colors ${
               equipped ? 'border-[#3AAFA9] bg-[#3AAFA9]/15' : 'border-white/15 bg-black/40'
             }`}
             style={{ minHeight: 140 }}

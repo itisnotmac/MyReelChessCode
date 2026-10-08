@@ -54,7 +54,7 @@ function StoreCard({ item, owned, selected, onSelect, onPurchase, purchasing, co
     <motion.div
   initial={false}
   animate={{ opacity: 1, y: 0 }}
-  className={`relative rounded-xl p-3 pb-14 border backdrop-blur-md transition-colors ${
+  className={`relative rounded-xl p-3 pb-14 border transition-colors ${
         selected
           ? 'border-[#3AAFA9] bg-[#3AAFA9]/15'
           : owned
