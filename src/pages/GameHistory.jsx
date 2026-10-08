@@ -6,9 +6,18 @@ import { base44 } from '@/api/base44Client';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
 import { Button } from '@/components/ui/button';
+import { parseServerDate } from '@/lib/dates';
 
-const resultLabel = (r) => ({ white_wins: 'White Won', black_wins: 'Black Won', draw: 'Draw', in_progress: 'Abandoned' }[r] || r);
-const resultColor = (r) => ({ white_wins: '#D4AF37', black_wins: '#9B59B6', draw: '#3AAFA9', in_progress: '#555' }[r] || '#888');
+// vs-AI games are shown from the player's side (you always play White).
+// Local games have two people on one device, so they keep the side names.
+const resultLabel = (r, mode) => (mode === 'ai'
+  ? { white_wins: 'Win', black_wins: 'Loss', draw: 'Draw', in_progress: 'Abandoned' }
+  : { white_wins: 'White Won', black_wins: 'Black Won', draw: 'Draw', in_progress: 'Abandoned' }
+)[r] || r;
+const resultColor = (r, mode) => (mode === 'ai'
+  ? { white_wins: '#4ADE80', black_wins: '#F87171', draw: '#3AAFA9', in_progress: '#888' }
+  : { white_wins: '#D4AF37', black_wins: '#9B59B6', draw: '#3AAFA9', in_progress: '#555' }
+)[r] || '#888';
 
 function formatDuration(secs) {
   if (!secs) return '—';
@@ -18,12 +27,12 @@ function formatDuration(secs) {
 }
 
 function formatDate(dateStr) {
-  const d = new Date(dateStr);
+  const d = parseServerDate(dateStr);
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 function formatTime(dateStr) {
-  const d = new Date(dateStr);
+ const d = parseServerDate(dateStr);
   return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
 }
 
@@ -84,7 +93,7 @@ export default function GameHistoryPage() {
       if (filterMode !== 'all' && r.mode !== filterMode) return false;
       if (filterResult !== 'all' && r.result !== filterResult) return false;
       if (filterDate !== 'all') {
-        const d = new Date(r.created_date);
+        const d = parseServerDate(r.created_date);
         if (filterDate === 'today') {
           if (d.toDateString() !== now.toDateString()) return false;
         } else if (filterDate === 'week') {
@@ -190,8 +199,8 @@ export default function GameHistoryPage() {
           >
             {[
               { label: 'Played', value: stats.total, color: 'text-white' },
-              { label: 'Won', value: stats.wins, color: 'text-[#D4AF37]' },
-              { label: 'Lost', value: stats.losses, color: 'text-[#9B59B6]' },
+                           { label: 'Won', value: stats.wins, color: 'text-green-400' },
+              { label: 'Lost', value: stats.losses, color: 'text-red-400' },
               { label: 'Draws', value: stats.draws, color: 'text-[#3AAFA9]' },
             ].map(s => (
               <div key={s.label} className="rounded-xl bg-white/5 border border-white/5 p-3 text-center">
@@ -356,11 +365,11 @@ export default function GameHistoryPage() {
                         <span
                           className="text-xs font-bold tracking-wider px-2 py-0.5 rounded-full"
                           style={{
-                            color: resultColor(record.result),
-                            background: resultColor(record.result) + '20',
+                                                      color: resultColor(record.result, record.mode),
+                            background: resultColor(record.result, record.mode) + '20',
                           }}
                         >
-                          {resultLabel(record.result)}
+                          {resultLabel(record.result, record.mode)}
                         </span>
                       </div>
                       <div className="flex items-center gap-3 mt-1.5 flex-wrap">
