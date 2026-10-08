@@ -25,7 +25,7 @@ const AppleIcon = () => (
 
 const PROVIDERS = [
   { id: 'google', label: 'Google', Icon: GoogleIcon },
-  { id: 'facebook', label: 'Facebook', Icon: FacebookIcon },
+  
   { id: 'apple', label: 'Apple', Icon: AppleIcon },
 ];
 
