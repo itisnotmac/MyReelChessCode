@@ -4,7 +4,8 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import BrandIntro, { hasCompletedIntroThisSession } from '@/components/BrandIntro'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
+import { Capacitor } from '@capacitor/core';
 import { AnimatePresence, motion } from 'framer-motion';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -187,6 +188,8 @@ function AppRoutes() {
       navigateToLogin();
       return null;
     }
+       // The Android app has no use for the marketing page: go straight to login.
+    if (Capacitor.isNativePlatform()) return <Navigate to="/login" replace />;
     return <LandingPage />;
   }
   return <AuthenticatedApp />;
