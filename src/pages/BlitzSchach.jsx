@@ -11,6 +11,7 @@ import { useSkin } from '@/lib/skinContext';
 import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 import { Button } from '@/components/ui/button';
 import BlitzGameView from '../components/chess/BlitzGameView';
+import { difficulties } from '../components/lobby/DifficultyModal';
 import {
   createInitialBoard,
   getLegalMoves,
@@ -732,7 +733,9 @@ export default function BlitzSchach() {
   const RoleIcon = mode === 'online' ? Wifi : mode === 'ai' ? Bot : Users;
   const roleLabel = mode === 'online' ? (isHost ? 'White' : 'Black') : mode === 'ai' ? 'vs AI' : 'Local';
   const turnIndicatorMode = mode === 'online' ? 'online' : mode === 'ai' ? 'ai' : 'local';
-
+  const aiDifficulty = mode === 'ai'
+    ? (difficulties.find(d => d.id === localStorage.getItem('chessDifficulty')) || difficulties.find(d => d.id === 'tough-guy'))
+    : null;
   return (
     <BlitzGameView
       board={board}
@@ -759,7 +762,8 @@ export default function BlitzSchach() {
       isThinking={isThinking}
       roleIcon={RoleIcon}
       roleLabel={roleLabel}
-      turnIndicatorMode={turnIndicatorMode}
+           opponentName={mode === 'online' ? (isHost ? gameDoc?.guest_username : gameDoc?.host_username) : mode === 'ai' ? (aiDifficulty?.label || 'AI') : 'Player 2'}
+      opponentIcon={mode === 'ai' ? aiDifficulty?.icon : ''}
       mode={mode}
       playerName={mode === 'online' ? (isHost ? (gameDoc?.host_username || user?.username) : (gameDoc?.guest_username || user?.username)) : user?.username}
       opponentName={mode === 'online' ? (isHost ? gameDoc?.guest_username : gameDoc?.host_username) : mode === 'ai' ? 'AI' : 'Player 2'}
