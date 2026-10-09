@@ -88,7 +88,11 @@ export default function LessonSphere({ sections, onSelect, getSectionProgress })
               <div
                 key={section.name}
                 className="absolute inset-0 flex items-center justify-center"
-                style={{ transform: `rotateY(${i * ANGLE_PER_MODULE}deg) translateZ(${radius}px)` }}
+                style={{
+                  transform: `rotateY(${i * ANGLE_PER_MODULE}deg) translateZ(${radius}px)`,
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden',
+                }}
               >
                 <button
                   onClick={() => handleModuleClick(i)}
@@ -96,21 +100,21 @@ export default function LessonSphere({ sections, onSelect, getSectionProgress })
                   style={{
                     width: `${radius * 1.5}px`,
                     borderColor: isFront ? 'rgba(58,175,169,0.4)' : 'rgba(255,255,255,0.1)',
-                    backgroundColor: isFront ? 'rgba(58,175,169,0.1)' : 'rgba(0,0,0,0.4)',
+                    backgroundColor: isFront ? 'rgba(6,22,24,0.80)' : 'rgba(0,0,0,0.60)',
                     opacity,
                     transform: `scale(${scale})`,
                   }}
                 >
                   <span className="text-3xl text-[#3AAFA9]">{MODULE_ICONS[i]}</span>
-                  <p className="text-base font-bold tracking-[0.15em] uppercase text-white/90" style={{ fontFamily: "'Old Standard TT', serif" }}>
+                  <p className="text-base font-extrabold tracking-[0.15em] uppercase text-white" style={{ fontFamily: "'Old Standard TT', serif", textShadow: '0 1px 6px rgba(0,0,0,0.9)' }}>
                     {section.name}
                   </p>
-                  <p className="text-[10px] text-white/40 text-center leading-relaxed px-2">{section.description}</p>
+                  <p className="text-xs font-medium text-white/85 text-center leading-relaxed px-2" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}>{section.description}</p>
                   <div className="mt-2 flex items-center gap-2">
                     <div className="h-1 w-14 rounded-full bg-white/10 overflow-hidden">
                       <div className="h-full rounded-full" style={{ width: `${sp.percent}%`, background: 'linear-gradient(90deg, #3AAFA9, #A8E6E3)' }} />
                     </div>
-                    <span className="text-[9px] text-white/30">{sp.done}/{sp.total}</span>
+                    <span className="text-[11px] font-semibold text-white/70">{sp.done}/{sp.total}</span>
                   </div>
                 </button>
               </div>
@@ -118,7 +122,7 @@ export default function LessonSphere({ sections, onSelect, getSectionProgress })
           })}
         </div>
       </div>
-      <p className="text-[10px] text-white/20 mt-4 tracking-wider">drag to rotate · tap to enter</p>
+      <p className="text-[10px] text-white/55 mt-4 tracking-wider">drag to rotate · tap to enter</p>
     </div>
   );
 }

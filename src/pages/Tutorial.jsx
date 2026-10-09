@@ -96,11 +96,11 @@ export default function Tutorial() {
             style={{ backgroundImage: 'linear-gradient(135deg, #3AAFA9, #A8E6E3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               REEL CHESS UNIVERSITY
             </h1>
-            <p className="text-[10px] tracking-[0.3em] text-white/25 uppercase font-medium">from beginner to winner</p>
+            <p className="text-[10px] tracking-[0.3em] text-white/60 uppercase font-medium">from beginner to winner</p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <BookOpen className="w-4 h-4 text-[#3AAFA9]/60" />
-            <span className="text-xs text-white/30">{completed.length}/{LESSONS.length}</span>
+            <span className="text-xs text-white/70">{completed.length}/{LESSONS.length}</span>
           </div>
         </div>
 
@@ -115,7 +115,7 @@ export default function Tutorial() {
               transition={{ duration: 0.8, ease: 'easeOut' }} />
             
           </div>
-          <p className="text-[10px] text-white/20 mt-1 text-right">{progress}% complete</p>
+          <p className="text-[10px] text-white/60 mt-1 text-right">{progress}% complete</p>
         </div>
 
         {/* Module sphere or section lessons */}
@@ -158,7 +158,7 @@ export default function Tutorial() {
                         onClick={() => setExpandedChapter(isOpen ? null : chapter)}
                         className="rcu-glow w-fit flex items-center gap-3 px-4 py-3 rounded-xl border border-white/15 bg-black/40 backdrop-blur-md text-left hover:bg-white/5 transition-colors">
                         <span className="text-[10px] tracking-[0.2em] uppercase text-[#3AAFA9]/60 font-semibold">{chapter}</span>
-                        <span className="text-[10px] text-white/20">{doneCount}/{chapterLessons.length}</span>
+                        <span className="text-[10px] text-white/50">{doneCount}/{chapterLessons.length}</span>
                         <ChevronRight className={`w-4 h-4 text-white/30 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
                       </button>
                       <AnimatePresence>

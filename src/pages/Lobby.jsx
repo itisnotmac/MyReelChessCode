@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { X, HelpCircle, Mail, Info, LogOut, LogIn, Gift, MessageCircle, BookOpen, Menu as MenuIcon, Volume2, Swords } from 'lucide-react';
+import { X, HelpCircle, Mail, Info, LogOut, LogIn, Gift, MessageCircle, BookOpen, ChevronLeft, Volume2, Swords } from 'lucide-react';
 import DifficultyModal from '../components/lobby/DifficultyModal';
 import TwoVTwoModal from '../components/lobby/TwoVTwoModal';
 import PlayChessModal from '../components/lobby/PlayChessModal';
@@ -18,77 +18,125 @@ import Cinematic3DHero from '@/components/lobby/Cinematic3DHero';
 import { HERO_BACKDROPS } from '@/lib/heroBackdrops';
 import StormOverlay from '@/components/lobby/StormOverlay';
 
-function MenuModal({ isOpen, onClose, onNavigate, isAuthenticated, onLogout }) {
+const PANEL_W = 288;
+const TAB_W = 44;
+const SPRING = { type: 'spring', stiffness: 300, damping: 32 };
+
+function MenuDrawer({ open, setOpen, onNavigate, isAuthenticated, onLogout }) {
   const items = [
-  { id: 'chat', label: 'Community Chat', icon: MessageCircle },
-  { id: 'faq', label: 'FAQ', icon: HelpCircle },
-  { id: 'contact', label: 'Contact', icon: Mail },
-  { id: 'about', label: 'About', icon: Info },
-  ...(isAuthenticated ? [{ id: 'logout', label: 'Sign Out', icon: LogOut, isDanger: true }] : [])];
+    { id: 'chat', label: 'Community Chat', icon: MessageCircle },
+    { id: 'faq', label: 'FAQ', icon: HelpCircle },
+    { id: 'contact', label: 'Contact', icon: Mail },
+    { id: 'about', label: 'About', icon: Info },
+    ...(isAuthenticated ? [{ id: 'logout', label: 'Sign Out', icon: LogOut, isDanger: true }] : [])
+  ];
+
+  // x = how far the panel is pushed off the right edge (0 = fully open, PANEL_W = closed)
+  const x = useMotionValue(PANEL_W);
+  const tabX = useTransform(x, (v) => v - PANEL_W);
+  const backdropOpacity = useTransform(x, [0, PANEL_W], [1, 0]);
+  const shadow = useTransform(x, [0, PANEL_W], ['-12px 0 40px rgba(0,0,0,0.55)', '0 0 0 rgba(0,0,0,0)']);
+  const dragRef = useRef({ active: false, startX: 0, startPos: 0, lastX: 0, lastT: 0, vel: 0, moved: false });
+
+  // Keep the panel in sync when `open` changes (tap, backdrop, item, close button)
+  useEffect(() => {
+    animate(x, open ? 0 : PANEL_W, SPRING);
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const onPointerDown = (e) => {
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    x.stop();
+    dragRef.current = { active: true, startX: e.clientX, startPos: x.get(), lastX: e.clientX, lastT: performance.now(), vel: 0, moved: false };
+  };
+
+  const onPointerMove = (e) => {
+    const d = dragRef.current;
+    if (!d.active) return;
+    const dx = e.clientX - d.startX;
+    if (Math.abs(dx) > 6) d.moved = true;
+    const now = performance.now();
+    const dt = now - d.lastT;
+    if (dt > 0) d.vel = ((e.clientX - d.lastX) / dt) * 1000;
+    d.lastX = e.clientX;
+    d.lastT = now;
+    x.set(Math.min(PANEL_W, Math.max(0, d.startPos + dx)));
+  };
+
+  const onPointerUp = () => {
+    const d = dragRef.current;
+    if (!d.active) return;
+    d.active = false;
+    if (!d.moved) {
+      setOpen(!open); // a simple tap toggles
+      return;
+    }
+    // Flick wins; otherwise snap to whichever side is closer
+    const toOpen = d.vel < -400 ? true : d.vel > 400 ? false : x.get() < PANEL_W / 2;
+    setOpen(toOpen);
+    animate(x, toOpen ? 0 : PANEL_W, SPRING);
+  };
 
   return createPortal(
-    <AnimatePresence>
-      {isOpen &&
-      <>
-          <motion.div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80]"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          onClick={onClose} />
-        
-          <motion.div
-          role="dialog" aria-modal="true" aria-label="Lobby menu"
-          className="fixed right-0 top-0 bottom-0 w-72 max-w-full flex flex-col bg-gradient-to-b from-[#1a1a2e] to-[#0f0f1a] z-[90] shadow-2xl border-l border-[#3AAFA9]/15"
-          style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
-          initial={{ x: 300 }} animate={{ x: 0 }} exit={{ x: 300 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}>
-          
-            <div className="p-6 pb-4 flex-shrink-0">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-bold tracking-wider text-[#3AAFA9]">MENU</h2>
-                <button onClick={onClose} aria-label="Close" className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white transition-colors">
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-            <div className="px-6 space-y-2 overflow-y-auto flex-1 pb-6 overscroll-contain">
-              {items.map((item, i) =>
-            <motion.button
+    <>
+      {/* Dark fade behind the panel */}
+      <motion.div
+        className="fixed inset-0 bg-black/60 z-[80]"
+        style={{ opacity: backdropOpacity, pointerEvents: open ? 'auto' : 'none' }}
+        onClick={() => setOpen(false)} />
+
+      {/* Sliding panel */}
+      <motion.div
+        role="dialog" aria-modal={open} aria-label="Lobby menu"
+        className="fixed right-0 top-0 bottom-0 flex flex-col bg-gradient-to-b from-[#1a1a2e] to-[#0f0f1a] z-[90] border-l border-[#3AAFA9]/15"
+        style={{ width: PANEL_W, x, boxShadow: shadow, paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
+        <div className="p-6 pb-4 flex-shrink-0">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg font-bold tracking-wider text-[#3AAFA9]">MENU</h2>
+            <button onClick={() => setOpen(false)} aria-label="Close" className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+        <div className="px-6 space-y-2 overflow-y-auto flex-1 pb-6 overscroll-contain">
+          {items.map((item) => (
+            <button
               key={item.id}
               onClick={() => {
-                if (item.id === 'logout') {
-                  onLogout();
-                } else {
-                  onNavigate(item.id);
-                }
-                onClose();
+                if (item.id === 'logout') onLogout();
+                else onNavigate(item.id);
+                setOpen(false);
               }}
               className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group ${
-              item.isDanger ?
-              'text-red-400/70 hover:text-red-400 hover:bg-red-400/10' :
-              'text-white/70 hover:text-white hover:bg-white/5'}`
-              }
-              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 + i * 0.05 }}>
-              
-                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center group-hover:transition-colors ${
-              item.isDanger ?
-              'bg-red-400/10 group-hover:bg-red-400/20' :
-              'bg-[#3AAFA9]/10 group-hover:bg-[#3AAFA9]/20'}`
-              }>
-                    <item.icon className={`w-4 h-4 ${item.isDanger ? 'text-red-400' : 'text-[#3AAFA9]'}`} />
-                  </div>
-                  <span className="text-sm tracking-wider font-medium">{item.label}</span>
-                </motion.button>
-            )}
-            </div>
-            <div className="flex-shrink-0 p-4 text-center">
-              <p className="text-[10px] tracking-[0.3em] uppercase text-white/50">Reel Chess v1.0</p>
-            </div>
-          </motion.div>
-        </>
-      }
-    </AnimatePresence>, document.body);
+                item.isDanger ? 'text-red-400/70 hover:text-red-400 hover:bg-red-400/10' : 'text-white/70 hover:text-white hover:bg-white/5'}`}>
+              <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+                item.isDanger ? 'bg-red-400/10 group-hover:bg-red-400/20' : 'bg-[#3AAFA9]/10 group-hover:bg-[#3AAFA9]/20'}`}>
+                <item.icon className={`w-4 h-4 ${item.isDanger ? 'text-red-400' : 'text-[#3AAFA9]'}`} />
+              </div>
+              <span className="text-sm tracking-wider font-medium">{item.label}</span>
+            </button>
+          ))}
+        </div>
+        <div className="flex-shrink-0 p-4 text-center">
+          <p className="text-[10px] tracking-[0.3em] uppercase text-white/50">Reel Chess v1.0</p>
+        </div>
+      </motion.div>
 
+      {/* Drag tab, rides on the panel's left edge */}
+      <motion.button
+        aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        onClick={(e) => { if (e.detail === 0) setOpen(!open); }}
+        className="fixed right-0 z-[91] flex flex-col items-center justify-center gap-2 rounded-l-2xl border border-r-0 border-[#3AAFA9]/40 bg-[#0d1f1f]/85 text-[#3AAFA9] select-none"
+        style={{ width: TAB_W, height: 112, top: 'calc(env(safe-area-inset-top) + 30vh)', x: tabX, touchAction: 'none', boxShadow: '0 0 10px rgba(58,175,169,0.35)' }}>
+        <ChevronLeft className="w-4 h-4" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s' }} />
+        <span className="text-[11px] font-bold tracking-[0.25em] uppercase" style={{ writingMode: 'vertical-rl' }}>Menu</span>
+      </motion.button>
+    </>,
+    document.body
+  );
 }
 
 export default function Lobby() {
@@ -259,13 +307,7 @@ export default function Lobby() {
         </div>
       </motion.div>
 
-      {/* Hamburger menu icon (top-right) */}
-      <button
-        aria-label="Open menu" aria-haspopup="dialog" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}
-        className="fixed z-30 w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-colors backdrop-blur-md"
-        style={{ top: 'calc(env(safe-area-inset-top) + 84px)', right: 'calc(env(safe-area-inset-right) + 16px)' }}>
-        <MenuIcon className="w-5 h-5 text-green-400" />
-      </button>
+     
 
       {/* Auth buttons (if not logged in) */}
       {!isAuthenticated &&
@@ -327,7 +369,7 @@ export default function Lobby() {
       </motion.div>
 
       {/* Modals */}
-      <MenuModal isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavigate={handleNavigate} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+      <MenuDrawer open={menuOpen} setOpen={setMenuOpen} onNavigate={handleNavigate} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
       <PlayChessModal
         isOpen={playChessOpen}
         onClose={() => setPlayChessOpen(false)}
