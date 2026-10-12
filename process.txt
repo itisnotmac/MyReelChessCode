@@ -1,0 +1,43 @@
+npm run build, npx cap sync android
+
+The mental model is the part that makes it click. Your changes move through four places, and each command moves them one step:
+
+Your folder: where you edit files.
+Staging: you pick which edited files go into the next save point (git add).
+A commit: a save point stored on your PC (git commit).
+GitHub: the backup copy online (git push).
+
+Nothing is safe on GitHub until step 4, which is why the unpushed commits earlier were a risk.
+
+The procedure, every time. Test on your phone first and commit only when it works, so every save point is known-good. In the project folder:
+
+Look at what changed:
+   git status
+
+The first line should say On branch android-native. Edited files appear in red under "Changes not staged for commit", and brand-new files appear in red under "Untracked files". Check that the list matches what you meant to change.
+
+Stage the files by naming them. For this change:
+   git add src/lib/dates.js src/pages/GameHistory.jsx
+
+Don't skip dates.js. It's a new file, and a commit without it would be broken on GitHub even though it works on your PC. Run git status again, and those files should now be green under "Changes to be committed".
+
+Commit with a short message in quotes:
+   git commit -m "B4-3, B4-4: show results from the player's side and fix history timestamps"
+
+It prints a line with a short code and "files changed".
+
+Push to GitHub:
+   git push
+
+That plain form works now because the earlier -u push linked your branch to GitHub.
+
+Confirm: git status should say nothing to commit, working tree clean and Your branch is up to date with 'origin/android-native'.
+
+If something goes differently:
+
+Push rejected ("fetch first" or "non-fast-forward"): GitHub has commits you don't. Run git pull --no-edit origin android-native, then git push again.
+The pull prints CONFLICT: stop, don't commit or build, and paste the output here.
+A text editor opens (the Vim screen): press Esc, type :wq, and press Enter. Adding --no-edit to pulls usually prevents it.
+Unexpected files in step 1: don't add them, and ask me what they are.
+
+git add . stages every changed file at once, which is fine when step 1 shows only files you meant to change. Naming files is safer because it keeps each commit to one task.
