@@ -142,7 +142,7 @@ function MenuDrawer({ open, setOpen, onNavigate, isAuthenticated, onLogout }) {
 export default function Lobby() {
   const navigate = useNavigate();
   const { isAuthenticated, user, navigateToLogin, logout } = useAuth();
-  const { hasUnlock } = useFeatureUnlocks(user);
+  const { hasUnlock, refetch: refetchUnlocks } = useFeatureUnlocks(user);
   const [menuOpen, setMenuOpen] = useState(false);
   const [difficultyOpen, setDifficultyOpen] = useState(false);
   const [twoVTwoOpen, setTwoVTwoOpen] = useState(false);
@@ -409,6 +409,13 @@ export default function Lobby() {
         onClose={() => setFeatureUnlock({ open: false, id: null })}
         featureId={featureUnlock.id}
         isAuthenticated={isAuthenticated} />
+
+      <FeatureUnlockModal
+        isOpen={featureUnlock.open}
+        onClose={() => setFeatureUnlock({ open: false, id: null })}
+        featureId={featureUnlock.id}
+        isAuthenticated={isAuthenticated}
+        onUnlocked={refetchUnlocks} />
       
       <StreakPopup
         isOpen={showStreakPopup}

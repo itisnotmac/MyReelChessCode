@@ -67,8 +67,11 @@ const COSMETIC_CATALOG = {
   amb_stardust:  { name: 'Stardust',        item_type: 'ambient_effect', price: 350 },
   amb_rain:      { name: 'Raindrops',       item_type: 'ambient_effect', price: 350 },
   amb_fireflies: { name: 'Fireflies',       item_type: 'ambient_effect', price: 350 },
+ // One-time feature unlocks (priced in Tempo). item_type 'feature' is what useFeatureUnlocks looks for.
+  qr_host_unlock:    { name: 'Host WiFi Matches',     item_type: 'feature', price: 200 },
+  '2v2_host_unlock': { name: 'Host 2v2 Team Matches', item_type: 'feature', price: 200 },
 };
-
+ 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);

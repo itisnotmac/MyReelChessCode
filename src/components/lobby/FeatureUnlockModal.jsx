@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Lock, Wifi, Users, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { X, Lock, Wifi, Users, Loader2, Coins, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { isAndroidApp } from '@/lib/platformDetect';
+import { selectPlayerAccount } from '@/lib/playerAccount';
+import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
+
+// Display only. The real price is enforced by the server catalog in purchaseWithCurrency.
+const FEATURE_PRICE = 200;
 
 const FEATURES = {
   qr_host_unlock: {
@@ -18,40 +23,68 @@ const FEATURES = {
   },
 };
 
-export default function FeatureUnlockModal({ isOpen, onClose, featureId, isAuthenticated }) {
+export default function FeatureUnlockModal({ isOpen, onClose, featureId, isAuthenticated, onUnlocked }) {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [balance, setBalance] = useState(null);
+  const [unlocked, setUnlocked] = useState(false);
 
   const feature = FEATURES[featureId];
   const Icon = feature?.icon || Lock;
+  const canAfford = balance !== null && balance >= FEATURE_PRICE;
 
-  const handleBuy = async () => {
-    // Block checkout inside iframe (builder preview)
-    if (window.self !== window.top) {
-      alert('Checkout is only available from the published app.');
+  // Load the player's Tempo balance whenever the sheet opens
+  useEffect(() => {
+    if (!isOpen) {
+      setError(null);
+      setUnlocked(false);
       return;
     }
-    // Block Stripe checkout in the Android TWA — Play Store policy compliance
-    if (isAndroidApp()) return;
+    if (!isAuthenticated) return;
+    let cancelled = false;
+    (async () => {
+      try {
+    const me = await base44.auth.me();
+        const res = await base44.entities.PlayerAccount.filter({ user_id: me.id });
+        if (!cancelled) setBalance(selectPlayerAccount(res)?.currency_balance || 0);
+      } catch (e) {
+        console.error('Failed to load Tempo balance:', e);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [isOpen, isAuthenticated]);
+
+  const handleBuy = async () => {
     if (!isAuthenticated) {
-      window.location.href = '/login';
+      onClose();
+      navigate('/login');
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      const response = await base44.functions.invoke('createFeatureCheckout', { feature_id: featureId });
-      const body = response?.data || response;
-      if (body?.url) {
-        window.location.href = body.url;
+      const res = await base44.functions.invoke('purchaseWithCurrency', { item_id: featureId });
+      const body = res?.data || res;
+      if (body?.success) {
+        setBalance(body.new_balance);
+        window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT));
+        setUnlocked(true);
+        onUnlocked?.();
+        setTimeout(onClose, 1200);
       } else {
-        setError(body?.error || 'Could not start checkout. Please try again.');
+        setError(body?.error || 'Could not complete the purchase. Please try again.');
       }
     } catch (err) {
-      setError(err?.response?.data?.error || err?.data?.error || err?.message || 'Something went wrong. Please try again.');
+      setError(err?.data?.error || err?.response?.data?.error || err?.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const goEarn = () => {
+    onClose();
+    navigate('/DailyChallenges');
   };
 
   return (
@@ -59,7 +92,7 @@ export default function FeatureUnlockModal({ isOpen, onClose, featureId, isAuthe
       {isOpen && feature && (
         <>
           <motion.div
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60]"
+            className="fixed inset-0 bg-black/70 z-[60]"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose}
           />
@@ -76,7 +109,7 @@ export default function FeatureUnlockModal({ isOpen, onClose, featureId, isAuthe
                   <Icon className="w-5 h-5 text-[#3AAFA9]" />
                   <span className="font-black tracking-[0.2em] uppercase text-sm text-[#3AAFA9]">One-Time Unlock</span>
                 </div>
-                <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-colors">
+                <button onClick={onClose} aria-label="Close" className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white transition-colors">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -85,12 +118,12 @@ export default function FeatureUnlockModal({ isOpen, onClose, featureId, isAuthe
               <div className="flex justify-center mb-4">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center"
                   style={{ background: 'radial-gradient(circle, rgba(58,175,169,0.2) 0%, transparent 70%)', border: '1px solid rgba(58,175,169,0.3)' }}>
-                  <Lock className="w-7 h-7 text-[#3AAFA9]" />
+                  {unlocked ? <Check className="w-7 h-7 text-[#3AAFA9]" /> : <Lock className="w-7 h-7 text-[#3AAFA9]" />}
                 </div>
               </div>
 
               <h2 className="text-center text-xl font-black tracking-wider text-white mb-1">{feature.title}</h2>
-              <p className="text-center text-white/40 text-xs tracking-wider mb-6">{feature.benefit}</p>
+              <p className="text-center text-white/60 text-xs tracking-wider mb-6">{feature.benefit}</p>
 
               {/* Benefit card */}
               <div className="flex items-center gap-3 px-4 py-3 rounded-xl mb-6"
@@ -99,36 +132,48 @@ export default function FeatureUnlockModal({ isOpen, onClose, featureId, isAuthe
                 <span className="text-sm text-white/75 tracking-wide">Pay once · Keep forever · Friends always join free</span>
               </div>
 
-              {isAndroidApp() ? (
-                <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-4 text-center mb-4">
-                  <p className="text-sm text-white/60 leading-relaxed">
-                    Tempo purchases are not available in the Android app.
-                  </p>
-                </div>
+              {unlocked ? (
+                <p className="text-center text-[#3AAFA9] font-bold tracking-wider text-sm py-3">Unlocked! Tap the button again to host.</p>
               ) : (
                 <>
-                  {/* Price + CTA */}
-                  <div className="text-center mb-4">
-                    <span className="text-3xl font-black text-white">$1.99</span>
-                    <span className="text-white/40 text-sm ml-1">one-time</span>
+                  {/* Price */}
+                  <div className="text-center mb-1 flex items-center justify-center gap-2">
+                    <Coins className="w-6 h-6 text-[#D4AF37]" />
+                    <span className="text-3xl font-black text-white">{FEATURE_PRICE}</span>
+                    <span className="text-white/60 text-sm">Tempo · one-time</span>
                   </div>
+                  {isAuthenticated && balance !== null && (
+                    <p className="text-center text-white/60 text-xs mb-4">You have {balance} Tempo</p>
+                  )}
 
                   {error && <p className="text-red-400 text-xs text-center mb-3">{error}</p>}
 
-                  <Button
-                    onClick={handleBuy}
-                    disabled={loading}
-                    variant="chess-primary"
-                    className="w-full py-4 rounded-2xl font-black text-sm tracking-[0.2em] uppercase disabled:opacity-60"
-                  >
-                    {loading ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <Loader2 className="w-4 h-4 animate-spin" /> Loading…
-                      </span>
-                    ) : isAuthenticated ? 'Unlock Now' : 'Sign In to Unlock'}
-                  </Button>
+                  {isAuthenticated && balance !== null && !canAfford ? (
+                    <>
+                      <p className="text-center text-white/70 text-xs mb-3">
+                        You need {FEATURE_PRICE - balance} more Tempo. Earn it from Daily Challenges.
+                      </p>
+                      <Button onClick={goEarn} variant="chess-primary"
+                        className="w-full py-4 rounded-2xl font-black text-sm tracking-[0.2em] uppercase">
+                        Earn Tempo
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={handleBuy}
+                      disabled={loading}
+                      variant="chess-primary"
+                      className="w-full py-4 rounded-2xl font-black text-sm tracking-[0.2em] uppercase disabled:opacity-60"
+                    >
+                      {loading ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <Loader2 className="w-4 h-4 animate-spin" /> Unlocking…
+                        </span>
+                      ) : isAuthenticated ? `Unlock for ${FEATURE_PRICE} Tempo` : 'Sign In to Unlock'}
+                    </Button>
+                  )}
 
-                  <p className="text-center text-white/20 text-[10px] tracking-wider mt-3">One-time payment · Keep forever</p>
+                  <p className="text-center text-white/50 text-[10px] tracking-wider mt-3">One-time purchase · Keep forever</p>
                 </>
               )}
             </div>
