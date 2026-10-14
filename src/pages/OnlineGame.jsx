@@ -16,6 +16,7 @@ import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useSkin } from '@/lib/skinContext';
 import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
+import { playMoveSound, unlockAudio } from '@/lib/chessSound';
 import {
   createInitialBoard,
   getLegalMoves,
@@ -68,6 +69,15 @@ export default function OnlineGame() {
   const tournamentRulesRef = useRef(null);
   const pendingMoveRef = useRef(null);
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('chessSound') !== 'off');
+    const soundEnabledRef = useRef(soundEnabled);
+  useEffect(() => { soundEnabledRef.current = soundEnabled; }, [soundEnabled]);
+
+  // Android blocks audio until the first tap — unlock it once
+  useEffect(() => {
+    const unlock = () => unlockAudio();
+    window.addEventListener('pointerdown', unlock, { once: true });
+    return () => window.removeEventListener('pointerdown', unlock);
+  }, []);
 
   const isHostRef = useRef(false);
   const [isHost, setIsHost] = useState(false);
@@ -161,6 +171,13 @@ export default function OnlineGame() {
   };
 
   function applyGameDoc(g) {
+        const incomingCount = g.move_count ?? 0;
+    if (soundEnabledRef.current && incomingCount === moveCountRef.current + 1) {
+      const lm = parseJSON(g.last_move, null);
+      const b = parseJSON(g.board, null);
+      const mover = lm && b ? b[lm.to[0]]?.[lm.to[1]] : null;
+      if (mover) playMoveSound(mover, mover.toLowerCase() === 'k' && Math.abs(lm.to[1] - lm.from[1]) === 2);
+    }
     setBoard(parseJSON(g.board, createInitialBoard()));
     setIsWhiteTurn(g.is_white_turn ?? true);
     setEnPassant(parseJSON(g.en_passant, null));
@@ -407,6 +424,8 @@ export default function OnlineGame() {
     const movingPiece = currentBoard[fromR][fromC];
     const nextWhite = !isWhitePiece(movingPiece);
     const result = makeMove(currentBoard, fromR, fromC, toR, toC, currentEnPassant, currentCastling);
+    const isCastling = movingPiece?.toLowerCase() === 'k' && Math.abs(toC - fromC) === 2;
+    if (soundEnabledRef.current) playMoveSound(movingPiece, isCastling);
 
     const newCapturedWhite = [...capturedWhite];
     const newCapturedBlack = [...capturedBlack];

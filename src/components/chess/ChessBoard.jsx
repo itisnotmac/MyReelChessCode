@@ -5,6 +5,12 @@ import { useSkin } from '@/lib/skinContext';
 import { BOARD_SKINS, BOARD_BORDERS, PARTICLE_EFFECTS } from '@/lib/storeCatalog';
 import ParticleBurst from '@/components/effects/ParticleBurst';
 import BoardAnimation from '@/components/effects/BoardAnimation';
+const hexToRgba = (hex, a) => {
+  const h = (hex || '').replace('#', '');
+  if (h.length !== 6) return `rgba(212,175,55,${a})`; // default gold
+  const n = parseInt(h, 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+};
 
 // Returns the squares a piece travels through between from→to (exclusive of endpoints)
 function getPathSquares(from, to) {
@@ -35,7 +41,7 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
   const pathSquares = lastMove ? getPathSquares(lastMove.from, lastMove.to) : [];
   const pathSet = new Set(pathSquares.map(([r, c]) => `${r}-${c}`));
 
-  const { boardSkin, boardBorder, particleEffect } = useSkin();
+  const { boardSkin, boardBorder, particleEffect, moveTrailColor } = useSkin();
   const skin = BOARD_SKINS[boardSkin] || BOARD_SKINS.classic;
   const borderItem = BOARD_BORDERS.find(b => b.id === boardBorder);
   const particleItem = PARTICLE_EFFECTS.find(p => p.id === particleEffect);
@@ -167,14 +173,14 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                   {/* LAST MOVE TRAIL OVERLAYS */}
 
                   {/* Origin square — soft gold pulse */}
-                  {fromSq && !tournamentMode && showLastMove && (
+                                    {fromSq && !tournamentMode && showLastMove && (
                     <motion.div
                       key={`from-${pulseKey}`}
                       className="absolute inset-0 pointer-events-none z-[1]"
                       initial={{ opacity: 0.8 }}
                       animate={{ opacity: [0.8, 0.35, 0.8] }}
                       transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-                      style={{ background: 'rgba(212,175,55,0.22)', boxShadow: 'inset 0 0 14px rgba(212,175,55,0.4)' }}
+                      style={{ background: hexToRgba(moveTrailColor, 0.22), boxShadow: `inset 0 0 14px ${hexToRgba(moveTrailColor, 0.4)}` }}
                     />
                   )}
 
@@ -192,8 +198,8 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                         style={{
                           width: '28%',
                           height: '28%',
-                          background: 'rgba(212,175,55,0.55)',
-                          boxShadow: '0 0 10px rgba(212,175,55,0.7)',
+                          background: hexToRgba(moveTrailColor, 0.55),
+                          boxShadow: `0 0 10px ${hexToRgba(moveTrailColor, 0.7)}`,
                         }}
                       />
                     </motion.div>
@@ -208,13 +214,13 @@ export default function ChessBoard({ board, selectedSquare, legalMoves, onSquare
                       animate={{
                         opacity: [1, 0.6, 1],
                         boxShadow: [
-                          'inset 0 0 22px rgba(212,175,55,0.65), 0 0 14px rgba(212,175,55,0.4)',
-                          'inset 0 0 40px rgba(212,175,55,0.95), 0 0 28px rgba(212,175,55,0.65)',
-                          'inset 0 0 22px rgba(212,175,55,0.65), 0 0 14px rgba(212,175,55,0.4)',
+                          `inset 0 0 22px ${hexToRgba(moveTrailColor, 0.65)}, 0 0 14px ${hexToRgba(moveTrailColor, 0.4)}`,
+                          `inset 0 0 40px ${hexToRgba(moveTrailColor, 0.95)}, 0 0 28px ${hexToRgba(moveTrailColor, 0.65)}`,
+                          `inset 0 0 22px ${hexToRgba(moveTrailColor, 0.65)}, 0 0 14px ${hexToRgba(moveTrailColor, 0.4)}`,
                         ],
                       }}
                       transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                      style={{ background: 'rgba(212,175,55,0.28)' }}
+                      style={{ background: hexToRgba(moveTrailColor, 0.28) }}
                     />
                   )}
 

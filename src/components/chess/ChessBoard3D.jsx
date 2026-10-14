@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { COMPRESSED_GLB_URLS } from '@/lib/compressedPieceUrls';
 import { HERO_PIECE_URLS } from '@/lib/heroPieceUrls';
+import { useSkin } from '@/lib/skinContext';
 
 const SQUARE_SIZE = 1;
 const BOARD_SIZE = 8;
@@ -18,7 +19,7 @@ const WHITE_GLOW = new THREE.Color(0xffffff);
 const TEAL_GLOW = new THREE.Color(0x3aafa9);
 const SELECTED_COLOR = new THREE.Color(0xffff00);
 const LEGAL_COLOR = new THREE.Color(0x00ff88);
-const LAST_MOVE_COLOR = new THREE.Color(0xffa500);
+let LAST_MOVE_COLOR = new THREE.Color(0xffa500);
 const CHECK_COLOR = new THREE.Color(0xff2200);
 
 // Fresnel-based neon edge glow — only the silhouette edges emit light, not the whole surface
@@ -138,6 +139,8 @@ function enhanceMaterial(object3D, isWhite) {
 
 
 export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSquareClick, lastMove, checkSquare }) {
+    const { moveTrailColor } = useSkin();
+  LAST_MOVE_COLOR = moveTrailColor ? new THREE.Color(moveTrailColor) : new THREE.Color(0xffa500);
   const mountRef = useRef(null);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
@@ -425,7 +428,7 @@ export default function ChessBoard3D({ board, selectedSquare, legalMoves, onSqua
         mesh.material.color.copy(color);
       }
     }
-  }, [selectedSquare, legalMoves, lastMove, checkSquare]);
+  }, [selectedSquare, legalMoves, lastMove, checkSquare, moveTrailColor]);
 
   // Build piece templates once — load Draco-compressed GLB models (~500 KB each)
   useEffect(() => {

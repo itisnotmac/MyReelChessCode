@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Coins, Trophy } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
@@ -37,9 +37,14 @@ export default function PlayerAccountBanner() {
     return () => window.removeEventListener(PLAYER_ACCOUNT_UPDATED_EVENT, handleAccountUpdated);
   }, [loadAccount]);
 
-  useEffect(() => {
-    if (user?.username_glow && user.username_glow !== usernameGlow) setUsernameGlow(user.username_glow);
-  }, [user?.username_glow, usernameGlow, setUsernameGlow]);
+ const lastSyncedGlow = useRef(null);
+useEffect(() => {
+  const accountGlow = user?.username_glow;
+  if (accountGlow && accountGlow !== lastSyncedGlow.current) {
+    lastSyncedGlow.current = accountGlow;
+    setUsernameGlow(accountGlow);
+  }
+}, [user?.username_glow, setUsernameGlow]);
 
   if (!isAuthenticated || !user?.username) return null;
 
