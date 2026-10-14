@@ -5,6 +5,13 @@ import { X, Wifi, Bot, Users, UsersRound, QrCode, ScanLine, Lock, Zap } from 'lu
 export default function PlayChessModal({ isOpen, onClose, onOnlinePvp, onVsAI, onLocalPvp, on2v2, onWifiMatch, onJoinQr, onBlitzSchach, hasQrUnlock }) {
   const modes = [
     {
+      id: 'ai',
+      label: 'vs AI',
+      icon: Bot,
+      desc: 'Play against the computer',
+      onClick: onVsAI
+    },
+    {
       id: 'blitz',
       label: 'BlitzSchach',
       icon: Zap,
@@ -33,14 +40,7 @@ export default function PlayChessModal({ isOpen, onClose, onOnlinePvp, onVsAI, o
       desc: 'Scan a code to join a game',
       onClick: onJoinQr
     },
-    {
-      id: 'ai',
-      label: 'vs AI',
-      icon: Bot,
-      desc: 'Play against the computer',
-      onClick: onVsAI
-    },
-    {
+     {
       id: 'local',
       label: 'Local PVP',
       icon: Users,
