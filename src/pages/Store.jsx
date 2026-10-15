@@ -129,10 +129,10 @@ export default function Store() {
       setLoading(false);
       return;
     }
-    try {
+       try {
       const [purchaseRes, accountRes] = await Promise.all([
-        base44.entities.UserPurchase.list(),
-        base44.entities.PlayerAccount.list(),
+        base44.entities.UserPurchase.filter({ user_id: user?.id }),
+        base44.entities.PlayerAccount.filter({ user_id: user?.id }),
       ]);
       setPurchases(purchaseRes || []);
       setCoinBalance(selectPlayerAccount(accountRes)?.currency_balance || 0);
@@ -169,38 +169,32 @@ const isOwned = (itemId) => {
   const getOwnedIds = (itemType, items) =>
     isAdmin ? new Set(items.map(i => i.id)) : new Set(purchases.filter(p => p.item_type === itemType).map(p => p.item_id));
 
-  const handlePurchase = async (item) => {
+    const handlePurchase = async (item) => {
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
-    if (window.self !== window.top) {
-      toast({ title: 'Checkout unavailable', description: 'Please open the app directly to purchase.' });
-      return;
-    }
+    if (isOwned(item.id)) return;
     setPurchasing(item.id);
-    // Block Stripe checkout in the Android TWA — Play Store policy compliance
-    if (isAndroidApp()) {
-      toast({ title: 'Unavailable', description: 'Tempo purchases are not available in the Android app.' });
-      setPurchasing(null);
-      return;
-    }
     try {
-      const res = await base44.functions.invoke('createCosmeticCheckout', {
+      const res = await base44.functions.invoke('purchaseWithCurrency', {
         item_id: item.id,
-        item_type: item.category,
-        item_name: item.name,
       });
-      if (res?.data?.url) {
-        window.location.href = res.data.url;
+           if (res?.data?.success) {
+        setCoinBalance(res.data.new_balance);
+        setPurchases(prev => [...prev, { item_id: item.id, item_type: item.category, item_name: item.name }]);
+        toast({ title: 'Purchased!', description: `${item.name} is now yours.` });
+        window.dispatchEvent(new CustomEvent(PLAYER_ACCOUNT_UPDATED_EVENT));
+      } else {
+        toast({ title: 'Purchase failed', description: res?.data?.error || 'Please try again.' });
       }
     } catch (e) {
-      console.error('Checkout error:', e);
-      toast({ title: 'Checkout failed', description: 'Please try again.' });
+      console.error('Purchase error:', e);
+      const msg = e?.data?.error || e?.message || 'Failed to purchase.';
+      toast({ title: 'Purchase failed', description: msg });
     }
     setPurchasing(null);
   };
-
   const handleSelect = (item) => {
     if (!isOwned(item.id)) return;
     if (item.category === 'board') setBoardSkin(item.id);

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, BarChart2, Clock, Swords, Trophy, Bot, Users, TrendingUp, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { selectPlayerAccount } from '@/lib/playerAccount';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
@@ -53,15 +54,16 @@ export default function Dashboard() {
   const [history, setHistory] = useState([]);
   const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
-  const fetchData = useCallback(async () => {
+     const fetchData = useCallback(async () => {
     const [data, accounts] = await Promise.all([
       base44.entities.GameHistory.list('-created_date', 200),
-      base44.entities.PlayerAccount.list().catch(() => []),
+      base44.entities.PlayerAccount.filter({ user_id: user?.id }).catch(() => []),
     ]);
     setHistory(data);
     setAccount(selectPlayerAccount(accounts));
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     fetchData().finally(() => setLoading(false));
