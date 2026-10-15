@@ -7,7 +7,7 @@ export default function PrivacyPolicy() {
   const navigate = useNavigate();
   useSeo(
     'Privacy Policy – Reel Chess',
-    'Read the Reel Chess privacy policy. Learn how we handle account data, game history, and player information in our free browser-based chess game.'
+    'Read the Reel Chess privacy policy. Learn how we handle account data, game history, and player information in our mobile chess app.'
   );
 
   return (
@@ -21,7 +21,7 @@ export default function PrivacyPolicy() {
       </button>
 
       <h1 className="text-2xl font-bold text-white mb-1">Privacy Policy</h1>
-      <p className="text-teal-400 text-sm mb-8">Reel Chess · Last updated: Oct,4 2026</p>
+      <p className="text-teal-400 text-sm mb-8">Reel Chess · Last updated: Oct 15, 2026</p>
 
       <div className="space-y-8 text-gray-300 text-sm leading-relaxed">
 
@@ -61,7 +61,6 @@ export default function PrivacyPolicy() {
           </ul>
           <p className="font-medium text-gray-200 mt-3 mb-1">Information we do NOT collect:</p>
           <ul className="list-disc list-inside space-y-1 ml-2">
-            <li>Payment or billing information (handled securely by Stripe)</li>
             <li>Precise GPS or device location</li>
             <li>Contacts or photos from your device</li>
             <li>Microphone or camera data</li>
@@ -69,12 +68,60 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">3. How We Use Your Information</h2>
+          <h2 className="text-white font-semibold text-base mb-2">3. In-App Purchases</h2>
+          <p>
+            Reel Chess offers optional in-app purchases (Tempo coin packs) processed entirely through
+            <span className="text-gray-200"> Google Play Billing</span>. We do not collect, store, or
+            have access to your payment card details or billing information. All payment data is handled
+            directly by Google in accordance with{' '}
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-teal-400 hover:text-teal-300"
+            >
+              Google's Privacy Policy
+            </a>
+            . Purchase history (items unlocked, Tempo balance) is stored in your Reel Chess account to
+            restore your content across devices.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-white font-semibold text-base mb-2">4. Advertising</h2>
+          <p>
+            Reel Chess displays ads served by <span className="text-gray-200">Google AdMob</span>. AdMob
+            may collect and use data to serve personalized or non-personalized ads, including:
+          </p>
+          <ul className="list-disc list-inside space-y-1 ml-2 mt-2">
+            <li>Advertising ID (Google's resettable device identifier)</li>
+            <li>IP address and general location (country/region level)</li>
+            <li>App interaction data (ad views, clicks)</li>
+            <li>Device information (OS version, device model)</li>
+          </ul>
+          <p className="mt-2">
+            AdMob's data collection and use is governed by{' '}
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-teal-400 hover:text-teal-300"
+            >
+              Google's Privacy Policy
+            </a>
+            . You can reset or limit your Advertising ID at any time in your device's Settings under
+            Privacy → Ads.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-white font-semibold text-base mb-2">5. How We Use Your Information</h2>
           <p>We use the information we collect to:</p>
           <ul className="list-disc list-inside space-y-1 ml-2 mt-2">
             <li>Create and manage your account</li>
             <li>Provide and improve the App's features and gameplay</li>
             <li>Display your game history and statistics</li>
+            <li>Restore purchased content across devices</li>
             <li>Respond to support inquiries</li>
             <li>Detect and fix bugs or performance issues</li>
             <li>Ensure the security of the App</li>
@@ -82,7 +129,7 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">4. Sharing of Information</h2>
+          <h2 className="text-white font-semibold text-base mb-2">6. Sharing of Information</h2>
           <p>
             We do not sell, trade, or rent your personal information to third parties. We may share
             information only in the following limited circumstances:
@@ -90,7 +137,7 @@ export default function PrivacyPolicy() {
           <ul className="list-disc list-inside space-y-1 ml-2 mt-2">
             <li>
               <span className="text-gray-200">Service Providers:</span> Trusted third-party services
-              that assist us in operating the App (e.g., hosting, analytics), bound by confidentiality obligations.
+              that assist us in operating the App (e.g., hosting, analytics, advertising), bound by confidentiality obligations.
             </li>
             <li>
               <span className="text-gray-200">Legal Requirements:</span> If required by law or to protect
@@ -104,16 +151,16 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">5. Data Retention</h2>
+          <h2 className="text-white font-semibold text-base mb-2">7. Data Retention</h2>
           <p>
             We retain your personal data for as long as your account is active or as needed to provide
             services. You may request deletion of your account and associated data at any time by
-            contacting us (see Section 9). We will process deletion requests within 30 days.
+            contacting us (see Section 10). We will process deletion requests within 30 days.
           </p>
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">6. Security</h2>
+          <h2 className="text-white font-semibold text-base mb-2">8. Security</h2>
           <p>
             We implement industry-standard security measures to protect your data, including encrypted
             data transmission (HTTPS) and secure password storage. However, no method of transmission
@@ -122,7 +169,7 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">7. Children's Privacy</h2>
+          <h2 className="text-white font-semibold text-base mb-2">9. Children's Privacy</h2>
           <p>
             The App is not directed at children under the age of 13. We do not knowingly collect
             personal information from children under 13. If you believe a child has provided us with
@@ -131,7 +178,7 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">8. Your Rights</h2>
+          <h2 className="text-white font-semibold text-base mb-2">10. Your Rights</h2>
           <p>Depending on your location, you may have the right to:</p>
           <ul className="list-disc list-inside space-y-1 ml-2 mt-2">
             <li>Access the personal data we hold about you</li>
@@ -141,21 +188,21 @@ export default function PrivacyPolicy() {
             <li>Lodge a complaint with a data protection authority</li>
           </ul>
           <p className="mt-2">
-            To exercise any of these rights, please contact us using the details in Section 9.
+            To exercise any of these rights, please contact us using the details in Section 11.
           </p>
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">9. Contact Us</h2>
+          <h2 className="text-white font-semibold text-base mb-2">11. Contact Us</h2>
           <p>
             If you have any questions, concerns, or requests regarding this Privacy Policy, please
             reach out to us at:
           </p>
-                    <p className="mt-2 text-teal-400 font-medium">support@reelchess.org</p>
+          <p className="mt-2 text-teal-400 font-medium">support@reelchess.org</p>
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">10. Changes to This Policy</h2>
+          <h2 className="text-white font-semibold text-base mb-2">12. Changes to This Policy</h2>
           <p>
             We may update this Privacy Policy from time to time. We will notify users of any material
             changes by updating the "Last updated" date at the top of this page. Continued use of the

@@ -65,8 +65,6 @@ export default function OnlineGame() {
   const notifiedRatingRef = useRef(null);
   const [moveCount, setMoveCount] = useState(0);
   const [battleInfo, setBattleInfo] = useState(null);
-  const [tournamentRules, setTournamentRules] = useState(null);
-  const tournamentRulesRef = useRef(null);
   const pendingMoveRef = useRef(null);
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('chessSound') !== 'off');
     const soundEnabledRef = useRef(soundEnabled);
@@ -348,20 +346,6 @@ export default function OnlineGame() {
     return unsub;
   }, [gameDoc?.id]);
 
-  // Load tournament rules for tournament games — drives competitive restrictions
-  // (cutscenes, move hints, last-move indicator, 3D) all forced off by default.
-  useEffect(() => {
-    const tid = gameDoc?.tournament_id;
-    if (!tid) { setTournamentRules(null); tournamentRulesRef.current = null; return; }
-    let cancelled = false;
-    base44.entities.Tournament.filter({ id: tid }).then(results => {
-      if (!cancelled && results[0]) {
-        setTournamentRules(results[0].rules);
-        tournamentRulesRef.current = results[0].rules;
-      }
-    }).catch(e => console.error('Failed to load tournament rules:', e));
-    return () => { cancelled = true; };
-  }, [gameDoc?.tournament_id]);
 
   // ── CHESS LOGIC ──
   const findKingPosition = useCallback((boardState, white) => {
@@ -403,10 +387,6 @@ export default function OnlineGame() {
             window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT));
           }
         } catch (se) { console.error('ELO settle failed:', se); }
-        if (gameDoc?.tournament_id) {
-          try { await base44.functions.invoke('settleTournamentGame', { game_id: gameIdRef.current }); }
-          catch (se) { console.error('Tournament settle failed:', se); }
-        }
       }
     } catch (e) {
       // A failed push (e.g. RLS turn-check denial from a stale local turn) would
@@ -466,8 +446,7 @@ export default function OnlineGame() {
     const capturedByEP = isEP ? currentBoard[fromR][toC] : null;
     const captured = targetPiece || capturedByEP;
 
-    const showCutscene = localStorage.getItem('chessBattleCutscene') !== 'off' &&
-      (!tournamentRulesRef.current || tournamentRulesRef.current.cutscenes);
+    const showCutscene = localStorage.getItem('chessBattleCutscene') !== 'off';
     if (captured && showCutscene) {
       pendingMoveRef.current = { fromR, fromC, toR, toC, currentBoard, currentEnPassant, currentCastling, captured };
       setBattleInfo({ attacker: piece, defender: captured });
@@ -672,7 +651,6 @@ export default function OnlineGame() {
             isCheck={isInCheck(board, isWhiteTurn)}
             checkSquare={checkSquare}
             flipped={shouldFlip}
-            tournamentMode={!!tournamentRules}
           />
         </div>
       </div>
