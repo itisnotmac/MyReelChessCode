@@ -31,7 +31,13 @@
                     android:host="oauth"
                     android:path="/callback" />
             </intent-filter>
-
+	           
+	    <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="com.base69ab30c24c8c7db2b8432adf.app" />
+            </intent-filter>
         </activity>
 
         <provider

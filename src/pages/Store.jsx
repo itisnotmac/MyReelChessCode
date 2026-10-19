@@ -16,6 +16,7 @@ import BoardAnimation from '@/components/effects/BoardAnimation';
 import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 import { selectPlayerAccount } from '@/lib/playerAccount';
 import { isAndroidApp } from '@/lib/platformDetect';
+import { Purchases } from '@revenuecat/purchases-capacitor';
 
 function BoardPreview({ skin }) {
   return (
@@ -111,6 +112,13 @@ function StoreCard({ item, owned, selected, onSelect, onPurchase, purchasing, co
   );
 }
 
+ const TEMPO_PACKS = [
+    { id: 'tempo_spark_pack',     label: 'Spark',     tempo: 200,  price: '$1.99',  image: '/src/assets/tempo/tempo_spark.png',     glow: 'rgba(58,175,169,0.3)'  },
+    { id: 'tempo_surge_pack',     label: 'Surge',     tempo: 500,  price: '$4.99',  image: '/src/assets/tempo/tempo_surge.png',     glow: 'rgba(58,175,169,0.45)' },
+    { id: 'tempo_overdrive_pack', label: 'Overdrive', tempo: 1100, price: '$9.99',  image: '/src/assets/tempo/tempo_overdrive.png', glow: 'rgba(212,175,55,0.4)'  },
+    { id: 'tempo_supernova_pack', label: 'Supernova', tempo: 2400, price: '$19.99', image: '/src/assets/tempo/tempo_supernova.png', glow: 'rgba(212,175,55,0.6)'  },
+  ];
+
 export default function Store() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -123,7 +131,7 @@ export default function Store() {
   const [purchasing, setPurchasing] = useState(null);
   const [coinPurchasing, setCoinPurchasing] = useState(null);
   const [justPurchased, setJustPurchased] = useState(null);
-
+   
   const loadPurchases = useCallback(async () => {
     if (!isAuthenticated) {
       setLoading(false);
@@ -194,6 +202,37 @@ const isOwned = (itemId) => {
       toast({ title: 'Purchase failed', description: msg });
     }
     setPurchasing(null);
+  };
+    const handleTempoPurchase = async (pack) => {
+    if (!isAuthenticated) { navigate('/login'); return; }
+    if (!isAndroidApp()) {
+      toast({ title: 'Unavailable', description: 'Tempo packs are only available in the Android app.' });
+      return;
+    }
+    setCoinPurchasing(pack.id);
+    try {
+      const offerings = await Purchases.getOfferings();
+      const pkg = offerings?.current?.availablePackages?.find(
+        p => p.product.identifier === pack.id
+      );
+      if (!pkg) throw new Error('Product not found');
+      await Purchases.purchasePackage({ aPackage: pkg });
+      const res = await base44.functions.invoke('grantTempo', {
+        product_id: pack.id,
+        tempo_amount: pack.tempo,
+      });
+      if (res?.data?.success) {
+        setCoinBalance(res.data.new_balance);
+        window.dispatchEvent(new Event(PLAYER_ACCOUNT_UPDATED_EVENT));
+        toast({ title: '🎉 Tempo Added!', description: `${pack.tempo.toLocaleString()} Tempo added to your balance.` });
+      }
+    } catch (e) {
+      if (e?.code !== 'PURCHASE_CANCELLED') {
+        console.error('Tempo purchase error:', e);
+        toast({ title: 'Purchase failed', description: e?.message || 'Please try again.' });
+      }
+    }
+    setCoinPurchasing(null);
   };
   const handleSelect = (item) => {
     if (!isOwned(item.id)) return;
@@ -308,6 +347,84 @@ const isOwned = (itemId) => {
         <div className="relative z-10 mx-4 mb-4 p-3 rounded-xl bg-[#D4AF37]/5 border border-[#D4AF37]/20 flex items-center gap-2">
           <Crown className="w-4 h-4 text-[#D4AF37]/60" />
           <span className="text-xs text-[#D4AF37]/70">Log in to purchase and save your cosmetics.</span>
+        </div>
+      )}
+            {/* Get Tempo */}
+      {isAuthenticated && isAndroidApp() && (
+        <div className="relative z-10 px-4 mb-8">
+          <h2 className="text-sm font-bold tracking-wider text-[#3AAFA9]/70 mb-3 flex items-center gap-2">
+            <span className="w-1 h-4 rounded-full bg-[#3AAFA9]/50" />
+            GET TEMPO
+          </h2>
+          <p className="text-[11px] text-white/50 mb-4 leading-relaxed">
+            Spend Tempo to unlock cosmetics. Earn free Tempo through daily challenges.
+          </p>
+          <div className="flex flex-col gap-3">
+            {TEMPO_PACKS.map((pack, i) => (
+              <button
+                key={pack.id}
+                onClick={() => handleTempoPurchase(pack)}
+                disabled={coinPurchasing === pack.id}
+                className="relative flex items-center gap-4 p-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all disabled:opacity-50 overflow-hidden text-left"
+                style={{ boxShadow: `0 0 24px ${pack.glow}` }}
+              >
+                {/* Background glow blob */}
+                <div
+                  className="absolute inset-0 opacity-10 pointer-events-none"
+                  style={{ background: `radial-gradient(circle at 20% 50%, ${pack.glow}, transparent 70%)` }}
+                />
+
+                {/* Pack image */}
+                <div className="relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden"
+                  style={{ filter: `drop-shadow(0 0 10px ${pack.glow})` }}>
+                  <img
+                    src={pack.image}
+                    alt={pack.label}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                {/* Pack info */}
+                <div className="relative flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase">
+                      Tempo Pack
+                    </span>
+                    {i === 3 && (
+                      <span className="text-[9px] font-bold tracking-wider px-1.5 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30">
+                        BEST VALUE
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-white font-bold text-lg leading-tight tracking-wide">
+                    {pack.label}
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <Coins className="w-3.5 h-3.5 text-[#3AAFA9]" />
+                    <span className="text-[#3AAFA9] font-bold text-sm">
+                      {pack.tempo.toLocaleString()} Tempo
+                    </span>
+                  </div>
+                </div>
+
+                {/* Price button */}
+                <div className="relative flex-shrink-0">
+                  {coinPurchasing === pack.id ? (
+                    <div className="w-16 h-9 flex items-center justify-center">
+                      <Loader2 className="w-5 h-5 animate-spin text-[#D4AF37]" />
+                    </div>
+                  ) : (
+                    <div
+                      className="px-4 py-2 rounded-xl font-bold text-sm text-black"
+                      style={{ background: 'linear-gradient(135deg, #D4AF37, #f0d060)' }}
+                    >
+                      {pack.price}
+                    </div>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
