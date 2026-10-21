@@ -64,6 +64,11 @@
       "default": 1200,
       "description": "Highest ELO rating the player has reached"
     },
+    "last_ad_reward_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of the last rewarded-ad Tempo grant"
+    },
     "description": {
       "type": "string",
       "maxLength": 1000,
