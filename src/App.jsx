@@ -39,6 +39,7 @@ import BlitzSchach from './pages/BlitzSchach';
 import BackButtonHandler from '@/components/BackButtonHandler';
 import ScrollToTop from '@/components/ScrollToTop';
 import { SkinProvider } from '@/lib/skinContext';
+import DeleteAccount from './pages/DeleteAccount';
 
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -137,7 +138,7 @@ const AuthenticatedApp = () => {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/delete-account" element={<LayoutWrapper currentPageName="Info"><Info /></LayoutWrapper>} />
-          <Route path="/delete-data" element={<LayoutWrapper currentPageName="Info"><Info /></LayoutWrapper>} />
+          <Route path="/delete-account" element={<DeleteAccount />} />
           <Route path="/Online2v2Game" element={<LayoutWrapper currentPageName="Online2v2Game"><Online2v2Game /></LayoutWrapper>} />
           <Route path="/Profile" element={<LayoutWrapper currentPageName="Profile"><Profile /></LayoutWrapper>} />
           <Route path="/Achievements" element={<LayoutWrapper currentPageName="Achievements"><Achievements /></LayoutWrapper>} />
