@@ -17,6 +17,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useSkin } from '@/lib/skinContext';
 import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 import { playMoveSound, unlockAudio } from '@/lib/chessSound';
+import { showInterstitialAd } from '@/lib/adMob';
 import {
   createInitialBoard,
   getLegalMoves,
@@ -433,7 +434,10 @@ export default function OnlineGame() {
     setCapturedWhite(newCapturedWhite);
     setCapturedBlack(newCapturedBlack);
     setIsWhiteTurn(nextWhite);
-    if (newResult !== 'in_progress') setGameOver(newResult);
+    if (newResult !== 'in_progress') {
+      setGameOver(newResult);
+      setTimeout(() => showInterstitialAd(), 1500);
+    }
 
     pushMove(result.board, result.enPassant, result.castling, newLastMove, newCapturedWhite, newCapturedBlack, newMoveCount, nextWhite, newResult);
   }, [capturedWhite, capturedBlack, moveCount]);

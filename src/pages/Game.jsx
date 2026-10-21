@@ -23,6 +23,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useSkin } from '@/lib/skinContext';
 import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 import { playMoveSound, playCheckSound, playGameOverSound, unlockAudio } from '@/lib/chessSound';
+import { showInterstitialAd } from '@/lib/adMob';
 import {
   createInitialBoard,
   getLegalMoves,
@@ -220,16 +221,18 @@ export default function Game() {
       captured,
     }]);
 
-    if (isMate) {
+     if (isMate) {
       const winner = nextWhite ? 'black_wins' : 'white_wins';
       setGameOver(winner);
       if (soundEnabledRef.current) playGameOverSound();
       base44.analytics.track({ eventName: 'game_completed', properties: { result: winner, mode, move_count: moveCount + 1 } });
       base44.analytics.track({ eventName: 'game_win', properties: { winner: nextWhite ? 'black' : 'white', mode, move_count: moveCount + 1 } });
+      setTimeout(() => showInterstitialAd(), 1500);
     } else if (isStale) {
       setGameOver('draw');
       if (soundEnabledRef.current) playGameOverSound();
       base44.analytics.track({ eventName: 'game_completed', properties: { result: 'draw', mode, move_count: moveCount + 1 } });
+      setTimeout(() => showInterstitialAd(), 1500);
     } else if (isCheckAfter) {
       if (soundEnabledRef.current) setTimeout(() => playCheckSound(), 120);
     }
