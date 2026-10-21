@@ -17,6 +17,7 @@ import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 import { selectPlayerAccount } from '@/lib/playerAccount';
 import { isAndroidApp } from '@/lib/platformDetect';
 import { Purchases } from '@revenuecat/purchases-capacitor';
+import AdRewardButton from '@/components/AdRewardButton';
 
 function BoardPreview({ skin }) {
   return (
@@ -347,6 +348,13 @@ const isOwned = (itemId) => {
         <div className="relative z-10 mx-4 mb-4 p-3 rounded-xl bg-[#D4AF37]/5 border border-[#D4AF37]/20 flex items-center gap-2">
           <Crown className="w-4 h-4 text-[#D4AF37]/60" />
           <span className="text-xs text-[#D4AF37]/70">Log in to purchase and save your cosmetics.</span>
+        </div>
+      )}
+
+            {/* Ad Reward */}
+      {isAuthenticated && isAndroidApp() && (
+        <div className="relative z-10 px-4 mb-4">
+          <AdRewardButton onTempoEarned={(bal) => setCoinBalance(bal)} />
         </div>
       )}
             {/* Get Tempo */}

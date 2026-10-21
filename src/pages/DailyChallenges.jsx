@@ -12,6 +12,7 @@ import { getTodaysChallenge, CHALLENGE_REWARD } from '@/lib/dailyChallenges';
 import { Button } from '@/components/ui/button';
 import { PLAYER_ACCOUNT_UPDATED_EVENT } from '@/components/PlayerAccountBanner';
 import { selectPlayerAccount } from '@/lib/playerAccount';
+import AdRewardButton from '@/components/AdRewardButton';
 
 const ACTIVITY_ICONS = {
   match: Gamepad2,
@@ -191,6 +192,11 @@ export default function DailyChallenges() {
             <ShoppingBag className="w-3.5 h-3.5" /> STORE
           </button>
         </div>
+          </div>
+
+      {/* Ad Reward */}
+      <div className="relative z-10 px-4 mb-4">
+        <AdRewardButton onTempoEarned={(bal) => setAccount(prev => ({ ...prev, currency_balance: bal }))} />
       </div>
 
       {/* Today's Challenge */}
