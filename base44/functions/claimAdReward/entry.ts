@@ -9,6 +9,9 @@ export default async function(req) {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
+    const body = await req.json().catch(() => ({}));
+    const checkOnly = body?.check_only === true;
+
     const accounts = await base44.asServiceRole.entities.PlayerAccount.filter({ user_id: user.id });
     const account = Array.isArray(accounts) ? accounts[0] : accounts.items?.[0];
     if (!account) {
@@ -18,8 +21,15 @@ export default async function(req) {
     const now = Date.now();
     const last = account.last_ad_reward_at ? new Date(account.last_ad_reward_at).getTime() : null;
     const cooldownEnds = last ? last + COOLDOWN_MS : null;
+    const onCooldown = Boolean(cooldownEnds && now < cooldownEnds);
 
-    if (cooldownEnds && now < cooldownEnds) {
+    if (checkOnly) {
+      return onCooldown
+        ? Response.json({ success: false, next_available_at: new Date(cooldownEnds).toISOString() })
+        : Response.json({ success: true });
+    }
+
+    if (onCooldown) {
       return Response.json({
         success: false,
         error: 'Cooldown active',
